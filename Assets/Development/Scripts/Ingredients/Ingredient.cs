@@ -1,0 +1,54 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Ingredient : MonoBehaviour
+{
+    [SerializeField] IngredientSO IngredientSO;
+
+    private IIngredientParent ingredientParent;
+
+    public IngredientSO GetIngredientSO()
+    {
+        return IngredientSO;
+    }
+
+    public void SetIngredientParent(IIngredientParent ingredientParent)
+    {
+        if(this.ingredientParent != null)
+        {
+            this.ingredientParent.ClearIngredient();
+        }
+        this.ingredientParent = ingredientParent;
+
+        if (ingredientParent.HasIngredient())
+        {
+            Debug.Log("Counter already has object");
+        }
+        ingredientParent.SetIngredient(this);
+
+        transform.parent = ingredientParent.GetIngredientTransform();
+        transform.localPosition = Vector3.zero;
+    }
+
+    public IIngredientParent GetIngredientParent()
+    {
+        return ingredientParent;
+    }
+
+    public void DestroyIngredient()
+    {
+        ingredientParent.ClearIngredient();
+        Destroy(gameObject);
+    }
+
+
+    public static Ingredient SpawnIngredient(IngredientSO ingredientSO, IIngredientParent ingredientParent)
+    {
+        GameObject ingredientPrefab = Instantiate(ingredientSO.prefab);
+        Ingredient ingredient = ingredientPrefab.GetComponent<Ingredient>();
+        ingredient.GetComponent<Ingredient>().SetIngredientParent(ingredientParent);
+
+        return ingredient;
+    }
+}
