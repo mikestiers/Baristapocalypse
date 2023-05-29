@@ -6,7 +6,7 @@ public class IngredientStation : BaseStation
 {
     [SerializeField] private IngredientSO ingredientSO;
 
-    public override void Interact(PlayerController player)
+    public override void Interact(PlayerStateMachine player)
     {
         if (!HasIngredient())
         {

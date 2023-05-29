@@ -6,8 +6,9 @@ using UnityEngine.InputSystem;
 using UnityEngine.Scripting.APIUpdating;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerController : MonoBehaviour, IIngredientParent
+public class PlayerController : MonoBehaviour //, IIngredientParent
 { 
+    /*
     [Header("Player Attributes")]
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpForce;
@@ -150,4 +151,5 @@ public class PlayerController : MonoBehaviour, IIngredientParent
     {
         return ingredient != null;
     }
+    */
 }
