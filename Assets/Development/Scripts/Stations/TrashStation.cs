@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TrashStation : BaseStation
 {
-    public override void Interact(PlayerController player)
+    public override void Interact(PlayerStateMachine player)
     {
         if (player.HasIngredient())
         {

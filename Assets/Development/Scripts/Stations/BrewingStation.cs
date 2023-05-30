@@ -35,7 +35,7 @@ public class BrewingStation : BaseStation, IHasProgress
         }
     }
 
-    public override void Interact(PlayerController player)
+    public override void Interact(PlayerStateMachine player)
     {
         if (!HasIngredient())
         {
