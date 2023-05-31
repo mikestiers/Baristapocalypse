@@ -20,6 +20,9 @@ public class CustomerClass1 : CustomerBase
     public GameObject[] Waypoint;
     public int WaypointIndex;
 
+    // Order Request
+    public OrderRequest orderRequest;
+
     /// <summary>
     ///  For the arrays im thinking of moving them to some other script like a level script or something to be actually be 
     ///  accesible by all customer prefabs on what Index they currently are in 
