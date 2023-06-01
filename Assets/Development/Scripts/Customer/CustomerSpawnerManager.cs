@@ -39,7 +39,7 @@ public class CustomerSpawnerManager : MonoBehaviour
 
     private void Start()
     {
-        SpawnRandomCustomers(3);
+        SpawnRandomCustomers(10);
     }
 }
 
