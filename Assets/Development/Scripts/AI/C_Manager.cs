@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +17,7 @@ public class C_Manager : MonoBehaviour
     //temp stuff -> Ddog will make something more robust
     public GameObject[] Chairs;
     public int chairNumber;
+
 
 
     // Start is called before the first frame update
@@ -60,8 +62,8 @@ public class C_Manager : MonoBehaviour
             //while(gameObject is playin) set timer
             if(customerPrefab != null)
             {
-                CustomerBase Newcustomer = Instantiate(customerPrefab, barEntrance.transform.position, Quaternion.identity);
-                customersOutsideList.Add(Newcustomer);
+
+                SpawnCustomer();
 
                 StartCoroutine(CustomerEnterStore());
             }              
@@ -101,6 +103,23 @@ public class C_Manager : MonoBehaviour
 
     }
 
+    private void SpawnCustomer()
+    {
+        CustomerBase Newcustomer = Instantiate(customerPrefab, barEntrance.transform.position, Quaternion.identity);
+        Newcustomer.orderRequest = new OrderRequest
+        {
+            bitterness = UnityEngine.Random.Range(0, 10 + 1),
+            sweetness = UnityEngine.Random.Range(0, 10 + 1),
+            strength = UnityEngine.Random.Range(0, 10 + 1),
+            temperature = UnityEngine.Random.Range(0, 10 + 1),
+            biomass = UnityEngine.Random.Range(0, 10 + 1)
+        };
+
+        customersOutsideList.Add(Newcustomer);
+    }
+
+   
+
 
     /* i didnt delete just incase it can be used for future code
 
@@ -128,4 +147,15 @@ public class C_Manager : MonoBehaviour
         }
     }
     */
+}
+
+[Serializable]
+public struct OrderRequest
+{
+    public int bitterness;
+    public int sweetness;
+    public int strength;
+    public int temperature;
+    public int biomass;
+
 }

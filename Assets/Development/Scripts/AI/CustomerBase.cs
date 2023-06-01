@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -27,8 +28,8 @@ public class CustomerBase : MonoBehaviour
     public GameObject[] Line;
     public int LineIndex;
 
-    //Walking around waiting for coffee Array
-
+    // Order Request
+    public OrderRequest orderRequest;
 
     /// <summary>
     ///  For the arrays im thinking of moving them to some other script like a level script or something to be actually be 
@@ -54,6 +55,10 @@ public class CustomerBase : MonoBehaviour
         Exit = new Vector3(1.5f, 0f, 15f);
 
         if (distThreshold <= 0) distThreshold = 0.5f;
+
+       
+
+
 
         {
             //Setting Arrays - Subject to change, how to handle multiple customers
@@ -192,5 +197,5 @@ public class CustomerBase : MonoBehaviour
         Destroy(gameObject);
     }
 
-
+   
 }
