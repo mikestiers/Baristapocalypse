@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InteractStation : BaseStation, IIngredientParent
+public class InteractStation : BaseStation
 {
     public override void Interact(PlayerStateMachine player)
     {
