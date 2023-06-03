@@ -133,7 +133,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5536528}
   - component: {fileID: 5536527}
-  - component: {fileID: 5536526}
+  - component: {fileID: 5536530}
+  - component: {fileID: 5536529}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -141,30 +142,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &5536526
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5536525}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ffcac1f2d762ce04e9c68cde8ea22de4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 0
-  jumpForce: 0
-  isGroundLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  groundCheckRadius: 0
-  groundCheck: {fileID: 1066686935}
-  isGrounded: 0
-  isStationLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  ingredientHoldPoint: {fileID: 1165564608}
 --- !u!54 &5536527
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -199,6 +176,47 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5536529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5536525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c22cb47df71950d4e943593d795de5b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <moveSpeed>k__BackingField: 0
+  <jumpForce>k__BackingField: 0
+  <isGroundLayer>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 8
+  <groundCheckRadius>k__BackingField: 0
+  <groundCheck>k__BackingField: {fileID: 1066686935}
+  isGrounded: 0
+  <isStationLayer>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 64
+  <ingredientHoldPoint>k__BackingField: {fileID: 1165564608}
+  curMoveInput: {x: 0, y: 0, z: 0}
+  moveDir: {x: 0, y: 0, z: 0}
+  <inputManager>k__BackingField: {fileID: 5536530}
+--- !u!114 &5536530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5536525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e5d6e7edc38ebe4bb80304c5128a919, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveDir: {x: 0, y: 0, z: 0}
+  curMoveInput: {x: 0, y: 0, z: 0}
 --- !u!1 &13110043
 GameObject:
   m_ObjectHideFlags: 0
@@ -1813,7 +1831,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1121951785
 MonoBehaviour:
   m_ObjectHideFlags: 0
