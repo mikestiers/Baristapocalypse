@@ -10,7 +10,10 @@ public class IngredientStation : BaseStation
     {
         if (!HasIngredient())
         {
-            Ingredient.SpawnIngredient(ingredientSO, player);
+            if (!player.HasIngredient())
+            {
+                Ingredient.SpawnIngredient(ingredientSO, player);
+            }
         }
     }
 }

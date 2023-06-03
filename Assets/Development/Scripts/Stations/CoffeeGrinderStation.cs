@@ -49,6 +49,7 @@ public class CoffeeGrinderStation : BaseStation, IHasProgress
         }
     }
 
+
     public override void InteractAlt(PlayerController player)
     {
         //Grind coffee if on table and valid input
