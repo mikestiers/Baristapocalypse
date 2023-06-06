@@ -1973,7 +1973,8 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -57
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6649793073638699944, guid: 85bf6facf14cdf14aa7b09668cf4dd3a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 85bf6facf14cdf14aa7b09668cf4dd3a, type: 3}
 --- !u!4 &928215560 stripped
 Transform:
@@ -2398,6 +2399,26 @@ MonoBehaviour:
   pauseMenu: {fileID: 1618688486}
   timer: {fileID: 126433852}
   score: {fileID: 240090027}
+--- !u!114 &1425074277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1425074271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d13b82d9c287834cb7ef306bd43880b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeRemaining: 10
+  score: 0
+  LoseEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  WinEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &1443184656
 PrefabInstance:
   m_ObjectHideFlags: 0
