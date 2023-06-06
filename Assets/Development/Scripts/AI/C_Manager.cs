@@ -118,8 +118,6 @@ public class C_Manager : MonoBehaviour
         customersOutsideList.Add(Newcustomer);
     }
 
-   
-
 
     /* i didnt delete just incase it can be used for future code
 

@@ -197,5 +197,11 @@ public class CustomerBase : MonoBehaviour
         Destroy(gameObject);
     }
 
-   
+    public void JustGotHandedCoffee(CoffeeAttributes coffee)
+    {
+        int score = ScoreTimerManager.Instance.GetScoreComparison(coffee, orderRequest);
+        ScoreTimerManager.Instance.score += score;
+    }
+
+
 }
