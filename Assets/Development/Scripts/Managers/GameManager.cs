@@ -38,8 +38,8 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
         playerInput.Player.SetCallbacks(this);// SetCallbacks calls the methods for us
         playerInput.Player.Enable();
         timeRemaining -= Time.deltaTime;
-        timer.LoseEvent.AddListener(Lose);
-        timer.WinEvent.AddListener(Win);
+       // timer.LoseEvent.AddListener(Lose);
+       // timer.WinEvent.AddListener(Win);
     }
 
 
