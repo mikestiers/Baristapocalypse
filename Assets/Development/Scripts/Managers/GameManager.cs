@@ -15,9 +15,6 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
     public event Action JumpEvent;
     public event Action InteractEvent;
     public event Action InteractAltEvent;
-    //public float timeRemaining = 10;
-    //public Timer timer;
-    //public GameObject menu;
     public GameState gameState = GameState.RUNNING;
 
     //player movement input
@@ -43,7 +40,7 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
 
     private void Update()
     {
-        //timeRemaining -= Time.deltaTime;
+        
     }
 
     private void OnDestroy()
