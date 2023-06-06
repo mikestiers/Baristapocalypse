@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
+using UnityEngine.UI;
 
 [DefaultExecutionOrder(-1)]
 public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
@@ -14,6 +15,9 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
     public event Action JumpEvent;
     public event Action InteractEvent;
     public event Action InteractAltEvent;
+    public float timeRemaining = 10;
+    public Timer timer;
+    public GameObject menu;
 
     //player movement input
     [HideInInspector] public Vector3 moveDir;
@@ -33,7 +37,9 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
     {
         playerInput.Player.SetCallbacks(this);// SetCallbacks calls the methods for us
         playerInput.Player.Enable();
-
+        timeRemaining -= Time.deltaTime;
+        timer.LoseEvent.AddListener(Lose);
+        timer.WinEvent.AddListener(Win);
     }
 
 
@@ -80,6 +86,15 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
         InteractAltEvent?.Invoke();
     }
 
-
+    private void Lose()
+    {
+        menu.SetActive(true);
+        Time.timeScale = 0f;
+    }
+    private void Win()
+    {
+        menu.SetActive(true);
+        Time.timeScale = 0f;
+    }
 
 }
