@@ -33,7 +33,6 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
 
     private void Start()
     {
-        //playerInput.Player.Pause.performed += ctx => Pause(ctx);
         playerInput.Player.Pause.performed += ctx => OnPause(ctx);
         playerInput.Player.SetCallbacks(this);// SetCallbacks calls the methods for us
         playerInput.Player.Enable();
@@ -92,11 +91,13 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
         if (gameState == GameState.PAUSED)
         {
             UIManager.Instance.pauseMenu.SetActive(false);
+            Time.timeScale = 1f;
             gameState = GameState.RUNNING;
         }
         else
         {
             UIManager.Instance.pauseMenu.SetActive(true);
+            Time.timeScale = 0f;
             gameState = GameState.PAUSED;
         }
     }
