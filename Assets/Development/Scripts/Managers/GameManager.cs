@@ -34,6 +34,7 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
     private void Start()
     {
         //playerInput.Player.Pause.performed += ctx => Pause(ctx);
+        playerInput.Player.Pause.performed += ctx => OnPause(ctx);
         playerInput.Player.SetCallbacks(this);// SetCallbacks calls the methods for us
         playerInput.Player.Enable();
     }
@@ -86,7 +87,7 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
         InteractAltEvent?.Invoke();
     }
 
-    public void Pause(InputAction.CallbackContext context)
+    public void OnPause(InputAction.CallbackContext ctx)
     {
         if (gameState == GameState.PAUSED)
         {

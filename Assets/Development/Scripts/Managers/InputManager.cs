@@ -12,6 +12,7 @@ public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
     public event Action JumpEvent;
     public event Action InteractEvent;
     public event Action InteractAltEvent;
+    public GameState gameState = GameState.RUNNING;
 
     //player movement input
     [HideInInspector] public Vector3 moveDir;
@@ -77,5 +78,19 @@ public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
         if (context.performed) { return; }
 
         InteractAltEvent?.Invoke();
+    }
+
+    public void OnPause(InputAction.CallbackContext context)
+    {
+        if (gameState == GameState.PAUSED)
+        {
+            UIManager.Instance.pauseMenu.SetActive(false);
+            gameState = GameState.RUNNING;
+        }
+        else
+        {
+            UIManager.Instance.pauseMenu.SetActive(true);
+            gameState = GameState.PAUSED;
+        }
     }
 }
