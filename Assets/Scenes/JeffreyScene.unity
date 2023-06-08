@@ -1502,12 +1502,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5867048476353184690, guid: 85bf6facf14cdf14aa7b09668cf4dd3a, type: 3}
-      propertyPath: m_IsActive
-      value: 0
     - target: {fileID: 1425074277, guid: 85bf6facf14cdf14aa7b09668cf4dd3a, type: 3}
       propertyPath: timeRemaining
       value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 5867048476353184690, guid: 85bf6facf14cdf14aa7b09668cf4dd3a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5867048476714727667, guid: 85bf6facf14cdf14aa7b09668cf4dd3a, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1872,9 +1873,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1762f224c4c79e8449d394d6d17d440c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeRemaining: 10
-  timer: {fileID: 0}
-  menu: {fileID: 0}
   gameState: 0
   moveDir: {x: 0, y: 0, z: 0}
   curMoveInput: {x: 0, y: 0, z: 0}

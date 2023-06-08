@@ -28,7 +28,7 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
     {
         base.Awake();
         playerInput = new PlayerInput();
-        
+
     }
 
     private void Start()
@@ -40,7 +40,7 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
 
     private void Update()
     {
-        
+
     }
 
     private void OnDestroy()
@@ -101,16 +101,6 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
             gameState = GameState.PAUSED;
         }
     }
-    private void Win()
-    {
-        menu.SetActive(true);
-        Time.timeScale = 0f;
-    }
-
-    public void OnPause(InputAction.CallbackContext context)
-    {
-        
-    }
 
     public void OnDash(InputAction.CallbackContext context)
     {
@@ -121,13 +111,14 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
 
     public void OnGrab(InputAction.CallbackContext context)
     {
-        
+
     }
 
     public void OnThrow(InputAction.CallbackContext context)
     {
-        
+
     }
+}
 
 public enum GameState
 {

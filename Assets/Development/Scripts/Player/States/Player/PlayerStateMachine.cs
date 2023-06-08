@@ -57,7 +57,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
         if (dashSpeed <= 0) dashSpeed = 17.0f;
         if (dashTime <= 0) dashTime = 0.1f;
         if (dashSpeed <= 0) dashSpeed = 17.0f;
-        if (ingredienThrowForce <= 0) ingredienThrowForce = 1f;
+        if (ingredienThrowForce <= 0) ingredienThrowForce = 10f;
         if (groundCheckRadius <= 0) groundCheckRadius = 0.05f;
         hasIngredient = false;
 
