@@ -10,6 +10,15 @@ public class CoffeeAttributes : MonoBehaviour
     [SerializeField] private int hotness;
     [SerializeField] private int spiciness;
 
+    public int GetSweetness()
+    {
+        return sweetness;
+    }
+    public int GetBitterness()
+    {
+        return bitterness;
+    }
+
     public void AddSweetness(int sweetness)
     {
         this.sweetness += sweetness;

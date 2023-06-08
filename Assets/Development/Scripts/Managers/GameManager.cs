@@ -15,9 +15,7 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
     public event Action JumpEvent;
     public event Action InteractEvent;
     public event Action InteractAltEvent;
-    public float timeRemaining = 10;
-    public Timer timer;
-    public GameObject menu;
+    public GameState gameState = GameState.RUNNING;
 
     //player movement input
     [HideInInspector] public Vector3 moveDir;
@@ -35,13 +33,19 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
 
     private void Start()
     {
+        playerInput.Player.Pause.performed += ctx => OnPause(ctx);
         playerInput.Player.SetCallbacks(this);// SetCallbacks calls the methods for us
         playerInput.Player.Enable();
         timeRemaining -= Time.deltaTime;
        // timer.LoseEvent.AddListener(Lose);
        // timer.WinEvent.AddListener(Win);
+
     }
 
+    private void Update()
+    {
+        
+    }
 
     private void OnDestroy()
     {
@@ -86,15 +90,24 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
         InteractAltEvent?.Invoke();
     }
 
-    private void Lose()
+    public void OnPause(InputAction.CallbackContext ctx)
     {
-        menu.SetActive(true);
-        Time.timeScale = 0f;
+        if (gameState == GameState.PAUSED)
+        {
+            UIManager.Instance.pauseMenu.SetActive(false);
+            Time.timeScale = 1f;
+            gameState = GameState.RUNNING;
+        }
+        else
+        {
+            UIManager.Instance.pauseMenu.SetActive(true);
+            Time.timeScale = 0f;
+            gameState = GameState.PAUSED;
+        }
     }
-    private void Win()
-    {
-        menu.SetActive(true);
-        Time.timeScale = 0f;
-    }
+}
 
+public enum GameState
+{
+    RUNNING, PAUSED, LOST
 }

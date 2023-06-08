@@ -112,13 +112,11 @@ public class C_Manager : MonoBehaviour
             sweetness = UnityEngine.Random.Range(0, 10 + 1),
             strength = UnityEngine.Random.Range(0, 10 + 1),
             temperature = UnityEngine.Random.Range(0, 10 + 1),
-            biomass = UnityEngine.Random.Range(0, 10 + 1)
+            spiciness = UnityEngine.Random.Range(0, 10 + 1)
         };
 
         customersOutsideList.Add(Newcustomer);
     }
-
-   
 
 
     /* i didnt delete just incase it can be used for future code
@@ -156,6 +154,6 @@ public struct OrderRequest
     public int sweetness;
     public int strength;
     public int temperature;
-    public int biomass;
+    public int spiciness;
 
 }
