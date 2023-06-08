@@ -7,7 +7,7 @@ public class C_Manager : MonoBehaviour
 {
     public Transform Counter;
     public Transform barEntrance;
-    public float delay = 10.0f;
+    public float delay = 8.0f;
     public CustomerBase customerPrefab;
 
     private List<CustomerBase> customersOutsideList = new List<CustomerBase>();
@@ -26,7 +26,7 @@ public class C_Manager : MonoBehaviour
         
         List<Vector3> waitingQueuePostionList = new List<Vector3>();
         if (Chairs.Length <= 0) Chairs = GameObject.FindGameObjectsWithTag("Waypoint");
-
+        chairNumber = UnityEngine.Random.Range (0 , Chairs.Length);
 
         //where the firstposition is located in scene
         Vector3 firstposition = new Vector3(Counter.position.x, 0, Counter.position.z);
@@ -74,7 +74,7 @@ public class C_Manager : MonoBehaviour
 
     public IEnumerator CustomerEnterStore()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
 
         if (LineQueue.CanAddCustomer() == true) 
         {
@@ -90,7 +90,7 @@ public class C_Manager : MonoBehaviour
 
     public IEnumerator Leaveline()
     {
-        yield return new WaitForSeconds(25f);
+        yield return new WaitForSeconds(50f);
 
         CustomerBase customer = LineQueue.GetFirstInQueue();
 
@@ -98,7 +98,7 @@ public class C_Manager : MonoBehaviour
 
         customer.Walkto(Chairs[chairNumber].transform.position);
         customer.currentState = CustomerBase.CustomerState.Insit;
-        chairNumber++;
+        chairNumber += 4;
         chairNumber %= Chairs.Length;
 
     }
@@ -112,13 +112,11 @@ public class C_Manager : MonoBehaviour
             sweetness = UnityEngine.Random.Range(0, 10 + 1),
             strength = UnityEngine.Random.Range(0, 10 + 1),
             temperature = UnityEngine.Random.Range(0, 10 + 1),
-            biomass = UnityEngine.Random.Range(0, 10 + 1)
+            spiciness = UnityEngine.Random.Range(0, 10 + 1)
         };
 
         customersOutsideList.Add(Newcustomer);
     }
-
-   
 
 
     /* i didnt delete just incase it can be used for future code
@@ -156,6 +154,6 @@ public struct OrderRequest
     public int sweetness;
     public int strength;
     public int temperature;
-    public int biomass;
+    public int spiciness;
 
 }

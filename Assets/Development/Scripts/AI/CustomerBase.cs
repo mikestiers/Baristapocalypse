@@ -52,7 +52,7 @@ public class CustomerBase : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
 
-        Exit = new Vector3(1.5f, 0f, 15f);
+        Exit = new Vector3(-20f, 0f, 25f);
 
         if (distThreshold <= 0) distThreshold = 0.5f;
 
@@ -130,7 +130,7 @@ public class CustomerBase : MonoBehaviour
 
         if (currentState == CustomerState.Insit)
         {
-            Invoke("CustomerLeave", 18f);
+            Invoke("CustomerLeave", 60f);
         }
 
         if (currentState == CustomerState.Moving)
@@ -197,5 +197,11 @@ public class CustomerBase : MonoBehaviour
         Destroy(gameObject);
     }
 
-   
+    public void JustGotHandedCoffee(CoffeeAttributes coffee)
+    {
+        int score = ScoreTimerManager.Instance.GetScoreComparison(coffee, orderRequest);
+        ScoreTimerManager.Instance.score += score;
+    }
+
+
 }

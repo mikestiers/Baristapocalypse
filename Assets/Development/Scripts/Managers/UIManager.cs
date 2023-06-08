@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
 
-public class UIManager : MonoBehaviour
+public class UIManager : Singleton<UIManager>
 {
     [Header("Button")]
     public Button toGame;
@@ -16,6 +16,12 @@ public class UIManager : MonoBehaviour
     [Header("Menu")]
     public GameObject mainMenu;
     public GameObject settingsMenu;
+    public GameObject gameOverMenu;
+    public GameObject pauseMenu;
+
+    [Header("Text")]
+    public Text timer;
+    public Text score;
 
     void StartGame()
     {
@@ -60,6 +66,7 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        timer.text = ScoreTimerManager.Instance.timeRemaining.ToString("n2");
+        score.text = ScoreTimerManager.Instance.score.ToString();
     }
 }
