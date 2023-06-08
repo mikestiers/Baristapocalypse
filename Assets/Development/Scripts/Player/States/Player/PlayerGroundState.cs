@@ -58,7 +58,7 @@ public class PlayerGroundState : PlayerBaseState
             stateMachine.SetSelectedStation(null);
         }
 
-        //  Pick ingredient from floor 
+        /*/  Pick ingredient from floor 
         if (Physics.Raycast(stateMachine.transform.position, stateMachine.transform.forward, out RaycastHit raycastHitIngredient, 3, stateMachine.isIngredientLayer))
         {
             if (!stateMachine.HasIngredient())
@@ -78,6 +78,7 @@ public class PlayerGroundState : PlayerBaseState
             stateMachine.TurnOffIngredientCollider();
 
         }
+        */
     }
 
     public override void Exit()
