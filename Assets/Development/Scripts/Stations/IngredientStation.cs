@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class IngredientStation : BaseStation
@@ -13,6 +14,9 @@ public class IngredientStation : BaseStation
             if (!player.HasIngredient())
             {
                 Ingredient.SpawnIngredient(ingredientSO, player);
+                                
+
+
             }
         }
     }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2241513236519083242}
   - component: {fileID: 4133001747390200387}
   - component: {fileID: 6178512347644793711}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,11 +93,11 @@ CapsuleCollider:
   m_GameObject: {fileID: 2583183918633998159}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.5000003
-  m_Height: 2.0000007
+  m_Height: 1.08
   m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: -0.00000035762798, z: -0.0000001192093}
+  m_Center: {x: 0.000000055189485, y: -0.0000005676633, z: -0.00000011462432}
 --- !u!1 &5343840761390743335
 GameObject:
   m_ObjectHideFlags: 0
@@ -108,7 +108,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7760254045831546594}
   - component: {fileID: -5565852831059870473}
-  m_Layer: 6
+  - component: {fileID: 2742633618561425}
+  - component: {fileID: 3679289705592559467}
+  m_Layer: 7
   m_Name: HotSweetener
   m_TagString: Sweetener
   m_Icon: {fileID: 0}
@@ -143,4 +145,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edf1df1233f5161439b5c3b86d2493f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IngredientSO: {fileID: 11400000, guid: 97bc5d43a1d08f047bb065caf8e9e6e3, type: 2}
+  <IngredientSO>k__BackingField: {fileID: 11400000, guid: 97bc5d43a1d08f047bb065caf8e9e6e3, type: 2}
+--- !u!54 &2742633618561425
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5343840761390743335}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
+--- !u!65 &3679289705592559467
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5343840761390743335}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 2, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}

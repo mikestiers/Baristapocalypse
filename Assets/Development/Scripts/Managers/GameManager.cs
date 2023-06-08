@@ -38,8 +38,8 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
         playerInput.Player.SetCallbacks(this);// SetCallbacks calls the methods for us
         playerInput.Player.Enable();
         timeRemaining -= Time.deltaTime;
-        timer.LoseEvent.AddListener(Lose);
-        timer.WinEvent.AddListener(Win);
+        //timer.LoseEvent.AddListener(Lose);
+        //timer.WinEvent.AddListener(Win);
     }
 
 
@@ -97,4 +97,25 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
         Time.timeScale = 0f;
     }
 
+    public void OnPause(InputAction.CallbackContext context)
+    {
+        
+    }
+
+    public void OnDash(InputAction.CallbackContext context)
+    {
+        if (context.performed) { return; }
+
+        InteractAltEvent?.Invoke();
+    }
+
+    public void OnGrab(InputAction.CallbackContext context)
+    {
+        
+    }
+
+    public void OnThrow(InputAction.CallbackContext context)
+    {
+        
+    }
 }

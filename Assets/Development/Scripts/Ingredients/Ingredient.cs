@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Ingredient : MonoBehaviour
 {
-    [SerializeField] IngredientSO IngredientSO;
+    
+    [field: SerializeField] public IngredientSO IngredientSO { get; private set; }
 
     private IIngredientParent ingredientParent;
 
@@ -42,6 +43,7 @@ public class Ingredient : MonoBehaviour
         Destroy(gameObject);
     }
 
+    
 
     public static Ingredient SpawnIngredient(IngredientSO ingredientSO, IIngredientParent ingredientParent)
     {
