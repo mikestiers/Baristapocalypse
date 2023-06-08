@@ -36,6 +36,10 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
         playerInput.Player.Pause.performed += ctx => OnPause(ctx);
         playerInput.Player.SetCallbacks(this);// SetCallbacks calls the methods for us
         playerInput.Player.Enable();
+        timeRemaining -= Time.deltaTime;
+       // timer.LoseEvent.AddListener(Lose);
+       // timer.WinEvent.AddListener(Win);
+
     }
 
     private void Update()
