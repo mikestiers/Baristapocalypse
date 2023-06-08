@@ -17,7 +17,7 @@ public class PlayerJumpingState : PlayerBaseState
 
     public override void Tick(float deltaTime)
     {
-        stateMachine.Move();
+        stateMachine.Move(stateMachine.moveSpeed);
 
         if (stateMachine.IsGrounded())
             stateMachine.SwitchState(new PlayerGroundState(stateMachine));

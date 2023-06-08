@@ -190,16 +190,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <moveSpeed>k__BackingField: 0
   <jumpForce>k__BackingField: 0
+  <ingredienThrowForce>k__BackingField: 10
   <isGroundLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 8
-  <groundCheckRadius>k__BackingField: 0
+  <groundCheckRadius>k__BackingField: 0.3
   <groundCheck>k__BackingField: {fileID: 1066686935}
   isGrounded: 0
+  dashSpeed: 0
+  dashTime: 0
   <isStationLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 64
+  <isIngredientLayer>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 128
+  ingredientCollider: {fileID: 0}
+  ingredientInstanceHolder: {fileID: 1165564607}
   <ingredientHoldPoint>k__BackingField: {fileID: 1165564608}
+  hasIngredient: 0
   curMoveInput: {x: 0, y: 0, z: 0}
   moveDir: {x: 0, y: 0, z: 0}
   <inputManager>k__BackingField: {fileID: 5536530}
@@ -1493,6 +1502,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5867048476353184690, guid: 85bf6facf14cdf14aa7b09668cf4dd3a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
     - target: {fileID: 1425074277, guid: 85bf6facf14cdf14aa7b09668cf4dd3a, type: 3}
       propertyPath: timeRemaining
       value: 60
@@ -1825,6 +1837,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: IngredientStationBitterBean
       objectReference: {fileID: 0}
+    - target: {fileID: 5764421242501556558, guid: f141924fab6a0d243aac05bcea2d1a4b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f141924fab6a0d243aac05bcea2d1a4b, type: 3}
 --- !u!1 &1121951784
@@ -1856,6 +1872,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1762f224c4c79e8449d394d6d17d440c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timeRemaining: 10
+  timer: {fileID: 0}
+  menu: {fileID: 0}
   gameState: 0
   moveDir: {x: 0, y: 0, z: 0}
   curMoveInput: {x: 0, y: 0, z: 0}
@@ -1898,7 +1917,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1165564607}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.05, z: 0.723}
+  m_LocalPosition: {x: 0, y: 1.05, z: 0.811}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2258,7 +2277,7 @@ SphereCollider:
   m_GameObject: {fileID: 1800519637}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
@@ -2412,7 +2431,7 @@ SphereCollider:
   m_GameObject: {fileID: 2059422837}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}

@@ -8,7 +8,7 @@ public class PlayerThrowState : PlayerBaseState
 
     public override void Enter()
     {
-        
+        stateMachine.ThrowIngedient();
 
     }
 

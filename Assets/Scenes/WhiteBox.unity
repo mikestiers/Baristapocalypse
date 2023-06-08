@@ -10022,16 +10022,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <moveSpeed>k__BackingField: 0
   <jumpForce>k__BackingField: 0
+  <ingredienThrowForce>k__BackingField: 10
   <isGroundLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 8
-  <groundCheckRadius>k__BackingField: 0
+  <groundCheckRadius>k__BackingField: 0.3
   <groundCheck>k__BackingField: {fileID: 1208030561}
   isGrounded: 0
+  dashSpeed: 0
+  dashTime: 0
   <isStationLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 64
+  <isIngredientLayer>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 128
+  ingredientCollider: {fileID: 0}
+  ingredientInstanceHolder: {fileID: 2068827929}
   <ingredientHoldPoint>k__BackingField: {fileID: 2068827930}
+  hasIngredient: 0
   curMoveInput: {x: 0, y: 0, z: 0}
   moveDir: {x: 0, y: 0, z: 0}
   <inputManager>k__BackingField: {fileID: 626413847}
@@ -11568,7 +11577,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh39576
+  m_Name: pb_Mesh215134
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -13745,6 +13754,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5867048476353184690, guid: 85bf6facf14cdf14aa7b09668cf4dd3a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5867048476714727667, guid: 85bf6facf14cdf14aa7b09668cf4dd3a, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0.704

@@ -10,7 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3694913405963248627}
   - component: {fileID: 7421326458646082908}
-  m_Layer: 0
+  - component: {fileID: -8803975259628798003}
+  - component: {fileID: 1309256123932256892}
+  m_Layer: 7
   m_Name: SweetBean
   m_TagString: CoffeeBean
   m_Icon: {fileID: 0}
@@ -45,7 +47,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edf1df1233f5161439b5c3b86d2493f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IngredientSO: {fileID: 11400000, guid: 3b21e979187671841b9aaa259ea1fe5b, type: 2}
+  <IngredientSO>k__BackingField: {fileID: 11400000, guid: 3b21e979187671841b9aaa259ea1fe5b, type: 2}
+--- !u!54 &-8803975259628798003
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3790522817266624258}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
+--- !u!65 &1309256123932256892
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3790522817266624258}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.4203108, y: 0.41040212, z: 0.4272932}
+  m_Center: {x: 0, y: 0.200501, z: 0}
 --- !u!1 &8006546558864934394
 GameObject:
   m_ObjectHideFlags: 0
@@ -58,7 +89,7 @@ GameObject:
   - component: {fileID: 1846262735472513649}
   - component: {fileID: 343264301005764770}
   - component: {fileID: 5011174229266064499}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,7 +170,7 @@ SphereCollider:
   m_GameObject: {fileID: 8006546558864934394}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}

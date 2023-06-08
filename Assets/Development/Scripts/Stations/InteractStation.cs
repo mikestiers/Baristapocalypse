@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InteractStation : BaseStation
 {
-    public override void Interact(PlayerStateMachine player)
+    public override void Interact(PlayerStateMachine  player)
     {
         if (!HasIngredient())
         {
@@ -12,7 +12,7 @@ public class InteractStation : BaseStation
             {
                 player.GetIngredient().SetIngredientParent(this);
             }
-        }
+        } 
         else
         {
             if (!player.HasIngredient())

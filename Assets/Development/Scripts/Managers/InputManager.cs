@@ -7,12 +7,18 @@ using UnityEngine.InputSystem;
 public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
 {
 
-    public Vector2 MovementValue {  get; private set; } //
+    public Vector2 MovementValue { get; private set; } //
 
     public event Action JumpEvent;
     public event Action InteractEvent;
     public event Action InteractAltEvent;
+
+    public event Action DashEvent;
+    public event Action GrabEvent;
+    public event Action ThrowEvent;
+
     public GameState gameState = GameState.RUNNING;
+
 
     //player movement input
     [HideInInspector] public Vector3 moveDir;
@@ -51,9 +57,8 @@ public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if(context.performed) { return; }
-
-        JumpEvent?.Invoke();
+        if(context.performed)
+            JumpEvent?.Invoke();
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -73,7 +78,7 @@ public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
   
     }
 
-       public void OnInteractAlt(InputAction.CallbackContext context)
+    public void OnInteractAlt(InputAction.CallbackContext context)
     {
         if (context.performed) { return; }
 
@@ -93,4 +98,24 @@ public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
             gameState = GameState.PAUSED;
         }
     }
+
+    public void OnDash(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            DashEvent?.Invoke();
+    }
+
+    public void OnGrab(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            GrabEvent?.Invoke();
+    }
+
+    public void OnThrow(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            ThrowEvent?.Invoke();
+    }
+        
+
 }
