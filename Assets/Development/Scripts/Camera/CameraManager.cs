@@ -8,8 +8,8 @@ public class CameraManager : MonoBehaviour
     [SerializeField] List<Transform> targets;
     [SerializeField] Vector3 offset;
     [SerializeField] float smoothTime = .5f;
-    [SerializeField] float minZoom = 40f;
-    [SerializeField] float maxZoom = 10f;
+    [SerializeField] float minZoom = 50f;
+    [SerializeField] float maxZoom = 25f;
     [SerializeField] float zoomLimiter = 50f;
 
     private Vector3 velocity;
