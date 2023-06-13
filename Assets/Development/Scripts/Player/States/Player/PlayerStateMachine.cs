@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerStateMachine : StateMachine, IIngredientParent
+public class PlayerStateMachine : stateMachine, IIngredientParent
 {
     //[Header("Player Attributes")]
     [field: SerializeField] public float moveSpeed { get; private set; }
@@ -44,7 +44,18 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
     //Components
     [field: SerializeField] public InputManager inputManager { get; private set; }
 
+    public AudioClip WalkingSFX;
+    public AudioClip JumpSFX;
+    public AudioClip ThrowSFX;
+    public AudioClip PickupSFX; 
+    public AudioClip dashSFX;
+    public AudioSource footstepAudioSource;
+    public AudioClip[] footstepSounds;
+    
+    private bool isFootstepPlaying = false;
 
+    public GameObject ThrowEffect;
+    public GameObject DashEffect;
     // Start is called before the first frame update
     private void Start()
     {
@@ -60,6 +71,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
         if (ingredienThrowForce <= 0) ingredienThrowForce = 10f;
         if (groundCheckRadius <= 0) groundCheckRadius = 0.05f;
         hasIngredient = false;
+     
 
         SwitchState(new PlayerGroundState(this)); // Start player state
 
@@ -76,12 +88,28 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
 
     public void Move(float moveSpeed)
     {
-        
-        if (inputManager.moveDir == Vector3.zero) return;
-        curMoveInput = inputManager.moveDir * moveSpeed * Time.deltaTime;
+
+        if (inputManager.moveDir == Vector3.zero)
+        {
+            StopFootstepSound();
+            return;
+        }
+
+            
+            curMoveInput = inputManager.moveDir * moveSpeed * Time.deltaTime;
         transform.forward = inputManager.moveDir;
 
         rb.MovePosition(rb.position + curMoveInput);
+
+         if (isGrounded && inputManager.playerIsmoving)
+        {
+            PlayFootstepSound();
+        }
+        else
+        {
+            StopFootstepSound();
+        }
+        
     }
 
    
@@ -89,6 +117,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
     {
         if (selectedStation)
         {
+            AudioManager.Instance.Playoneshot(PickupSFX, false);
             selectedStation.Interact(this);
         }
 
@@ -131,11 +160,11 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
         TurnOnIngredientCollider();
         Rigidbody rb = ingredientHoldPoint.GetComponentInChildren<Rigidbody>();
         ingredientHoldPoint.DetachChildren();
-        
+        Instantiate(ThrowEffect, transform.position, transform.rotation);
         
         rb.isKinematic = false;
         rb.AddForce(transform.forward * ingredienThrowForce, ForceMode.Impulse);
-        
+        AudioManager.Instance.Playoneshot(ThrowSFX, false);
 
         ClearIngredient();
 
@@ -175,5 +204,46 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
         ingredientCollider.enabled = true;
     }
 
+    public void PlayFootstepSound()
+    {
+        if (footstepSounds.Length == 0 || footstepAudioSource == null || isFootstepPlaying)
+        {
+            return;
+        }
 
+      if (inputManager.playerIsmoving)
+      {
+          AudioClip footstepClip = footstepSounds[UnityEngine.Random.Range(0, footstepSounds.Length)];
+          footstepAudioSource.clip = footstepClip;
+          footstepAudioSource.loop = true;
+          footstepAudioSource.Play();
+      
+          isFootstepPlaying = true;
+      }
+
+    }
+
+
+
+    public void StopFootstepSound()
+    {
+        if (footstepAudioSource != null && isFootstepPlaying)
+        {
+            footstepAudioSource.Stop();
+            isFootstepPlaying = false;
+            Debug.Log("set footstep false");
+        }
+        
+    }
+
+    public IEnumerator TimeDelay(float time)
+    {
+        
+
+        yield return new WaitForSeconds(time);
+
+        
+    }
+
+    
 }

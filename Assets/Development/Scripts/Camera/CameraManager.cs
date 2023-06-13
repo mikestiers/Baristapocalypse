@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
-[RequireComponent(typeof(Camera))]
+//[RequireComponent(typeof(Camera))]
 public class CameraManager : MonoBehaviour
 {
     [SerializeField] List<Transform> targets;
@@ -13,11 +14,11 @@ public class CameraManager : MonoBehaviour
     [SerializeField] float zoomLimiter = 50f;
 
     private Vector3 velocity;
-    private Camera cam;
+    private CinemachineVirtualCamera cam;
 
     private void Start()
     {
-        cam = GetComponent<Camera>();
+        cam = GetComponent<CinemachineVirtualCamera>();
 
     }
     private void LateUpdate()
@@ -31,7 +32,7 @@ public class CameraManager : MonoBehaviour
     void Zoom()
     {
         float newZoom = Mathf.Lerp(maxZoom, minZoom, GetGreatesDistance() / zoomLimiter);
-        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, newZoom, Time.deltaTime);
+        cam.m_Lens.FieldOfView = Mathf.Lerp(cam.m_Lens.FieldOfView, newZoom, Time.deltaTime);
     }
     void Move() 
     {

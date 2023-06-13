@@ -9,17 +9,21 @@ public class PlayerThrowState : PlayerBaseState
     public override void Enter()
     {
         stateMachine.ThrowIngedient();
-
+       
     }
 
     public override void Tick(float deltaTime)
     {
         stateMachine.SwitchState(new PlayerGroundState(stateMachine));
+        
+
     }
 
     public override void Exit()
     {
-        
-    }
 
+       
+        
+      
+    }    
 }

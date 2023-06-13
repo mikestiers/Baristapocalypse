@@ -122,6 +122,6 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
 
 public enum GameState
 {
-    RUNNING, PAUSED, LOST
+    RUNNING, PAUSED, LOST, WIN,
 
 }

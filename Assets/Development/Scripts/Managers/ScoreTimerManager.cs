@@ -10,6 +10,9 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
     public UnityEvent LoseEvent = new UnityEvent();
     public UnityEvent WinEvent = new UnityEvent();
 
+    [Header("Win/lose Music")]    
+    [SerializeField] private AudioClip WinMusic;
+    [SerializeField] private AudioClip lossMusic;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,23 +29,28 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
         {
             LoseEvent?.Invoke();
             GameManager.Instance.gameState = GameState.LOST;
+            
             Debug.LogError("lose");
         }
 
-        if (score == 100)
+        if (score == 100 && GameManager.Instance.gameState == GameState.RUNNING)
         {
             WinEvent?.Invoke();
+            GameManager.Instance.gameState = GameState.WIN;
             Debug.LogError("win");
         }
     }
     private void Lose()
     {
+        
         UIManager.Instance.gameOverMenu.SetActive(true);
+        AudioManager.Instance.Playoneshot(lossMusic, false);
         Time.timeScale = 0f;
     }
     private void Win()
     {
         UIManager.Instance.gameOverMenu.SetActive(true);
+        AudioManager.Instance.Playoneshot(WinMusic, false);
         Time.timeScale = 0f;
     }
 

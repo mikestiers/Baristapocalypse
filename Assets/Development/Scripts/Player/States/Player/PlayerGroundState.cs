@@ -15,7 +15,8 @@ public class PlayerGroundState : PlayerBaseState
     Ingredient floorIngredient;
     IngredientSO ingredienSO;
     Mouse mouse = Mouse.current;
-  
+
+   
      public override void Enter()
     {
         stateMachine.inputManager.JumpEvent += OnJump;
@@ -36,6 +37,8 @@ public class PlayerGroundState : PlayerBaseState
         stateMachine.IsGrounded();
         // player movement
         stateMachine.Move(stateMachine.moveSpeed);
+
+     
 
         //  Pick ingredient from station 
         float interactDistance = 6.0f;
@@ -58,7 +61,7 @@ public class PlayerGroundState : PlayerBaseState
             stateMachine.SetSelectedStation(null);
         }
 
-        /*/  Pick ingredient from floor 
+        //  Pick ingredient from floor 
         if (Physics.Raycast(stateMachine.transform.position, stateMachine.transform.forward, out RaycastHit raycastHitIngredient, 3, stateMachine.isIngredientLayer))
         {
             if (!stateMachine.HasIngredient())
@@ -78,7 +81,7 @@ public class PlayerGroundState : PlayerBaseState
             stateMachine.TurnOffIngredientCollider();
 
         }
-        */
+        
     }
 
     public override void Exit()
@@ -101,6 +104,7 @@ public class PlayerGroundState : PlayerBaseState
 
     public void OnDash()
     {
+        AudioManager.Instance.Playoneshot(stateMachine.dashSFX, false);
         stateMachine.StartCoroutine(Dash());
 
     }

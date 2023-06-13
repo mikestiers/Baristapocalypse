@@ -4,9 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
+using UnityEngine.Audio;
+
 
 public class UIManager : Singleton<UIManager>
 {
+    public AudioMixer AudioMixer;
     [Header("Button")]
     public Button toGame;
     public Button toMain;
@@ -23,6 +26,17 @@ public class UIManager : Singleton<UIManager>
     public Text timer;
     public Text score;
 
+
+    [Header("Menu Music")]
+    [SerializeField] private AudioClip menuSong1;
+    [SerializeField] private AudioClip pauseMusic;
+    [Header("Background music")]
+    [SerializeField] private AudioClip BGMSong1;
+    [SerializeField] private AudioClip BGMSong2;
+
+    [Header("Slider")]
+    public Slider volSlider;
+    public Text volSliderText;
     void StartGame()
     {
         SceneManager.LoadScene(1);
@@ -33,13 +47,20 @@ public class UIManager : Singleton<UIManager>
     {
         if (toGame)
             toGame.onClick.AddListener(StartGame);
+
         if (toSettings)
             toSettings.onClick.AddListener(ShowSettingsMenu);
+
         if (quit)
             quit.onClick.AddListener(QuitGame);
+
         if (toMain)
             toMain.onClick.AddListener(ShowMainMenu);
 
+        if (volSlider)
+        {
+            volSlider.onValueChanged.AddListener(onValueChange);
+        }
     }
 
     void ShowMainMenu()
@@ -61,7 +82,25 @@ public class UIManager : Singleton<UIManager>
     {
         mainMenu.SetActive(false);
         settingsMenu.SetActive(true);
+
+        if (volSlider && volSliderText)
+        {
+            float value;
+            AudioMixer.GetFloat("MasterVol", out value);
+            volSlider.value = value + 80;
+            volSliderText.text = (value + 80).ToString();
+        }
     }
+    void onValueChange(float value)
+    {
+        if (volSliderText)
+        {
+            volSliderText.text = value.ToString();
+            AudioMixer.SetFloat("MasterVol", value - 80);
+        }
+
+    }
+
 
     // Update is called once per frame
     void Update()

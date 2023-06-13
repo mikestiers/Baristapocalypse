@@ -18,7 +18,7 @@ public class C_Manager : MonoBehaviour
     public GameObject[] Chairs;
     public int chairNumber;
 
-
+    public AudioClip spawnSound;
 
     // Start is called before the first frame update
     private void Start()
@@ -106,6 +106,7 @@ public class C_Manager : MonoBehaviour
     private void SpawnCustomer()
     {
         CustomerBase Newcustomer = Instantiate(customerPrefab, barEntrance.transform.position, Quaternion.identity);
+        AudioManager.Instance.Playoneshot(spawnSound, false);
         Newcustomer.orderRequest = new OrderRequest
         {
             bitterness = UnityEngine.Random.Range(0, 10 + 1),

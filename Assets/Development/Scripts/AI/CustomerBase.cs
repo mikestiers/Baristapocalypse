@@ -15,6 +15,14 @@ public class CustomerBase : MonoBehaviour
     public float distThreshold;
     private Vector3 Exit;
 
+
+    
+    public AudioSource footstepAudioSource;
+    public AudioClip[] footstepSounds;
+    public float minSpeedForFootstep = 0.1f;
+    private bool isFootstepPlaying = false;
+
+
     public enum CustomerState
     {
         //add movetosit when sits are available
@@ -53,7 +61,7 @@ public class CustomerBase : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
 
         Exit = new Vector3(-20f, 0f, 25f);
-
+       
         if (distThreshold <= 0) distThreshold = 0.5f;
 
        
@@ -75,7 +83,128 @@ public class CustomerBase : MonoBehaviour
     // Update is called once per frame
     public virtual void Update()
     {
-        /*{
+        
+
+        if (agent.destination == null) return;
+
+
+        if (currentState == CustomerState.Insit)
+        {
+            Invoke("CustomerLeave", 60f);
+        }
+
+        if (currentState == CustomerState.Moving)
+        {
+            if (agent.remainingDistance < distThreshold)
+            {
+                agent.isStopped = true;
+                
+                currentState = CustomerState.Wandering;
+                
+
+            }
+        }
+        else if (currentState == CustomerState.Wandering)
+        {
+            StopFootstepSound();
+        }
+
+
+        Debug.Log("The customer is " + currentState + " and is going to " + agent.destination);
+
+
+        if (agent.speed > minSpeedForFootstep && agent.remainingDistance > agent.stoppingDistance && !isFootstepPlaying)
+        {
+            PlayFootstepSound();
+        }
+
+
+
+
+
+    }
+
+    private void PlayFootstepSound()
+    {
+        if (footstepSounds.Length == 0 || footstepAudioSource == null || isFootstepPlaying)
+        {
+            return;
+        }
+
+        AudioClip footstepClip = footstepSounds[UnityEngine.Random.Range(0, footstepSounds.Length)];
+        footstepAudioSource.clip = footstepClip;
+        footstepAudioSource.loop = true;
+        footstepAudioSource.Play();
+
+        isFootstepPlaying = true;
+    }
+
+
+    private void StopFootstepSound()
+    {
+        if (footstepAudioSource != null && isFootstepPlaying)
+        {
+            footstepAudioSource.Stop();
+            isFootstepPlaying = false;
+            Debug.Log("set footstep false");
+        }
+    }
+
+
+    public virtual void OrderTaken()
+    {
+        //currentState = CustomerState.Waiting;
+        //target = Chairs[chairNumber].transform;
+
+        //if (target) agent.SetDestination(target.position);
+
+        //start timer
+        //spawn UI for things needed
+        //something about recording and comparing if order is correct
+    }
+
+    public virtual void Order()
+    {
+        //UI - customer waiting for Player to hear order
+        //Order
+        //some other timer? them we could puit that in an invoke then make it leave
+    }
+
+
+    public virtual void CustomerLeave()
+    {
+        Walkto(Exit);
+        
+        StartCoroutine(Death());
+    }
+
+    public void Walkto(Vector3 Spot)
+    {
+        if (agent.isStopped) agent.isStopped = false;
+
+       
+        agent.SetDestination(Spot);
+
+        currentState= CustomerState.Moving;
+    }
+
+    //willremove
+    private IEnumerator Death()
+    {
+        yield return new WaitForSeconds(5f);
+
+        Destroy(gameObject);
+    }
+
+    public void JustGotHandedCoffee(CoffeeAttributes coffee)
+    {
+        int score = ScoreTimerManager.Instance.GetScoreComparison(coffee, orderRequest);
+        ScoreTimerManager.Instance.score += score;
+    }
+
+
+}
+/*{
         if(currentState== CustomerState.Wandering)
         {
 
@@ -124,84 +253,3 @@ public class CustomerBase : MonoBehaviour
             }
         }
     }*/
-
-        if (agent.destination == null) return;
-
-
-        if (currentState == CustomerState.Insit)
-        {
-            Invoke("CustomerLeave", 60f);
-        }
-
-        if (currentState == CustomerState.Moving)
-        {
-            if (agent.remainingDistance < distThreshold)
-            {
-                agent.isStopped = true;
-                currentState = CustomerState.Wandering;
-
-            }
-        }
-
-
-
-        Debug.Log("The customer is " + currentState + " and is going to " + agent.destination);
-
-
-        
-
-
-    }
-
-    public virtual void OrderTaken()
-    {
-        //currentState = CustomerState.Waiting;
-        //target = Chairs[chairNumber].transform;
-
-        //if (target) agent.SetDestination(target.position);
-
-        //start timer
-        //spawn UI for things needed
-        //something about recording and comparing if order is correct
-    }
-
-    public virtual void Order()
-    {
-        //UI - customer waiting for Player to hear order
-        //Order
-        //some other timer? them we could puit that in an invoke then make it leave
-    }
-
-
-    public virtual void CustomerLeave()
-    {
-        Walkto(Exit);
-        StartCoroutine(Death());
-    }
-
-    public void Walkto(Vector3 Spot)
-    {
-        if (agent.isStopped) agent.isStopped = false;
-
-       
-        agent.SetDestination(Spot);
-
-        currentState= CustomerState.Moving;
-    }
-
-    //willremove
-    private IEnumerator Death()
-    {
-        yield return new WaitForSeconds(5f);
-
-        Destroy(gameObject);
-    }
-
-    public void JustGotHandedCoffee(CoffeeAttributes coffee)
-    {
-        int score = ScoreTimerManager.Instance.GetScoreComparison(coffee, orderRequest);
-        ScoreTimerManager.Instance.score += score;
-    }
-
-
-}

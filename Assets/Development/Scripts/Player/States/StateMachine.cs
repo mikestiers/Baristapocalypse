@@ -5,11 +5,11 @@ using UnityEngine;
 /// <summary>
 /// Stores the current state the character is in, and switch between states
 /// </summary>
-public abstract class StateMachine : MonoBehaviour
+public abstract class stateMachine : MonoBehaviour
 {
     //Holds the current state
     private State currentState;
-
+   
     public void SwitchState(State newState)
     {
         currentState?.Exit();// exit current state if not null, to change to a different state

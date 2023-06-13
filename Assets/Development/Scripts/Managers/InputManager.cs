@@ -23,9 +23,9 @@ public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
     //player movement input
     [HideInInspector] public Vector3 moveDir;
     [HideInInspector] public Vector3 curMoveInput;
-    
-    
 
+
+    [HideInInspector] public bool playerIsmoving;
 
     private PlayerInput playerInput;
 
@@ -67,6 +67,7 @@ public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
         if (context.canceled)
         {
             moveDir = Vector3.zero;
+            playerIsmoving = false;
             return;
         }
 
@@ -74,8 +75,9 @@ public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
         move.Normalize();
 
         moveDir = new Vector3(move.x, 0, move.y).normalized;
-        
-  
+        playerIsmoving = true;
+
+
     }
 
     public void OnInteractAlt(InputAction.CallbackContext context)

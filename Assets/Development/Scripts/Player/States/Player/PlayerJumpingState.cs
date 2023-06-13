@@ -9,7 +9,7 @@ public class PlayerJumpingState : PlayerBaseState
 
     public override void Enter()
     {
-        
+        AudioManager.Instance.Playoneshot(stateMachine.JumpSFX, false);
         stateMachine.rb.AddForce(stateMachine.jumpForce * Vector3.up);
         Debug.Log("Player enter jumping state");
 
