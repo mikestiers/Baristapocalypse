@@ -1,19 +1,20 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class CustomerBase : MonoBehaviour
+public class CustomerBase : BaseStation
 {
     //public Transform target;
     public NavMeshAgent agent;
+    private Transform exit;
 
     public float distThreshold;
-    private Vector3 Exit;
 
     public enum CustomerState
     {
@@ -51,80 +52,15 @@ public class CustomerBase : MonoBehaviour
     public virtual void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-
-        Exit = new Vector3(-20f, 0f, 25f);
+        exit = C_Manager.Instance.GetExit();
 
         if (distThreshold <= 0) distThreshold = 0.5f;
-
-       
-
-
-
-        {
-            //Setting Arrays - Subject to change, how to handle multiple customers
-            //if (Line.Length <= 0) Line = GameObject.FindGameObjectsWithTag("Line");
-            //
-
-            //Initial State
-
-
-            //we can add the randomization of meshes or skins here then add more stuff in specific classes?
-        }
     }
+
 
     // Update is called once per frame
     public virtual void Update()
     {
-        /*{
-        if(currentState== CustomerState.Wandering)
-        {
-
-            
-        }
-
-        if (currentState == CustomerState.Ordering)
-        {
-            Order();
-
-            //add the interact thing here when player interacts with player
-            //for now im just gonna put a delay
-
-            Invoke("OrderTaken", 10f);
-
-        }
-
-     /*   if (currentState == CustomerState.WaitingforOrder)
-        {
-            if (agent.remainingDistance < distThreshold)
-            {
-                currentState = CustomerState.Insit;
-
-                
-            }
-
-            //if (target) agent.SetDestination(target.position);
-        } 
-
-        if (currentState == CustomerState.InLine)
-        {
-            //if (agent.remainingDistance < distThreshold) currentState = CustomerState.Ordering;
-        }
-
-
-       
-
-
-        if (currentState == CustomerState.Moving)
-        {
-            if (agent.remainingDistance < distThreshold)
-            {
-                agent.isStopped = true;
-                currentState = CustomerState.InLine;
-
-            }
-        }
-    }*/
-
         if (agent.destination == null) return;
 
 
@@ -142,29 +78,11 @@ public class CustomerBase : MonoBehaviour
 
             }
         }
-
-
-
-        Debug.Log("The customer is " + currentState + " and is going to " + agent.destination);
-
-
-        
-
-
+        //Debug.Log("The customer is " + currentState + " and is going to " + agent.destination);
     }
 
-    public virtual void OrderTaken()
-    {
-        //currentState = CustomerState.Waiting;
-        //target = Chairs[chairNumber].transform;
-
-        //if (target) agent.SetDestination(target.position);
-
-        //start timer
-        //spawn UI for things needed
-        //something about recording and comparing if order is correct
-    }
-
+    //Get customer order
+    //UI displays attributes
     public virtual void Order()
     {
         //UI - customer waiting for Player to hear order
@@ -175,8 +93,7 @@ public class CustomerBase : MonoBehaviour
 
     public virtual void CustomerLeave()
     {
-        Walkto(Exit);
-        StartCoroutine(Death());
+        Walkto(exit.position);
     }
 
     public void Walkto(Vector3 Spot)
@@ -189,19 +106,41 @@ public class CustomerBase : MonoBehaviour
         currentState= CustomerState.Moving;
     }
 
-    //willremove
-    private IEnumerator Death()
-    {
-        yield return new WaitForSeconds(5f);
-
-        Destroy(gameObject);
-    }
-
     public void JustGotHandedCoffee(CoffeeAttributes coffee)
     {
-        int score = ScoreTimerManager.Instance.GetScoreComparison(coffee, orderRequest);
-        ScoreTimerManager.Instance.score += score;
+        ScoreTimerManager.Instance.GetScoreComparison(coffee, orderRequest);
+        CustomerLeave();
     }
 
+    public override void Interact(PlayerStateMachine player)
+    {
+        //check customer state
+        if (currentState == CustomerState.Wandering)
+        {
+            //Order();
+            C_Manager.Instance.Leaveline();
+        }
+
+        //if waiting for order
+        if (currentState == CustomerState.Insit)
+        {
+            if (player.HasIngredient())
+            {
+                //give coffee to customer
+                if (player.GetIngredient().CompareTag("CoffeeCup")) {
+                    player.GetIngredient().SetIngredientParent(this);
+                    JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
+                }
+            }
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Deathzone"))
+        {
+            Destroy(gameObject);
+        }
+    }
 
 }

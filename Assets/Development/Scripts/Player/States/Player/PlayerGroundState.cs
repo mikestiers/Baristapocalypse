@@ -39,7 +39,7 @@ public class PlayerGroundState : PlayerBaseState
 
         //  Pick ingredient from station 
         float interactDistance = 6.0f;
-        if (Physics.Raycast(stateMachine.transform.position, stateMachine.transform.forward, out RaycastHit raycastHit, interactDistance, stateMachine.isStationLayer))
+        if (Physics.Raycast(stateMachine.transform.position + new Vector3(0, 0.5f, 0), stateMachine.transform.forward, out RaycastHit raycastHit, interactDistance, stateMachine.isStationLayer))
         {
             if (raycastHit.transform.TryGetComponent(out BaseStation baseStation))
             {
@@ -57,6 +57,7 @@ public class PlayerGroundState : PlayerBaseState
         {
             stateMachine.SetSelectedStation(null);
         }
+        Debug.DrawRay(stateMachine.transform.position + new Vector3(0, 0.5f, 0), stateMachine.transform.forward, Color.green);
 
         /*/  Pick ingredient from floor 
         if (Physics.Raycast(stateMachine.transform.position, stateMachine.transform.forward, out RaycastHit raycastHitIngredient, 3, stateMachine.isIngredientLayer))

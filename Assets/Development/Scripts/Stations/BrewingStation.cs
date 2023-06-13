@@ -10,7 +10,7 @@ public class BrewingStation : BaseStation, IHasProgress
     public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
 
     [SerializeField] private List<IngredientSO> ingredientSOList = new List<IngredientSO>();
-    private static List<String> validIngredientTagList = new List<String>();
+    private List<String> validIngredientTagList = new List<String>();
     
     private int numIngredientsNeeded = 4;
 
@@ -40,13 +40,14 @@ public class BrewingStation : BaseStation, IHasProgress
             {
                 Ingredient.SpawnIngredient(brewingRecipeSO.output, this);
 
+                CoffeeAttributes coffeeAttributes = this.GetIngredient().GetComponent<CoffeeAttributes>();
                 foreach(IngredientSO ingredient in ingredientSOList)
                 {
-                    this.GetIngredient().GetComponent<CoffeeAttributes>().AddSweetness(ingredient.sweetness);
-                    this.GetIngredient().GetComponent<CoffeeAttributes>().AddBitterness(ingredient.bitterness);
-                    this.GetIngredient().GetComponent<CoffeeAttributes>().AddStrength(ingredient.strength);
-                    this.GetIngredient().GetComponent<CoffeeAttributes>().AddHotness(ingredient.hotness);
-                    this.GetIngredient().GetComponent<CoffeeAttributes>().AddSpiciness(ingredient.spiciness);
+                    coffeeAttributes.AddSweetness(ingredient.sweetness);
+                    coffeeAttributes.AddBitterness(ingredient.bitterness);
+                    coffeeAttributes.AddStrength(ingredient.strength);
+                    coffeeAttributes.AddTemperature(ingredient.temperature);
+                    coffeeAttributes.AddSpiciness(ingredient.spiciness);
                 }
                 ingredientSOList.Clear();
                 brewing = false;
