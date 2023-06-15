@@ -25,6 +25,9 @@ public abstract class StateMachine : MonoBehaviour
         
     }
 
-   
+    public void DeactivateObject(GameObject gameObj)
+    {
+        gameObject.SetActive(false);
+    }
 
 }
