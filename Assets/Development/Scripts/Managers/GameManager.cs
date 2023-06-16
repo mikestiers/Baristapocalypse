@@ -88,6 +88,7 @@ public class GameManager : Singleton<GameManager>, PlayerInput.IPlayerActions
 
     public void OnPause(InputAction.CallbackContext ctx)
     {
+        Debug.LogError("onpause invoked");
         if (gameState == GameState.PAUSED)
         {
             UIManager.Instance.pauseMenu.SetActive(false);
