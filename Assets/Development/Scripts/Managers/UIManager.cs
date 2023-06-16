@@ -12,12 +12,15 @@ public class UIManager : Singleton<UIManager>
     public Button toMain;
     public Button toSettings;
     public Button quit;
+    public Button toTutorial;
+    public Button toPause;
 
     [Header("Menu")]
     public GameObject mainMenu;
     public GameObject settingsMenu;
     public GameObject gameOverMenu;
     public GameObject pauseMenu;
+    public GameObject tutorialMenu;
 
     [Header("Text")]
     public Text timer;
@@ -39,13 +42,37 @@ public class UIManager : Singleton<UIManager>
             quit.onClick.AddListener(QuitGame);
         if (toMain)
             toMain.onClick.AddListener(ShowMainMenu);
+        if (toTutorial)
+            toTutorial.onClick.AddListener(ShowTutorial);
+        if (toPause)
+            toPause.onClick.AddListener(ShowPause);
 
+    }
+
+    void ShowPause()
+    {
+        tutorialMenu.SetActive(false);
+        pauseMenu.SetActive(true);
+    }
+
+    void ShowTutorial()
+    {
+        pauseMenu.SetActive(false);
+        tutorialMenu.SetActive(true);
     }
 
     void ShowMainMenu()
     {
-        settingsMenu.SetActive(false);
-        mainMenu.SetActive(true);
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByBuildIndex(0))
+        {
+            settingsMenu.SetActive(false);
+            mainMenu.SetActive(true);
+        }
+        else 
+        {
+            SceneManager.LoadScene(0);
+            pauseMenu.SetActive(false);
+        }
     }
 
     void QuitGame()
