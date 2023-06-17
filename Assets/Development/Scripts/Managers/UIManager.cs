@@ -63,14 +63,12 @@ public class UIManager : Singleton<UIManager>
 
     void ShowMainMenu()
     {
-        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByBuildIndex(0))
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Main Menu Scene"))
         {
-            settingsMenu.SetActive(false);
-            mainMenu.SetActive(true);
         }
         else 
         {
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene("Main Menu Scene");
             pauseMenu.SetActive(false);
         }
     }
