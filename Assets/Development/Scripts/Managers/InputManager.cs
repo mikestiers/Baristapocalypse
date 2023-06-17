@@ -87,15 +87,18 @@ public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
 
     public void OnPause(InputAction.CallbackContext context)
     {
-        if (gameState == GameState.PAUSED)
+        if (context.performed)
         {
-            UIManager.Instance.pauseMenu.SetActive(false);
-            gameState = GameState.RUNNING;
-        }
-        else
-        {
-            UIManager.Instance.pauseMenu.SetActive(true);
-            gameState = GameState.PAUSED;
+            if (gameState == GameState.PAUSED)
+            {
+                UIManager.Instance.pauseMenu.SetActive(false);
+                gameState = GameState.RUNNING;
+            }
+            else
+            {
+                UIManager.Instance.pauseMenu.SetActive(true);
+                gameState = GameState.PAUSED;
+            }
         }
     }
 
