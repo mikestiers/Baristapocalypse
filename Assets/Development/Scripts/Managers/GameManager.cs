@@ -8,13 +8,11 @@ using UnityEngine.InputSystem.XR;
 using UnityEngine.UI;
 
 [DefaultExecutionOrder(-1)]
-public class GameManager : Singleton<GameManager>
+public class GameManager : MonoBehaviour
 {
     //Input Events
     public Vector2 MovementValue { get; private set; }
-    public event Action JumpEvent;
-    public event Action InteractEvent;
-    public event Action InteractAltEvent;
+    
     public GameState gameState = GameState.RUNNING;
 
     //player movement input
@@ -24,9 +22,9 @@ public class GameManager : Singleton<GameManager>
     [HideInInspector]
     public PlayerInput playerInput;
 
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
+        
         playerInput = new PlayerInput();
 
     }
