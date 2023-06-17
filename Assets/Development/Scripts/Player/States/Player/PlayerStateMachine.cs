@@ -54,8 +54,9 @@ public class PlayerStateMachine : stateMachine, IIngredientParent
     
     private bool isFootstepPlaying = false;
 
-    public GameObject ThrowEffect;
-    public GameObject DashEffect;
+    public ParticleSystem DashEffect;
+    public ParticleSystem ThrowEffect;
+    
     // Start is called before the first frame update
     private void Start()
     {
@@ -160,7 +161,7 @@ public class PlayerStateMachine : stateMachine, IIngredientParent
         TurnOnIngredientCollider();
         Rigidbody rb = ingredientHoldPoint.GetComponentInChildren<Rigidbody>();
         ingredientHoldPoint.DetachChildren();
-        Instantiate(ThrowEffect, transform.position, transform.rotation);
+        ThrowEffect.Play();
         
         rb.isKinematic = false;
         rb.AddForce(transform.forward * ingredienThrowForce, ForceMode.Impulse);

@@ -105,6 +105,7 @@ public class PlayerGroundState : PlayerBaseState
     public void OnDash()
     {
         AudioManager.Instance.Playoneshot(stateMachine.dashSFX, false);
+        stateMachine.DashEffect.Play();
         stateMachine.StartCoroutine(Dash());
 
     }
