@@ -9,6 +9,7 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
     public int score;
     public UnityEvent LoseEvent = new UnityEvent();
     public UnityEvent WinEvent = new UnityEvent();
+    private GameManager gameManager;
 
     // Start is called before the first frame update
     void Start()
@@ -22,10 +23,10 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
     {
         timeRemaining -= Time.deltaTime;
 
-        if (timeRemaining <= 0 && GameManager.Instance.gameState == GameState.RUNNING)
+        if (timeRemaining <= 0 && gameManager.gameState == GameState.RUNNING)
         {
             LoseEvent?.Invoke();
-            GameManager.Instance.gameState = GameState.LOST;
+            gameManager.gameState = GameState.LOST;
             Debug.LogError("lose");
         }
 
