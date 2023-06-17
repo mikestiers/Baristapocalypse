@@ -22,12 +22,11 @@ public class PlayerGroundState : PlayerBaseState
         stateMachine.inputManager.DashEvent += OnDash;
         stateMachine.inputManager.ThrowEvent += OnThrow;
         
-
         InputManager.Instance.playerInput.Player.Interact.performed += context => stateMachine.Interact(context);
         InputManager.Instance.playerInput.Player.InteractAlt.performed += context => stateMachine.InteractAlt(context);
         Debug.Log("Player enter moving state");
 
-    }
+     }
    
 
     public override void Tick(float deltaTime)
@@ -58,8 +57,9 @@ public class PlayerGroundState : PlayerBaseState
             stateMachine.SetSelectedStation(null);
         }
 
-        /*/  Pick ingredient from floor 
-        if (Physics.Raycast(stateMachine.transform.position, stateMachine.transform.forward, out RaycastHit raycastHitIngredient, 3, stateMachine.isIngredientLayer))
+        // Pick ingredient from floor
+        float floriIteractDistance = 3.0f;
+        if (Physics.Raycast(stateMachine.transform.position, stateMachine.transform.forward, out RaycastHit raycastHitIngredient, floriIteractDistance, stateMachine.isIngredientLayer))
         {
             if (!stateMachine.HasIngredient())
             {
@@ -78,7 +78,7 @@ public class PlayerGroundState : PlayerBaseState
             stateMachine.TurnOffIngredientCollider();
 
         }
-        */
+        
     }
 
     public override void Exit()
@@ -111,8 +111,7 @@ public class PlayerGroundState : PlayerBaseState
 
         while (Time.time < startTime + stateMachine.dashTime)
         {
-            Debug.Log("esta funcionando....");
-            stateMachine.Move(stateMachine.dashSpeed);
+            stateMachine.GetComponent<Rigidbody>().AddForce(stateMachine.inputManager.moveDir * stateMachine.dashForce, ForceMode.Acceleration);
             yield return null;
         }
 
@@ -122,17 +121,11 @@ public class PlayerGroundState : PlayerBaseState
     {
         if (stateMachine.HasIngredient())
         {
-            stateMachine.SwitchState(new PlayerThrowState(stateMachine));
+            stateMachine.ThrowIngedient();
+            //stateMachine.SwitchState(new PlayerThrowState(stateMachine));
         }
     }
 
-    public void OnGrab()
-    {
-
-    }
-
-
-
-
+   
 }
 
