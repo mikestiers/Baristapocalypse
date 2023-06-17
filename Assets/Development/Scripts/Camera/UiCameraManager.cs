@@ -40,6 +40,11 @@ public class UiCameraManager : MonoBehaviour
     [SerializeField] private Transform Player2SpawnPoint;
     [SerializeField] private Transform Player3SpawnPoint;
     [SerializeField] private Transform Player4SpawnPoint;
+    // for enable and desable 
+    [SerializeField] private GameObject SettingsMenuTab;
+    [SerializeField] private GameObject MainMenuTab;
+    [SerializeField] private GameObject ExitMenuTab;
+    [SerializeField] private GameObject PlayMenuTab;
     // Start is called before the first frame update
     public void Start()
     {
@@ -123,6 +128,8 @@ public class UiCameraManager : MonoBehaviour
         { 
             SettingsCamera.Priority= 0;
             MainmenuCamera.Priority= 1;
+            MainMenuTab.SetActive(true);
+            SettingsMenuTab.SetActive(false);
         }
     }
     void ReturnFromSelection() 
@@ -131,6 +138,8 @@ public class UiCameraManager : MonoBehaviour
         { 
             PlayerSelectionCamera.Priority= 0;
             MainmenuCamera.Priority= 1;
+            MainMenuTab.SetActive(true);
+            PlayMenuTab.SetActive(false);
         }
     }
 
@@ -140,6 +149,8 @@ public class UiCameraManager : MonoBehaviour
         { 
             QuitGameCamera.Priority= 0;
             MainmenuCamera.Priority= 1;
+            MainMenuTab.SetActive(true);
+            ExitMenuTab.SetActive(false);
         }
     }
     void QuitGameSceen() 
@@ -148,6 +159,8 @@ public class UiCameraManager : MonoBehaviour
         { 
             MainmenuCamera.Priority = 0;
             QuitGameCamera.Priority = 1;
+            ExitMenuTab.SetActive(true);
+            MainMenuTab.SetActive(false);
         }
     }
     void SettingsScreen() 
@@ -156,6 +169,8 @@ public class UiCameraManager : MonoBehaviour
         {
             MainmenuCamera.Priority = 0;
             SettingsCamera.Priority = 1;
+            MainMenuTab.SetActive(false);
+            SettingsMenuTab.SetActive(true);
         }
     }
     void PlayerSelect()
@@ -164,6 +179,8 @@ public class UiCameraManager : MonoBehaviour
         {
             MainmenuCamera.Priority = 0;
             PlayerSelectionCamera.Priority = 1;
+            MainMenuTab.SetActive(false);
+            PlayMenuTab.SetActive(true);
         }
     }
 
