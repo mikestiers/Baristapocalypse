@@ -19,6 +19,9 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public Vector3 moveDir;
     [HideInInspector] public Vector3 curMoveInput;
 
+    //players
+
+
     [HideInInspector]
     public PlayerInput playerInput;
 
