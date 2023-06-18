@@ -24,24 +24,22 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        
+
         playerInput = new PlayerInput();
 
     }
 
     private void Start()
     {
-
+       
+        playerInput.Player.Enable();
+        
     }
 
-    private void Update()
-    {
-
-    }
 
     private void OnDestroy()
     {
-
+        playerInput.Player.Disable();
     }
 }
 
