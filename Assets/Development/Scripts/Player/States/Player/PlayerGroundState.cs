@@ -77,8 +77,7 @@ public class PlayerGroundState : PlayerBaseState
         {
             stateMachine.TurnOffIngredientCollider();
 
-        }
-        
+        } 
     }
 
     public override void Exit()
