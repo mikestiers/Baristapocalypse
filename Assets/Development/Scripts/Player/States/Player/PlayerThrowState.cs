@@ -17,7 +17,6 @@ public class PlayerThrowState : PlayerBaseState
 
     public override void Tick(float deltaTime)
     {
-        
         stateMachine.SwitchState(new PlayerGroundState(stateMachine));
     }
 
