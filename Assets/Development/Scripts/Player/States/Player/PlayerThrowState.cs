@@ -19,7 +19,6 @@ public class PlayerThrowState : PlayerBaseState
     {
         stateMachine.SwitchState(new PlayerGroundState(stateMachine));
     }
-
     public override void Exit()
     {
        
