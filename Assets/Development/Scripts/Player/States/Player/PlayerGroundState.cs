@@ -26,7 +26,7 @@ public class PlayerGroundState : PlayerBaseState
         InputManager.Instance.playerInput.Player.InteractAlt.performed += context => stateMachine.InteractAlt(context);
         Debug.Log("Player enter moving state");
 
-     }
+    }
    
 
     public override void Tick(float deltaTime)
