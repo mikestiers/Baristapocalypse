@@ -23,10 +23,13 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
     {
         timeRemaining -= Time.deltaTime;
 
-        if (timeRemaining <= 0 && gameManager.gameState == GameState.RUNNING)
+        //if (timeRemaining <= 0 && gameManager.gameState == GameState.RUNNING) <- correct one
+        if (timeRemaining <= 0 && GameManager.Instance.gameState == GameState.RUNNING)
         {
+        
             LoseEvent?.Invoke();
-            gameManager.gameState = GameState.LOST;
+            //gameManager.gameState = GameState.LOST; <- correct one
+            GameManager.Instance.gameState = GameState.LOST;
             Debug.LogError("lose");
         }
 
