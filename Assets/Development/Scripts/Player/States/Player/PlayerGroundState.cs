@@ -97,18 +97,21 @@ public class PlayerGroundState : PlayerBaseState
         if (!stateMachine.IsGrounded()) { return; }
 
         stateMachine.SwitchState(new PlayerJumpingState(stateMachine));
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.jump);
 
     }
 
     public void OnDash()
     {
         stateMachine.StartCoroutine(Dash());
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
 
     }
 
     IEnumerator Dash()
     {
         float startTime = Time.time;
+        Debug.Log("dash");
 
         while (Time.time < startTime + stateMachine.dashTime)
         {
@@ -122,6 +125,7 @@ public class PlayerGroundState : PlayerBaseState
     {
         if (stateMachine.HasIngredient())
         {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.throwIngredient);
             stateMachine.ThrowIngedient();
             //stateMachine.SwitchState(new PlayerThrowState(stateMachine));
         }

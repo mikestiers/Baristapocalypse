@@ -8,6 +8,7 @@ public class CoffeeGrinderStation : BaseStation, IHasProgress
     public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
 
     [SerializeField] private CoffeeGrindRecipeSO[] coffeeGrindSOArray;
+    [SerializeField] private ParticleSystem interactParticle;
 
     private int grindProgress = 0;
     public override void Interact(PlayerStateMachine player)
@@ -19,6 +20,8 @@ public class CoffeeGrinderStation : BaseStation, IHasProgress
                 //Place ingredient if able to use at the machine
                 if (HasValidRecipe(player.GetIngredient().GetIngredientSO()))
                 {
+                    SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
+                    interactParticle.Play();
                     player.GetIngredient().SetIngredientParent(this);
                     grindProgress = 0;
 
@@ -36,6 +39,7 @@ public class CoffeeGrinderStation : BaseStation, IHasProgress
             //Grab object if player is holding nothing
             if (!player.HasIngredient())
             {
+                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
                 grindProgress = 0;
 
                 CoffeeGrindRecipeSO coffeeGrindRecipeSO = GetCoffeeGrindRecipeSOWithInput(GetIngredient().GetIngredientSO());

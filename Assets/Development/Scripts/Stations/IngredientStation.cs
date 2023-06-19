@@ -6,6 +6,7 @@ using UnityEngine;
 public class IngredientStation : BaseStation
 {
     [SerializeField] private IngredientSO ingredientSO;
+    [SerializeField] private ParticleSystem interactParticle;
 
     public override void Interact(PlayerStateMachine player)
     {
@@ -14,8 +15,8 @@ public class IngredientStation : BaseStation
             if (!player.HasIngredient())
             {
                 Ingredient.SpawnIngredient(ingredientSO, player);
-                                
-
+                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
+                interactParticle.Play();
 
             }
         }

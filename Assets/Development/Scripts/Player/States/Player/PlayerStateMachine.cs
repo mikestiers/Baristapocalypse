@@ -54,9 +54,8 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
         //Set variables if null
         if (moveSpeed <= 0) moveSpeed = 10.0f;
         if (jumpForce <= 0) jumpForce = 200.0f;
-        if (dashForce <= 0) dashForce = 17.0f;
+        if (dashForce <= 0) dashForce = 25f;
         if (dashTime <= 0) dashTime = 0.1f;
-        if (dashForce <= 0) dashForce = 30.0f;
         if (ingredienThrowForce <= 0) ingredienThrowForce = 10f;
         if (groundCheckRadius <= 0) groundCheckRadius = 0.05f;
         

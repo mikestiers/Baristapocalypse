@@ -22,20 +22,12 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     public PlayerInput playerInput;
 
-    private void Awake()
-    {
-
-        playerInput = new PlayerInput();
-
-    }
-
     private void Start()
     {
-       
+        playerInput = new PlayerInput();
         playerInput.Player.Enable();
         
     }
-
 
     private void OnDestroy()
     {
@@ -45,6 +37,6 @@ public class GameManager : MonoBehaviour
 
 public enum GameState
 {
-    RUNNING, PAUSED, LOST
+    RUNNING, PAUSED, GAMEOVER
 
 }

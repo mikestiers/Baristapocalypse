@@ -186,9 +186,7 @@ public class UiCameraManager : MonoBehaviour
 
     void PlayScene() 
     {
-        SceneManager.LoadScene(2);
-
-       
+        SceneManager.LoadScene("WhiteBox");
     }
     void closeGame() 
     { 

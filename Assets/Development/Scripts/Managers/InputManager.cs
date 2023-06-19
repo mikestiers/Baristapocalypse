@@ -17,14 +17,10 @@ public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
     public event Action GrabEvent;
     public event Action ThrowEvent;
 
-    public GameState gameState = GameState.RUNNING;
-
-
     //player movement input
     [HideInInspector] public Vector3 moveDir;
     [HideInInspector] public Vector3 curMoveInput;
-    
-    
+
 
 
     private PlayerInput playerInput;
@@ -89,16 +85,14 @@ public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
     {
         if (context.performed)
         {
-            if (gameState == GameState.PAUSED)
+            if (UIManager.Instance.gameOverMenu.activeSelf)
             {
-                UIManager.Instance.pauseMenu.SetActive(false);
-                gameState = GameState.RUNNING;
+                return;
             }
-            else
-            {
-                UIManager.Instance.pauseMenu.SetActive(true);
-                gameState = GameState.PAUSED;
-            }
+            bool isPaused = !UIManager.Instance.pauseMenu.activeSelf;
+            UIManager.Instance.pauseMenu.SetActive(isPaused);
+
+            Time.timeScale = isPaused ? 0f : 1f;
         }
     }
 

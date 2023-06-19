@@ -4,16 +4,20 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
+using TMPro;
 
 public class UIManager : Singleton<UIManager>
 {
     [Header("Button")]
     public Button toGame;
-    public Button toMain;
+    public Button toMainFromPause;
+    public Button toMainFromGameOver;
     public Button toSettings;
     public Button quit;
     public Button toTutorial;
     public Button toPause;
+    public Button closePause;
+    public Button restartGame;
 
     [Header("Menu")]
     public GameObject mainMenu;
@@ -25,71 +29,95 @@ public class UIManager : Singleton<UIManager>
     [Header("Text")]
     public Text timer;
     public Text score;
+    public TextMeshProUGUI gameOverText;
+    public TextMeshProUGUI finalScore;
 
-    void StartGame()
-    {
-        SceneManager.LoadScene(1);
-    }
+
+
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         if (toGame)
-            toGame.onClick.AddListener(StartGame);
+            toGame.onClick.AddListener(ReturnToGame);
         if (toSettings)
             toSettings.onClick.AddListener(ShowSettingsMenu);
         if (quit)
             quit.onClick.AddListener(QuitGame);
-        if (toMain)
-            toMain.onClick.AddListener(ShowMainMenu);
+        if (toMainFromPause)
+            toMainFromPause.onClick.AddListener(ShowMainMenu);
+        if (toMainFromGameOver)
+            toMainFromGameOver.onClick.AddListener(ShowMainMenu);
         if (toTutorial)
             toTutorial.onClick.AddListener(ShowTutorial);
         if (toPause)
             toPause.onClick.AddListener(ShowPause);
+        if (closePause)
+            closePause.onClick.AddListener(ClosePause);
+        if (restartGame)
+            restartGame.onClick.AddListener(RestartGame);
 
     }
-
-    void ShowPause()
+    private void ReturnToGame()
     {
+        pauseMenu.SetActive(false);
+        Time.timeScale = 1f;
+    }
+
+    private void RestartGame()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("WhiteBox");
+    }
+
+    private void ClosePause()
+    {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+        pauseMenu.SetActive(false);
+        Time.timeScale = 1f;
+    }
+    private void ShowPause()
+    {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         tutorialMenu.SetActive(false);
         pauseMenu.SetActive(true);
     }
 
-    void ShowTutorial()
+    private void ShowTutorial()
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         pauseMenu.SetActive(false);
         tutorialMenu.SetActive(true);
     }
 
-    void ShowMainMenu()
+    private void ShowMainMenu()
     {
-        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Main Menu Scene"))
-        {
-        }
-        else 
-        {
-            SceneManager.LoadScene("Main Menu Scene");
-            pauseMenu.SetActive(false);
-        }
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+        SceneManager.LoadScene("Main Menu Scene");
+        pauseMenu.SetActive(false);
+        gameOverMenu.SetActive(false);
+        Time.timeScale = 1f;
     }
 
-    void QuitGame()
+    private void QuitGame()
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
+        UnityEditor.EditorApplication.isPlaying = false;
         #else
             Aplication.Quit();
         #endif
     }
 
-    void ShowSettingsMenu()
+    private void ShowSettingsMenu()
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         mainMenu.SetActive(false);
         settingsMenu.SetActive(true);
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         timer.text = ScoreTimerManager.Instance.timeRemaining.ToString("n2");
         score.text = ScoreTimerManager.Instance.score.ToString();

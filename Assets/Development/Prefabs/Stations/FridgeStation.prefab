@@ -115,7 +115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 651e62b2650424d4982b6db333350de6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectionObject: {fileID: -6706296519036380435}
+  hasProgressGameObject: {fileID: 0}
   milkBar: {fileID: 8027082204000364398}
 --- !u!1 &5670208714137099838
 GameObject:
@@ -409,6 +409,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1a86f6dec8a4f547be4f92cb7a6b2c3, type: 3}
+--- !u!198 &773842185202354916 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 6545181316283945739, guid: a1a86f6dec8a4f547be4f92cb7a6b2c3, type: 3}
+  m_PrefabInstance: {fileID: 5793910489894492655}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2330630454352036941 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8083973324504194466, guid: a1a86f6dec8a4f547be4f92cb7a6b2c3, type: 3}
@@ -427,14 +432,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stationTopPoint: {fileID: 0}
-  onSelectionChanged:
-    m_PersistentCalls:
-      m_Calls: []
   ingredientListSO:
   - {fileID: 11400000, guid: ea4fdd638cf7f7440a67f48c87a0d5fa, type: 2}
   - {fileID: 11400000, guid: 70aace9e316e3a942a080c4723febca3, type: 2}
   - {fileID: 11400000, guid: 67ec6e36fb22a934f8f08ed2d2d2a3bd, type: 2}
   - {fileID: 11400000, guid: a6e09719f366cd549bc61e2b685827a3, type: 2}
+  interactParticle: {fileID: 773842185202354916}
 --- !u!4 &5735315009309932118 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2305830337154933689, guid: a1a86f6dec8a4f547be4f92cb7a6b2c3, type: 3}
