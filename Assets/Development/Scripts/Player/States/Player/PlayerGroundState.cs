@@ -10,6 +10,8 @@ using UnityEngine.InputSystem;
 public class PlayerGroundState : PlayerBaseState
 {
 
+    //Viuals
+    GameObject visualGameObject;
     //calls base constructor and pass in base stateMachine 
     public PlayerGroundState(PlayerStateMachine stateMachine) : base(stateMachine) { }
     Ingredient floorIngredient;
@@ -42,18 +44,28 @@ public class PlayerGroundState : PlayerBaseState
         {
             if (raycastHit.transform.TryGetComponent(out BaseStation baseStation))
             {
+                visualGameObject = baseStation.transform.GetChild(0).gameObject;
                 if (baseStation != stateMachine.selectedStation)
                 {
                     stateMachine.SetSelectedStation(baseStation);
+
+                    stateMachine.Show(visualGameObject);
+
+                                        
+                    Debug.Log("station" + stateMachine.selectedStation );
+                    
+
                 }
             }
             else
             {
                 stateMachine.SetSelectedStation(null);
+                
             }
         }
         else
         {
+            stateMachine.Hide(visualGameObject);
             stateMachine.SetSelectedStation(null);
         }
         Debug.DrawRay(stateMachine.transform.position + new Vector3(0, 0.5f, 0), stateMachine.transform.forward, Color.green);
@@ -131,6 +143,6 @@ public class PlayerGroundState : PlayerBaseState
         }
     }
 
-   
+    
 }
 
