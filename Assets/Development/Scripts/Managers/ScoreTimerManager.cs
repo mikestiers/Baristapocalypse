@@ -12,8 +12,6 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
     private GameManager gameManager;
 
     // Start is called before the first frame update
-    public AudioClip winsong;
-    public AudioClip losesong;
     void Start()
     {
         LoseEvent?.AddListener(Lose);
@@ -29,14 +27,12 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
         {
             LoseEvent?.Invoke();
             gameManager.gameState = GameState.LOST;
-            AudioManager.Instance.Playoneshot(losesong, false);
             Debug.LogError("lose");
         }
 
         if (score == 100)
         {
             WinEvent?.Invoke();
-            AudioManager.Instance.Playoneshot(winsong, false);
             Debug.LogError("win");
         }
     }

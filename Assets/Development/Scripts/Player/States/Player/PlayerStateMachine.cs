@@ -44,15 +44,6 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
     //Components
     [field: SerializeField] public InputManager inputManager { get; private set; }
 
-    public AudioClip DashSFX;
-    public AudioClip ThrowSFX;
-    public AudioClip walkSFX;
-    public AudioClip pickupSFX;
-    public AudioClip jumpSFX;
-
-    public ParticleSystem DashEffect;
-    public ParticleSystem ThrowEffect;
-    public ParticleSystem jumpEffect;
 
     // Start is called before the first frame update
     private void Start()
@@ -141,8 +132,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
         TurnOnIngredientCollider();
         Rigidbody rb = ingredientHoldPoint.GetComponentInChildren<Rigidbody>();
         ingredientHoldPoint.DetachChildren();
-        AudioManager.Instance.Playoneshot(ThrowSFX, false);
-        ThrowEffect.Play();
+         
         rb.isKinematic = false;
         rb.AddForce(transform.forward * ingredienThrowForce, ForceMode.Impulse);
       
