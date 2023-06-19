@@ -7,7 +7,7 @@ public class CoffeeAttributes : MonoBehaviour
     [SerializeField] private int sweetness;
     [SerializeField] private int bitterness;
     [SerializeField] private int strength;
-    [SerializeField] private int hotness;
+    [SerializeField] private int temperature;
     [SerializeField] private int spiciness;
 
     public int GetSweetness()
@@ -17,6 +17,18 @@ public class CoffeeAttributes : MonoBehaviour
     public int GetBitterness()
     {
         return bitterness;
+    }
+    public int GetStrength()
+    {
+        return strength;
+    }
+    public int GetTemperature()
+    {
+        return temperature;
+    }
+    public int GetSpiciness()
+    {
+        return spiciness;
     }
 
     public void AddSweetness(int sweetness)
@@ -31,9 +43,9 @@ public class CoffeeAttributes : MonoBehaviour
     {
         this.strength += strength;
     }
-    public void AddHotness(int hotness)
+    public void AddTemperature(int temperature)
     {
-        this.hotness += hotness;
+        this.temperature += temperature;
     }
     public void AddSpiciness(int spiciness)
     {

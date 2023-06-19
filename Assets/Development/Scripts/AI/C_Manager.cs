@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class C_Manager : MonoBehaviour
+public class C_Manager : Singleton<C_Manager> 
 {
     public Transform Counter;
     public Transform barEntrance;
+    [SerializeField] private Transform exit;
     public float delay = 8.0f;
     public CustomerBase customerPrefab;
 
@@ -17,8 +18,6 @@ public class C_Manager : MonoBehaviour
     //temp stuff -> Ddog will make something more robust
     public GameObject[] Chairs;
     public int chairNumber;
-
-
 
     // Start is called before the first frame update
     private void Start()
@@ -82,19 +81,11 @@ public class C_Manager : MonoBehaviour
             LineQueue.AddCustomer(customersOutsideList[0]);
             customersOutsideList.RemoveAt(0);
         }
-
-
-        //i just added a delay for when theyre at the counter/ we cam add an event that could trigger them leaving the line and waiting for order
-        StartCoroutine(Leaveline()); 
     }
 
-    public IEnumerator Leaveline()
+    public void Leaveline()
     {
-        yield return new WaitForSeconds(50f);
-
         CustomerBase customer = LineQueue.GetFirstInQueue();
-
-
 
         customer.Walkto(Chairs[chairNumber].transform.position);
         customer.currentState = CustomerBase.CustomerState.Insit;
@@ -105,17 +96,15 @@ public class C_Manager : MonoBehaviour
 
     private void SpawnCustomer()
     {
-        CustomerBase Newcustomer = Instantiate(customerPrefab, barEntrance.transform.position, Quaternion.identity);
-        Newcustomer.orderRequest = new OrderRequest
-        {
-            bitterness = UnityEngine.Random.Range(0, 10 + 1),
-            sweetness = UnityEngine.Random.Range(0, 10 + 1),
-            strength = UnityEngine.Random.Range(0, 10 + 1),
-            temperature = UnityEngine.Random.Range(0, 10 + 1),
-            spiciness = UnityEngine.Random.Range(0, 10 + 1)
-        };
+        CustomerBase newcustomer = Instantiate(customerPrefab, barEntrance.transform.position, Quaternion.identity);
 
-        customersOutsideList.Add(Newcustomer);
+        newcustomer.coffeeAttributes.AddBitterness(UnityEngine.Random.Range(0, 10 + 1));
+        newcustomer.coffeeAttributes.AddSpiciness(UnityEngine.Random.Range(0, 10 + 1));
+        newcustomer.coffeeAttributes.AddStrength(UnityEngine.Random.Range(0, 10 + 1));
+        newcustomer.coffeeAttributes.AddSweetness(UnityEngine.Random.Range(0, 10 + 1));
+        newcustomer.coffeeAttributes.AddTemperature(UnityEngine.Random.Range(0, 10 + 1));
+
+        customersOutsideList.Add(newcustomer);
     }
 
 
@@ -145,15 +134,8 @@ public class C_Manager : MonoBehaviour
         }
     }
     */
-}
-
-[Serializable]
-public struct OrderRequest
-{
-    public int bitterness;
-    public int sweetness;
-    public int strength;
-    public int temperature;
-    public int spiciness;
-
+    public Transform GetExit()
+    {
+        return exit;
+    }
 }

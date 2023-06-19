@@ -11,6 +11,6 @@ public class IngredientSO : ScriptableObject
     public int sweetness;
     public int bitterness;
     public int strength;
-    public int hotness;
+    public int temperature;
     public int spiciness;
 }

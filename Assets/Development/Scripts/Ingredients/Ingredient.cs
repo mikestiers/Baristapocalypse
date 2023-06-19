@@ -43,8 +43,6 @@ public class Ingredient : MonoBehaviour
         Destroy(gameObject);
     }
 
-    
-
     public static Ingredient SpawnIngredient(IngredientSO ingredientSO, IIngredientParent ingredientParent)
     {
         GameObject ingredientPrefab = Instantiate(ingredientSO.prefab);
