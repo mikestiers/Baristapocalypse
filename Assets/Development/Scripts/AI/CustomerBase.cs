@@ -31,6 +31,12 @@ public class CustomerBase : MonoBehaviour
     // Order Request
     public OrderRequest orderRequest;
 
+    //Audio
+    public AudioSource footstepAudioSource;
+    public AudioClip[] footstepSounds;
+    public float minSpeedForFootstep = 0.1f;
+    private bool isFootstepPlaying = false;
+
     /// <summary>
     ///  For the arrays im thinking of moving them to some other script like a level script or something to be actually be 
     ///  accesible by all customer prefabs on what Index they currently are in 
@@ -138,10 +144,14 @@ public class CustomerBase : MonoBehaviour
             if (agent.remainingDistance < distThreshold)
             {
                 agent.isStopped = true;
-                currentState = CustomerState.Wandering;
-
+                PlayFootstepSound();
+                currentState = CustomerState.Wandering;  
             }
         }
+        else if (currentState == CustomerState.Wandering)
+    {
+        StopFootstepSound();
+    }
 
 
 
@@ -202,6 +212,24 @@ public class CustomerBase : MonoBehaviour
         int score = ScoreTimerManager.Instance.GetScoreComparison(coffee, orderRequest);
         ScoreTimerManager.Instance.score += score;
     }
+    public void PlayFootstepSound()
+    {
+        if (footstepAudioSource == null || isFootstepPlaying || agent.velocity.magnitude < minSpeedForFootstep)
+        {
+            return;
+        }
 
+        AudioClip footstepClip = footstepAudioSource.clip;
+        footstepAudioSource.PlayOneShot(footstepClip);
 
+        isFootstepPlaying = true;
+    }
+    public void StopFootstepSound()
+    {
+        if (footstepAudioSource != null && isFootstepPlaying)
+        {
+            footstepAudioSource.Stop();
+            isFootstepPlaying = false;
+        }
+    }
 }
