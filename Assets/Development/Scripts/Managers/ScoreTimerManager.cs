@@ -46,27 +46,27 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
         Time.timeScale = 0f;
     }
 
-    public void GetScoreComparison(CoffeeAttributes coffeeAttributes, OrderRequest customerOrder)
+    public void GetScoreComparison(CoffeeAttributes coffeeAttributes, CoffeeAttributes customerAttributes)
     {
         
         int result = 0;
-        if (Mathf.Abs(coffeeAttributes.GetSweetness() - customerOrder.sweetness) <= 10)
+        if (Mathf.Abs(coffeeAttributes.GetSweetness() - customerAttributes.GetSweetness()) <= 5)
         {
             result += 1;
         }
-        if (Mathf.Abs(coffeeAttributes.GetBitterness() - customerOrder.bitterness) <= 10)
+        if (Mathf.Abs(coffeeAttributes.GetBitterness() - customerAttributes.GetBitterness()) <= 5)
         {
             result += 1;
         }
-        if (Mathf.Abs(coffeeAttributes.GetSpiciness() - customerOrder.spiciness) <= 10)
+        if (Mathf.Abs(coffeeAttributes.GetSpiciness() - customerAttributes.GetSpiciness()) <= 5)
         {
             result += 1;
         }
-        if (Mathf.Abs(coffeeAttributes.GetTemperature() - customerOrder.temperature) <= 10)
+        if (Mathf.Abs(coffeeAttributes.GetTemperature() - customerAttributes.GetTemperature()) <= 5)
         {
             result += 1;
         }
-        if (Mathf.Abs(coffeeAttributes.GetStrength() - customerOrder.strength) <= 10)
+        if (Mathf.Abs(coffeeAttributes.GetStrength() - customerAttributes.GetStrength()) <= 5)
         {
             result += 1;
         }

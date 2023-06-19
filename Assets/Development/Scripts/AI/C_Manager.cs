@@ -19,8 +19,6 @@ public class C_Manager : Singleton<C_Manager>
     public GameObject[] Chairs;
     public int chairNumber;
 
-
-
     // Start is called before the first frame update
     private void Start()
     {
@@ -98,17 +96,15 @@ public class C_Manager : Singleton<C_Manager>
 
     private void SpawnCustomer()
     {
-        CustomerBase Newcustomer = Instantiate(customerPrefab, barEntrance.transform.position, Quaternion.identity);
-        Newcustomer.orderRequest = new OrderRequest
-        {
-            bitterness = UnityEngine.Random.Range(0, 10 + 1),
-            sweetness = UnityEngine.Random.Range(0, 10 + 1),
-            strength = UnityEngine.Random.Range(0, 10 + 1),
-            temperature = UnityEngine.Random.Range(0, 10 + 1),
-            spiciness = UnityEngine.Random.Range(0, 10 + 1)
-        };
+        CustomerBase newcustomer = Instantiate(customerPrefab, barEntrance.transform.position, Quaternion.identity);
 
-        customersOutsideList.Add(Newcustomer);
+        newcustomer.coffeeAttributes.AddBitterness(UnityEngine.Random.Range(0, 10 + 1));
+        newcustomer.coffeeAttributes.AddSpiciness(UnityEngine.Random.Range(0, 10 + 1));
+        newcustomer.coffeeAttributes.AddStrength(UnityEngine.Random.Range(0, 10 + 1));
+        newcustomer.coffeeAttributes.AddSweetness(UnityEngine.Random.Range(0, 10 + 1));
+        newcustomer.coffeeAttributes.AddTemperature(UnityEngine.Random.Range(0, 10 + 1));
+
+        customersOutsideList.Add(newcustomer);
     }
 
 
@@ -142,18 +138,4 @@ public class C_Manager : Singleton<C_Manager>
     {
         return exit;
     }
-}
-
-
-
-
-[Serializable]
-public struct OrderRequest
-{
-    public int bitterness;
-    public int sweetness;
-    public int strength;
-    public int temperature;
-    public int spiciness;
-
 }

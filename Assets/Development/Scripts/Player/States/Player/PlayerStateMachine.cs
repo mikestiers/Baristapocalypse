@@ -91,7 +91,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
         {
             selectedStation.Interact(this);
         }
-        Debug.Log(selectedStation);
+        //Debug.Log(selectedStation);
 
     }
 

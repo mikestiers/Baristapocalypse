@@ -22,15 +22,14 @@ public class CustomerBase : BaseStation
         Wandering, InLine, Ordering, Moving, Leaving, Insit
     }
 
+    public CoffeeAttributes coffeeAttributes;
+
     //Initial State
     public CustomerState currentState = CustomerState.Wandering;
 
     //Waiting In line to order Array
     public GameObject[] Line;
     public int LineIndex;
-
-    // Order Request
-    public OrderRequest orderRequest;
 
     /// <summary>
     ///  For the arrays im thinking of moving them to some other script like a level script or something to be actually be 
@@ -78,6 +77,14 @@ public class CustomerBase : BaseStation
 
             }
         }
+
+        if(currentState == CustomerState.Leaving)
+        {
+            if(agent.remainingDistance < distThreshold)
+            {
+                Destroy(gameObject);
+            }
+        }
         //Debug.Log("The customer is " + currentState + " and is going to " + agent.destination);
     }
 
@@ -93,7 +100,8 @@ public class CustomerBase : BaseStation
 
     public virtual void CustomerLeave()
     {
-        Walkto(exit.position);
+        currentState = CustomerState.Leaving;
+        agent.SetDestination(exit.position);
     }
 
     public void Walkto(Vector3 Spot)
@@ -103,12 +111,12 @@ public class CustomerBase : BaseStation
        
         agent.SetDestination(Spot);
 
-        currentState= CustomerState.Moving;
+        currentState = CustomerState.Moving;
     }
 
     public void JustGotHandedCoffee(CoffeeAttributes coffee)
     {
-        ScoreTimerManager.Instance.GetScoreComparison(coffee, orderRequest);
+        ScoreTimerManager.Instance.GetScoreComparison(coffee, coffeeAttributes);
         CustomerLeave();
     }
 
@@ -134,13 +142,4 @@ public class CustomerBase : BaseStation
             }
         }
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Deathzone"))
-        {
-            Destroy(gameObject);
-        }
-    }
-
 }
