@@ -31,6 +31,12 @@ public class CustomerBase : BaseStation
     public GameObject[] Line;
     public int LineIndex;
 
+    //Audio
+    public AudioSource footstepAudioSource;
+    public AudioClip[] footstepSounds;
+    public float minSpeedForFootstep = 0.1f;
+    private bool isFootstepPlaying = false;
+
     /// <summary>
     ///  For the arrays im thinking of moving them to some other script like a level script or something to be actually be 
     ///  accesible by all customer prefabs on what Index they currently are in 
@@ -73,9 +79,13 @@ public class CustomerBase : BaseStation
             if (agent.remainingDistance < distThreshold)
             {
                 agent.isStopped = true;
-                currentState = CustomerState.Wandering;
-
+                PlayFootstepSound();
+                currentState = CustomerState.Wandering;  
             }
+        }
+        if (currentState == CustomerState.Wandering)
+        {
+            StopFootstepSound();
         }
 
         if(currentState == CustomerState.Leaving)
@@ -119,6 +129,17 @@ public class CustomerBase : BaseStation
         ScoreTimerManager.Instance.GetScoreComparison(coffee, coffeeAttributes);
         CustomerLeave();
     }
+    public void PlayFootstepSound()
+    {
+        if (footstepAudioSource == null || isFootstepPlaying || agent.velocity.magnitude < minSpeedForFootstep)
+        {
+            return;
+        }
+        AudioClip footstepClip = footstepAudioSource.clip;
+        footstepAudioSource.PlayOneShot(footstepClip);
+
+        isFootstepPlaying = true;
+    }
 
     public override void Interact(PlayerStateMachine player)
     {
@@ -140,6 +161,15 @@ public class CustomerBase : BaseStation
                     JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
                 }
             }
+        }
+    }
+
+    public void StopFootstepSound()
+    {
+        if (footstepAudioSource != null && isFootstepPlaying)
+        {
+            footstepAudioSource.Stop();
+            isFootstepPlaying = false;
         }
     }
 }

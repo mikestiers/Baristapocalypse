@@ -97,13 +97,15 @@ public class PlayerGroundState : PlayerBaseState
         if (!stateMachine.IsGrounded()) { return; }
 
         stateMachine.SwitchState(new PlayerJumpingState(stateMachine));
+        AudioManager.Instance.Playoneshot(stateMachine.jumpSFX, false);
+        stateMachine.jumpEffect.Play();
 
     }
 
     public void OnDash()
     {
         stateMachine.StartCoroutine(Dash());
-
+        AudioManager.Instance.Playoneshot(stateMachine.DashSFX, false);
     }
 
     IEnumerator Dash()
