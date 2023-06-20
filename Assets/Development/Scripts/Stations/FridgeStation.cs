@@ -9,6 +9,7 @@ public class FridgeStation : BaseStation, IHasProgress
     public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
 
     [SerializeField] private IngredientSO[] ingredientListSO;
+    [SerializeField] private ParticleSystem interactParticle;
 
     private IngredientSO currentIngredient;
     private int ingredientListSOIndex;
@@ -33,6 +34,8 @@ public class FridgeStation : BaseStation, IHasProgress
             else
             {
                 Ingredient.SpawnIngredient(currentIngredient, player);
+                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
+                interactParticle.Play();
             }
         }
         else

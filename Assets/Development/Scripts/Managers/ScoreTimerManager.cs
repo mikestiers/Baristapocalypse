@@ -5,17 +5,16 @@ using UnityEngine.Events;
 
 public class ScoreTimerManager : Singleton<ScoreTimerManager>
 {
-    public float timeRemaining = 1f;
-    public int score;
+    public float timeRemaining = 240f;
+    public int score = 0;
     public UnityEvent LoseEvent = new UnityEvent();
     public UnityEvent WinEvent = new UnityEvent();
-    private GameManager gameManager;
+    [SerializeField] private GameManager gameManager;
 
     // Start is called before the first frame update
     void Start()
     {
-        LoseEvent?.AddListener(Lose);
-        WinEvent?.AddListener(Win);
+
     }
 
     // Update is called once per frame
@@ -25,25 +24,31 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
 
         if (timeRemaining <= 0 && gameManager.gameState == GameState.RUNNING)
         {
-            LoseEvent?.Invoke();
-            gameManager.gameState = GameState.LOST;
-            Debug.LogError("lose");
-        }
-
-        if (score == 100)
-        {
-            WinEvent?.Invoke();
-            Debug.LogError("win");
-        }
+            UIManager.Instance.finalScore.text = "Score: " + score.ToString();
+            if (score >= 50)
+            {
+                Win();
+            }
+            else
+            {
+                Lose();
+            }
+            gameManager.gameState = GameState.GAMEOVER;
+        }  
     }
+
     private void Lose()
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.gameover);
         UIManager.Instance.gameOverMenu.SetActive(true);
+        UIManager.Instance.gameOverText.text = "You Lose!";
         Time.timeScale = 0f;
     }
     private void Win()
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.victory);
         UIManager.Instance.gameOverMenu.SetActive(true);
+        UIManager.Instance.gameOverText.text = "You Win!";
         Time.timeScale = 0f;
     }
 

@@ -10,6 +10,7 @@ public class BrewingStation : BaseStation, IHasProgress
     public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
 
     [SerializeField] private List<IngredientSO> ingredientSOList = new List<IngredientSO>();
+    [SerializeField] private ParticleSystem interactParticle;
     private List<String> validIngredientTagList = new List<String>();
     
     private int numIngredientsNeeded = 4;
@@ -61,6 +62,8 @@ public class BrewingStation : BaseStation, IHasProgress
         if (player.HasIngredient())
         {
             if (TryAddIngredient(player.GetIngredient().GetIngredientSO())){
+                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
+                interactParticle.Play();
                 player.GetIngredient().DestroyIngredient();
                 if(ingredientSOList.Count >= numIngredientsNeeded)
                 {

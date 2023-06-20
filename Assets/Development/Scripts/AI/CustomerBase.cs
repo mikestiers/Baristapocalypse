@@ -16,6 +16,8 @@ public class CustomerBase : BaseStation
 
     public float distThreshold;
 
+    public static CustomerBase Instance { get; private set; }
+
     public enum CustomerState
     {
         //add movetosit when sits are available
@@ -23,13 +25,15 @@ public class CustomerBase : BaseStation
     }
 
     public CoffeeAttributes coffeeAttributes;
-
+    [SerializeField] private ParticleSystem interactParticle;
     //Initial State
     public CustomerState currentState = CustomerState.Wandering;
 
     //Waiting In line to order Array
     public GameObject[] Line;
     public int LineIndex;
+
+    [SerializeField] private ScoreTimerManager scoreTimerManager;
 
     /// <summary>
     ///  For the arrays im thinking of moving them to some other script like a level script or something to be actually be 
@@ -127,6 +131,8 @@ public class CustomerBase : BaseStation
         {
             //Order();
             C_Manager.Instance.Leaveline();
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
+            interactParticle.Play();
         }
 
         //if waiting for order
@@ -138,8 +144,12 @@ public class CustomerBase : BaseStation
                 if (player.GetIngredient().CompareTag("CoffeeCup")) {
                     player.GetIngredient().SetIngredientParent(this);
                     JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
+                    SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
+                    interactParticle.Play();
                 }
             }
         }
+
+        
     }
 }

@@ -7,8 +7,10 @@ public class BaseStation : MonoBehaviour, IIngredientParent
     [SerializeField] private Transform stationTopPoint;
     
     private Ingredient ingredient;
+    
     public virtual void Interact(PlayerStateMachine player)
     {
+        
         //Debug.LogError("BaseCounter.Interact();");
     }
     public virtual void InteractAlt(PlayerStateMachine player)

@@ -10,6 +10,8 @@ using UnityEngine.InputSystem;
 public class PlayerGroundState : PlayerBaseState
 {
 
+    //Viuals
+    GameObject visualGameObject;
     //calls base constructor and pass in base stateMachine 
     public PlayerGroundState(PlayerStateMachine stateMachine) : base(stateMachine) { }
     Ingredient floorIngredient;
@@ -42,18 +44,28 @@ public class PlayerGroundState : PlayerBaseState
         {
             if (raycastHit.transform.TryGetComponent(out BaseStation baseStation))
             {
+                visualGameObject = baseStation.transform.GetChild(0).gameObject;
                 if (baseStation != stateMachine.selectedStation)
                 {
                     stateMachine.SetSelectedStation(baseStation);
+
+                    stateMachine.Show(visualGameObject);
+
+                                        
+                    Debug.Log("station" + stateMachine.selectedStation );
+                    
+
                 }
             }
             else
             {
                 stateMachine.SetSelectedStation(null);
+                
             }
         }
         else
         {
+            stateMachine.Hide(visualGameObject);
             stateMachine.SetSelectedStation(null);
         }
         Debug.DrawRay(stateMachine.transform.position + new Vector3(0, 0.5f, 0), stateMachine.transform.forward, Color.green);
@@ -97,18 +109,21 @@ public class PlayerGroundState : PlayerBaseState
         if (!stateMachine.IsGrounded()) { return; }
 
         stateMachine.SwitchState(new PlayerJumpingState(stateMachine));
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.jump);
 
     }
 
     public void OnDash()
     {
         stateMachine.StartCoroutine(Dash());
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
 
     }
 
     IEnumerator Dash()
     {
         float startTime = Time.time;
+        Debug.Log("dash");
 
         while (Time.time < startTime + stateMachine.dashTime)
         {
@@ -122,11 +137,12 @@ public class PlayerGroundState : PlayerBaseState
     {
         if (stateMachine.HasIngredient())
         {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.throwIngredient);
             stateMachine.ThrowIngedient();
             //stateMachine.SwitchState(new PlayerThrowState(stateMachine));
         }
     }
 
-   
+    
 }
 

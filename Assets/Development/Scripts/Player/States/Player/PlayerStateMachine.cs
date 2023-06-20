@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -9,6 +10,9 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerStateMachine : StateMachine, IIngredientParent
 {
+    // Player Singleton
+    [HideInInspector] public static PlayerStateMachine Instance { get; private set; }
+
     //[Header("Player Attributes")]
     [field: SerializeField] public float moveSpeed { get; private set; }
     [field: SerializeField] public float jumpForce { get; private set; }
@@ -41,9 +45,19 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
     [HideInInspector] public Vector3 curMoveInput;
     [HideInInspector] public Vector3 moveDir;
 
-    //Components
+    // When station selected
+    private GameObject visualGameObject;
+    
+    // Components
     [field: SerializeField] public InputManager inputManager { get; private set; }
 
+    private void Awake()
+    {
+        if (Instance != null ) 
+            Debug.LogError("There is more than one player instance"); 
+        
+        Instance = this;
+    }
 
     // Start is called before the first frame update
     private void Start()
@@ -54,9 +68,8 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
         //Set variables if null
         if (moveSpeed <= 0) moveSpeed = 10.0f;
         if (jumpForce <= 0) jumpForce = 200.0f;
-        if (dashForce <= 0) dashForce = 17.0f;
+        if (dashForce <= 0) dashForce = 25f;
         if (dashTime <= 0) dashTime = 0.1f;
-        if (dashForce <= 0) dashForce = 30.0f;
         if (ingredienThrowForce <= 0) ingredienThrowForce = 10f;
         if (groundCheckRadius <= 0) groundCheckRadius = 0.05f;
         
@@ -109,6 +122,10 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
     public void SetSelectedStation(BaseStation baseStation)
     {
         selectedStation = baseStation;
+
+       
+
+       
     }
 
     public Transform GetIngredientTransform()
@@ -171,7 +188,15 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
         ingredientCollider.enabled = true;
     }
 
+    public void Show(GameObject visualGameObject)
+    {
+        visualGameObject.SetActive(true);
+    }
 
-    
+    public void Hide(GameObject visualGameObject)
+    {
+        visualGameObject?.SetActive(false);
+    }
+
 
 }

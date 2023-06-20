@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class InteractStation : BaseStation
 {
+    [SerializeField] private ParticleSystem interactParticle;
     public override void Interact(PlayerStateMachine  player)
     {
         if (!HasIngredient())
@@ -11,6 +12,8 @@ public class InteractStation : BaseStation
             if (player.HasIngredient())
             {
                 player.GetIngredient().SetIngredientParent(this);
+                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
+                interactParticle.Play();
             }
         } 
         else
@@ -18,6 +21,8 @@ public class InteractStation : BaseStation
             if (!player.HasIngredient())
             {
                 GetIngredient().SetIngredientParent(player);
+                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
+                interactParticle.Play();
             }
         }
     }
