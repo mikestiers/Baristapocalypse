@@ -116,7 +116,8 @@ public class UiCameraManager : MonoBehaviour
     }
     void PlayerSpawn1() 
     {
-        if(Player1Red != null) 
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+        if (Player1Red != null) 
         { 
            Instantiate(Player1Red, Player1SpawnPoint);
         }
@@ -125,7 +126,8 @@ public class UiCameraManager : MonoBehaviour
     void ReturnFromSettings() 
     { 
         if(SettingsCamera.Priority ==1) 
-        { 
+        {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
             SettingsCamera.Priority= 0;
             MainmenuCamera.Priority= 1;
             MainMenuTab.SetActive(true);
@@ -135,7 +137,8 @@ public class UiCameraManager : MonoBehaviour
     void ReturnFromSelection() 
     { 
         if(PlayerSelectionCamera.Priority ==1) 
-        { 
+        {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
             PlayerSelectionCamera.Priority= 0;
             MainmenuCamera.Priority= 1;
             MainMenuTab.SetActive(true);
@@ -146,7 +149,8 @@ public class UiCameraManager : MonoBehaviour
     void ReturnToMenuFromQuit() 
     { 
         if(QuitGameCamera.Priority ==1) 
-        { 
+        {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
             QuitGameCamera.Priority= 0;
             MainmenuCamera.Priority= 1;
             MainMenuTab.SetActive(true);
@@ -156,7 +160,8 @@ public class UiCameraManager : MonoBehaviour
     void QuitGameSceen() 
     { 
         if(MainmenuCamera.Priority ==1) 
-        { 
+        {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
             MainmenuCamera.Priority = 0;
             QuitGameCamera.Priority = 1;
             ExitMenuTab.SetActive(true);
@@ -167,6 +172,7 @@ public class UiCameraManager : MonoBehaviour
     { 
         if (MainmenuCamera.Priority == 1)
         {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
             MainmenuCamera.Priority = 0;
             SettingsCamera.Priority = 1;
             MainMenuTab.SetActive(false);
@@ -177,6 +183,7 @@ public class UiCameraManager : MonoBehaviour
     {
         if (MainmenuCamera.Priority == 1)
         {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
             MainmenuCamera.Priority = 0;
             PlayerSelectionCamera.Priority = 1;
             MainMenuTab.SetActive(false);
@@ -186,12 +193,14 @@ public class UiCameraManager : MonoBehaviour
 
     void PlayScene() 
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         SceneManager.LoadScene("WhiteBox");
     }
     void closeGame() 
-    { 
-        #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
+    {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
         #else
             Aplication.Quit();
         #endif
