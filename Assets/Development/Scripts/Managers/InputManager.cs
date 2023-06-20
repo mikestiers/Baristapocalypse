@@ -23,10 +23,10 @@ public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
     //player movement input
     [HideInInspector] public Vector3 moveDir;
     [HideInInspector] public Vector3 curMoveInput;
+    
+    
 
 
-
-    [HideInInspector] public bool playerIsmoving;
     private PlayerInput playerInput;
 
     protected override void Awake()
