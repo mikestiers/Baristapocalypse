@@ -48,12 +48,7 @@ public class PlayerGroundState : PlayerBaseState
                 if (baseStation != stateMachine.selectedStation)
                 {
                     stateMachine.SetSelectedStation(baseStation);
-
                     stateMachine.Show(visualGameObject);
-
-                                        
-                    Debug.Log("station" + stateMachine.selectedStation );
-                    
 
                 }
             }
