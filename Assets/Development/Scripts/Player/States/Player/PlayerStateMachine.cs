@@ -18,28 +18,27 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
     [field: SerializeField] public float jumpForce { get; private set; }
     [field: SerializeField] public float ingredienThrowForce { get; private set; }
     
-
     //[Header("Ground Check")]
     [field: SerializeField] public LayerMask isGroundLayer { get; private set; }
     [field: SerializeField] public float groundCheckRadius { get; private set; }
     [field: SerializeField] public Transform groundCheck { get; private set; }
-    [field: SerializeField] public bool isGrounded;
-    [field: SerializeField] public float dashForce;
-    [field: SerializeField] public float dashTime;
-
-
+    [HideInInspector] public bool isGrounded;
+    [SerializeField] public float dashForce;
+    [SerializeField] public float dashTime;
 
     //[Header("Interactables")]
     [field: SerializeField] public LayerMask isStationLayer { get; private set; }
     [field: SerializeField] public LayerMask isIngredientLayer { get; private set; }
     [HideInInspector] public BaseStation selectedStation { get; private set; }
     [HideInInspector] public Collider ingredientCollider;
-    [field: SerializeField] public GameObject ingredientInstanceHolder;
+    public GameObject ingredientInstanceHolder;
 
-    [field: SerializeField] public Transform ingredientHoldPoint { get; private set; }
-    [HideInInspector] public Ingredient ingredient { get; private set; }
-    [field: SerializeField] public bool hasIngredient;
-
+    //[Header("Ingredients Data")]
+    [field: SerializeField] public Transform ingredientHoldPoint { get; private set; }// changing this for an array of 5 points, not deleted yet for testing
+    public Ingredient ingredient { get; private set; }
+    public bool hasIngredient;
+    [SerializeField] private Transform[] ingredientHoldPoints; // Array to hold multiple ingredient
+    private List<Ingredient> ingredientsHeld = new List<Ingredient>(); // List to store held ingredients
 
     [HideInInspector] public Rigidbody rb { get; private set; }
     [HideInInspector] public Vector3 curMoveInput;
@@ -54,8 +53,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
     private void Awake()
     {
         if (Instance != null ) 
-            Debug.LogError("There is more than one player instance"); 
-        
+              
         Instance = this;
     }
 
@@ -73,11 +71,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
         if (ingredienThrowForce <= 0) ingredienThrowForce = 10f;
         if (groundCheckRadius <= 0) groundCheckRadius = 0.05f;
         
-
         SwitchState(new PlayerGroundState(this)); // Start player state
-
-        
-
     }
 
     
@@ -89,7 +83,6 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
 
     public void Move(float moveSpeed)
     {
-        
         if (inputManager.moveDir == Vector3.zero) return;
         curMoveInput = inputManager.moveDir * moveSpeed * Time.deltaTime;
         transform.forward = inputManager.moveDir;

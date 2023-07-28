@@ -55,7 +55,6 @@ public class PlayerGroundState : PlayerBaseState
             else
             {
                 stateMachine.SetSelectedStation(null);
-                
             }
         }
         else
@@ -75,16 +74,15 @@ public class PlayerGroundState : PlayerBaseState
                 {
                     ingredienSO = floorIngredient.IngredientSO;
 
-                    if(mouse.leftButton.wasPressedThisFrame)
+                    if (mouse.leftButton.wasPressedThisFrame)
                         stateMachine.GrabIngedientFromFloor(floorIngredient, ingredienSO);
                 }
             }
         }
-        //if player has/get ingredient
+        //if player has/get ingredient turn of ingredient collider
         if (stateMachine.HasIngredient())
         {
             stateMachine.TurnOffIngredientCollider();
-
         }
         
     }
@@ -94,10 +92,7 @@ public class PlayerGroundState : PlayerBaseState
         stateMachine.inputManager.JumpEvent -= OnJump;
         stateMachine.inputManager.DashEvent -= OnDash;
         stateMachine.inputManager.ThrowEvent -= OnThrow;
-        
     }
-    
-
 
     public void OnJump()
     {
@@ -105,14 +100,12 @@ public class PlayerGroundState : PlayerBaseState
 
         stateMachine.SwitchState(new PlayerJumpingState(stateMachine));
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.jump);
-
     }
 
     public void OnDash()
     {
         stateMachine.StartCoroutine(Dash());
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
-
     }
 
     IEnumerator Dash()
