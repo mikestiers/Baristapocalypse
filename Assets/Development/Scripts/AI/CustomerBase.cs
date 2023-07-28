@@ -55,7 +55,7 @@ public class CustomerBase : BaseStation
     public virtual void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        exit = C_Manager.Instance.GetExit();
+        exit = CustomerManager.Instance.GetExit();
 
         if (distThreshold <= 0) distThreshold = 0.5f;
     }
@@ -130,7 +130,7 @@ public class CustomerBase : BaseStation
         if (currentState == CustomerState.Wandering)
         {
             //Order();
-            C_Manager.Instance.Leaveline();
+            CustomerManager.Instance.Leaveline();
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
             interactParticle.Play();
         }

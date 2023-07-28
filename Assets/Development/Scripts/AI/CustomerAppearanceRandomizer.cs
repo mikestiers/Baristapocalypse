@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class C_AppearanceRandomizer : MonoBehaviour
+public class CustomerAppearanceRandomizer : MonoBehaviour
 {
     public List<GameObject> heads = new List<GameObject>();
     public List<GameObject> bodies = new List<GameObject>();

@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using System;
 
 
-public class C_LineQueuing
+public class CustomerLineQueuing
 {
     private List<Vector3> positionList;
     private List<CustomerBase> customerList;
@@ -14,7 +14,7 @@ public class C_LineQueuing
     
 
     //sorry if it seam all over the place -> no worries madood its all good
-    public C_LineQueuing(List<Vector3> positionList)
+    public CustomerLineQueuing(List<Vector3> positionList)
     {
         this.positionList = positionList;
         customerList = new List<CustomerBase>();

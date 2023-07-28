@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class C_Manager : Singleton<C_Manager> 
+public class CustomerManager : Singleton<CustomerManager> 
 {
     public Transform Counter;
     public Transform barEntrance;
@@ -13,7 +13,7 @@ public class C_Manager : Singleton<C_Manager>
 
     private List<CustomerBase> customersOutsideList = new List<CustomerBase>();
 
-    private C_LineQueuing LineQueue;
+    private CustomerLineQueuing LineQueue;
 
     //temp stuff -> Ddog will make something more robust
     public GameObject[] Chairs;
@@ -35,7 +35,7 @@ public class C_Manager : Singleton<C_Manager>
             waitingQueuePostionList.Add(firstposition + new Vector3(0, 0 , 1f) * positionSize * i);
         }
         //LineQueue.OnCustomerArrivedAtFrontOfQueue += WaitingQueue_OnCustomerArrivedAtFrontOfQueue; might be used for future code?
-        LineQueue = new C_LineQueuing(waitingQueuePostionList);
+        LineQueue = new CustomerLineQueuing(waitingQueuePostionList);
 
 
         StartCoroutine(NewCustomer(delay));
