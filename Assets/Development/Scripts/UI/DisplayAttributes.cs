@@ -72,8 +72,8 @@ public class DisplayAttributes : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        textMeshPro.enabled = customerBase.currentState == CustomerBase.CustomerState.Wandering ? true : false;
-        hudOrder.SetActive(customerBase.currentState == CustomerBase.CustomerState.Wandering ? true : false);
+        textMeshPro.enabled = customerBase.currentState == CustomerBase.CustomerState.Ordering ? true : false;
+        hudOrder.SetActive(customerBase.currentState == CustomerBase.CustomerState.Ordering ? true : false);
 
     }
 }

@@ -2,10 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.EventSystems.EventTrigger;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class CustomerBase : BaseStation
@@ -13,6 +15,7 @@ public class CustomerBase : BaseStation
     //public Transform target;
     public NavMeshAgent agent;
     private Transform exit;
+    public bool frontofLine;
 
     public float distThreshold;
 
@@ -21,13 +24,13 @@ public class CustomerBase : BaseStation
     public enum CustomerState
     {
         //add movetosit when sits are available
-        Wandering, InLine, Ordering, Moving, Leaving, Insit
+        Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init
     }
 
     public CoffeeAttributes coffeeAttributes;
     [SerializeField] private ParticleSystem interactParticle;
     //Initial State
-    public CustomerState currentState = CustomerState.Wandering;
+    public CustomerState currentState = CustomerState.Init;
 
     //Waiting In line to order Array
     public GameObject[] Line;
@@ -77,11 +80,18 @@ public class CustomerBase : BaseStation
             if (agent.remainingDistance < distThreshold)
             {
                 agent.isStopped = true;
-                currentState = CustomerState.Wandering;
+                if(frontofLine == true)
+                {
+                    currentState = CustomerState.Ordering;
+                    return;
+                }
+                else
+                currentState = CustomerState.Waiting;
 
             }
         }
 
+      
         if(currentState == CustomerState.Leaving)
         {
             if(agent.remainingDistance < distThreshold)
@@ -127,7 +137,7 @@ public class CustomerBase : BaseStation
     public override void Interact(PlayerStateMachine player)
     {
         //check customer state
-        if (currentState == CustomerState.Wandering)
+        if (currentState == CustomerState.Ordering)
         {
             //Order();
             CustomerManager.Instance.Leaveline();
