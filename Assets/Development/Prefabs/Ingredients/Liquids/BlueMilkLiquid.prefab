@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3136900699031772779
+--- !u!1 &2345333205356967983
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,10 +8,10 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 879421352293396018}
-  - component: {fileID: 1199364095980125939}
-  - component: {fileID: 6913590549527188171}
-  - component: {fileID: 3204645716462580758}
+  - component: {fileID: 5657693473646031748}
+  - component: {fileID: 5916016017841887445}
+  - component: {fileID: 2577895948902476506}
+  - component: {fileID: 1408881258424910494}
   m_Layer: 7
   m_Name: Cube
   m_TagString: Untagged
@@ -19,36 +19,36 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &879421352293396018
+--- !u!4 &5657693473646031748
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3136900699031772779}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_GameObject: {fileID: 2345333205356967983}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.46, y: 1.18, z: 0.93}
+  m_LocalScale: {x: 0.45999995, y: 1.1799998, z: 0.93000007}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7760254045831546594}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &1199364095980125939
+--- !u!33 &5916016017841887445
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3136900699031772779}
+  m_GameObject: {fileID: 2345333205356967983}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &6913590549527188171
+--- !u!23 &2577895948902476506
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3136900699031772779}
+  m_GameObject: {fileID: 2345333205356967983}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e1752bb95f74bcf4e994ceba4057ae50, type: 2}
+  - {fileID: 2100000, guid: aacba62a2b8da474c8d6c6a30da0f059, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -84,16 +84,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &3204645716462580758
+--- !u!65 &1408881258424910494
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3136900699031772779}
+  m_GameObject: {fileID: 2345333205356967983}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1.0000004, z: 1.0000004}
   m_Center: {x: 0, y: 0, z: 0}
@@ -107,10 +107,10 @@ GameObject:
   m_Component:
   - component: {fileID: 7760254045831546594}
   - component: {fileID: -5565852831059870473}
-  - component: {fileID: 2487331676709235423}
-  - component: {fileID: 6031778121361215371}
+  - component: {fileID: 3706422652260208818}
+  - component: {fileID: 5322103318042610771}
   m_Layer: 7
-  m_Name: BitterMilk
+  m_Name: BlueMilkLiquid
   m_TagString: Milk
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -128,7 +128,7 @@ Transform:
   m_LocalScale: {x: 0.54, y: 0.21, z: 0.52}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 879421352293396018}
+  - {fileID: 5657693473646031748}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
@@ -144,8 +144,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edf1df1233f5161439b5c3b86d2493f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <IngredientSO>k__BackingField: {fileID: 11400000, guid: ea4fdd638cf7f7440a67f48c87a0d5fa, type: 2}
---- !u!54 &2487331676709235423
+  <IngredientSO>k__BackingField: {fileID: 11400000, guid: 67ec6e36fb22a934f8f08ed2d2d2a3bd, type: 2}
+--- !u!54 &3706422652260208818
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -161,7 +161,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!65 &6031778121361215371
+--- !u!65 &5322103318042610771
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
