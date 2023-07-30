@@ -36,9 +36,10 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
     //[Header("Ingredients Data")]
     [field: SerializeField] public Transform ingredientHoldPoint { get; private set; }// changing this for an array of 5 points, not deleted yet for testing
     public Ingredient ingredient { get; private set; }
-    public bool hasIngredient;
+    private int currentHoldPointIndex = -1; // keep track of the current HoldPoint index
+    private int numberOfIngredientsHeld = 0; // Keep track of the number of ingredients held
+    private int maxIngredients = 4; // Keep track of the maximum number of ingredients the player can have
     [SerializeField] private Transform[] ingredientHoldPoints; // Array to hold multiple ingredient
-    private List<Ingredient> ingredientsHeld = new List<Ingredient>(); // List to store held ingredients
 
     [HideInInspector] public Rigidbody rb { get; private set; }
     [HideInInspector] public Vector3 curMoveInput;
@@ -116,14 +117,27 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
     {
         selectedStation = baseStation;
 
-       
+    }
+    public int GetNumberOfIngredients()
+    {
+        return numberOfIngredientsHeld;
+    }
 
-       
+    public void IncrementNumberOfIngredients()
+    {
+        numberOfIngredientsHeld++;
+    }
+
+    public Transform GetNextHoldPoint()
+    {
+        // Increment the currentHoldPointIndex and cycle it back to 0 when reaching the end of the array
+        currentHoldPointIndex = (currentHoldPointIndex + 1) % ingredientHoldPoints.Length;
+        return ingredientHoldPoints[currentHoldPointIndex];
     }
 
     public Transform GetIngredientTransform()
     {
-        return ingredientHoldPoint;
+        return GetNextHoldPoint();
     }
 
     public void SetIngredient(Ingredient ingredient)
@@ -155,7 +169,8 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
         floorIngredient.SetIngredientParent(this);
         floorIngredient.DestroyIngredient();
         Ingredient.SpawnIngredient(ingredientSO, this);
-                
+        IncrementNumberOfIngredients();
+
     }
 
 
@@ -166,7 +181,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
 
     public bool HasIngredient()
     {
-        return ingredient != null;
+        return GetNumberOfIngredients() >= maxIngredients;
     }
 
     public void TurnOffIngredientCollider()

@@ -14,7 +14,15 @@ public class IngredientStation : BaseStation
         {
             if (!player.HasIngredient())
             {
+                // Check if the player has already spawned 4 ingredients
+                if (player.GetNumberOfIngredients() >= 4)
+                {
+                    Debug.Log("Max ingredients spawned!");
+                    return;
+                }
+
                 Ingredient.SpawnIngredient(ingredientSO, player);
+                player.IncrementNumberOfIngredients();
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
                 interactParticle.Play();
 

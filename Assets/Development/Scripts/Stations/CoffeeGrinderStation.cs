@@ -69,6 +69,7 @@ public class CoffeeGrinderStation : BaseStation, IHasProgress
                 IngredientSO coffeeGrindSO = GetCoffeeGrind(GetIngredient().GetIngredientSO());
                 GetIngredient().DestroyIngredient();
                 Ingredient.SpawnIngredient(coffeeGrindSO, this);
+                player.IncrementNumberOfIngredients();
             }
         }
     }
