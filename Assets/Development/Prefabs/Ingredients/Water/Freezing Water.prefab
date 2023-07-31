@@ -11,12 +11,12 @@ GameObject:
   - component: {fileID: 7766920374952113409}
   - component: {fileID: 8447922389727469107}
   - component: {fileID: 3426805220492158588}
-  - component: {fileID: 3793948243653179570}
   - component: {fileID: -3729257197691142498}
   - component: {fileID: -1662505126631017286}
-  m_Layer: 0
+  - component: {fileID: 5965315683472148145}
+  m_Layer: 7
   m_Name: Freezing Water
-  m_TagString: Untagged
+  m_TagString: Water
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -86,20 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &3793948243653179570
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8521666416415869944}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &-3729257197691142498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -129,3 +115,16 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!65 &5965315683472148145
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8521666416415869944}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 2.0000002, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
