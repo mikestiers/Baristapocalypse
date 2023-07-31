@@ -33,7 +33,7 @@ public class WaterStation : BaseStation, IHasProgress
         {
             if (player.HasIngredient()) //check if player has ingredient
             {
-                if (player.GetIngredient().CompareTag("Water")) //check if player has milk ingredient
+                if (player.GetIngredient().CompareTag("Milk")) //check if player has milk ingredient
                 {
                     player.GetIngredient().DestroyIngredient(); //destroy ingredient
                 }
