@@ -22,7 +22,7 @@ public class IngredientStation : BaseStation
                 }
 
                 Ingredient.SpawnIngredient(ingredientSO, player);
-                player.IncrementNumberOfIngredients();
+                player.GetNumberOfIngredients();
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
                 interactParticle.Play();
 

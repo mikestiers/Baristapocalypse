@@ -37,6 +37,7 @@ public class PlayerGroundState : PlayerBaseState
         stateMachine.IsGrounded();
         // player movement
         stateMachine.Move(stateMachine.moveSpeed);
+        stateMachine.GetNumberOfIngredients();
 
         //  Pick ingredient from station 
         float interactDistance = 6.0f;

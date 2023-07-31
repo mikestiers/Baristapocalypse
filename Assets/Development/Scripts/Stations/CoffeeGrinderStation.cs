@@ -15,7 +15,7 @@ public class CoffeeGrinderStation : BaseStation, IHasProgress
     {
         if (!HasIngredient())
         {
-            if (player.GetNumberOfIngredients() > 1)
+            if (player.GetNumberOfIngredients() >= 1)
             {
                 foreach (Transform holdPoint in player.ingredientHoldPoints)
                 {

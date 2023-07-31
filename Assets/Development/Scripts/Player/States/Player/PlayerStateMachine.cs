@@ -119,12 +119,20 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
     }
     public int GetNumberOfIngredients()
     {
+        int count = 0;
+        foreach (Transform holdPoint in ingredientHoldPoints)
+        {
+            if (holdPoint.childCount > 0)
+            {
+                Ingredient ingredient = holdPoint.GetChild(0).GetComponent<Ingredient>();
+                if (ingredient != null)
+                {
+                    count++;
+                }
+            }
+        }
+        numberOfIngredientsHeld = count;
         return numberOfIngredientsHeld;
-    }
-
-    public void IncrementNumberOfIngredients()
-    {
-        numberOfIngredientsHeld++;
     }
 
     public Transform GetNextHoldPoint()
@@ -196,7 +204,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
         if (nextHoldPoint != null)
         {
             Ingredient.SpawnIngredient(ingredientSO, this);
-            IncrementNumberOfIngredients();
+            GetNumberOfIngredients();
         }
         else
         {
