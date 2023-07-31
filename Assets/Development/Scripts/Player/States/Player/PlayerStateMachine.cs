@@ -36,10 +36,10 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
     //[Header("Ingredients Data")]
     [field: SerializeField] public Transform ingredientHoldPoint { get; private set; }// changing this for an array of 5 points, not deleted yet for testing
     public Ingredient ingredient { get; private set; }
-    private int currentHoldPointIndex = -1; // keep track of the current HoldPoint index
-    private int numberOfIngredientsHeld = 0; // Keep track of the number of ingredients held
+    public int currentHoldPointIndex = 0; // keep track of the current HoldPoint index
+    public int numberOfIngredientsHeld = 0; // Keep track of the number of ingredients held
     private int maxIngredients = 4; // Keep track of the maximum number of ingredients the player can have
-    [SerializeField] private Transform[] ingredientHoldPoints; // Array to hold multiple ingredient
+    [SerializeField] public Transform[] ingredientHoldPoints; // Array to hold multiple ingredient
 
     [HideInInspector] public Rigidbody rb { get; private set; }
     [HideInInspector] public Vector3 curMoveInput;
@@ -102,7 +102,6 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
 
     }
 
-   
     public void InteractAlt(InputAction.CallbackContext ctx)
     {
         if (selectedStation)
@@ -130,9 +129,17 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
 
     public Transform GetNextHoldPoint()
     {
-        // Increment the currentHoldPointIndex and cycle it back to 0 when reaching the end of the array
-        currentHoldPointIndex = (currentHoldPointIndex + 1) % ingredientHoldPoints.Length;
-        return ingredientHoldPoints[currentHoldPointIndex];
+        for (int i = 0; i < ingredientHoldPoints.Length; i++)
+        {
+            currentHoldPointIndex = (currentHoldPointIndex + 1) % ingredientHoldPoints.Length;
+            if (ingredientHoldPoints[currentHoldPointIndex].childCount == 0)
+            {
+                return ingredientHoldPoints[currentHoldPointIndex];
+            }
+        }
+
+        // If all hold points are occupied, return null
+        return null;
     }
 
     public Transform GetIngredientTransform()
@@ -153,24 +160,49 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
 
     public void ThrowIngedient()
     {
-        TurnOnIngredientCollider();
-        Rigidbody rb = ingredientHoldPoint.GetComponentInChildren<Rigidbody>();
-        ingredientHoldPoint.DetachChildren();
-         
-        rb.isKinematic = false;
-        rb.AddForce(transform.forward * ingredienThrowForce, ForceMode.Impulse);
-      
-        ClearIngredient();
-               
+        for (int i = 0; i < ingredientHoldPoints.Length; i++)
+        {
+            Transform holdPoint = ingredientHoldPoints[i];
+            if (holdPoint.childCount > 0)
+            {
+                // Detach the child (ingredient) from the hold point
+                Transform ingredientTransform = holdPoint.GetChild(0);
+                ingredientTransform.SetParent(null);
+
+                // Enable the collider for the thrown ingredient
+                Collider ingredientCollider = ingredientTransform.GetComponent<Collider>();
+                if (ingredientCollider != null)
+                {
+                    ingredientCollider.enabled = true;
+                }
+
+                // Apply the throw force to the ingredient
+                Rigidbody ingredientRb = ingredientTransform.GetComponent<Rigidbody>();
+                if (ingredientRb != null)
+                {
+                    ingredientRb.isKinematic = false;
+                    ingredientRb.AddForce(transform.forward * ingredienThrowForce, ForceMode.Impulse);
+                }
+            }
+        }
     }
 
     public void GrabIngedientFromFloor(Ingredient floorIngredient,IngredientSO ingredientSO )
     {
         floorIngredient.SetIngredientParent(this);
         floorIngredient.DestroyIngredient();
-        Ingredient.SpawnIngredient(ingredientSO, this);
-        IncrementNumberOfIngredients();
 
+        Transform nextHoldPoint = GetNextHoldPoint();
+        if (nextHoldPoint != null)
+        {
+            Ingredient.SpawnIngredient(ingredientSO, this);
+            IncrementNumberOfIngredients();
+        }
+        else
+        {
+            Debug.Log("Cannot grab more ingredients");
+        }
+       
     }
 
 
@@ -178,22 +210,14 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
     {
         ingredient = null;
     }
+    public void ClearIngredients()
+    {
+       
+    }
 
     public bool HasIngredient()
     {
         return GetNumberOfIngredients() >= maxIngredients;
-    }
-
-    public void TurnOffIngredientCollider()
-    {
-        ingredientCollider = ingredientInstanceHolder.GetComponentInChildren<BoxCollider>();
-        ingredientCollider.enabled = false;
-    }
-
-    public void TurnOnIngredientCollider()
-    {
-        ingredientCollider = ingredientInstanceHolder.GetComponentInChildren<BoxCollider>();
-        ingredientCollider.enabled = true;
     }
 
     public void Show(GameObject visualGameObject)

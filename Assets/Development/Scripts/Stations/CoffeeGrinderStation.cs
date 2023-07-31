@@ -15,24 +15,28 @@ public class CoffeeGrinderStation : BaseStation, IHasProgress
     {
         if (!HasIngredient())
         {
-            if (player.HasIngredient())
+            if (player.GetNumberOfIngredients() > 1)
             {
-                //Place ingredient if able to use at the machine
-                if (HasValidRecipe(player.GetIngredient().GetIngredientSO()))
+                foreach (Transform holdPoint in player.ingredientHoldPoints)
                 {
-                    SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
-                    interactParticle.Play();
-                    player.GetIngredient().SetIngredientParent(this);
-                    grindProgress = 0;
-
-                    CoffeeGrindRecipeSO coffeeGrindRecipeSO = GetCoffeeGrindRecipeSOWithInput(GetIngredient().GetIngredientSO());
-                    OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
+                    Ingredient ingredient = holdPoint.GetComponentInChildren<Ingredient>();
+                    if (ingredient != null && HasValidRecipe(ingredient.GetIngredientSO()))
                     {
-                        progressNormalized = (float)grindProgress / coffeeGrindRecipeSO.grindMax
-                    });
-                }       
+                        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
+                        interactParticle.Play();
+                        ingredient.SetIngredientParent(this);
+                        grindProgress = 0;
+
+                        CoffeeGrindRecipeSO coffeeGrindRecipeSO = GetCoffeeGrindRecipeSOWithInput(ingredient.GetIngredientSO());
+                        OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
+                        {
+                            progressNormalized = (float)grindProgress / coffeeGrindRecipeSO.grindMax
+                        });
+                        break;
+                    }
+                }
+
             }
-            
         }
         else
         {
@@ -69,7 +73,6 @@ public class CoffeeGrinderStation : BaseStation, IHasProgress
                 IngredientSO coffeeGrindSO = GetCoffeeGrind(GetIngredient().GetIngredientSO());
                 GetIngredient().DestroyIngredient();
                 Ingredient.SpawnIngredient(coffeeGrindSO, this);
-                player.IncrementNumberOfIngredients();
             }
         }
     }

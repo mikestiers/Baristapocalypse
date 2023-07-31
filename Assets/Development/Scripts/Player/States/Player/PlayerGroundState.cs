@@ -68,7 +68,7 @@ public class PlayerGroundState : PlayerBaseState
         float floriIteractDistance = 3.0f;
         if (Physics.Raycast(stateMachine.transform.position, stateMachine.transform.forward, out RaycastHit raycastHitIngredient, floriIteractDistance, stateMachine.isIngredientLayer))
         {
-            if (!stateMachine.HasIngredient())
+            if (stateMachine.GetNumberOfIngredients() <= 4)
             {
                 if (raycastHitIngredient.transform.TryGetComponent(out  floorIngredient))
                 {
@@ -79,12 +79,7 @@ public class PlayerGroundState : PlayerBaseState
                 }
             }
         }
-        //if player has/get ingredient turn of ingredient collider
-        if (stateMachine.HasIngredient())
-        {
-            stateMachine.TurnOffIngredientCollider();
-        }
-        
+    
     }
 
     public override void Exit()
@@ -123,14 +118,14 @@ public class PlayerGroundState : PlayerBaseState
 
     public void OnThrow()
     {
-        if (stateMachine.HasIngredient())
+        if (stateMachine.GetNumberOfIngredients() > 0)
         {
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.throwIngredient);
             stateMachine.ThrowIngedient();
-            //stateMachine.SwitchState(new PlayerThrowState(stateMachine));
+
+            stateMachine.numberOfIngredientsHeld = 0;
+
         }
     }
-
-    
 }
 
