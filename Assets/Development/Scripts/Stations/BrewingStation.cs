@@ -64,23 +64,25 @@ public class BrewingStation : BaseStation, IHasProgress
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
             interactParticle.Play();
 
-            foreach (Transform holdPoint in player.ingredientHoldPoints)
+            for (int i = 0; i < player.ingredientHoldPoints.Length; i++)
             {
-                Ingredient ingredient = holdPoint.GetComponentInChildren<Ingredient>();
-                ingredient.SetIngredientParent(player);
-
-                if (TryAddIngredient(player.GetIngredient().GetIngredientSO()) || GetIngredient().GetIngredientSO())
+                Transform holdPoint = player.ingredientHoldPoints[i];
+                if (holdPoint.childCount > 0 )
                 {
-                    player.GetIngredient().DestroyIngredient();
-                    if (ingredientSOList.Count >= numIngredientsNeeded)
+                    Ingredient ingredient = holdPoint.GetComponentInChildren<Ingredient>();
+                    if (TryAddIngredient(ingredient.GetIngredientSO()))
                     {
-                        brewingTimer = 0;
-                        brewing = true;
-
-                        OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
+                        ingredient.DestroyIngredient();
+                        if (ingredientSOList.Count >= numIngredientsNeeded)
                         {
-                            progressNormalized = 0f
-                        });
+                            brewingTimer = 0;
+                            brewing = true;
+
+                            OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
+                            {
+                                progressNormalized = 0f
+                            });
+                        }
                     }
                 }
             }
