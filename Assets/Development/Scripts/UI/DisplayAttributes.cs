@@ -16,6 +16,9 @@ public class DisplayAttributes : MonoBehaviour
     [SerializeField] private Slider spicinessSlider;
     private CoffeeAttributes coffeeAttributes;
     [SerializeField] private CustomerBase customerBase;
+
+    private bool showInUI;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -72,8 +75,12 @@ public class DisplayAttributes : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        textMeshPro.enabled = customerBase.currentState == CustomerBase.CustomerState.Wandering ? true : false;
-        hudOrder.SetActive(customerBase.currentState == CustomerBase.CustomerState.Wandering ? true : false);
-
+        //if (customerBase.currentState == CustomerBase.CustomerState.Ordering && !showInUI)
+        //{
+        //    showInUI = true;
+        //    UIManager.Instance.ShowCustomerUiOrder(customerBase);
+        //}
+        //textMeshPro.enabled = customerBase.currentState == CustomerBase.CustomerState.Ordering ? true : false;
+        //hudOrder.SetActive(customerBase.currentState == CustomerBase.CustomerState.Ordering ? true : false);
     }
 }

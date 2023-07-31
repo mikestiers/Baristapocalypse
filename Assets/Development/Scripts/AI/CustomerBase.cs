@@ -21,13 +21,13 @@ public class CustomerBase : BaseStation
     public enum CustomerState
     {
         //add movetosit when sits are available
-        Wandering, InLine, Ordering, Moving, Leaving, Insit
+        Wandering, InLine, Ordering, Moving, Leaving, Insit, Ordered
     }
 
     public CoffeeAttributes coffeeAttributes;
     [SerializeField] private ParticleSystem interactParticle;
     //Initial State
-    public CustomerState currentState = CustomerState.Wandering;
+    public CustomerState currentState = CustomerState.Moving;
 
     //Waiting In line to order Array
     public GameObject[] Line;
@@ -77,7 +77,9 @@ public class CustomerBase : BaseStation
             if (agent.remainingDistance < distThreshold)
             {
                 agent.isStopped = true;
-                currentState = CustomerState.Wandering;
+                currentState = CustomerState.Ordering;
+                UIManager.Instance.ShowCustomerUiOrder(this);
+                //TODO:  Make these things like SetCustomerState(Ordering)
 
             }
         }
@@ -121,13 +123,14 @@ public class CustomerBase : BaseStation
     public void JustGotHandedCoffee(CoffeeAttributes coffee)
     {
         ScoreTimerManager.Instance.GetScoreComparison(coffee, coffeeAttributes);
+        UIManager.Instance.RemoveCustomerUiOrder(this);
         CustomerLeave();
     }
 
     public override void Interact(PlayerStateMachine player)
     {
         //check customer state
-        if (currentState == CustomerState.Wandering)
+        if (currentState == CustomerState.Ordering)
         {
             //Order();
             C_Manager.Instance.Leaveline();
