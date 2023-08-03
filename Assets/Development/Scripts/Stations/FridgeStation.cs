@@ -39,7 +39,7 @@ public class FridgeStation : BaseStation, IHasProgress
             {
                 Ingredient.SpawnIngredient(currentIngredient, player);
                 curText = text.text;
-                text.text = curText + currentIngredient.ToString(); //Updates text above player with ingredient
+                text.text = curText + "\n" + currentIngredient.ToString(); //Updates text above player with ingredient
                 player.GetNumberOfIngredients();
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
                 interactParticle.Play();
