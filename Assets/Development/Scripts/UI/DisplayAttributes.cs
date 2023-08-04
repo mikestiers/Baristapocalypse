@@ -57,7 +57,7 @@ public class DisplayAttributes : MonoBehaviour
         switch(i)
         {
             case 0:
-                return "no ";
+                return " no ";
             case 1: case 2:
                 return " subtle ";
             case 3: case 4:
@@ -75,12 +75,6 @@ public class DisplayAttributes : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (customerBase.currentState == CustomerBase.CustomerState.Ordering && !showInUI)
-        //{
-        //    showInUI = true;
-        //    UIManager.Instance.ShowCustomerUiOrder(customerBase);
-        //}
         textMeshPro.enabled = customerBase.currentState == CustomerBase.CustomerState.Ordering ? true : false;
-        //hudOrder.SetActive(customerBase.currentState == CustomerBase.CustomerState.Ordering ? true : false);
     }
 }
