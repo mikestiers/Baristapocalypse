@@ -30,7 +30,10 @@ public class C_LineQueuing
         customerList.Add(customer);
 
         customer.Walkto(positionList[customerList.IndexOf(customer)]);
+
+        if (customerList.IndexOf(customer) == 0) customer.frontofLine = true;
     }
+
 
     //Gets the customer at front of queue
     public CustomerBase GetFirstInQueue()
@@ -55,6 +58,7 @@ public class C_LineQueuing
         for (int i = 0; i < customerList.Count; i++)
         {
             customerList[i].Walkto(positionList[i]);
+            if (i == 0) customerList[i].frontofLine = true;
         }
     }
 

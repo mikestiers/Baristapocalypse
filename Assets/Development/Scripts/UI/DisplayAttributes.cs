@@ -44,10 +44,10 @@ public class DisplayAttributes : MonoBehaviour
     {
         StringBuilder sb = new StringBuilder();
         sb.Append("I want ");
-        sb.Append(GetPrefix(coffeeAttributes.GetBitterness()) + "bitterness ");
-        sb.Append(GetPrefix(coffeeAttributes.GetSweetness()) + "sweetness ");
-        sb.Append(GetPrefix(coffeeAttributes.GetStrength()) + "strength ");
-        sb.Append(GetPrefix(coffeeAttributes.GetTemperature()) + "temperature ");
+        sb.Append(GetPrefix(coffeeAttributes.GetBitterness()) + "bitterness,");
+        sb.Append(GetPrefix(coffeeAttributes.GetSweetness()) + "sweetness,");
+        sb.Append(GetPrefix(coffeeAttributes.GetStrength()) + "strength,");
+        sb.Append(GetPrefix(coffeeAttributes.GetTemperature()) + "temperature,");
         sb.Append(GetPrefix(coffeeAttributes.GetSpiciness()) + "spiciness.");
         return sb.ToString();
     }
@@ -65,7 +65,7 @@ public class DisplayAttributes : MonoBehaviour
             case 5: case 6:
                 return " strong ";
             case 7: case 8:
-                return "powerfull ";
+                return " powerful ";
             case 9: case 10:
                 return " potent ";
         }
@@ -80,7 +80,7 @@ public class DisplayAttributes : MonoBehaviour
         //    showInUI = true;
         //    UIManager.Instance.ShowCustomerUiOrder(customerBase);
         //}
-        //textMeshPro.enabled = customerBase.currentState == CustomerBase.CustomerState.Ordering ? true : false;
+        textMeshPro.enabled = customerBase.currentState == CustomerBase.CustomerState.Ordering ? true : false;
         //hudOrder.SetActive(customerBase.currentState == CustomerBase.CustomerState.Ordering ? true : false);
     }
 }
