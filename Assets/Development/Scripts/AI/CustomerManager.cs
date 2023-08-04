@@ -97,13 +97,6 @@ public class CustomerManager : Singleton<CustomerManager>
     private void SpawnCustomer()
     {
         CustomerBase newcustomer = Instantiate(customerPrefab, barEntrance.transform.position, Quaternion.identity);
-
-        newcustomer.coffeeAttributes.AddBitterness(UnityEngine.Random.Range(0, 10 + 1));
-        newcustomer.coffeeAttributes.AddSpiciness(UnityEngine.Random.Range(0, 10 + 1));
-        newcustomer.coffeeAttributes.AddStrength(UnityEngine.Random.Range(0, 10 + 1));
-        newcustomer.coffeeAttributes.AddSweetness(UnityEngine.Random.Range(0, 10 + 1));
-        newcustomer.coffeeAttributes.AddTemperature(UnityEngine.Random.Range(0, 10 + 1));
-
         customersOutsideList.Add(newcustomer);
     }
 

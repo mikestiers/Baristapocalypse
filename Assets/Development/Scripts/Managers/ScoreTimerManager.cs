@@ -52,7 +52,9 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
         Time.timeScale = 0f;
     }
 
-  /*  public void GetScoreComparison(CoffeeAttributes coffeeAttributes, CoffeeAttributes customerAttributes)
+  /*  I Quoted this out cuz i moved it to customer reactions in customerbase.cs
+    
+    public void GetScoreComparison(CoffeeAttributes coffeeAttributes, CoffeeAttributes customerAttributes)
     {
         
         int result = 0;
