@@ -9,8 +9,11 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 [DefaultExecutionOrder(-1)]
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
+    public delegate void PlayerSpawnHandler();
+
+    public static event PlayerSpawnHandler OnPlayersSpawned;
     //Input Events
     public Vector2 MovementValue { get; private set; }
     
@@ -37,11 +40,6 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     public PlayerInput playerInput;
 
-    private void Awake()
-    {
-        DontDestroyOnLoad(this.gameObject);
-    }
-
     private void Start()
     {
         playerInput = new PlayerInput();
@@ -62,22 +60,18 @@ public class GameManager : MonoBehaviour
             {
                 if (player1Active == true)
                 {
-                    GameObject.FindGameObjectWithTag("LevelSpawnpoint").gameObject.SetActive(true);
                     GameObject player1 = Instantiate(prefabPlayer1, GameObject.FindGameObjectWithTag("LevelSpawnpoint").GetComponent<LevelSpawnpoints>().spawnpointPlayer1);
                 }
                 if (player2Active == true)
                 {
-                    GameObject.FindGameObjectWithTag("LevelSpawnpoint").gameObject.SetActive(true);
                     GameObject player2 = Instantiate(prefabPlayer2, GameObject.FindGameObjectWithTag("LevelSpawnpoint").GetComponent<LevelSpawnpoints>().spawnpointPlayer2);
                 }
                 if (player3Active == true)
                 {
-                    GameObject.FindGameObjectWithTag("LevelSpawnpoint").gameObject.SetActive(true);
                     GameObject player3 = Instantiate(prefabPlayer3, GameObject.FindGameObjectWithTag("LevelSpawnpoint").GetComponent<LevelSpawnpoints>().spawnpointPlayer3);
                 }
                 if (player4Active == true)
                 {
-                    GameObject.FindGameObjectWithTag("LevelSpawnpoint").gameObject.SetActive(true);
                     GameObject player4 = Instantiate(prefabPlayer4, GameObject.FindGameObjectWithTag("LevelSpawnpoint").GetComponent<LevelSpawnpoints>().spawnpointPlayer4);
                 }
                 hasSpawnedAllPlayers = true;
