@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using System;
 
 
-public class C_LineQueuing
+public class CustomerLineQueuing
 {
     private List<Vector3> positionList;
     private List<CustomerBase> customerList;
@@ -14,7 +14,7 @@ public class C_LineQueuing
     
 
     //sorry if it seam all over the place -> no worries madood its all good
-    public C_LineQueuing(List<Vector3> positionList)
+    public CustomerLineQueuing(List<Vector3> positionList)
     {
         this.positionList = positionList;
         customerList = new List<CustomerBase>();
@@ -31,7 +31,7 @@ public class C_LineQueuing
 
         customer.Walkto(positionList[customerList.IndexOf(customer)]);
 
-        if (customerList.IndexOf(customer) == 0) customer.frontofLine = true;
+        if(customerList.IndexOf(customer) == 0) customer.frontofLine = true;
     }
 
 
@@ -58,7 +58,7 @@ public class C_LineQueuing
         for (int i = 0; i < customerList.Count; i++)
         {
             customerList[i].Walkto(positionList[i]);
-            if (i == 0) customerList[i].frontofLine = true;
+            if(i == 0) customerList[i].frontofLine = true;
         }
     }
 

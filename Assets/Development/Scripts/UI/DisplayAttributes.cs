@@ -76,5 +76,6 @@ public class DisplayAttributes : MonoBehaviour
     void Update()
     {
         textMeshPro.enabled = customerBase.currentState == CustomerBase.CustomerState.Ordering ? true : false;
+        hudOrder.SetActive(customerBase.currentState == CustomerBase.CustomerState.Ordering ? true : false);
     }
 }

@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SocialPlatforms.Impl;
+using static UnityEngine.EventSystems.EventTrigger;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class CustomerBase : BaseStation
@@ -13,16 +16,15 @@ public class CustomerBase : BaseStation
     //public Transform target;
     public NavMeshAgent agent;
     private Transform exit;
+    public bool frontofLine;
 
     public float distThreshold;
-    public bool frontofLine;
 
     public static CustomerBase Instance { get; private set; }
 
     public enum CustomerState
     {
         //add movetosit when sits are available
-        //Wandering, InLine, Ordering, Moving, Leaving, Insit, Ordered
         Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init
     }
 
@@ -57,7 +59,7 @@ public class CustomerBase : BaseStation
     public virtual void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        exit = C_Manager.Instance.GetExit();
+        exit = CustomerManager.Instance.GetExit();
 
         if (distThreshold <= 0) distThreshold = 0.5f;
     }
@@ -71,7 +73,7 @@ public class CustomerBase : BaseStation
 
         if (currentState == CustomerState.Insit)
         {
-            Invoke("CustomerLeave", 60f);
+            
         }
 
         if (currentState == CustomerState.Moving)
@@ -79,7 +81,6 @@ public class CustomerBase : BaseStation
             if (agent.remainingDistance < distThreshold)
             {
                 agent.isStopped = true;
-
                 if (frontofLine == true)
                 {
                     //TODO:  Make these things like SetCustomerState(Ordering)
@@ -92,6 +93,7 @@ public class CustomerBase : BaseStation
             }
         }
 
+      
         if(currentState == CustomerState.Leaving)
         {
             if(agent.remainingDistance < distThreshold)
@@ -106,9 +108,7 @@ public class CustomerBase : BaseStation
     //UI displays attributes
     public virtual void Order()
     {
-        //UI - customer waiting for Player to hear order
-        //Order
-        //some other timer? them we could puit that in an invoke then make it leave
+        Invoke("CustomerLeave", 60f);
     }
 
 
@@ -130,9 +130,7 @@ public class CustomerBase : BaseStation
 
     public void JustGotHandedCoffee(CoffeeAttributes coffee)
     {
-        ScoreTimerManager.Instance.GetScoreComparison(coffee, coffeeAttributes);
-        UIManager.Instance.RemoveCustomerUiOrder(this);
-        CustomerLeave();
+        CustomerReaction(coffee, coffeeAttributes);
     }
 
     public override void Interact(PlayerStateMachine player)
@@ -140,8 +138,8 @@ public class CustomerBase : BaseStation
         //check customer state
         if (currentState == CustomerState.Ordering)
         {
-            //Order();
-            C_Manager.Instance.Leaveline();
+            Order();
+            CustomerManager.Instance.Leaveline();
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
             interactParticle.Play();
         }
@@ -161,6 +159,70 @@ public class CustomerBase : BaseStation
             }
         }
 
-        
     }
+
+    private void CustomerReaction(CoffeeAttributes coffeeAttributes, CoffeeAttributes customerAttributes)
+    {
+        int result = 0;
+        result += (Mathf.Abs(coffeeAttributes.GetSweetness() - customerAttributes.GetSweetness()) <= 5) ? 1 : -1;
+        result += (Mathf.Abs(coffeeAttributes.GetBitterness() - customerAttributes.GetBitterness()) <= 5) ? 1 : -1;
+        result += (Mathf.Abs(coffeeAttributes.GetSpiciness() - customerAttributes.GetSpiciness()) <= 5) ? 1 : -1;
+        result += (Mathf.Abs(coffeeAttributes.GetTemperature() - customerAttributes.GetTemperature()) <= 5) ? 1 : -1;
+        result += (Mathf.Abs(coffeeAttributes.GetStrength() - customerAttributes.GetStrength()) <= 5) ? 1 : -1;
+
+        ScoreTimerManager.Instance.score += result;
+
+        switch (result)
+        {
+            case 5:
+
+                Perfect();
+                ScoreTimerManager.Instance.score += result;
+                CustomerLeave();
+
+                break;
+            case 4:
+            case 3:
+            case 2:
+            case 1:
+
+                CustomerLeave();
+
+                break;
+
+            case -1:
+            case -2:
+
+                Reorder();
+                CancelInvoke("CustsomerLeave");
+                Order();
+
+                break;
+
+            case -3:
+            case -4:
+            case -5:
+
+                Angry();
+                ScoreTimerManager.Instance.score += result;
+                CustomerLeave();
+
+                break;
+        }
+    }
+
+    private void Angry()
+    {
+        Debug.Log("the customer is not happy with the serving");
+    }
+    private void Perfect()
+    {
+        Debug.Log("you did great!");
+    }
+    private void Reorder()
+    {
+        Debug.Log("customer is not happy with the serving and wants you to try again");
+    }
+
+
 }
