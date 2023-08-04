@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
 
 [RequireComponent(typeof(Rigidbody))]
@@ -50,6 +51,10 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
     
     // Components
     [field: SerializeField] public InputManager inputManager { get; private set; }
+
+    //UI
+    public TextMeshPro text;
+
 
     private void Awake()
     {
@@ -173,6 +178,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
             Transform holdPoint = ingredientHoldPoints[i];
             if (holdPoint.childCount > 0)
             {
+                
                 // Detach the child (ingredient) from the hold point
                 Transform ingredientTransform = holdPoint.GetChild(0);
                 ingredientTransform.SetParent(null);
@@ -191,6 +197,8 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
                     ingredientRb.isKinematic = false;
                     ingredientRb.AddForce(transform.forward * ingredienThrowForce, ForceMode.Impulse);
                 }
+                text.SetText("");
+                
             }
         }
     }
