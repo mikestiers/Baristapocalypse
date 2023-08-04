@@ -18,28 +18,28 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
     [field: SerializeField] public float jumpForce { get; private set; }
     [field: SerializeField] public float ingredienThrowForce { get; private set; }
     
-
     //[Header("Ground Check")]
     [field: SerializeField] public LayerMask isGroundLayer { get; private set; }
     [field: SerializeField] public float groundCheckRadius { get; private set; }
     [field: SerializeField] public Transform groundCheck { get; private set; }
-    [field: SerializeField] public bool isGrounded;
-    [field: SerializeField] public float dashForce;
-    [field: SerializeField] public float dashTime;
-
-
+    [HideInInspector] public bool isGrounded;
+    [SerializeField] public float dashForce;
+    [SerializeField] public float dashTime;
 
     //[Header("Interactables")]
     [field: SerializeField] public LayerMask isStationLayer { get; private set; }
     [field: SerializeField] public LayerMask isIngredientLayer { get; private set; }
     [HideInInspector] public BaseStation selectedStation { get; private set; }
     [HideInInspector] public Collider ingredientCollider;
-    [field: SerializeField] public GameObject ingredientInstanceHolder;
+    public GameObject ingredientInstanceHolder;
 
-    [field: SerializeField] public Transform ingredientHoldPoint { get; private set; }
-    [HideInInspector] public Ingredient ingredient { get; private set; }
-    [field: SerializeField] public bool hasIngredient;
-
+    //[Header("Ingredients Data")]
+    [field: SerializeField] public Transform ingredientHoldPoint { get; private set; }// changing this for an array of 5 points, not deleted yet for testing
+    public Ingredient ingredient { get; private set; }
+    public int currentHoldPointIndex = 0; // keep track of the current HoldPoint index
+    public int numberOfIngredientsHeld = 0; // Keep track of the number of ingredients held
+    private int maxIngredients = 4; // Keep track of the maximum number of ingredients the player can have
+    [SerializeField] public Transform[] ingredientHoldPoints; // Array to hold multiple ingredient
 
     [HideInInspector] public Rigidbody rb { get; private set; }
     [HideInInspector] public Vector3 curMoveInput;
@@ -54,8 +54,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
     private void Awake()
     {
         if (Instance != null ) 
-            Debug.LogError("There is more than one player instance"); 
-        
+              
         Instance = this;
     }
 
@@ -73,11 +72,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
         if (ingredienThrowForce <= 0) ingredienThrowForce = 10f;
         if (groundCheckRadius <= 0) groundCheckRadius = 0.05f;
         
-
         SwitchState(new PlayerGroundState(this)); // Start player state
-
-        
-
     }
 
     
@@ -89,7 +84,6 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
 
     public void Move(float moveSpeed)
     {
-        
         if (inputManager.moveDir == Vector3.zero) return;
         curMoveInput = inputManager.moveDir * moveSpeed * Time.deltaTime;
         transform.forward = inputManager.moveDir;
@@ -108,7 +102,6 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
 
     }
 
-   
     public void InteractAlt(InputAction.CallbackContext ctx)
     {
         if (selectedStation)
@@ -123,14 +116,43 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
     {
         selectedStation = baseStation;
 
-       
+    }
+    public int GetNumberOfIngredients()
+    {
+        int count = 0;
+        foreach (Transform holdPoint in ingredientHoldPoints)
+        {
+            if (holdPoint.childCount > 0)
+            {
+                Ingredient ingredient = holdPoint.GetChild(0).GetComponent<Ingredient>();
+                if (ingredient != null)
+                {
+                    count++;
+                }
+            }
+        }
+        numberOfIngredientsHeld = count;
+        return numberOfIngredientsHeld;
+    }
 
-       
+    public Transform GetNextHoldPoint()
+    {
+        for (int i = 0; i < ingredientHoldPoints.Length; i++)
+        {
+            currentHoldPointIndex = (currentHoldPointIndex + 1) % ingredientHoldPoints.Length;
+            if (ingredientHoldPoints[currentHoldPointIndex].childCount == 0)
+            {
+                return ingredientHoldPoints[currentHoldPointIndex];
+            }
+        }
+
+        // If all hold points are occupied, return null
+        return null;
     }
 
     public Transform GetIngredientTransform()
     {
-        return ingredientHoldPoint;
+        return GetNextHoldPoint();
     }
 
     public void SetIngredient(Ingredient ingredient)
@@ -146,23 +168,49 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
 
     public void ThrowIngedient()
     {
-        TurnOnIngredientCollider();
-        Rigidbody rb = ingredientHoldPoint.GetComponentInChildren<Rigidbody>();
-        ingredientHoldPoint.DetachChildren();
-         
-        rb.isKinematic = false;
-        rb.AddForce(transform.forward * ingredienThrowForce, ForceMode.Impulse);
-      
-        ClearIngredient();
-               
+        for (int i = 0; i < ingredientHoldPoints.Length; i++)
+        {
+            Transform holdPoint = ingredientHoldPoints[i];
+            if (holdPoint.childCount > 0)
+            {
+                // Detach the child (ingredient) from the hold point
+                Transform ingredientTransform = holdPoint.GetChild(0);
+                ingredientTransform.SetParent(null);
+
+                // Enable the collider for the thrown ingredient
+                Collider ingredientCollider = ingredientTransform.GetComponent<Collider>();
+                if (ingredientCollider != null)
+                {
+                    ingredientCollider.enabled = true;
+                }
+
+                // Apply the throw force to the ingredient
+                Rigidbody ingredientRb = ingredientTransform.GetComponent<Rigidbody>();
+                if (ingredientRb != null)
+                {
+                    ingredientRb.isKinematic = false;
+                    ingredientRb.AddForce(transform.forward * ingredienThrowForce, ForceMode.Impulse);
+                }
+            }
+        }
     }
 
     public void GrabIngedientFromFloor(Ingredient floorIngredient,IngredientSO ingredientSO )
     {
         floorIngredient.SetIngredientParent(this);
         floorIngredient.DestroyIngredient();
-        Ingredient.SpawnIngredient(ingredientSO, this);
-                
+
+        Transform nextHoldPoint = GetNextHoldPoint();
+        if (nextHoldPoint != null)
+        {
+            Ingredient.SpawnIngredient(ingredientSO, this);
+            GetNumberOfIngredients();
+        }
+        else
+        {
+            Debug.Log("Cannot grab more ingredients");
+        }
+       
     }
 
 
@@ -170,22 +218,14 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
     {
         ingredient = null;
     }
+    public void ClearIngredients()
+    {
+       
+    }
 
     public bool HasIngredient()
     {
-        return ingredient != null;
-    }
-
-    public void TurnOffIngredientCollider()
-    {
-        ingredientCollider = ingredientInstanceHolder.GetComponentInChildren<BoxCollider>();
-        ingredientCollider.enabled = false;
-    }
-
-    public void TurnOnIngredientCollider()
-    {
-        ingredientCollider = ingredientInstanceHolder.GetComponentInChildren<BoxCollider>();
-        ingredientCollider.enabled = true;
+        return GetNumberOfIngredients() >= maxIngredients;
     }
 
     public void Show(GameObject visualGameObject)

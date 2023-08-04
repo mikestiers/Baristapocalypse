@@ -34,6 +34,7 @@ public class FridgeStation : BaseStation, IHasProgress
             else
             {
                 Ingredient.SpawnIngredient(currentIngredient, player);
+                player.GetNumberOfIngredients();
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
                 interactParticle.Play();
             }

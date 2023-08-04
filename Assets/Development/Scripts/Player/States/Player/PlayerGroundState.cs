@@ -37,6 +37,7 @@ public class PlayerGroundState : PlayerBaseState
         stateMachine.IsGrounded();
         // player movement
         stateMachine.Move(stateMachine.moveSpeed);
+        stateMachine.GetNumberOfIngredients();
 
         //  Pick ingredient from station 
         float interactDistance = 6.0f;
@@ -55,7 +56,6 @@ public class PlayerGroundState : PlayerBaseState
             else
             {
                 stateMachine.SetSelectedStation(null);
-                
             }
         }
         else
@@ -69,24 +69,18 @@ public class PlayerGroundState : PlayerBaseState
         float floriIteractDistance = 3.0f;
         if (Physics.Raycast(stateMachine.transform.position, stateMachine.transform.forward, out RaycastHit raycastHitIngredient, floriIteractDistance, stateMachine.isIngredientLayer))
         {
-            if (!stateMachine.HasIngredient())
+            if (stateMachine.GetNumberOfIngredients() <= 4)
             {
                 if (raycastHitIngredient.transform.TryGetComponent(out  floorIngredient))
                 {
                     ingredienSO = floorIngredient.IngredientSO;
 
-                    if(mouse.leftButton.wasPressedThisFrame)
+                    if (mouse.leftButton.wasPressedThisFrame)
                         stateMachine.GrabIngedientFromFloor(floorIngredient, ingredienSO);
                 }
             }
         }
-        //if player has/get ingredient
-        if (stateMachine.HasIngredient())
-        {
-            stateMachine.TurnOffIngredientCollider();
-
-        }
-        
+    
     }
 
     public override void Exit()
@@ -94,10 +88,7 @@ public class PlayerGroundState : PlayerBaseState
         stateMachine.inputManager.JumpEvent -= OnJump;
         stateMachine.inputManager.DashEvent -= OnDash;
         stateMachine.inputManager.ThrowEvent -= OnThrow;
-        
     }
-    
-
 
     public void OnJump()
     {
@@ -105,14 +96,12 @@ public class PlayerGroundState : PlayerBaseState
 
         stateMachine.SwitchState(new PlayerJumpingState(stateMachine));
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.jump);
-
     }
 
     public void OnDash()
     {
         stateMachine.StartCoroutine(Dash());
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
-
     }
 
     IEnumerator Dash()
@@ -130,14 +119,14 @@ public class PlayerGroundState : PlayerBaseState
 
     public void OnThrow()
     {
-        if (stateMachine.HasIngredient())
+        if (stateMachine.GetNumberOfIngredients() > 0)
         {
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.throwIngredient);
             stateMachine.ThrowIngedient();
-            //stateMachine.SwitchState(new PlayerThrowState(stateMachine));
+
+            stateMachine.numberOfIngredientsHeld = 0;
+
         }
     }
-
-    
 }
 
