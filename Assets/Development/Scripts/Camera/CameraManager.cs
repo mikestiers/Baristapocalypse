@@ -19,7 +19,7 @@ public class CameraManager : MonoBehaviour
 
     private void Start()
     {
-
+        cam = GetComponent<Camera>();
     }
 
     private void Update()
@@ -27,17 +27,7 @@ public class CameraManager : MonoBehaviour
         if (hasListShrunk == false)
         {
             // Iterate through the list in reverse to avoid index issues when removing elements.
-            for (int i = targets.Count - 1; i >= 0; i--)
-            {
-                Transform transform = targets[i];
-
-                // Check if the GameObject is not active in the scene.
-                if (!transform.gameObject.activeSelf)
-                {
-                    // Remove the GameObject from the list.
-                    targets.RemoveAt(i);
-                }
-            }
+            targets.RemoveAll(target => !target.gameObject.activeSelf);
             hasListShrunk = true;
         }
     }
