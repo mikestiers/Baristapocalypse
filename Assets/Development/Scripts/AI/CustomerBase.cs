@@ -15,19 +15,21 @@ public class CustomerBase : BaseStation
     private Transform exit;
 
     public float distThreshold;
+    public bool frontofLine;
 
     public static CustomerBase Instance { get; private set; }
 
     public enum CustomerState
     {
         //add movetosit when sits are available
-        Wandering, InLine, Ordering, Moving, Leaving, Insit
+        //Wandering, InLine, Ordering, Moving, Leaving, Insit, Ordered
+        Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init
     }
 
     public CoffeeAttributes coffeeAttributes;
     [SerializeField] private ParticleSystem interactParticle;
     //Initial State
-    public CustomerState currentState = CustomerState.Wandering;
+    public CustomerState currentState = CustomerState.Init;
 
     //Waiting In line to order Array
     public GameObject[] Line;
@@ -77,8 +79,16 @@ public class CustomerBase : BaseStation
             if (agent.remainingDistance < distThreshold)
             {
                 agent.isStopped = true;
-                currentState = CustomerState.Wandering;
 
+                if (frontofLine == true)
+                {
+                    //TODO:  Make these things like SetCustomerState(Ordering)
+                    currentState = CustomerState.Ordering;
+                    UIManager.Instance.ShowCustomerUiOrder(this);
+                    return;
+                }
+                else
+                    currentState = CustomerState.Waiting;
             }
         }
 
@@ -121,13 +131,14 @@ public class CustomerBase : BaseStation
     public void JustGotHandedCoffee(CoffeeAttributes coffee)
     {
         ScoreTimerManager.Instance.GetScoreComparison(coffee, coffeeAttributes);
+        UIManager.Instance.RemoveCustomerUiOrder(this);
         CustomerLeave();
     }
 
     public override void Interact(PlayerStateMachine player)
     {
         //check customer state
-        if (currentState == CustomerState.Wandering)
+        if (currentState == CustomerState.Ordering)
         {
             //Order();
             C_Manager.Instance.Leaveline();
