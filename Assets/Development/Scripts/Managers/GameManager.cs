@@ -16,6 +16,11 @@ public class GameManager : MonoBehaviour
     
     public GameState gameState = GameState.RUNNING;
 
+    public GameObject prefabPlayer1;
+    public GameObject prefabPlayer2;
+    public GameObject prefabPlayer3;
+    public GameObject prefabPlayer4;
+
     //spawn players if button was pressed in main menu
     public bool player1Active = false;
     public bool player2Active = false;
@@ -57,19 +62,23 @@ public class GameManager : MonoBehaviour
             {
                 if (player1Active == true)
                 {
-                    GameObject.FindGameObjectWithTag("Player").gameObject.SetActive(true);
+                    GameObject.FindGameObjectWithTag("LevelSpawnpoint").gameObject.SetActive(true);
+                    GameObject player1 = Instantiate(prefabPlayer1, GameObject.FindGameObjectWithTag("LevelSpawnpoint").GetComponent<LevelSpawnpoints>().spawnpointPlayer1);
                 }
                 if (player2Active == true)
                 {
-                    GameObject.FindGameObjectWithTag("Player2").gameObject.SetActive(true);
+                    GameObject.FindGameObjectWithTag("LevelSpawnpoint").gameObject.SetActive(true);
+                    GameObject player2 = Instantiate(prefabPlayer2, GameObject.FindGameObjectWithTag("LevelSpawnpoint").GetComponent<LevelSpawnpoints>().spawnpointPlayer2);
                 }
                 if (player3Active == true)
                 {
-                    GameObject.FindGameObjectWithTag("Player3").gameObject.SetActive(true);
+                    GameObject.FindGameObjectWithTag("LevelSpawnpoint").gameObject.SetActive(true);
+                    GameObject player3 = Instantiate(prefabPlayer3, GameObject.FindGameObjectWithTag("LevelSpawnpoint").GetComponent<LevelSpawnpoints>().spawnpointPlayer3);
                 }
                 if (player4Active == true)
                 {
-                    GameObject.FindGameObjectWithTag("Player4").gameObject.SetActive(true);
+                    GameObject.FindGameObjectWithTag("LevelSpawnpoint").gameObject.SetActive(true);
+                    GameObject player4 = Instantiate(prefabPlayer4, GameObject.FindGameObjectWithTag("LevelSpawnpoint").GetComponent<LevelSpawnpoints>().spawnpointPlayer4);
                 }
                 hasSpawnedAllPlayers = true;
             }

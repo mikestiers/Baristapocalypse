@@ -15,7 +15,7 @@ public class CameraManager : MonoBehaviour
     private Vector3 velocity;
     private Camera cam;
 
-    private bool hasListShrunk;
+    private bool hasListShrunk = false;
 
     private void Start()
     {
@@ -24,14 +24,7 @@ public class CameraManager : MonoBehaviour
 
     private void Update()
     {
-
-    }
-
-    private void LateUpdate()
-    {
-        if(targets.Count <= 0) return;
-
-        if(hasListShrunk == false)
+        if (hasListShrunk == false)
         {
             // Iterate through the list in reverse to avoid index issues when removing elements.
             for (int i = targets.Count - 1; i >= 0; i--)
@@ -45,7 +38,13 @@ public class CameraManager : MonoBehaviour
                     targets.RemoveAt(i);
                 }
             }
+            hasListShrunk = true;
         }
+    }
+
+    private void LateUpdate()
+    {
+        if(targets.Count <= 0) return;
 
         Move();
         Zoom();
