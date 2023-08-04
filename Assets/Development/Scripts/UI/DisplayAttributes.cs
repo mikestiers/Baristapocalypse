@@ -16,6 +16,9 @@ public class DisplayAttributes : MonoBehaviour
     [SerializeField] private Slider spicinessSlider;
     private CoffeeAttributes coffeeAttributes;
     [SerializeField] private CustomerBase customerBase;
+
+    private bool showInUI;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -41,10 +44,10 @@ public class DisplayAttributes : MonoBehaviour
     {
         StringBuilder sb = new StringBuilder();
         sb.Append("I want ");
-        sb.Append(GetPrefix(coffeeAttributes.GetBitterness()) + "bitterness ");
-        sb.Append(GetPrefix(coffeeAttributes.GetSweetness()) + "sweetness ");
-        sb.Append(GetPrefix(coffeeAttributes.GetStrength()) + "strength ");
-        sb.Append(GetPrefix(coffeeAttributes.GetTemperature()) + "temperature ");
+        sb.Append(GetPrefix(coffeeAttributes.GetBitterness()) + "bitterness,");
+        sb.Append(GetPrefix(coffeeAttributes.GetSweetness()) + "sweetness,");
+        sb.Append(GetPrefix(coffeeAttributes.GetStrength()) + "strength,");
+        sb.Append(GetPrefix(coffeeAttributes.GetTemperature()) + "temperature,");
         sb.Append(GetPrefix(coffeeAttributes.GetSpiciness()) + "spiciness.");
         return sb.ToString();
     }
@@ -54,7 +57,7 @@ public class DisplayAttributes : MonoBehaviour
         switch(i)
         {
             case 0:
-                return "no ";
+                return " no ";
             case 1: case 2:
                 return " subtle ";
             case 3: case 4:
@@ -62,7 +65,7 @@ public class DisplayAttributes : MonoBehaviour
             case 5: case 6:
                 return " strong ";
             case 7: case 8:
-                return "powerfull ";
+                return " powerful ";
             case 9: case 10:
                 return " potent ";
         }
@@ -74,6 +77,5 @@ public class DisplayAttributes : MonoBehaviour
     {
         textMeshPro.enabled = customerBase.currentState == CustomerBase.CustomerState.Ordering ? true : false;
         hudOrder.SetActive(customerBase.currentState == CustomerBase.CustomerState.Ordering ? true : false);
-
     }
 }

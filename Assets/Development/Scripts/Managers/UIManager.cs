@@ -32,8 +32,9 @@ public class UIManager : Singleton<UIManager>
     public TextMeshProUGUI gameOverText;
     public TextMeshProUGUI finalScore;
 
-
-
+    [Header("Orders")]
+    public Transform ordersPanel;
+    public GameObject ordersUiPrefab;
 
     // Start is called before the first frame update
     private void Start()
@@ -114,6 +115,29 @@ public class UIManager : Singleton<UIManager>
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         mainMenu.SetActive(false);
         settingsMenu.SetActive(true);
+    }
+
+    public void ShowCustomerUiOrder(CustomerBase customer)
+    {
+        OrderStats o = Instantiate(ordersUiPrefab, ordersPanel).GetComponent<OrderStats>();
+        o.Initialize(customer);
+    }
+
+    public void RemoveCustomerUiOrder(CustomerBase customer)
+    {
+        // TODO: Add ingredients
+        foreach (Transform t in ordersPanel)
+        {
+            OrderStats o = t.GetComponent<OrderStats>();
+            if (o != null)
+            {
+                if (o.GetOrderOwner() == customer)
+                {
+                    Destroy(t.gameObject);
+                    return;
+                }
+            }
+        }
     }
 
     // Update is called once per frame

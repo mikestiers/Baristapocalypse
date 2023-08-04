@@ -81,14 +81,15 @@ public class CustomerBase : BaseStation
             if (agent.remainingDistance < distThreshold)
             {
                 agent.isStopped = true;
-                if(frontofLine == true)
+                if (frontofLine == true)
                 {
+                    //TODO:  Make these things like SetCustomerState(Ordering)
                     currentState = CustomerState.Ordering;
+                    UIManager.Instance.ShowCustomerUiOrder(this);
                     return;
                 }
                 else
-                currentState = CustomerState.Waiting;
-
+                    currentState = CustomerState.Waiting;
             }
         }
 

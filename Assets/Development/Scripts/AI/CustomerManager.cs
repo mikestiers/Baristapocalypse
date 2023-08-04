@@ -9,6 +9,7 @@ public class CustomerManager : Singleton<CustomerManager>
     public Transform barEntrance;
     [SerializeField] private Transform exit;
     public float delay = 8.0f;
+    public int numberOfCustomers = 5;
     public CustomerBase customerPrefab;
 
     private List<CustomerBase> customersOutsideList = new List<CustomerBase>();
@@ -30,7 +31,7 @@ public class CustomerManager : Singleton<CustomerManager>
         //where the firstposition is located in scene
         Vector3 firstposition = new Vector3(Counter.position.x, 0, Counter.position.z);
         float positionSize = 2f;
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < numberOfCustomers; i++)
         {
             waitingQueuePostionList.Add(firstposition + new Vector3(0, 0 , 1f) * positionSize * i);
         }

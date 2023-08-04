@@ -34,6 +34,7 @@ public class CustomerLineQueuing
         if(customerList.IndexOf(customer) == 0) customer.frontofLine = true;
     }
 
+
     //Gets the customer at front of queue
     public CustomerBase GetFirstInQueue()
     {
