@@ -52,7 +52,7 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
         Time.timeScale = 0f;
     }
 
-    public void GetScoreComparison(CoffeeAttributes coffeeAttributes, CoffeeAttributes customerAttributes)
+  /*  public void GetScoreComparison(CoffeeAttributes coffeeAttributes, CoffeeAttributes customerAttributes)
     {
         
         int result = 0;
@@ -78,4 +78,5 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
         }
         score += result;
     }
+  */
 }
