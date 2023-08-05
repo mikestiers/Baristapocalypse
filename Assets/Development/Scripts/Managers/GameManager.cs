@@ -11,27 +11,16 @@ using UnityEngine.SceneManagement;
 [DefaultExecutionOrder(-1)]
 public class GameManager : Singleton<GameManager>
 {
-    public delegate void PlayerSpawnHandler();
-
-    public static event PlayerSpawnHandler OnPlayersSpawned;
     //Input Events
     public Vector2 MovementValue { get; private set; }
     
     public GameState gameState = GameState.RUNNING;
-
-    public GameObject prefabPlayer1;
-    public GameObject prefabPlayer2;
-    public GameObject prefabPlayer3;
-    public GameObject prefabPlayer4;
 
     //spawn players if button was pressed in main menu
     public bool player1Active = false;
     public bool player2Active = false;
     public bool player3Active = false;
     public bool player4Active = false;
-
-    // check if we have called the funtion to spawn all players
-    private bool hasSpawnedAllPlayers = false;
 
     //player movement input
     [HideInInspector] public Vector3 moveDir;
@@ -40,43 +29,30 @@ public class GameManager : Singleton<GameManager>
     [HideInInspector]
     public PlayerInput playerInput;
 
+    public delegate void PlayerSpawnHandler(bool player1Active, bool player2Active, bool player3Active, bool player4Active);
+
+    public static event PlayerSpawnHandler OnPlayersSpawned;
+
+    public void SpawnPlayers(bool player1Active, bool player2Active, bool player3Active, bool player4Active)
+    {
+        if (OnPlayersSpawned != null)
+        {
+            OnPlayersSpawned(player1Active,player2Active,player3Active,player4Active);
+        }
+    }
+
+    private void OnSceneChanged(Scene currentScene, Scene nextScene)
+    {
+        if (nextScene.name == "WhiteBox")
+        {
+            SpawnPlayers(player1Active, player2Active, player3Active, player4Active);
+        }
+    }
+
     private void Start()
     {
         playerInput = new PlayerInput();
         playerInput.Player.Enable();
-        
-    }
-
-    private void Update()
-    {
-
-        if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("WhiteBox"))
-        {
-            if (hasSpawnedAllPlayers == true)
-            {
-                return;
-            }
-            else
-            {
-                if (player1Active == true)
-                {
-                    GameObject player1 = Instantiate(prefabPlayer1, GameObject.FindGameObjectWithTag("LevelSpawnpoint").GetComponent<LevelSpawnpoints>().spawnpointPlayer1);
-                }
-                if (player2Active == true)
-                {
-                    GameObject player2 = Instantiate(prefabPlayer2, GameObject.FindGameObjectWithTag("LevelSpawnpoint").GetComponent<LevelSpawnpoints>().spawnpointPlayer2);
-                }
-                if (player3Active == true)
-                {
-                    GameObject player3 = Instantiate(prefabPlayer3, GameObject.FindGameObjectWithTag("LevelSpawnpoint").GetComponent<LevelSpawnpoints>().spawnpointPlayer3);
-                }
-                if (player4Active == true)
-                {
-                    GameObject player4 = Instantiate(prefabPlayer4, GameObject.FindGameObjectWithTag("LevelSpawnpoint").GetComponent<LevelSpawnpoints>().spawnpointPlayer4);
-                }
-                hasSpawnedAllPlayers = true;
-            }
-        }
     }
 
     private void OnDestroy()
