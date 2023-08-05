@@ -9,17 +9,27 @@ public class InteractStation : BaseStation
     {
         if (!HasIngredient())
         {
-            if (player.HasIngredient())
+
+            if (player.GetNumberOfIngredients() >= 1)
             {
-                player.GetIngredient().SetIngredientParent(this);
-                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
-                interactParticle.Play();
+                foreach (Transform holdPoint in player.ingredientHoldPoints)
+                {
+                    Ingredient ingredient = holdPoint.GetComponentInChildren<Ingredient>();
+                    if (ingredient != null)
+                    {
+                        player.GetIngredient().SetIngredientParent(this);
+                        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
+                        interactParticle.Play();
+                        break;
+                    }
+                }
             }
         } 
         else
         {
             if (!player.HasIngredient())
             {
+
                 GetIngredient().SetIngredientParent(player);
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
                 interactParticle.Play();

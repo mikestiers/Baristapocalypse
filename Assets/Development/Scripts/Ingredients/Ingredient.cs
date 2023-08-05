@@ -48,6 +48,12 @@ public class Ingredient : MonoBehaviour
         GameObject ingredientPrefab = Instantiate(ingredientSO.prefab);
         Ingredient ingredient = ingredientPrefab.GetComponent<Ingredient>();
         ingredient.GetComponent<Ingredient>().SetIngredientParent(ingredientParent);
+        // Disable the collider immediately after instantiation
+        Collider ingredientCollider = ingredient.GetComponent<Collider>();
+        if (ingredientCollider != null)
+        {
+            ingredientCollider.enabled = false;
+        }
 
         return ingredient;
     }

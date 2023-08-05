@@ -59,21 +59,31 @@ public class BrewingStation : BaseStation, IHasProgress
 
     public override void Interact(PlayerStateMachine player)
     {
-        if (player.HasIngredient())
+        if (player.GetNumberOfIngredients() >= 1)
         {
-            if (TryAddIngredient(player.GetIngredient().GetIngredientSO())){
-                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
-                interactParticle.Play();
-                player.GetIngredient().DestroyIngredient();
-                if(ingredientSOList.Count >= numIngredientsNeeded)
-                {
-                    brewingTimer = 0;
-                    brewing = true;
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
+            interactParticle.Play();
 
-                    OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
+            for (int i = 0; i < player.ingredientHoldPoints.Length; i++)
+            {
+                Transform holdPoint = player.ingredientHoldPoints[i];
+                if (holdPoint.childCount > 0 )
+                {
+                    Ingredient ingredient = holdPoint.GetComponentInChildren<Ingredient>();
+                    if (TryAddIngredient(ingredient.GetIngredientSO()))
                     {
-                        progressNormalized = 0f
-                    });
+                        ingredient.DestroyIngredient();
+                        if (ingredientSOList.Count >= numIngredientsNeeded)
+                        {
+                            brewingTimer = 0;
+                            brewing = true;
+
+                            OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
+                            {
+                                progressNormalized = 0f
+                            });
+                        }
+                    }
                 }
             }
         }
@@ -84,6 +94,7 @@ public class BrewingStation : BaseStation, IHasProgress
                 GetIngredient().SetIngredientParent(player);
             }
         }
+        Debug.Log("ingredientSOList.Count :" + ingredientSOList.Count);
     }
 
     private bool TryAddIngredient(IngredientSO ingredientSO)

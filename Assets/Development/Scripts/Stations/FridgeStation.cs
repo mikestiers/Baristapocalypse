@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using TMPro;
 
 public class FridgeStation : BaseStation, IHasProgress
 {
@@ -13,6 +14,9 @@ public class FridgeStation : BaseStation, IHasProgress
 
     private IngredientSO currentIngredient;
     private int ingredientListSOIndex;
+    public TextMeshPro text;
+    private string curText;
+  
 
     private void Start()
     {
@@ -34,6 +38,9 @@ public class FridgeStation : BaseStation, IHasProgress
             else
             {
                 Ingredient.SpawnIngredient(currentIngredient, player);
+                curText = text.text;
+                text.text = curText + "\n" + currentIngredient.ToString(); //Updates text above player with ingredient
+                player.GetNumberOfIngredients();
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
                 interactParticle.Play();
             }

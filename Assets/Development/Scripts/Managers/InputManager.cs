@@ -6,8 +6,7 @@ using UnityEngine.InputSystem;
 
 public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
 {
-
-    public Vector2 MovementValue { get; private set; } //
+    public Vector2 MovementValue { get; private set; }
 
     public event Action JumpEvent;
     public event Action InteractEvent;
@@ -21,8 +20,6 @@ public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
     [HideInInspector] public Vector3 moveDir;
     [HideInInspector] public Vector3 curMoveInput;
 
-
-
     private PlayerInput playerInput;
 
     protected override void Awake()
@@ -35,7 +32,6 @@ public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
     {
         playerInput.Player.SetCallbacks(this);// SetCallbacks calls the methods for us
         playerInput.Player.Enable();
-       
     }
 
 
@@ -59,7 +55,6 @@ public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
 
     public void OnMove(InputAction.CallbackContext context)
     {
- 
         if (context.canceled)
         {
             moveDir = Vector3.zero;
@@ -70,8 +65,6 @@ public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
         move.Normalize();
 
         moveDir = new Vector3(move.x, 0, move.y).normalized;
-        
-  
     }
 
     public void OnInteractAlt(InputAction.CallbackContext context)
@@ -113,6 +106,4 @@ public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
         if (context.performed)
             ThrowEvent?.Invoke();
     }
-        
-
 }
