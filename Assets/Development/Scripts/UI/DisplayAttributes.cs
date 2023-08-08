@@ -14,6 +14,8 @@ public class DisplayAttributes : MonoBehaviour
     [SerializeField] private Slider strengthSlider;
     [SerializeField] private Slider temperatureSlider;
     [SerializeField] private Slider spicinessSlider;
+    [SerializeField] private Canvas customerNumberCanvas;
+    [SerializeField] private Text customerNumber;
     private CoffeeAttributes coffeeAttributes;
     [SerializeField] private CustomerBase customerBase;
 
@@ -35,6 +37,7 @@ public class DisplayAttributes : MonoBehaviour
         strengthSlider.value = coffeeAttributes.GetStrength() * .10f;
         temperatureSlider.value = coffeeAttributes.GetTemperature() * .10f;
         spicinessSlider.value = coffeeAttributes.GetSpiciness() * .10f;
+        customerNumber.text = customerBase.customerNumber.ToString();
 
         textMeshPro.enabled = false;
         textMeshPro.text = GetCustomerDialogue();
@@ -76,6 +79,9 @@ public class DisplayAttributes : MonoBehaviour
     void Update()
     {
         textMeshPro.enabled = customerBase.currentState == CustomerBase.CustomerState.Ordering ? true : false;
-        hudOrder.SetActive(customerBase.currentState == CustomerBase.CustomerState.Ordering ? true : false);
+        customerNumber.enabled = customerBase.currentState == CustomerBase.CustomerState.Ordering ||
+                                 customerBase.currentState == CustomerBase.CustomerState.Insit ? true : false;
+        customerNumberCanvas.enabled = customerBase.currentState == CustomerBase.CustomerState.Ordering ||
+                                       customerBase.currentState == CustomerBase.CustomerState.Insit ? true : false;
     }
 }
