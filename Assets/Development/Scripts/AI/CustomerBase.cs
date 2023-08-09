@@ -2,12 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using TMPro;
 using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UI;
 using static UnityEngine.EventSystems.EventTrigger;
 
 [RequireComponent(typeof(NavMeshAgent))]
@@ -19,8 +21,13 @@ public class CustomerBase : BaseStation
     public bool frontofLine;
     public string customerName;
     public int customerNumber;
-
     public float distThreshold;
+    public TextMeshProUGUI textMeshPro;
+    [SerializeField] private Canvas customerNumberCanvas;
+    [SerializeField] private Text customerNumberText;
+    [SerializeField] private Text customerNameText;
+
+    //private CustomerState currentState;
 
     public static CustomerBase Instance { get; private set; }
 
@@ -28,6 +35,25 @@ public class CustomerBase : BaseStation
     {
         //add movetosit when sits are available
         Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init
+    }
+
+    public CustomerBase()
+    {
+        SetCustomerState(CustomerState.Init);
+    }
+
+    public CustomerState GetCustomerState()
+    {
+        return currentState;
+    }
+
+    public void SetCustomerState(CustomerState newState)
+    {
+        currentState = newState;
+    }
+    public void SetCustomerName(String newName)
+    {
+        customerName = newName;
     }
 
     public CoffeeAttributes coffeeAttributes;
@@ -63,6 +89,12 @@ public class CustomerBase : BaseStation
         agent = GetComponent<NavMeshAgent>();
         exit = CustomerManager.Instance.GetExit();
 
+        // Set the customer number and name appearing over the customer's head
+        textMeshPro.enabled = false;
+        customerNumberCanvas.enabled = false;
+        customerNumberText.text = customerNumber.ToString();
+        customerNameText.text = customerName;
+
         if (distThreshold <= 0) distThreshold = 0.5f;
     }
 
@@ -73,12 +105,12 @@ public class CustomerBase : BaseStation
         if (agent.destination == null) return;
 
 
-        if (currentState == CustomerState.Insit)
+        if (GetCustomerState() == CustomerState.Insit)
         {
-            
+            textMeshPro.enabled = false;
         }
 
-        if (currentState == CustomerState.Moving)
+        if (GetCustomerState() == CustomerState.Moving)
         {
             if (agent.remainingDistance < distThreshold)
             {
@@ -86,19 +118,21 @@ public class CustomerBase : BaseStation
                 if (frontofLine == true)
                 {
                     //TODO:  Make these things like SetCustomerState(Ordering)
-                    currentState = CustomerState.Ordering;
+                    SetCustomerState(CustomerState.Ordering);
+                    customerNumberCanvas.enabled = true;
+                    textMeshPro.enabled = true;
                     UIManager.Instance.ShowCustomerUiOrder(this);
                     return;
                 }
                 else
-                    currentState = CustomerState.Waiting;
+                    SetCustomerState(CustomerState.Waiting);
             }
         }
 
-      
-        if(currentState == CustomerState.Leaving)
+
+        if (GetCustomerState() == CustomerState.Leaving)
         {
-            if(agent.remainingDistance < distThreshold)
+            if (agent.remainingDistance < distThreshold)
             {
                 Destroy(gameObject);
             }
@@ -116,7 +150,7 @@ public class CustomerBase : BaseStation
 
     public virtual void CustomerLeave()
     {
-        currentState = CustomerState.Leaving;
+        SetCustomerState(CustomerState.Leaving);
         agent.SetDestination(exit.position);
     }
 
@@ -124,10 +158,10 @@ public class CustomerBase : BaseStation
     {
         if (agent.isStopped) agent.isStopped = false;
 
-       
+
         agent.SetDestination(Spot);
 
-        currentState = CustomerState.Moving;
+        SetCustomerState(CustomerState.Moving);
     }
 
     public void JustGotHandedCoffee(CoffeeAttributes coffee)
@@ -138,7 +172,7 @@ public class CustomerBase : BaseStation
     public override void Interact(PlayerStateMachine player)
     {
         //check customer state
-        if (currentState == CustomerState.Ordering)
+        if (GetCustomerState() == CustomerState.Ordering)
         {
             Order();
             CustomerManager.Instance.Leaveline();
@@ -147,12 +181,13 @@ public class CustomerBase : BaseStation
         }
 
         //if waiting for order
-        if (currentState == CustomerState.Insit)
+        if (GetCustomerState() == CustomerState.Insit)
         {
             if (player.HasIngredient())
             {
                 //give coffee to customer
-                if (player.GetIngredient().CompareTag("CoffeeCup")) {
+                if (player.GetIngredient().CompareTag("CoffeeCup"))
+                {
                     player.GetIngredient().SetIngredientParent(this);
                     JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
                     SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
