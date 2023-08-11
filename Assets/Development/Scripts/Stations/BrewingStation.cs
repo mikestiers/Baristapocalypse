@@ -5,9 +5,10 @@ using System.Linq;
 using UnityEngine;
 using static CoffeeGrinderStation;
 
-public class BrewingStation : BaseStation, IHasProgress
+public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 {
     public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
+    public event EventHandler<IHasMinigameTiming.OnMinigameTimingEventArgs> OnMinigameTimingStarted;
 
     [SerializeField] private List<IngredientSO> ingredientSOList = new List<IngredientSO>();
     [SerializeField] private ParticleSystem interactParticle;
