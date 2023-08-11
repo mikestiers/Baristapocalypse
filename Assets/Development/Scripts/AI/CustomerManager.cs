@@ -10,9 +10,38 @@ public class CustomerManager : Singleton<CustomerManager>
     [SerializeField] private Transform exit;
     public float delay = 8.0f;
     public int numberOfCustomers = 5;
+    private int customerNumber = 0;
+    List<string> customerNames = new List<string>
+        {
+            "Abby",
+            "Abdul",
+            "Aidan",
+            "Alex G",
+            "Alex J",
+            "Andrew",
+            "Carter",
+            "Darian",
+            "Deandre",
+            "Douglas",
+            "Dustin",
+            "Gabriel R",
+            "Gabriel P",
+            "Jeffrey",
+            "Juan",
+            "Kayden",
+            "Lam",
+            "Liam",
+            "Meg",
+            "Michael",
+            "Morgan",
+            "Nikki",
+            "Red",
+            "Rod",
+            "Turner"
+        };
     public CustomerBase customerPrefab;
 
-    private List<CustomerBase> customersOutsideList = new List<CustomerBase>();
+    public List<CustomerBase> customersOutsideList = new List<CustomerBase>();
 
     private CustomerLineQueuing LineQueue;
     
@@ -99,6 +128,11 @@ public class CustomerManager : Singleton<CustomerManager>
     {
         CustomerBase newcustomer = Instantiate(customerPrefab, barEntrance.transform.position, Quaternion.identity);
         customersOutsideList.Add(newcustomer);
+        customerNumber += 1;
+        newcustomer.customerNumber = customerNumber;
+        int randomCustomer = UnityEngine.Random.Range(0, customerNames.Count);
+        newcustomer.customerName = customerNames[randomCustomer];
+        customerNames.RemoveAt(randomCustomer);
     }
 
 

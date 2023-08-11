@@ -17,6 +17,8 @@ public class CustomerBase : BaseStation
     public NavMeshAgent agent;
     private Transform exit;
     public bool frontofLine;
+    public string customerName;
+    public int customerNumber;
 
     public float distThreshold;
 
