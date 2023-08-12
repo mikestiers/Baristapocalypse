@@ -93,6 +93,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2493479816112469114}
   - component: {fileID: 3014103563179667560}
+  - component: {fileID: 3122045673898185529}
   - component: {fileID: 5875409547819566389}
   - component: {fileID: 3971189730685085182}
   m_Layer: 0
@@ -136,6 +137,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &3122045673898185529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 771459293878653098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ee0c75024a6e5740b3f39c1203cf103, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &5875409547819566389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,19 +177,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <moveSpeed>k__BackingField: 10
   <jumpForce>k__BackingField: 200
+  <ingredienThrowForce>k__BackingField: 0
   <isGroundLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 8
   <groundCheckRadius>k__BackingField: 0.05
   <groundCheck>k__BackingField: {fileID: 8024334441821041410}
   isGrounded: 0
+  dashForce: 0
+  dashTime: 0
   <isStationLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 64
+  <isIngredientLayer>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 0
+  ingredientCollider: {fileID: 0}
+  ingredientInstanceHolder: {fileID: 0}
   <ingredientHoldPoint>k__BackingField: {fileID: 2395447710352577734}
+  currentHoldPointIndex: 0
+  numberOfIngredientsHeld: 0
+  ingredientHoldPoints: []
   curMoveInput: {x: 0, y: 0, z: 0}
   moveDir: {x: 0, y: 0, z: 0}
   <inputManager>k__BackingField: {fileID: 5875409547819566389}
+  text: {fileID: 0}
 --- !u!1 &941874048583293198
 GameObject:
   m_ObjectHideFlags: 0
