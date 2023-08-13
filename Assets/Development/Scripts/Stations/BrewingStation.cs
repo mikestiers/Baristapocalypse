@@ -33,7 +33,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     private void Update()
     {
-        /*
+        
         if (brewing)
         {
             brewingTimer += Time.deltaTime;
@@ -59,7 +59,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
                 brewing = false;
                 minigameTiming = true;
             }
-        }*/
+        }
         if (minigameTiming)
         {
             minigameTimer += Time.deltaTime;
