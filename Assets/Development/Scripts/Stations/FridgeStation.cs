@@ -20,7 +20,7 @@ public class FridgeStation : BaseStation, IHasProgress
     {
         ingredientListSOIndex = 0;
         currentIngredient = ingredientListSO[ingredientListSOIndex];
-        currentIngredienIndicator.text = currentIngredient.ToString();
+        currentIngredienIndicator.text = currentIngredient.name;
     }
 
     public override void Interact(PlayerStateMachine player)
@@ -59,7 +59,7 @@ public class FridgeStation : BaseStation, IHasProgress
             ingredientListSOIndex++;
         }
         currentIngredient = ingredientListSO[ingredientListSOIndex];
-        currentIngredienIndicator.text = currentIngredient.ToString();
+        currentIngredienIndicator.text = currentIngredient.name;
         OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
         {
             progressNormalized = ingredientListSOIndex

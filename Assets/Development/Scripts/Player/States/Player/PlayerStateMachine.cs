@@ -256,7 +256,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
             if (holdPoint.childCount > 0)
             {
                 Ingredient ingredient = holdPoint.GetComponentInChildren<Ingredient>();
-                currentIndicator += (ingredient.ToString() + "\n");
+                currentIndicator += (ingredient.name + "\n");
             }
         }
         ingredientIndicatorText.text = currentIndicator;

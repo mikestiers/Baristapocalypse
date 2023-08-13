@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using static CoffeeGrinderStation;
 
@@ -11,7 +12,9 @@ public class BrewingStation : BaseStation, IHasProgress
 
     [SerializeField] private List<IngredientSO> ingredientSOList = new List<IngredientSO>();
     [SerializeField] private ParticleSystem interactParticle;
-    private List<String> validIngredientTagList = new List<String>();
+    [SerializeField] private TextMeshPro ingredientsIndicatorText;
+    private string currentIngredientSOList;
+    private List<String> validIngredientTagList = new List<String>(); 
     
     private int numIngredientsNeeded = 4;
 
@@ -59,6 +62,7 @@ public class BrewingStation : BaseStation, IHasProgress
 
     public override void Interact(PlayerStateMachine player)
     {
+        
         if (player.GetNumberOfIngredients() >= 1)
         {
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
@@ -77,6 +81,7 @@ public class BrewingStation : BaseStation, IHasProgress
                         {
                             brewingTimer = 0;
                             brewing = true;
+                            ingredientsIndicatorText.SetText("");
 
                             OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
                             {
@@ -86,6 +91,7 @@ public class BrewingStation : BaseStation, IHasProgress
                     }
                 }
             }
+
         }
         else
         {
@@ -94,7 +100,9 @@ public class BrewingStation : BaseStation, IHasProgress
                 GetIngredient().SetIngredientParent(player);
             }
         }
+        
         Debug.Log("ingredientSOList.Count :" + ingredientSOList.Count);
+        PrintHeldIngredientList();
     }
 
     private bool TryAddIngredient(IngredientSO ingredientSO)
@@ -103,9 +111,10 @@ public class BrewingStation : BaseStation, IHasProgress
         {
             return false;
         }
-
+        
         foreach(IngredientSO ingredient in ingredientSOList)
         {
+            //currentIngredientSOList += ingredient.name + "\n";
             if (ingredient.objectTag == ingredientSO.objectTag){
                 return false;
             } 
@@ -122,6 +131,16 @@ public class BrewingStation : BaseStation, IHasProgress
             return true;
         }
         return false;
+    }
+
+    private void PrintHeldIngredientList()
+    {
+        currentIngredientSOList = null;
+        foreach (IngredientSO ingredient in ingredientSOList)
+        {
+            currentIngredientSOList += ingredient.name + "\n";
+        }
+        ingredientsIndicatorText.text = currentIngredientSOList;
     }
 }
 
