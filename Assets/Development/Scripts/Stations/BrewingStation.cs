@@ -19,6 +19,9 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     private float brewingTimer;
     [SerializeField] private BrewingRecipeSO brewingRecipeSO;
     private bool brewing;
+    private float minigameTimer;
+    private float maxMinigameTimer = 4.0f;
+    private bool minigameTiming = false;
 
     private void Awake()
     {
@@ -30,6 +33,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     private void Update()
     {
+        /*
         if (brewing)
         {
             brewingTimer += Time.deltaTime;
@@ -53,7 +57,16 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
                 }
                 ingredientSOList.Clear();
                 brewing = false;
+                minigameTiming = true;
             }
+        }*/
+        if (minigameTiming)
+        {
+            minigameTimer += Time.deltaTime;
+            OnMinigameTimingStarted?.Invoke(this, new IHasMinigameTiming.OnMinigameTimingEventArgs
+            {
+                minigameTimingNormalized = (float)minigameTimer / maxMinigameTimer
+            });
         }
         
     }
@@ -95,6 +108,9 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
                 GetIngredient().SetIngredientParent(player);
             }
         }
+
+        minigameTiming = true;
+        minigameTimer = 0;
         Debug.Log("ingredientSOList.Count :" + ingredientSOList.Count);
     }
 
