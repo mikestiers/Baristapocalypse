@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using static CoffeeGrinderStation;
 
 public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 {
@@ -19,9 +17,13 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     private float brewingTimer;
     [SerializeField] private BrewingRecipeSO brewingRecipeSO;
     private bool brewing;
+
     private float minigameTimer;
-    private float maxMinigameTimer = 4.0f;
     private bool minigameTiming = false;
+    private float maxMinigameTimer = 4.0f;
+    private float minSweetSpotPosition = 0.1f;
+    private float maxSweetSpotPosition = 0.9f;
+    private float sweetSpotPosition;
 
     private void Awake()
     {
@@ -57,7 +59,11 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
                 }
                 ingredientSOList.Clear();
                 brewing = false;
+
+                //setup minigame
                 minigameTiming = true;
+                minigameTimer = 0;
+                sweetSpotPosition = UnityEngine.Random.Range(minSweetSpotPosition, maxSweetSpotPosition);
             }
         }
         if (minigameTiming)
@@ -65,7 +71,8 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             minigameTimer += Time.deltaTime;
             OnMinigameTimingStarted?.Invoke(this, new IHasMinigameTiming.OnMinigameTimingEventArgs
             {
-                minigameTimingNormalized = (float)minigameTimer / maxMinigameTimer
+                minigameTimingNormalized = (float)minigameTimer / maxMinigameTimer,
+                sweetSpotPosition = sweetSpotPosition
             });
         }
         
@@ -109,8 +116,41 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             }
         }
 
-        minigameTiming = true;
-        minigameTimer = 0;
+        if (minigameTiming)
+        {
+            //Debug.Log("Minigame timing: " + minigameTimer / maxMinigameTimer);
+            //Debug.Log("SweetSpot position: " + sweetSpotPosition);
+            //Debug.Log("Timing calc: " + Mathf.Abs((minigameTimer / maxMinigameTimer) - sweetSpotPosition));
+            float timingPressed = Mathf.Abs((minigameTimer / maxMinigameTimer) - sweetSpotPosition);
+            if (timingPressed <= 0.1f)
+            {
+                Debug.Log("Perfect");
+            }
+            else if((minigameTimer/maxMinigameTimer) < sweetSpotPosition)
+            {
+                Debug.Log("Too early");
+            }
+            else if((minigameTimer / maxMinigameTimer) > sweetSpotPosition)
+            {
+                Debug.Log("Too late");
+            }
+            minigameTiming = false;
+        }
+        if (minigameTimer >= maxMinigameTimer)
+        {
+            minigameTiming = false;
+            Debug.Log("Too late");
+        }
+        //testing purposes
+        if (!minigameTiming)
+        {
+            //setup minigame
+            minigameTiming = true;
+            minigameTimer = 0;
+            sweetSpotPosition = UnityEngine.Random.Range(minSweetSpotPosition, maxSweetSpotPosition);
+        }
+        
+
         Debug.Log("ingredientSOList.Count :" + ingredientSOList.Count);
     }
 

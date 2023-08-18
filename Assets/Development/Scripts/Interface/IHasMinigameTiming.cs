@@ -9,5 +9,6 @@ public interface IHasMinigameTiming
     public class OnMinigameTimingEventArgs : EventArgs
     {
         public float minigameTimingNormalized;
+        public float sweetSpotPosition;
     }
 }

@@ -6,11 +6,12 @@ using UnityEngine.UI;
 public class MinigameTimingBarUI : MonoBehaviour
 {
     [SerializeField] private GameObject hasMinigameTimingGameObject;
-    [SerializeField] private Image fillBar;
-    [SerializeField] private Image sweetSpot;
+    [SerializeField] private Image backgroundBar;
+    [SerializeField] private RectTransform sweetSpot;
     [SerializeField] private Image timingMarker;
     [SerializeField] private Transform startPoint;
     [SerializeField] private Transform endPoint;
+    private float backgroundWidth;
 
     private IHasMinigameTiming hasMinigameTiming;
 
@@ -23,13 +24,13 @@ public class MinigameTimingBarUI : MonoBehaviour
             Hide();
         }
 
-        Vector2 newPosition = startPoint.position;
-        timingMarker.rectTransform.localPosition = newPosition;
+        backgroundWidth = backgroundBar.rectTransform.rect.width;
     }
 
     private void HasMinigame_OnMinigameTimingStarted(object sender, IHasMinigameTiming.OnMinigameTimingEventArgs e)
     {
-        fillBar.fillAmount = e.minigameTimingNormalized;
+        sweetSpot.anchoredPosition = new Vector2((e.sweetSpotPosition-0.5f) * backgroundWidth, 0);
+        timingMarker.fillAmount = e.minigameTimingNormalized;;
         if (e.minigameTimingNormalized == 0f || e.minigameTimingNormalized >= 1f)
         {
             Hide();
