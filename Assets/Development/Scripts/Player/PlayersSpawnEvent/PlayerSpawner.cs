@@ -5,10 +5,10 @@ using UnityEngine;
 public class PlayerSpawner : MonoBehaviour
 {
 
-    [SerializeField] GameObject prefabPlayer1;
-    [SerializeField] GameObject prefabPlayer2;
-    [SerializeField] GameObject prefabPlayer3;
-    [SerializeField] GameObject prefabPlayer4;
+    GameObject prefabPlayer1;
+    GameObject prefabPlayer2;
+    GameObject prefabPlayer3;
+    GameObject prefabPlayer4;
 
     private void OnEnable()
      {
@@ -44,6 +44,10 @@ public class PlayerSpawner : MonoBehaviour
 
     private void Start()
     {
+        prefabPlayer1 = GameManager.Instance.player1Prefab;
+        prefabPlayer2 = GameManager.Instance.player2Prefab;
+        prefabPlayer3 = GameManager.Instance.player3Prefab;
+        prefabPlayer4 = GameManager.Instance.player4Prefab;
         GameManager.Instance.SpawnPlayers(GameManager.Instance.player1Active, GameManager.Instance.player2Active, GameManager.Instance.player3Active, GameManager.Instance.player4Active);
     }
 }

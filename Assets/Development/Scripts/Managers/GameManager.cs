@@ -16,6 +16,11 @@ public class GameManager : Singleton<GameManager>
     
     public GameState gameState = GameState.RUNNING;
 
+    public GameObject player1Prefab;
+    public GameObject player2Prefab;
+    public GameObject player3Prefab;
+    public GameObject player4Prefab;
+
     //spawn players if button was pressed in main menu
     public bool player1Active = false;
     public bool player2Active = false;
@@ -27,7 +32,7 @@ public class GameManager : Singleton<GameManager>
     [HideInInspector] public Vector3 curMoveInput;
 
     [HideInInspector]
-    public PlayerInput playerInput;
+    //public PlayerInput playerInput;
 
     public delegate void PlayerSpawnHandler(bool player1Active, bool player2Active, bool player3Active, bool player4Active);
 
@@ -51,13 +56,13 @@ public class GameManager : Singleton<GameManager>
 
     private void Start()
     {
-        playerInput = new PlayerInput();
-        playerInput.Player.Enable();
+        //playerInput = new PlayerInput();
+        //playerInput.Player.Enable();
     }
 
     private void OnDestroy()
     {
-        playerInput.Player.Disable();
+        //playerInput.Player.Disable();
     }
 }
 

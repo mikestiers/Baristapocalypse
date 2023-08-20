@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
+public class InputManager : Singleton<InputManager>, PlayerInput.IPlayerActions
 {
     public Vector2 MovementValue { get; private set; }
 
@@ -20,7 +20,7 @@ public class InputManager : Singleton<GameManager>, PlayerInput.IPlayerActions
     [HideInInspector] public Vector3 moveDir;
     [HideInInspector] public Vector3 curMoveInput;
 
-    private PlayerInput playerInput;
+    [HideInInspector] public PlayerInput playerInput;
 
     protected override void Awake()
     {
