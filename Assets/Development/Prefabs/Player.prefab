@@ -385,7 +385,6 @@ GameObject:
   m_Component:
   - component: {fileID: 533563683556402451}
   - component: {fileID: 533563683556402450}
-  - component: {fileID: 533563683556402461}
   - component: {fileID: 533563683556402460}
   m_Layer: 0
   m_Name: Player
@@ -402,7 +401,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 533563683556402463}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 31.659159, y: -37.39872, z: 54.435883}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -430,20 +429,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 2
---- !u!114 &533563683556402461
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 533563683556402463}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e5d6e7edc38ebe4bb80304c5128a919, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveDir: {x: 0, y: 0, z: 0}
-  curMoveInput: {x: 0, y: 0, z: 0}
 --- !u!114 &533563683556402460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -485,7 +470,7 @@ MonoBehaviour:
   - {fileID: 1193085190}
   curMoveInput: {x: 0, y: 0, z: 0}
   moveDir: {x: 0, y: 0, z: 0}
-  <inputManager>k__BackingField: {fileID: 533563683556402461}
+  inputManager: {fileID: 7601914261492041985, guid: 29ce22742d1539545b6df32dc725e162, type: 3}
   ingredientIndicatorText: {fileID: 1310037080}
 --- !u!1001 &533563683773546719
 PrefabInstance:

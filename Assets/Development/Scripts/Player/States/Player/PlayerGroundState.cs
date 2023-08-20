@@ -20,6 +20,7 @@ public class PlayerGroundState : PlayerBaseState
   
      public override void Enter()
     {
+
         stateMachine.inputManager.JumpEvent += OnJump;
         stateMachine.inputManager.DashEvent += OnDash;
         stateMachine.inputManager.ThrowEvent += OnThrow;

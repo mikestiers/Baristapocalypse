@@ -24,14 +24,14 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        playerInput = new PlayerInput();
-        playerInput.Player.Enable();
+       // playerInput = new PlayerInput();
+       // playerInput.Player.Enable();
         
     }
 
     private void OnDestroy()
     {
-        playerInput.Player.Disable();
+        //playerInput.Player.Disable();
     }
 }
 
