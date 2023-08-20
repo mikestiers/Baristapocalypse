@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[DefaultExecutionOrder(-1)]
 public class InputManager : Singleton<InputManager>, PlayerInput.IPlayerActions
 {
     public Vector2 MovementValue { get; private set; }
@@ -33,7 +34,6 @@ public class InputManager : Singleton<InputManager>, PlayerInput.IPlayerActions
         playerInput.Player.SetCallbacks(this);// SetCallbacks calls the methods for us
         playerInput.Player.Enable();
     }
-
 
     private void OnDestroy()
     {
