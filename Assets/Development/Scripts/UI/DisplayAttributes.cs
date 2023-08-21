@@ -20,13 +20,6 @@ public class DisplayAttributes : MonoBehaviour
         coffeeAttributes = GetComponentInParent<CoffeeAttributes>();
         textMeshPro.text = GetCustomerDialogue();
 
-        // Outputting specific drink attribute values to Debug.Log
-        Debug.Log("C" + customerBase.customerNumber.ToString() + ": " + customerBase.customerName + " " +
-                   " (BI:" + coffeeAttributes.GetBitterness() * .10f +
-                   " SW:" + coffeeAttributes.GetSweetness() * .10f +
-                   " ST:" + coffeeAttributes.GetStrength() * .10f +
-                   " TE:" + coffeeAttributes.GetTemperature() * .10f +
-                   " SP:" + coffeeAttributes.GetSpiciness() * .10f);
     }
 
     // Build the sentence describing the drink for the customer's order dialogue
