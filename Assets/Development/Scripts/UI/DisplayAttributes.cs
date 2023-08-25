@@ -8,12 +8,21 @@ using UnityEngine.UI;
 public class DisplayAttributes : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI customerSentence;
+    [SerializeField] private Canvas customerNumberCanvas;
+    [SerializeField] private Text customerNumberText;
+    [SerializeField] private Text customerNameText;
+    [SerializeField] private bool displayCustomerNameText = true;
+    [SerializeField] private CustomerBase customerBase;
     private CoffeeAttributes coffeeAttributes;
 
     public void Start()
     {
         coffeeAttributes = GetComponentInParent<CoffeeAttributes>();
-        customerSentence.text = GetCustomerDialogue();
+        if (customerSentence)
+        {
+            customerSentence.text = GetCustomerDialogue();
+        }
+        
     }
 
     // Build the sentence describing the drink for the customer's order dialogue
