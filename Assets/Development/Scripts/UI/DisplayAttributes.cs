@@ -7,33 +7,20 @@ using UnityEngine.UI;
 
 public class DisplayAttributes : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI textMeshPro;
-    [SerializeField] private Canvas customerNumberCanvas;
-    [SerializeField] private Text customerNumberText;
-    [SerializeField] private Text customerNameText;
-    [SerializeField] private bool displayCustomerNameText = true;
-    [SerializeField] private CustomerBase customerBase;
+    [SerializeField] private TextMeshProUGUI customerSentence;
     private CoffeeAttributes coffeeAttributes;
 
     public void Start()
     {
         coffeeAttributes = GetComponentInParent<CoffeeAttributes>();
-        textMeshPro.text = GetCustomerDialogue();
-
-        // Outputting specific drink attribute values to Debug.Log
-        Debug.Log("C" + customerBase.customerNumber.ToString() + ": " + customerBase.customerName + " " +
-                   " (BI:" + coffeeAttributes.GetBitterness() * .10f +
-                   " SW:" + coffeeAttributes.GetSweetness() * .10f +
-                   " ST:" + coffeeAttributes.GetStrength() * .10f +
-                   " TE:" + coffeeAttributes.GetTemperature() * .10f +
-                   " SP:" + coffeeAttributes.GetSpiciness() * .10f);
+        customerSentence.text = GetCustomerDialogue();
     }
 
     // Build the sentence describing the drink for the customer's order dialogue
     private string GetCustomerDialogue()
     {
         StringBuilder sb = new StringBuilder();
-        sb.Append("I want ");
+        sb.Append("I want");
         sb.Append(GetPrefix(coffeeAttributes.GetBitterness()) + "bitterness,");
         sb.Append(GetPrefix(coffeeAttributes.GetSweetness()) + "sweetness,");
         sb.Append(GetPrefix(coffeeAttributes.GetStrength()) + "strength,");

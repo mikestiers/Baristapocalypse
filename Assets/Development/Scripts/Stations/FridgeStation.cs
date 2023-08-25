@@ -11,17 +11,16 @@ public class FridgeStation : BaseStation, IHasProgress
 
     [SerializeField] private IngredientSO[] ingredientListSO;
     [SerializeField] private ParticleSystem interactParticle;
+    [SerializeField] private TextMeshPro currentIngredienIndicator;
 
     private IngredientSO currentIngredient;
     private int ingredientListSOIndex;
-    public TextMeshPro text;
-    private string curText;
-  
-
+   
     private void Start()
     {
         ingredientListSOIndex = 0;
-        currentIngredient = ingredientListSO[ingredientListSOIndex];  
+        currentIngredient = ingredientListSO[ingredientListSOIndex];
+        currentIngredienIndicator.text = currentIngredient.name;
     }
 
     public override void Interact(PlayerStateMachine player)
@@ -38,8 +37,6 @@ public class FridgeStation : BaseStation, IHasProgress
             else
             {
                 Ingredient.SpawnIngredient(currentIngredient, player);
-                curText = text.text;
-                text.text = curText + "\n" + currentIngredient.ToString(); //Updates text above player with ingredient
                 player.GetNumberOfIngredients();
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
                 interactParticle.Play();
@@ -62,10 +59,10 @@ public class FridgeStation : BaseStation, IHasProgress
             ingredientListSOIndex++;
         }
         currentIngredient = ingredientListSO[ingredientListSOIndex];
+        currentIngredienIndicator.text = currentIngredient.name;
         OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
         {
             progressNormalized = ingredientListSOIndex
         });
     }
-
 }

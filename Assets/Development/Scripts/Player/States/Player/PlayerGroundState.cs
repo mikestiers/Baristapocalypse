@@ -11,15 +11,16 @@ public class PlayerGroundState : PlayerBaseState
 {
 
     //Viuals
-    GameObject visualGameObject;
+    [SerializeField] private GameObject visualGameObject;
     //calls base constructor and pass in base stateMachine 
     public PlayerGroundState(PlayerStateMachine stateMachine) : base(stateMachine) { }
-    Ingredient floorIngredient;
-    IngredientSO ingredienSO;
-    Mouse mouse = Mouse.current;
+    private Ingredient floorIngredient;
+    private IngredientSO ingredienSO;
+    private Mouse mouse = Mouse.current;
   
      public override void Enter()
     {
+
         stateMachine.inputManager.JumpEvent += OnJump;
         stateMachine.inputManager.DashEvent += OnDash;
         stateMachine.inputManager.ThrowEvent += OnThrow;
@@ -37,7 +38,9 @@ public class PlayerGroundState : PlayerBaseState
         stateMachine.IsGrounded();
         // player movement
         stateMachine.Move(stateMachine.moveSpeed);
+
         stateMachine.GetNumberOfIngredients();
+        stateMachine.SetIngredientIndicator();
 
         //  Pick ingredient from station 
         float interactDistance = 6.0f;
@@ -50,7 +53,6 @@ public class PlayerGroundState : PlayerBaseState
                 {
                     stateMachine.SetSelectedStation(baseStation);
                     stateMachine.Show(visualGameObject);
-
                 }
             }
             else

@@ -32,11 +32,18 @@ public class UIManager : Singleton<UIManager>
     public TextMeshProUGUI gameOverText;
     public TextMeshProUGUI finalScore;
 
-    [Header("Orders")]
+    [Header("Order Stats")]
     public Transform ordersPanel;
     public GameObject ordersUiPrefab;
+    private OrderStats orderStats;
+    
+    [Header("Customer Review")]
+    private CustomerReview customerReview;
+    public GameObject starPrefab;
+    //public Transform starRating;
+    //public Sprite filledStarSprite;
+    //public Sprite emptyStarSprite;
 
-    // Start is called before the first frame update
     private void Start()
     {
         if (toGame)
@@ -119,8 +126,35 @@ public class UIManager : Singleton<UIManager>
 
     public void ShowCustomerUiOrder(CustomerBase customer)
     {
-        OrderStats o = Instantiate(ordersUiPrefab, ordersPanel).GetComponent<OrderStats>();
-        o.Initialize(customer);
+        orderStats = Instantiate(ordersUiPrefab, ordersPanel).GetComponent<OrderStats>();
+        orderStats.Initialize(customer);
+    }
+
+    public void ShowCustomerReview(CustomerBase customer)
+    {
+        if (orderStats != null)
+        {
+            // Find the child GameObject of orderStats where the review will go
+            // Gets the script component and initialize the variable
+            // Sets the review text and the review score (star rating)
+            GameObject customerReviewUIObject = orderStats.GetCustomerReview();
+            customerReview = orderStats.GetComponent<CustomerReview>(); 
+            if (customerReviewUIObject != null)
+            {
+                Debug.Log($"Showing Review for {customer}");
+                Text customerReviewText = customerReviewUIObject.GetComponent<Text>();
+                customerReview.GenerateReview(customer);
+                customerReviewText.text = customerReview.ReviewText;
+                Debug.Log("Review Score: " + customerReview.ReviewScore);
+                UpdateStarRating(customerReview.ReviewScore);
+                customerReviewUIObject.SetActive(true);
+            }
+        }
+        else
+        {
+            Debug.Log($"No order stats provided by {customer}");
+            return;
+        }
     }
 
     public void RemoveCustomerUiOrder(CustomerBase customer)
@@ -140,7 +174,27 @@ public class UIManager : Singleton<UIManager>
         }
     }
 
-    // Update is called once per frame
+    public void UpdateStarRating(int reviewScore)
+    {
+        Transform starRating = customerReview.transform.Find("CustomerReview/StarRating");
+
+        // Instantiate stars. 5 stars max
+        for (int i = 1; i <= 5; i++)
+        {
+            if (i <= reviewScore)
+            {
+                GameObject star = Instantiate(starPrefab, starRating);
+                Image starImage = star.GetComponent<Image>();
+            }
+            else
+            {
+                GameObject star = Instantiate(starPrefab, starRating);
+                Image starImage = star.GetComponent<Image>();
+                starImage.color = Color.red;
+            }
+        }
+    }
+
     private void Update()
     {
         timer.text = ScoreTimerManager.Instance.timeRemaining.ToString("n2");
