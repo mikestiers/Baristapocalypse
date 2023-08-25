@@ -49,9 +49,9 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
 
     // When station selected
     private GameObject visualGameObject;
-    
+
     // Components
-    [field: SerializeField] public InputManager inputManager { get; private set; }
+    [HideInInspector] public InputManager inputManager;
 
     // UI player ingrerdien indicator
     [SerializeField] private TextMeshPro ingredientIndicatorText;
@@ -69,6 +69,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
     {
         //Get components
         rb = GetComponent<Rigidbody>();
+        inputManager = FindObjectOfType<InputManager>();
 
         //Set variables if null
         if (moveSpeed <= 0) moveSpeed = 10.0f;
