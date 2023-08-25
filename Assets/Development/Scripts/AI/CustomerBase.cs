@@ -22,7 +22,7 @@ public class CustomerBase : BaseStation
     public string customerName;
     public int customerNumber;
     public float distThreshold;
-    public TextMeshProUGUI textMeshPro;
+    public GameObject customerDialogue;
     [SerializeField] private Canvas customerNumberCanvas;
     [SerializeField] private Text customerNumberText;
     [SerializeField] private Text customerNameText;
@@ -90,7 +90,7 @@ public class CustomerBase : BaseStation
         exit = CustomerManager.Instance.GetExit();
 
         // Set the customer number and name appearing over the customer's head
-        textMeshPro.enabled = false;
+        customerDialogue.SetActive(false);
         customerNumberCanvas.enabled = false;
         customerNumberText.text = customerNumber.ToString();
         customerNameText.text = customerName;
@@ -107,7 +107,7 @@ public class CustomerBase : BaseStation
 
         if (GetCustomerState() == CustomerState.Insit)
         {
-            textMeshPro.enabled = false;
+            customerDialogue.SetActive(false);
         }
 
         if (GetCustomerState() == CustomerState.Moving)
@@ -117,10 +117,9 @@ public class CustomerBase : BaseStation
                 agent.isStopped = true;
                 if (frontofLine == true)
                 {
-                    //TODO:  Make these things like SetCustomerState(Ordering)
                     SetCustomerState(CustomerState.Ordering);
                     customerNumberCanvas.enabled = true;
-                    textMeshPro.enabled = true;
+                    customerDialogue.SetActive(true);
                     UIManager.Instance.ShowCustomerUiOrder(this);
                     return;
                 }
@@ -129,12 +128,12 @@ public class CustomerBase : BaseStation
             }
         }
 
-
         if (GetCustomerState() == CustomerState.Leaving)
         {
             if (agent.remainingDistance < distThreshold)
             {
                 Destroy(gameObject);
+                UIManager.Instance.RemoveCustomerUiOrder(this);
             }
         }
         //Debug.Log("The customer is " + currentState + " and is going to " + agent.destination);
@@ -144,6 +143,7 @@ public class CustomerBase : BaseStation
     //UI displays attributes
     public virtual void Order()
     {
+        UIManager.Instance.ShowCustomerReview(this);
         Invoke("CustomerLeave", 60f);
     }
 
@@ -151,6 +151,7 @@ public class CustomerBase : BaseStation
     public virtual void CustomerLeave()
     {
         SetCustomerState(CustomerState.Leaving);
+        UIManager.Instance.ShowCustomerReview(this);
         agent.SetDestination(exit.position);
     }
 
