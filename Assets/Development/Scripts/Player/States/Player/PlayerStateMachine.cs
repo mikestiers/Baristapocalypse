@@ -6,7 +6,8 @@ using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
-
+using UnityEditor.Rendering.LookDev;
+using Unity.PlasticSCM.Editor.WebApi;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerStateMachine : StateMachine, IIngredientParent
@@ -52,9 +53,9 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
     // Components
     [field: SerializeField] public InputManager inputManager { get; private set; }
 
-    //UI
-    public TextMeshPro text;
-
+    // UI player ingrerdien indicator
+    [SerializeField] private TextMeshPro ingredientIndicatorText;
+    private string currentIndicator;
 
     private void Awake()
     {
@@ -197,7 +198,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
                     ingredientRb.isKinematic = false;
                     ingredientRb.AddForce(transform.forward * ingredienThrowForce, ForceMode.Impulse);
                 }
-                text.SetText("");
+                ingredientIndicatorText.SetText("");
                 
             }
         }
@@ -246,5 +247,19 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
         visualGameObject?.SetActive(false);
     }
 
+    // Add ingredient name to UI indicator on player
+    public void SetIngredientIndicator()
+    {
+        currentIndicator = null;
+        foreach (Transform holdPoint in ingredientHoldPoints)
+        {
+            if (holdPoint.childCount > 0)
+            {
+                Ingredient ingredient = holdPoint.GetComponentInChildren<Ingredient>();
+                currentIndicator += (ingredient.name + "\n");
+            }
+        }
+        ingredientIndicatorText.text = currentIndicator;
+    }
 
 }
