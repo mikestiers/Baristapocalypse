@@ -7,26 +7,20 @@ using UnityEngine.UI;
 
 public class DisplayAttributes : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI textMeshPro;
-    [SerializeField] private Canvas customerNumberCanvas;
-    [SerializeField] private Text customerNumberText;
-    [SerializeField] private Text customerNameText;
-    [SerializeField] private bool displayCustomerNameText = true;
-    [SerializeField] private CustomerBase customerBase;
+    [SerializeField] private TextMeshProUGUI customerSentence;
     private CoffeeAttributes coffeeAttributes;
 
     public void Start()
     {
         coffeeAttributes = GetComponentInParent<CoffeeAttributes>();
-        textMeshPro.text = GetCustomerDialogue();
-
+        customerSentence.text = GetCustomerDialogue();
     }
 
     // Build the sentence describing the drink for the customer's order dialogue
     private string GetCustomerDialogue()
     {
         StringBuilder sb = new StringBuilder();
-        sb.Append("I want ");
+        sb.Append("I want");
         sb.Append(GetPrefix(coffeeAttributes.GetBitterness()) + "bitterness,");
         sb.Append(GetPrefix(coffeeAttributes.GetSweetness()) + "sweetness,");
         sb.Append(GetPrefix(coffeeAttributes.GetStrength()) + "strength,");
