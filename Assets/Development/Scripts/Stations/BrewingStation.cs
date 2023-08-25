@@ -141,14 +141,14 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             minigameTiming = false;
             Debug.Log("Too late");
         }
-        //testing purposes
+        /*/testing purposes
         if (!minigameTiming)
         {
             //setup minigame
             minigameTiming = true;
             minigameTimer = 0;
             sweetSpotPosition = UnityEngine.Random.Range(minSweetSpotPosition, maxSweetSpotPosition);
-        }
+        }*/
         
 
         Debug.Log("ingredientSOList.Count :" + ingredientSOList.Count);
