@@ -8,8 +8,6 @@ public class IngredientStation : BaseStation
 {
     [SerializeField] private IngredientSO ingredientSO;
     [SerializeField] private ParticleSystem interactParticle;
-    public TextMeshPro text;
-    private string curText;
 
     public override void Interact(PlayerStateMachine player)
     {
@@ -25,8 +23,6 @@ public class IngredientStation : BaseStation
                 }
 
                 Ingredient.SpawnIngredient(ingredientSO, player);
-                curText = text.text;
-                text.text = curText + "\n" + ingredientSO.ToString(); //Updates text above player with ingredient
                 player.GetNumberOfIngredients();
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
                 interactParticle.Play();

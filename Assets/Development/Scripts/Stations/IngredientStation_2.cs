@@ -1,11 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Events;
 using TMPro;
+using UnityEngine;
 
-public class FridgeStation : BaseStation, IHasProgress
+public class IngredientStation_2 : BaseStation, IHasProgress
 {
     public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
 
@@ -15,7 +14,7 @@ public class FridgeStation : BaseStation, IHasProgress
 
     private IngredientSO currentIngredient;
     private int ingredientListSOIndex;
-   
+
     private void Start()
     {
         ingredientListSOIndex = 0;
@@ -26,7 +25,7 @@ public class FridgeStation : BaseStation, IHasProgress
     public override void Interact(PlayerStateMachine player)
     {
         if (!HasIngredient())
-        {   
+        {
             if (player.HasIngredient()) //check if player has ingredient
             {
                 if (player.GetIngredient().CompareTag("Milk")) //check if player has milk ingredient
@@ -50,7 +49,7 @@ public class FridgeStation : BaseStation, IHasProgress
 
     public override void InteractAlt(PlayerStateMachine player)
     {
-        if(ingredientListSOIndex >= ingredientListSO.Length-1)
+        if (ingredientListSOIndex >= ingredientListSO.Length - 1)
         {
             ingredientListSOIndex = 0;
         }
