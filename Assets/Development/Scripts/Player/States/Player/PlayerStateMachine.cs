@@ -19,7 +19,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
     [field: SerializeField] public float moveSpeed { get; private set; }
     [field: SerializeField] public float jumpForce { get; private set; }
     [field: SerializeField] public float ingredienThrowForce { get; private set; }
-    
+
     //[Header("Ground Check")]
     [field: SerializeField] public LayerMask isGroundLayer { get; private set; }
     [field: SerializeField] public float groundCheckRadius { get; private set; }

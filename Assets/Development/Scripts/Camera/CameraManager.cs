@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Camera))]
 public class CameraManager : MonoBehaviour
 {
-    [SerializeField] List<Transform> targets;
+    [SerializeField] List<Transform> targets = new List<Transform>();
     [SerializeField] Vector3 offset;
     [SerializeField] float smoothTime = .5f;
     [SerializeField] float minZoom = 50f;
@@ -15,11 +15,23 @@ public class CameraManager : MonoBehaviour
     private Vector3 velocity;
     private Camera cam;
 
+    private bool hasListShrunk = false;
+
     private void Start()
     {
         cam = GetComponent<Camera>();
-
     }
+
+    private void Update()
+    {
+        if (hasListShrunk == false)
+        {
+            // Iterate through the list in reverse to avoid index issues when removing elements.
+            targets.RemoveAll(target => !target.gameObject.activeSelf);
+            hasListShrunk = true;
+        }
+    }
+
     private void LateUpdate()
     {
         if(targets.Count <= 0) return;

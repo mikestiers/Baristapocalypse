@@ -35,7 +35,6 @@ public class InputManager : Singleton<InputManager>, PlayerInput.IPlayerActions
         playerInput.Player.Enable();
     }
 
-
     private void OnDestroy()
     {
         playerInput.Player.Disable();

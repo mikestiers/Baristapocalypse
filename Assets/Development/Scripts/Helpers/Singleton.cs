@@ -27,11 +27,6 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component
     
     protected virtual void Awake()
     {
-
-    }
-
-    /*protected virtual void Awake()
-    {
         if (!_instance)
         {
             _instance = this as T;
@@ -40,5 +35,5 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component
         }
 
         Destroy(gameObject);
-    }*/
+    }
 }
