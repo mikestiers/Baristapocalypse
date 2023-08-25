@@ -45,6 +45,7 @@ public class UiCameraManager : MonoBehaviour
     [SerializeField] private GameObject MainMenuTab;
     [SerializeField] private GameObject ExitMenuTab;
     [SerializeField] private GameObject PlayMenuTab;
+
     // Start is called before the first frame update
     public void Start()
     {
@@ -89,28 +90,34 @@ public class UiCameraManager : MonoBehaviour
 
     void PlayerSpawn4()
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         if (Player4Yellow != null)
         {
             Instantiate(Player4Yellow, Player4SpawnPoint);
         }
+        GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().player4Active = true;
         return;
 
     }
     void PlayerSpawn3()
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         if (Player3Green != null)
         {
             Instantiate(Player3Green, Player3SpawnPoint);
         }
+        GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().player3Active = true;
         return;
 
     }
     void PlayerSpawn2()
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         if (Player2Blue != null)
         {
             Instantiate(Player2Blue, Player2SpawnPoint);
         }
+        GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().player2Active = true;
         return;
 
     }
@@ -121,6 +128,7 @@ public class UiCameraManager : MonoBehaviour
         { 
            Instantiate(Player1Red, Player1SpawnPoint);
         }
+        GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().player1Active = true;
         return;
     }
     void ReturnFromSettings() 
@@ -195,6 +203,7 @@ public class UiCameraManager : MonoBehaviour
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         SceneManager.LoadScene("WhiteBox");
+        gameObject.SetActive(false);
     }
     void closeGame() 
     {
