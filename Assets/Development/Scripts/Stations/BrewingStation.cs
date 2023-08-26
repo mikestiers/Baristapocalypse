@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 {
@@ -115,7 +116,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         }
         else
         {
-            if (HasIngredient())
+            if (HasIngredient() && !minigameTiming)
             {
                 GetIngredient().SetIngredientParent(player);
             }

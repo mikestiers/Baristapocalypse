@@ -31,7 +31,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8086891939505322414}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -350,12 +350,55 @@ PrefabInstance:
       propertyPath: m_Name
       value: MinigameTimingUI
       objectReference: {fileID: 0}
+    - target: {fileID: 4600515012710837537, guid: eb3959b5f50e79942b2e7b5123ed7374, type: 3}
+      propertyPath: sweetSpot
+      value: 
+      objectReference: {fileID: 7397565616998533613}
+    - target: {fileID: 4600515012710837537, guid: eb3959b5f50e79942b2e7b5123ed7374, type: 3}
+      propertyPath: timingMarker
+      value: 
+      objectReference: {fileID: 665585514404262885}
+    - target: {fileID: 4600515012710837537, guid: eb3959b5f50e79942b2e7b5123ed7374, type: 3}
+      propertyPath: backgroundBar
+      value: 
+      objectReference: {fileID: 7376837832469601484}
+    - target: {fileID: 4600515012710837537, guid: eb3959b5f50e79942b2e7b5123ed7374, type: 3}
+      propertyPath: hasMinigameTimingGameObject
+      value: 
+      objectReference: {fileID: 2302913697864026037}
     - target: {fileID: 6022097900667772727, guid: eb3959b5f50e79942b2e7b5123ed7374, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb3959b5f50e79942b2e7b5123ed7374, type: 3}
+--- !u!114 &665585514404262885 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 665585514435530021, guid: eb3959b5f50e79942b2e7b5123ed7374, type: 3}
+  m_PrefabInstance: {fileID: 36011712}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7376837832469601484 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7376837832438325772, guid: eb3959b5f50e79942b2e7b5123ed7374, type: 3}
+  m_PrefabInstance: {fileID: 36011712}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!224 &7397565616998533613 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7397565616966743853, guid: eb3959b5f50e79942b2e7b5123ed7374, type: 3}
+  m_PrefabInstance: {fileID: 36011712}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2526405626343001711
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -542,6 +585,7 @@ MonoBehaviour:
   stationTopPoint: {fileID: 5328838951665215557}
   ingredientSOList: []
   interactParticle: {fileID: 3823761264207694108}
+  ingredientsIndicatorText: {fileID: 220367961}
   brewingRecipeSO: {fileID: 11400000, guid: 51673626c59b856478165b70a83edda2, type: 2}
 --- !u!198 &3823761264207694108 stripped
 ParticleSystem:
