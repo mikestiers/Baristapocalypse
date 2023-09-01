@@ -2,10 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PickupObjects : MonoBehaviour
+public class Messes : MonoBehaviour
 {
-    public GameObject[] objects;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -17,5 +15,4 @@ public class PickupObjects : MonoBehaviour
     {
         
     }
-
 }
