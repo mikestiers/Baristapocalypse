@@ -6,8 +6,8 @@ using UnityEngine;
 public interface IMessParent
 {
     Transform GetMessTransform();
-    void SetMess(Mess mess);
-    Mess GetMess();
+    void SetMess(MessBase mess);
+    MessBase GetMess();
     void ClearMess();
     bool HasMess();
 }

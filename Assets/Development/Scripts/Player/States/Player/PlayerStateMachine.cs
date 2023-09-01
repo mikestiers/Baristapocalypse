@@ -45,7 +45,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
     [HideInInspector] public Vector3 moveDir;
 
     //  Mess Data
-    public Mess Mess { get; private set; }
+    public MessBase Mess { get; private set; }
     [HideInInspector] public Collider messCollider;
     [field: SerializeField] public LayerMask isMessLayer { get; private set; }
     
@@ -277,12 +277,12 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
         throw new NotImplementedException();
     }
 
-    public void SetMess(Mess mess)
+    public void SetMess(MessBase mess)
     {
         throw new NotImplementedException();
     }
 
-    public Mess GetMess()
+    public MessBase GetMess()
     {
         throw new NotImplementedException();
     }

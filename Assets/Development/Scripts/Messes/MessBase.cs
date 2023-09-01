@@ -2,11 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mess : MonoBehaviour
+public class MessBase : MonoBehaviour
 {
     [field: SerializeField] public MessSO MessSO { get; private set; }
 
     private IMessParent messParent;
+
+    public virtual void Interact(PlayerStateMachine player)
+    {
+
+    }
+    public virtual void InteractAlt(PlayerStateMachine player)
+    {
+        
+    }
 
     public MessSO GetMessSO()
     {
@@ -42,11 +51,11 @@ public class Mess : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public static Mess SpawnMess(MessSO messSO, IMessParent messParent)
+    public static MessBase SpawnMess(MessSO messSO, IMessParent messParent)
     {
         GameObject messPrefab = Instantiate(messSO.prefab);
-        Mess mess = messPrefab.GetComponent<Mess>();
-        mess.GetComponent<Mess>().SetMessParent(messParent);
+        MessBase mess = messPrefab.GetComponent<MessBase>();
+        mess.GetComponent<MessBase>().SetMessParent(messParent);
       
         return mess;
     }
