@@ -71,7 +71,7 @@ public class PlayerGroundState : PlayerBaseState
         float floriIteractDistance = 3.0f;
         if (Physics.Raycast(stateMachine.transform.position, stateMachine.transform.forward, out RaycastHit raycastHitIngredient, floriIteractDistance, stateMachine.isIngredientLayer))
         {
-            if (stateMachine.GetNumberOfIngredients() <= 4)
+            if (stateMachine.GetNumberOfIngredients() <= stateMachine.maxIngredients)
             {
                 if (raycastHitIngredient.transform.TryGetComponent(out  floorIngredient))
                 {

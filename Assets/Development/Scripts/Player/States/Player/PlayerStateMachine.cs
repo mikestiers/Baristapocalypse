@@ -1,13 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
-using UnityEditor.Rendering.LookDev;
-using Unity.PlasticSCM.Editor.WebApi;
+
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
@@ -15,12 +12,12 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
     // Player Singleton
     [HideInInspector] public static PlayerStateMachine Instance { get; private set; }
 
-    //[Header("Player Attributes")]
+    // [Header("Player Attributes")]
     [field: SerializeField] public float moveSpeed { get; private set; }
     [field: SerializeField] public float jumpForce { get; private set; }
     [field: SerializeField] public float ingredienThrowForce { get; private set; }
 
-    //[Header("Ground Check")]
+    // [Header("Ground Check")]
     [field: SerializeField] public LayerMask isGroundLayer { get; private set; }
     [field: SerializeField] public float groundCheckRadius { get; private set; }
     [field: SerializeField] public Transform groundCheck { get; private set; }
@@ -28,24 +25,31 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
     [SerializeField] public float dashForce;
     [SerializeField] public float dashTime;
 
-    //[Header("Interactables")]
+    // [Header("Interactables")]
     [field: SerializeField] public LayerMask isStationLayer { get; private set; }
     [field: SerializeField] public LayerMask isIngredientLayer { get; private set; }
     [HideInInspector] public BaseStation selectedStation { get; private set; }
     [HideInInspector] public Collider ingredientCollider;
-    public GameObject ingredientInstanceHolder;
-
-    //[Header("Ingredients Data")]
+    [SerializeField] private GameObject ingredientInstanceHolder;
+    
+    // [Header("Ingredients Data")]
     [field: SerializeField] public Transform ingredientHoldPoint { get; private set; }// changing this for an array of 5 points, not deleted yet for testing
     public Ingredient ingredient { get; private set; }
-    public int currentHoldPointIndex = 0; // keep track of the current HoldPoint index
-    public int numberOfIngredientsHeld = 0; // Keep track of the number of ingredients held
-    private int maxIngredients = 4; // Keep track of the maximum number of ingredients the player can have
+    [HideInInspector] public int currentHoldPointIndex = 0; // keep track of the current HoldPoint index
+    [HideInInspector] public int numberOfIngredientsHeld = 0; // Keep track of the number of ingredients held
+    [HideInInspector] public int maxIngredients = 4; // Keep track of the maximum number of ingredients the player can have
     [SerializeField] public Transform[] ingredientHoldPoints; // Array to hold multiple ingredient
 
     [HideInInspector] public Rigidbody rb { get; private set; }
     [HideInInspector] public Vector3 curMoveInput;
     [HideInInspector] public Vector3 moveDir;
+
+    //  Mess Data
+    public Mess Mess { get; private set; }
+    [HideInInspector] public Collider messCollider;
+    [field: SerializeField] public LayerMask isMessLayer { get; private set; }
+    
+
 
     // When station selected
     private GameObject visualGameObject;
@@ -229,6 +233,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
     {
         ingredient = null;
     }
+
     public void ClearIngredients()
     {
        
