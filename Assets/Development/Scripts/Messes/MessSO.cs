@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu()]
-public class MessesSO : ScriptableObject
+public class MessSO : ScriptableObject
 {
     public GameObject prefab;
-    public string objectName;
-    public string objectTag;
-    public int messiness;
-    
+    public string messName;
+    public string messTag;
+    public int dirtyness;
 }

@@ -10,7 +10,7 @@ using UnityEditor.Rendering.LookDev;
 using Unity.PlasticSCM.Editor.WebApi;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerStateMachine : StateMachine, IIngredientParent
+public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
 {
     // Player Singleton
     [HideInInspector] public static PlayerStateMachine Instance { get; private set; }
@@ -124,6 +124,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
         selectedStation = baseStation;
 
     }
+
     public int GetNumberOfIngredients()
     {
         int count = 0;
@@ -263,4 +264,31 @@ public class PlayerStateMachine : StateMachine, IIngredientParent
         ingredientIndicatorText.text = currentIndicator;
     }
 
+
+    // Mess Interface implementation
+
+    public Transform GetMessTransform()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SetMess(Mess mess)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Mess GetMess()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ClearMess()
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool HasMess()
+    {
+        throw new NotImplementedException();
+    }
 }
