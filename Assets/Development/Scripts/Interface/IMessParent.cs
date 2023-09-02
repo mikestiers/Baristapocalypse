@@ -5,9 +5,9 @@ using UnityEngine;
 
 public interface IMessParent
 {
-    Transform GetMessTransform();
-    void SetMess(MessBase mess);
-    MessBase GetMess();
-    void ClearMess();
-    bool HasMess();
+    public Transform GetMessTransform();
+    public void SetMess(MessBase mess);
+    public MessBase GetMess();
+    public void ClearMess();
+    public bool HasMess();
 }

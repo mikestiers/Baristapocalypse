@@ -109,13 +109,12 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
         {
             selectedStation.Interact(this);
         }
-        //Debug.Log(selectedStation);
-
+       
         if (selectedMess)
         {
             selectedMess.Interact(this);
         }
-
+        
     }
 
     public void InteractAlt(InputAction.CallbackContext ctx)
@@ -287,7 +286,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
 
     public Transform GetMessTransform()
     {
-        throw new NotImplementedException();
+        return selectedMess.transform;
     }
 
     public void SetMess(MessBase mess)

@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MessBase : MonoBehaviour
+public class MessBase : MonoBehaviour, IMessParent
 {
     [field: SerializeField] public MessSO MessSO { get; private set; }
 
     private IMessParent messParent;
+    [HideInInspector] public MessBase mess;
 
     public virtual void Interact(PlayerStateMachine player)
     {
@@ -45,7 +46,7 @@ public class MessBase : MonoBehaviour
         return messParent;
     }
 
-    public void CleanMess()
+    public void DestroyMess()
     {
         messParent.ClearMess();
         Destroy(gameObject);
@@ -58,5 +59,33 @@ public class MessBase : MonoBehaviour
         mess.GetComponent<MessBase>().SetMessParent(messParent);
       
         return mess;
+    }
+
+
+    // IMessParent Interface Implementation
+
+    public Transform GetMessTransform()
+    {
+        return mess.transform;
+    }
+
+    public void SetMess(MessBase mess)
+    {
+        this.mess = mess;
+    }
+
+    public MessBase GetMess()
+    {
+        return mess;
+    }
+
+    public void ClearMess()
+    {
+        mess = null;
+    }
+
+    public bool HasMess()
+    {
+        return mess != null;
     }
 }

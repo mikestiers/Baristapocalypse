@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class PlayerGroundState : PlayerBaseState
 {
@@ -17,6 +18,8 @@ public class PlayerGroundState : PlayerBaseState
     private Ingredient floorIngredient;
     private IngredientSO ingredienSO;
     private Mouse mouse = Mouse.current;
+    private LayerMask interactableLayerMask; // A single LayerMask for all interactable objects
+    private Vector3 RayCastOffset; // Temp for raising Raycast poin of origin
   
      public override void Enter()
     {
@@ -24,11 +27,15 @@ public class PlayerGroundState : PlayerBaseState
         stateMachine.inputManager.JumpEvent += OnJump;
         stateMachine.inputManager.DashEvent += OnDash;
         stateMachine.inputManager.ThrowEvent += OnThrow;
-        
+
+        // Define the interactable layer mask to include station, ingredient, and mess layers.
+        interactableLayerMask = stateMachine.isStationLayer | stateMachine.isIngredientLayer | stateMachine.isMessLayer;
+
         InputManager.Instance.playerInput.Player.Interact.performed += context => stateMachine.Interact(context);
         InputManager.Instance.playerInput.Player.InteractAlt.performed += context => stateMachine.InteractAlt(context);
         Debug.Log("Player enter moving state");
 
+        RayCastOffset = new Vector3(0, 0.3f, 0);
      }
    
 
@@ -42,11 +49,13 @@ public class PlayerGroundState : PlayerBaseState
         stateMachine.GetNumberOfIngredients();
         stateMachine.SetIngredientIndicator();
 
-        //  Pick ingredient from station 
+        // Perform a single raycast to detect any interactable object.
         float interactDistance = 6.0f;
-        if (Physics.Raycast(stateMachine.transform.position + new Vector3(0, 0.1f, 0), stateMachine.transform.forward, out RaycastHit raycastHit, interactDistance, stateMachine.isStationLayer))
+        if (Physics.Raycast(stateMachine.transform.position + RayCastOffset, stateMachine.transform.forward, out RaycastHit hit, interactDistance, interactableLayerMask))
         {
-            if (raycastHit.transform.TryGetComponent(out BaseStation baseStation))
+            // Check the type of the hit object.
+            // Logic for Station Interaction
+            if (hit.transform.TryGetComponent(out BaseStation baseStation))
             {
                 visualGameObject = baseStation.transform.GetChild(0).gameObject;
                 if (baseStation != stateMachine.selectedStation)
@@ -55,46 +64,100 @@ public class PlayerGroundState : PlayerBaseState
                     stateMachine.Show(visualGameObject);
                 }
             }
-            else
+            // Logic for Ingredient Interaction
+            else if (hit.transform.TryGetComponent(out Ingredient ingredient))
             {
-                stateMachine.SetSelectedStation(null);
+                if (stateMachine.GetNumberOfIngredients() <= stateMachine.maxIngredients)
+                {
+                    ingredienSO = ingredient.IngredientSO;
+
+                    if (mouse.leftButton.wasPressedThisFrame)
+                        stateMachine.GrabIngedientFromFloor(ingredient, ingredienSO);
+                }
+            }
+            // Logic for Mess Interaction
+            else if (hit.transform.TryGetComponent(out MessBase mess))
+            {
+                if (mess != stateMachine.selectedMess)
+                {
+                    stateMachine.SetSelectedMess(mess);
+                }
+                Debug.Log("Detecting " + mess);
             }
         }
         else
         {
+            // No interactable object hit, clear selected objects.
             stateMachine.Hide(visualGameObject);
             stateMachine.SetSelectedStation(null);
+            stateMachine.SetSelectedMess(null);
         }
-        Debug.DrawRay(stateMachine.transform.position + new Vector3(0, 0.5f, 0), stateMachine.transform.forward, Color.green);
-
-        // Pick ingredient from floor
-        float floriIteractDistance = 3.0f;
-        if (Physics.Raycast(stateMachine.transform.position, stateMachine.transform.forward, out RaycastHit raycastHitIngredient, floriIteractDistance, stateMachine.isIngredientLayer))
-        {
-            if (stateMachine.GetNumberOfIngredients() <= stateMachine.maxIngredients)
-            {
-                if (raycastHitIngredient.transform.TryGetComponent(out  floorIngredient))
-                {
-                    ingredienSO = floorIngredient.IngredientSO;
-
-                    if (mouse.leftButton.wasPressedThisFrame)
-                        stateMachine.GrabIngedientFromFloor(floorIngredient, ingredienSO);
-                }
-            }
-        }
-
-        //  Interact with mess
-        if (Physics.Raycast(stateMachine.transform.position, stateMachine.transform.forward, out RaycastHit raycastHitMess, floriIteractDistance, stateMachine.isMessLayer))
-        {
-           
-            if (raycastHitMess.transform.TryGetComponent(out MessBase mess))
-            {
-                Debug.Log("Detecting)" + mess);
-            }
-            
-        }
+        Debug.DrawRay(stateMachine.transform.position + RayCastOffset, stateMachine.transform.forward, Color.green);
 
 
+        // //  Pick ingredient from station 
+        // float interactDistance = 6.0f;
+        // if (Physics.Raycast(stateMachine.transform.position + new Vector3(0, 0.1f, 0), stateMachine.transform.forward, out RaycastHit raycastHit, interactDistance, stateMachine.isStationLayer))
+        // {
+        //     if (raycastHit.transform.TryGetComponent(out BaseStation baseStation))
+        //     {
+        //         visualGameObject = baseStation.transform.GetChild(0).gameObject;
+        //         if (baseStation != stateMachine.selectedStation)
+        //         {
+        //             stateMachine.SetSelectedStation(baseStation);
+        //             stateMachine.Show(visualGameObject);
+        //         }
+        //     }
+        //     else
+        //     {
+        //         stateMachine.SetSelectedStation(null);
+        //     }
+        // }
+        // else
+        // {
+        //     stateMachine.Hide(visualGameObject);
+        //     stateMachine.SetSelectedStation(null);
+        // }
+        // Debug.DrawRay(stateMachine.transform.position + new Vector3(0, 0.5f, 0), stateMachine.transform.forward, Color.green);
+        //
+        // // Pick ingredient from floor
+        // float floriIteractDistance = 3.0f;
+        // if (Physics.Raycast(stateMachine.transform.position, stateMachine.transform.forward, out RaycastHit raycastHitIngredient, floriIteractDistance, stateMachine.isIngredientLayer))
+        // {
+        //     if (stateMachine.GetNumberOfIngredients() <= stateMachine.maxIngredients)
+        //     {
+        //         if (raycastHitIngredient.transform.TryGetComponent(out  floorIngredient))
+        //         {
+        //             ingredienSO = floorIngredient.IngredientSO;
+        //
+        //             if (mouse.leftButton.wasPressedThisFrame)
+        //                 stateMachine.GrabIngedientFromFloor(floorIngredient, ingredienSO);
+        //         }
+        //     }
+        // }
+        //
+        // //  Interact with mess
+        // if (Physics.Raycast(stateMachine.transform.position, stateMachine.transform.forward, out RaycastHit raycastHitMess, floriIteractDistance, stateMachine.isMessLayer))
+        // {
+        //    
+        //     if (raycastHitMess.transform.TryGetComponent(out MessBase mess))
+        //     {
+        //         if (mess != stateMachine.selectedMess)
+        //         {
+        //             stateMachine.SetSelectedMess(mess);
+        //             
+        //         }
+        //         Debug.Log("Detecting)" + mess);
+        //     }
+        //     else
+        //     {
+        //         stateMachine.SetSelectedMess(null);
+        //     }
+        // }
+        // else
+        // {
+        //     stateMachine.SetSelectedMess(null);
+        // }
     }
 
     public override void Exit()
