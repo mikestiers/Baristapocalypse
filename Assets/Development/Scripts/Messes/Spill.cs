@@ -12,7 +12,7 @@ public class Spill : MessBase
 
     public override void Interact(PlayerStateMachine player)
     {
-
+        Debug.Log("Interacting" + GetMessSO());
     }
 
 }

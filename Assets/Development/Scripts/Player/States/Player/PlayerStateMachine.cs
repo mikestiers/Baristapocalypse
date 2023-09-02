@@ -45,7 +45,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
     [HideInInspector] public Vector3 moveDir;
 
     //  Mess Data
-    public MessBase Mess { get; private set; }
+    [HideInInspector] public MessBase selectedMess { get; private set; }
     [HideInInspector] public Collider messCollider;
     [field: SerializeField] public LayerMask isMessLayer { get; private set; }
     
@@ -111,6 +111,11 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
         }
         //Debug.Log(selectedStation);
 
+        if (selectedMess)
+        {
+            selectedMess.Interact(this);
+        }
+
     }
 
     public void InteractAlt(InputAction.CallbackContext ctx)
@@ -119,13 +124,21 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
         {
             selectedStation.InteractAlt(this);
         }
-
+        if (selectedMess)
+        {
+            selectedMess.InteractAlt(this);
+        }
     }
 
 
     public void SetSelectedStation(BaseStation baseStation)
     {
         selectedStation = baseStation;
+
+    }
+    public void SetSelectedMess(MessBase mess)
+    {
+        selectedMess = mess;
 
     }
 
@@ -279,21 +292,21 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
 
     public void SetMess(MessBase mess)
     {
-        throw new NotImplementedException();
+        this.selectedMess = mess;
     }
 
     public MessBase GetMess()
     {
-        throw new NotImplementedException();
+        return selectedMess;
     }
 
     public void ClearMess()
     {
-        throw new NotImplementedException();
+        selectedMess = null; ;
     }
 
     public bool HasMess()
     {
-        throw new NotImplementedException();
+        return selectedMess != null;
     }
 }

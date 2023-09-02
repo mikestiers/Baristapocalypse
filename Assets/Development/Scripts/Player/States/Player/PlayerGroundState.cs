@@ -82,7 +82,19 @@ public class PlayerGroundState : PlayerBaseState
                 }
             }
         }
-    
+
+        //  Interact with mess
+        if (Physics.Raycast(stateMachine.transform.position, stateMachine.transform.forward, out RaycastHit raycastHitMess, floriIteractDistance, stateMachine.isMessLayer))
+        {
+           
+            if (raycastHitMess.transform.TryGetComponent(out MessBase mess))
+            {
+                Debug.Log("Detecting)" + mess);
+            }
+            
+        }
+
+
     }
 
     public override void Exit()
