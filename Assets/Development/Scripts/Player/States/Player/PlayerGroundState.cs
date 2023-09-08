@@ -49,32 +49,43 @@ public class PlayerGroundState : PlayerBaseState
         stateMachine.GetNumberOfIngredients();
         stateMachine.SetIngredientIndicator();
 
+        Debug.Log("number of ingrediants" + stateMachine.GetNumberOfIngredients());
         // Perform a single raycast to detect any interactable object.
         float interactDistance = 6.0f;
         if (Physics.Raycast(stateMachine.transform.position + RayCastOffset, stateMachine.transform.forward, out RaycastHit hit, interactDistance, interactableLayerMask))
         {
             // Check the type of the hit object.
             // Logic for Station Interaction
-            if (hit.transform.TryGetComponent(out BaseStation baseStation))
+            if (hit.transform.TryGetComponent(out BaseStation baseStation) && !stateMachine.hasMop)
             {
+
+
                 visualGameObject = baseStation.transform.GetChild(0).gameObject;
                 if (baseStation != stateMachine.selectedStation)
                 {
                     stateMachine.SetSelectedStation(baseStation);
                     stateMachine.Show(visualGameObject);
                 }
+
+
             }
-            // Logic for Ingredient Interaction
+            // Logic for Ingredient  on floor Interaction 
             else if (hit.transform.TryGetComponent(out Ingredient ingredient))
             {
-                if (stateMachine.GetNumberOfIngredients() <= stateMachine.maxIngredients)
+
+
+                if (stateMachine.GetNumberOfIngredients() <= stateMachine.maxIngredients && !stateMachine.hasMop)
                 {
                     ingredienSO = ingredient.IngredientSO;
 
                     if (mouse.leftButton.wasPressedThisFrame)
                         stateMachine.GrabIngedientFromFloor(ingredient, ingredienSO);
                 }
+
+
+
             }
+
             // Logic for Mess Interaction
             else if (hit.transform.TryGetComponent(out MessBase mess))
             {

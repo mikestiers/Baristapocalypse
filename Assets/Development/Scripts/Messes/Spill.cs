@@ -17,7 +17,7 @@ public class Spill : MessBase
 
     public override void Interact(PlayerStateMachine player)
     {
-           if(player.hasMop == true) 
+           if (player.hasMop == true ) 
            { 
                   if (cleaningProgress < totalProgress )
                   {
@@ -29,13 +29,16 @@ public class Spill : MessBase
                      Destroy(player.GetMess().gameObject);
                       cleaningProgress = 0;
                   }
-                  else
-                     Debug.Log("cant clean");
-                     return;
+                 
            }
+           else 
+           {
+                Debug.Log("cant clean");
+                return;
         
+           }
 
-        
+
         // Reset the selectedMess field to null after the interaction is complete.
         player.SetSelectedMess(null); // we may not need this
 

@@ -16,7 +16,7 @@ public class Mop : BaseStation
     }
     public override void InteractAlt(PlayerStateMachine player) 
       {
-        if (!player.hasMop) 
+        if (!player.hasMop && player.GetNumberOfIngredients() == 0) 
         {
             mopOnPlayer.SetActive(true);
             mopInStation.SetActive(false);
