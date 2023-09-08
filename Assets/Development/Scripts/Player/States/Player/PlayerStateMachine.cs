@@ -45,8 +45,11 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
     [HideInInspector] public Vector3 moveDir;
 
     //  Mess Data
-    [HideInInspector] public MessBase selectedMess { get; private set; }
+    [HideInInspector] public MessBase selectedMess { get; private set; } 
+    [HideInInspector] public Mop selectedMop { get; private set; }
+    [field: SerializeField] public LayerMask isMopLayer { get; private set; }
     [HideInInspector] public Collider messCollider;
+    [HideInInspector] public bool hasMop;
     [field: SerializeField] public LayerMask isMessLayer { get; private set; }
     
 
@@ -114,6 +117,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
         {
             selectedMess.Interact(this);
         }
+
         
     }
 
@@ -127,6 +131,10 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
         {
             selectedMess.InteractAlt(this);
         }
+        if (selectedMop) 
+        { 
+            selectedMop.InteractAlt(this);
+        }
     }
 
 
@@ -139,6 +147,11 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
     {
         selectedMess = mess;
 
+    }
+
+    public void SetSelectedMop(Mop mop) 
+    { 
+       selectedMop = mop;
     }
 
     public int GetNumberOfIngredients()
@@ -308,4 +321,6 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
     {
         return selectedMess != null;
     }
+
+   
 }

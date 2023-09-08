@@ -29,7 +29,7 @@ public class PlayerGroundState : PlayerBaseState
         stateMachine.inputManager.ThrowEvent += OnThrow;
 
         // Define the interactable layer mask to include station, ingredient, and mess layers.
-        interactableLayerMask = stateMachine.isStationLayer | stateMachine.isIngredientLayer | stateMachine.isMessLayer;
+        interactableLayerMask = stateMachine.isStationLayer | stateMachine.isIngredientLayer | stateMachine.isMessLayer | stateMachine.isMopLayer;
 
         InputManager.Instance.playerInput.Player.Interact.performed += context => stateMachine.Interact(context);
         InputManager.Instance.playerInput.Player.InteractAlt.performed += context => stateMachine.InteractAlt(context);
@@ -84,6 +84,15 @@ public class PlayerGroundState : PlayerBaseState
                 }
                 Debug.Log("Detecting " + mess);
             }
+            // logic for Mop Interaction
+            else if (hit.transform.TryGetComponent(out Mop Mop)) 
+            {
+                if (Mop != stateMachine.selectedMop) 
+                {
+                    stateMachine.SetSelectedMop(Mop);
+                }
+                Debug.Log("Geting " + Mop);
+            }
         }
         else
         {
@@ -91,6 +100,7 @@ public class PlayerGroundState : PlayerBaseState
             stateMachine.Hide(visualGameObject);
             stateMachine.SetSelectedStation(null);
             stateMachine.SetSelectedMess(null);
+            stateMachine.SetSelectedMop(null);
         }
         Debug.DrawRay(stateMachine.transform.position + RayCastOffset, stateMachine.transform.forward, Color.green);
 
@@ -205,5 +215,7 @@ public class PlayerGroundState : PlayerBaseState
 
         }
     }
+
+   
 }
 

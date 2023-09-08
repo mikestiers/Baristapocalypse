@@ -7,7 +7,7 @@ public class Spill : MessBase
 {
     private int cleaningProgress = 0; // start clenaing progress for spill
     private int totalProgress = 4; // amount of timer required to clean spill (temporary)
-    
+   
 
     // Start is called before the first frame update
     void Start()
@@ -17,17 +17,23 @@ public class Spill : MessBase
 
     public override void Interact(PlayerStateMachine player)
     {
-       
-            if (cleaningProgress < totalProgress )
-            {
-                // scale down the spill game object or play animation 
-                cleaningProgress++;
-            }
-            if (cleaningProgress == totalProgress)
-            {
-                Destroy(player.GetMess().gameObject);
-                cleaningProgress = 0;
-            }
+           if(player.hasMop == true) 
+           { 
+                  if (cleaningProgress < totalProgress )
+                  {
+                    // scale down the spill game object or play animation 
+                   cleaningProgress++;
+                  }
+                  if (cleaningProgress == totalProgress)
+                  {
+                     Destroy(player.GetMess().gameObject);
+                      cleaningProgress = 0;
+                  }
+                  else
+                     Debug.Log("cant clean");
+                     return;
+           }
+        
 
         
         // Reset the selectedMess field to null after the interaction is complete.
@@ -39,5 +45,5 @@ public class Spill : MessBase
         //Debug.Log("Mess position" + player.GetMessTransform().position);
 
     }
-
+    
 }
