@@ -6,7 +6,8 @@ using UnityEngine;
 public class Spill : MessBase
 {
     private int cleaningProgress = 0; // start clenaing progress for spill
-    private int totalProgress = 4; // amount of timer required to clean spill (temporary)
+    [SerializeField] private int totalProgress = 4; // amount of timer required to clean spill (temporary)
+    [SerializeField] private float slipSpeed = 0.8f;
    
 
     // Start is called before the first frame update
@@ -51,25 +52,17 @@ public class Spill : MessBase
 
     private void OnTriggerStay(Collider other)
     {
-        Rigidbody rb = other.GetComponent<Rigidbody>();
-          Debug.Log("this is the player" + rb);
-        if (other.gameObject.CompareTag("Player"))
-        {
-             Debug.Log("i am working");
+        if (other.gameObject.CompareTag("Player")) 
+        { 
+             PlayerStateMachine stateMachine = other.gameObject.GetComponent<PlayerStateMachine>();
+             Rigidbody rb = stateMachine.rb;
+             Debug.Log("this is the player" + rb);
+             Vector3 movedirection = rb.transform.forward;
+             rb.AddForce(movedirection * slipSpeed , ForceMode.VelocityChange);
+            stateMachine.ThrowIngedient();
         }
     }
-    // {
-    // Rigidbody rb = collision.collider.GetComponent<Rigidbody>();
-    // Debug.Log("this is the player" + rb);
-    //if (collision.gameObject.CompareTag("Player")) 
-    // {
-    //     Debug.Log("i am working");
-    // }
-    // float slipSpeed = 8;
-    // if (rb != null) 
-    // {
-    //     Vector3 movedirection = rb.transform.forward;
-    //     rb.AddForce(movedirection * slipSpeed , ForceMode.VelocityChange);
-    // }
-    // }
 }
+          
+        
+   

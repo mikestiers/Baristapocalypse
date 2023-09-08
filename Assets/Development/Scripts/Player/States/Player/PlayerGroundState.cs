@@ -51,7 +51,7 @@ public class PlayerGroundState : PlayerBaseState
 
         Debug.Log("number of ingrediants" + stateMachine.GetNumberOfIngredients());
         // Perform a single raycast to detect any interactable object.
-        float interactDistance = 6.0f;
+        float interactDistance = 2.0f;
         if (Physics.Raycast(stateMachine.transform.position + RayCastOffset, stateMachine.transform.forward, out RaycastHit hit, interactDistance, interactableLayerMask))
         {
             // Check the type of the hit object.
@@ -89,9 +89,14 @@ public class PlayerGroundState : PlayerBaseState
             // Logic for Mess Interaction
             else if (hit.transform.TryGetComponent(out MessBase mess))
             {
+                visualGameObject = mess.transform.GetChild(0).gameObject;
                 if (mess != stateMachine.selectedMess)
                 {
                     stateMachine.SetSelectedMess(mess);
+                    if (stateMachine.hasMop)
+                    {
+                        stateMachine.Show(visualGameObject);
+                    }
                 }
                 Debug.Log("Detecting " + mess);
             }
