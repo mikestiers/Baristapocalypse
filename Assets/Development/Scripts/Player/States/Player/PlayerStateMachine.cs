@@ -45,12 +45,16 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
     [HideInInspector] public Vector3 moveDir;
 
     //  Mess Data
-    [HideInInspector] public MessBase selectedMess { get; private set; } 
+    [HideInInspector] public MessBase selectedMess; 
     [HideInInspector] public Mop selectedMop { get; private set; }
     [field: SerializeField] public LayerMask isMopLayer { get; private set; }
     [HideInInspector] public Collider messCollider;
     [HideInInspector] public bool hasMop;
     [field: SerializeField] public LayerMask isMessLayer { get; private set; }
+
+    [SerializeField] public MessSO spillPrefab;
+
+    [SerializeField] public Transform spillSpawnPoint;
     
 
 

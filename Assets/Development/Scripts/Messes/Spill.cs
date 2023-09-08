@@ -48,5 +48,28 @@ public class Spill : MessBase
         //Debug.Log("Mess position" + player.GetMessTransform().position);
 
     }
-    
+
+    private void OnTriggerStay(Collider other)
+    {
+        Rigidbody rb = other.GetComponent<Rigidbody>();
+          Debug.Log("this is the player" + rb);
+        if (other.gameObject.CompareTag("Player"))
+        {
+             Debug.Log("i am working");
+        }
+    }
+    // {
+    // Rigidbody rb = collision.collider.GetComponent<Rigidbody>();
+    // Debug.Log("this is the player" + rb);
+    //if (collision.gameObject.CompareTag("Player")) 
+    // {
+    //     Debug.Log("i am working");
+    // }
+    // float slipSpeed = 8;
+    // if (rb != null) 
+    // {
+    //     Vector3 movedirection = rb.transform.forward;
+    //     rb.AddForce(movedirection * slipSpeed , ForceMode.VelocityChange);
+    // }
+    // }
 }

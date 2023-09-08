@@ -52,11 +52,11 @@ public class MessBase : MonoBehaviour, IMessParent
         Destroy(gameObject);
     }
 
-    public static MessBase SpawnMess(MessSO messSO, IMessParent messParent)
+    public static MessBase SpawnMess(MessSO messSO , Transform spawnPosition)
     {
-        GameObject messPrefab = Instantiate(messSO.prefab);
+        GameObject messPrefab = Instantiate(messSO.prefab , spawnPosition.position , spawnPosition.rotation);
         MessBase mess = messPrefab.GetComponent<MessBase>();
-        mess.GetComponent<MessBase>().SetMessParent(messParent);
+       // mess.GetComponent<MessBase>().SetMessParent(messParent);
       
         return mess;
     }

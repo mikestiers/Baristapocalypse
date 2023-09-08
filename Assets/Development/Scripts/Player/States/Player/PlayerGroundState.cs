@@ -200,8 +200,22 @@ public class PlayerGroundState : PlayerBaseState
     {
         stateMachine.StartCoroutine(Dash());
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
+
+        if (stateMachine.GetNumberOfIngredients() > 0) 
+        { 
+            if (stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
+            {
+                MessBase.SpawnMess(stateMachine.spillPrefab , stateMachine.spillSpawnPoint);
+                stateMachine.ThrowIngedient();
+                Debug.Log("tienes Leche " + stateMachine.spillPrefab.name);
+                
+            }
+        }
+        else return;
+        
     }
 
+    
     IEnumerator Dash()
     {
         float startTime = Time.time;

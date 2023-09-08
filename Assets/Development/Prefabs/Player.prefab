@@ -411,6 +411,7 @@ Transform:
   - {fileID: 533563682798100843}
   - {fileID: 533563681979775760}
   - {fileID: 1310037079}
+  - {fileID: 1216517093796491857}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -484,14 +485,17 @@ MonoBehaviour:
   - {fileID: 1193085190}
   curMoveInput: {x: 0, y: 0, z: 0}
   moveDir: {x: 0, y: 0, z: 0}
+  selectedMess: {fileID: 0}
   <isMopLayer>k__BackingField:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   messCollider: {fileID: 0}
   hasMop: 0
   <isMessLayer>k__BackingField:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
+  spillPrefab: {fileID: 11400000, guid: 436597cbe317b964f940835852e0f1a3, type: 2}
+  spillSpawnPoint: {fileID: 1216517093796491857}
   inputManager: {fileID: 0}
   ingredientIndicatorText: {fileID: 1310037080}
 --- !u!1 &2850380253660422974
@@ -837,6 +841,37 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.12713104, y: 1.5074131, z: 0.11266053}
   m_Center: {x: -0.10066535, y: 0.75370616, z: -0.056332007}
+--- !u!1 &3925568205562815882
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1216517093796491857}
+  m_Layer: 0
+  m_Name: SpillSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1216517093796491857
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3925568205562815882}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.1, z: 1.256}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 533563683556402451}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4755161371482606069
 GameObject:
   m_ObjectHideFlags: 0
