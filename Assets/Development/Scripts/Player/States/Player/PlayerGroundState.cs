@@ -49,7 +49,7 @@ public class PlayerGroundState : PlayerBaseState
         stateMachine.GetNumberOfIngredients();
         stateMachine.SetIngredientIndicator();
 
-        Debug.Log("number of ingrediants" + stateMachine.GetNumberOfIngredients());
+        //Debug.Log("number of ingrediants" + stateMachine.GetNumberOfIngredients());
         // Perform a single raycast to detect any interactable object.
         float interactDistance = 2.0f;
         if (Physics.Raycast(stateMachine.transform.position + RayCastOffset, stateMachine.transform.forward, out RaycastHit hit, interactDistance, interactableLayerMask))

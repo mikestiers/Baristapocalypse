@@ -11,10 +11,19 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
     public UnityEvent WinEvent = new UnityEvent();
     [SerializeField] private GameManager gameManager;
 
+    public int StreakCount { get; private set; }
+
     // Start is called before the first frame update
     void Start()
     {
 
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
+        // Initialize streakCount
+        StreakCount = 0;
     }
 
     // Update is called once per frame
@@ -51,34 +60,43 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
         UIManager.Instance.gameOverText.text = "You Win!";
         Time.timeScale = 0f;
     }
-
-  /*  I Quoted this out cuz i moved it to customer reactions in customerbase.cs
-    
-    public void GetScoreComparison(CoffeeAttributes coffeeAttributes, CoffeeAttributes customerAttributes)
+    public void IncrementStreak()
     {
-        
-        int result = 0;
-        if (Mathf.Abs(coffeeAttributes.GetSweetness() - customerAttributes.GetSweetness()) <= 5)
-        {
-            result += 1;
-        }
-        if (Mathf.Abs(coffeeAttributes.GetBitterness() - customerAttributes.GetBitterness()) <= 5)
-        {
-            result += 1;
-        }
-        if (Mathf.Abs(coffeeAttributes.GetSpiciness() - customerAttributes.GetSpiciness()) <= 5)
-        {
-            result += 1;
-        }
-        if (Mathf.Abs(coffeeAttributes.GetTemperature() - customerAttributes.GetTemperature()) <= 5)
-        {
-            result += 1;
-        }
-        if (Mathf.Abs(coffeeAttributes.GetStrength() - customerAttributes.GetStrength()) <= 5)
-        {
-            result += 1;
-        }
-        score += result;
+        StreakCount++;
     }
-  */
+
+    public void ResetStreak()
+    {
+        StreakCount = 0;
+    }
+
+    /*  I Quoted this out cuz i moved it to customer reactions in customerbase.cs
+
+      public void GetScoreComparison(CoffeeAttributes coffeeAttributes, CoffeeAttributes customerAttributes)
+      {
+
+          int result = 0;
+          if (Mathf.Abs(coffeeAttributes.GetSweetness() - customerAttributes.GetSweetness()) <= 5)
+          {
+              result += 1;
+          }
+          if (Mathf.Abs(coffeeAttributes.GetBitterness() - customerAttributes.GetBitterness()) <= 5)
+          {
+              result += 1;
+          }
+          if (Mathf.Abs(coffeeAttributes.GetSpiciness() - customerAttributes.GetSpiciness()) <= 5)
+          {
+              result += 1;
+          }
+          if (Mathf.Abs(coffeeAttributes.GetTemperature() - customerAttributes.GetTemperature()) <= 5)
+          {
+              result += 1;
+          }
+          if (Mathf.Abs(coffeeAttributes.GetStrength() - customerAttributes.GetStrength()) <= 5)
+          {
+              result += 1;
+          }
+          score += result;
+      }
+    */
 }

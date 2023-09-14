@@ -35,8 +35,17 @@ public class OrderStats : MonoBehaviour
     }
 
     // Return the customer review object to UIManager so that it can be enabled
-    public GameObject GetCustomerReview()
+    public GameObject GetCustomerReview(CustomerBase customer)
     {
-        return customerReview;
+        OrderStats[] allOrderStats = Object.FindObjectsOfType<OrderStats>();
+        foreach (OrderStats orderStats in allOrderStats)
+        {
+            if (orderStats.orderOwner.GetInstanceID() == customer.GetInstanceID())
+            {
+                customerReview = orderStats.customerReview;
+                return customerReview;
+            }
+        }
+        return null;
     }
 }
