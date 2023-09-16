@@ -7,10 +7,17 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using static Unity.Burst.Intrinsics.Arm;
 
 [DefaultExecutionOrder(-1)]
 public class GameManager : Singleton<GameManager>
 {
+    // Testing
+    [SerializeField] private GameObject play;
+    [SerializeField] private GameObject mainMenu;
+    
+    
+
     //Input Events
     public Vector2 MovementValue { get; private set; }
     
@@ -65,6 +72,7 @@ public class GameManager : Singleton<GameManager>
     {
         //playerInput.Player.Disable();
     }
+
 }
 
 public enum GameState

@@ -21,23 +21,56 @@ public class InputManager : Singleton<InputManager>, ControllerInputs.IPlayerAct
     [HideInInspector] public Vector3 moveDir;
     [HideInInspector] public Vector3 curMoveInput;
 
-    [HideInInspector] public ControllerInputs playerInput;
+    [HideInInspector] public ControllerInputs controllerInputs;
+
+    // Player Configuration
+    [SerializeField] private MeshRenderer playerMesh;
+    private PlayerConfiguration playerConfig;
 
     protected override void Awake()
     {
         base.Awake();
-        playerInput = new ControllerInputs();
+        controllerInputs = new ControllerInputs();
     }
 
     private void Start()
     {
-        playerInput.Player.SetCallbacks(this);// SetCallbacks calls the methods for us
-        playerInput.Player.Enable();
+        controllerInputs.Player.SetCallbacks(this);// SetCallbacks calls the methods for us
+        controllerInputs.Player.Enable();
     }
 
     private void OnDestroy()
     {
-        playerInput.Player.Disable();
+        controllerInputs.Player.Disable();
+    }
+
+    public void InitializePlayer(PlayerConfiguration pc)
+    {
+        playerConfig = pc;
+        playerMesh.material = pc.PlayerMaterial;
+        playerConfig.Input.onActionTriggered += Input_onActionTriggered;
+    }
+
+    private void Input_onActionTriggered(InputAction.CallbackContext obj)
+    {
+        if (obj.action.name == controllerInputs.Player.Move.name)
+        {
+            OnMove(obj);
+
+            //OnJump(obj);
+            //OnInteractAlt(obj);
+            //OnPause(obj);
+            //OnDash(obj);
+        }
+        if (obj.action.name == controllerInputs.Player.Interact.name)
+        {
+            OnInteract(obj); ;
+        }
+        if (obj.action.name == controllerInputs.Player.Dash.name)
+        {
+            OnDash(obj); ;
+
+        }
     }
 
     public void OnInteract(InputAction.CallbackContext context)

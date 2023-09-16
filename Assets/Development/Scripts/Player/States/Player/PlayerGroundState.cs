@@ -31,8 +31,8 @@ public class PlayerGroundState : PlayerBaseState
         // Define the interactable layer mask to include station, ingredient, and mess layers.
         interactableLayerMask = stateMachine.isStationLayer | stateMachine.isIngredientLayer | stateMachine.isMessLayer | stateMachine.isMopLayer;
 
-        InputManager.Instance.playerInput.Player.Interact.performed += context => stateMachine.Interact(context);
-        InputManager.Instance.playerInput.Player.InteractAlt.performed += context => stateMachine.InteractAlt(context);
+        InputManager.Instance.controllerInputs.Player.Interact.performed += context => stateMachine.Interact(context);
+        InputManager.Instance.controllerInputs.Player.InteractAlt.performed += context => stateMachine.InteractAlt(context);
 
         RayCastOffset = new Vector3(0, 0.3f, 0);
      }
