@@ -18869,6 +18869,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1018014709}
   - component: {fileID: 1018014710}
+  - component: {fileID: 1018014711}
   m_Layer: 0
   m_Name: playerSpawnPoints
   m_TagString: LevelSpawnpoint
@@ -18911,6 +18912,22 @@ MonoBehaviour:
   spawnpointPlayer2: {fileID: 1618122409}
   spawnpointPlayer3: {fileID: 934708442}
   spawnpointPlayer4: {fileID: 1928767166}
+--- !u!114 &1018014711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1018014708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c0812f6b0767274a89b8c138160889f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerSpawns:
+  - {fileID: 372853339}
+  - {fileID: 1618122409}
+  playerPrefab: {fileID: 533563683556402463, guid: c431519c3e5173d4fac4acc61d044123, type: 3}
 --- !u!43 &1028488332
 Mesh:
   m_ObjectHideFlags: 0
