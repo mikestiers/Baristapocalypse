@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [DefaultExecutionOrder(-1)]
-public class InputManager : Singleton<InputManager>, PlayerInput.IPlayerActions
+public class InputManager : Singleton<InputManager>, ControllerInputs.IPlayerActions
 {
     public Vector2 MovementValue { get; private set; }
 
@@ -21,12 +21,12 @@ public class InputManager : Singleton<InputManager>, PlayerInput.IPlayerActions
     [HideInInspector] public Vector3 moveDir;
     [HideInInspector] public Vector3 curMoveInput;
 
-    [HideInInspector] public PlayerInput playerInput;
+    [HideInInspector] public ControllerInputs playerInput;
 
     protected override void Awake()
     {
         base.Awake();
-        playerInput = new PlayerInput();
+        playerInput = new ControllerInputs();
     }
 
     private void Start()
