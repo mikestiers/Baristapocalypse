@@ -53,9 +53,9 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
     [field: SerializeField] public LayerMask isMessLayer { get; private set; }
 
     [SerializeField] public MessSO spillPrefab;
-
     [SerializeField] public Transform spillSpawnPoint;
-    
+    [SerializeField] public GameObject mopOnPlayer;
+
 
 
     // When station selected
@@ -324,6 +324,5 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
     {
         return selectedMess != null;
     }
-
-   
+  
 }
