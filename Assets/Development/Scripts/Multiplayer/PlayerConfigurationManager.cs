@@ -40,12 +40,17 @@ public class PlayerConfigurationManager : MonoBehaviour
     public void ReadyPlayer(int index)
     {
         playerConfigs[index].IsReady = true;
-        // FIX: wont need to use maxplayers, in case we have 1-4 instead of 4
+        GameManager.Instance.SetPlayButtonActive();
+
         // FIX: change condition to start game when click on Ui Play
+        //   Change condition to start game to whatever is needed
+        //   Right now if at least 1 player is ready the Ui Play button will activate to start game
+        //   I will comment the following logic for the moment
+        /*
         if (playerConfigs.Count == MaxPlayers && playerConfigs.All(p => p.IsReady == true))
         {
             SceneManager.LoadScene("WhiteBox");
-        }
+        }*/
     }
 
     public void HandlePlayerJoin(PlayerInput pi)

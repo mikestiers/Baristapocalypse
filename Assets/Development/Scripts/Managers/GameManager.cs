@@ -15,9 +15,8 @@ public class GameManager : Singleton<GameManager>
     // Testing
     [SerializeField] private GameObject play;
     [SerializeField] private GameObject mainMenu;
+    [SerializeField] private GameObject playButton;
     
-    
-
     //Input Events
     public Vector2 MovementValue { get; private set; }
     
@@ -71,6 +70,11 @@ public class GameManager : Singleton<GameManager>
     private void OnDestroy()
     {
         //playerInput.Player.Disable();
+    }
+
+    public void SetPlayButtonActive()
+    {
+        playButton.SetActive(true);
     }
 
 }

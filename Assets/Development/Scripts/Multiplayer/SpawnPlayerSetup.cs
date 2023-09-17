@@ -6,8 +6,9 @@ using UnityEngine.InputSystem;
 
 public class SpawnPlayerSetup : MonoBehaviour
 {
-    public GameObject playerSetupMenuPrefab;
-    public PlayerInput input;
+    [SerializeField] private GameObject playerSetupMenuPrefab;
+    [SerializeField] private PlayerInput input;
+
     private void Awake()
     {
         var rootMenu = GameObject.Find("PlayerSelection");
