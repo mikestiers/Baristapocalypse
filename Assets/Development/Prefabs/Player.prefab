@@ -388,6 +388,7 @@ GameObject:
   - component: {fileID: 7263414053255238152}
   - component: {fileID: 533563683556402460}
   - component: {fileID: 8848886544079564540}
+  - component: {fileID: -859235823650325503}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -514,6 +515,21 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &-859235823650325503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 533563683556402463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e5d6e7edc38ebe4bb80304c5128a919, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveDir: {x: 0, y: 0, z: 0}
+  curMoveInput: {x: 0, y: 0, z: 0}
+  playerMesh: {fileID: 3089131226742103817}
 --- !u!1 &971277711536902471
 GameObject:
   m_ObjectHideFlags: 0
@@ -1416,6 +1432,11 @@ PrefabInstance:
 --- !u!4 &3089131226220866811 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3294758251327466532, guid: 1c5dda3c7cd3cf742afcade5419faeab, type: 3}
+  m_PrefabInstance: {fileID: 533563683773546719}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &3089131226742103817 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3294758250785316822, guid: 1c5dda3c7cd3cf742afcade5419faeab, type: 3}
   m_PrefabInstance: {fileID: 533563683773546719}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &533563684007103103

@@ -9,7 +9,7 @@ using TMPro;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
 {
-    // Player Singleton
+    // Player Instance
     [HideInInspector] public static PlayerStateMachine Instance { get; private set; }
 
     // [Header("Player Attributes")]
@@ -80,7 +80,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
     {
         //Get components
         rb = GetComponent<Rigidbody>();
-        inputManager = FindObjectOfType<InputManager>();
+        inputManager = GetComponent<InputManager>();
 
         //Set variables if null
         if (moveSpeed <= 0) moveSpeed = 10.0f;
@@ -110,36 +110,35 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
     }
 
    
-    public void Interact(InputAction.CallbackContext context)
-    {
-        if (selectedStation)
-        {
-            selectedStation.Interact(this);
-        }
-       
-        if (selectedMess)
-        {
-            selectedMess.Interact(this);
-        }
+   // public void Interact(InputAction.CallbackContext context)
+   // {
+   //     if (selectedStation)
+   //     {
+   //         selectedStation.Interact(this);
+   //     }
+   //    
+   //     if (selectedMess)
+   //     {
+   //         selectedMess.Interact(this);
+   //     }
+   //
+   // }
 
-        
-    }
-
-    public void InteractAlt(InputAction.CallbackContext ctx)
-    {
-        if (selectedStation)
-        {
-            selectedStation.InteractAlt(this);
-        }
-        if (selectedMess)
-        {
-            selectedMess.InteractAlt(this);
-        }
-        if (selectedMop) 
-        { 
-            selectedMop.InteractAlt(this);
-        }
-    }
+   // public void InteractAlt(InputAction.CallbackContext ctx)
+   // {
+   //     if (selectedStation)
+   //     {
+   //         selectedStation.InteractAlt(this);
+   //     }
+   //     if (selectedMess)
+   //     {
+   //         selectedMess.InteractAlt(this);
+   //     }
+   //     if (selectedMop) 
+   //     { 
+   //         selectedMop.InteractAlt(this);
+   //     }
+   // }
 
 
     public void SetSelectedStation(BaseStation baseStation)

@@ -43,7 +43,7 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""Jump"",
@@ -182,7 +182,7 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""24dd32ff-2b44-4475-b535-fa39ba01356f"",
                     ""path"": ""<Gamepad>/buttonWest"",
-                    ""interactions"": """",
+                    ""interactions"": ""Press(behavior=1)"",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Interact"",
