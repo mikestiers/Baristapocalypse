@@ -9,10 +9,9 @@ public class PlayerSetupMenuController : MonoBehaviour
     private int PlayerIndex;
 
     [SerializeField] private TextMeshProUGUI titleText;
-    [SerializeField] private GameObject readyPanel;
-    [SerializeField] private GameObject menuPanel;
+    [SerializeField] private GameObject playerButton;
     [SerializeField] private Button readyButton;
-
+    [SerializeField] private Material[] playerColors;
     private float ignoreInputTime = 1.5f;
     private bool inputEnabled;
 
@@ -31,14 +30,13 @@ public class PlayerSetupMenuController : MonoBehaviour
         }
     }
 
-    public void SetColor(Material color)
+    public void SetColor()
     {
         if (!inputEnabled) { return; }
 
-        PlayerConfigurationManager.Instance.SetPlayerColor(PlayerIndex, color);
-        readyPanel.SetActive(true);
-        readyButton.Select();
-        menuPanel.SetActive(false);
+        PlayerConfigurationManager.Instance.SetPlayerColor(PlayerIndex, playerColors[PlayerIndex]);
+        readyButton.gameObject.SetActive(true);
+        playerButton.SetActive(false);
     }
 
     public void ReadyPlayer()
