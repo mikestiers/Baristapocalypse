@@ -62,5 +62,10 @@ public class CoffeeAttributes : MonoBehaviour
     {
         isMinigamePerfect = minigame;
     }
+
+    public bool GetIsMinigamePerfect()
+    {
+        return isMinigamePerfect;
+    }
     
 }
