@@ -31,6 +31,7 @@ public class UIManager : Singleton<UIManager>
     public Text score;
     public TextMeshProUGUI gameOverText;
     public TextMeshProUGUI finalScore;
+    public TextMeshProUGUI reviewScoreMultiplier;
 
     [Header("Order Stats")]
     public Transform ordersPanel;

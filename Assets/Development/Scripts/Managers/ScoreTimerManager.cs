@@ -10,7 +10,6 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
     public UnityEvent LoseEvent = new UnityEvent();
     public UnityEvent WinEvent = new UnityEvent();
     [SerializeField] private GameManager gameManager;
-
     public int StreakCount { get; private set; }
 
     // Start is called before the first frame update
