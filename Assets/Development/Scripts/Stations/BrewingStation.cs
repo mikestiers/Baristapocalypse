@@ -128,17 +128,22 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             //Debug.Log("SweetSpot position: " + sweetSpotPosition);
             //Debug.Log("Timing calc: " + Mathf.Abs((minigameTimer / maxMinigameTimer) - sweetSpotPosition));
             float timingPressed = Mathf.Abs((minigameTimer / maxMinigameTimer) - sweetSpotPosition);
+            bool minigameResult = false;
             if (timingPressed <= 0.1f)
             {
-                Debug.Log("Perfect");
+                minigameResult = true;
             }
             else if((minigameTimer/maxMinigameTimer) < sweetSpotPosition)
             {
-                Debug.Log("Too early");
+                minigameResult = false;
             }
             else if((minigameTimer / maxMinigameTimer) > sweetSpotPosition)
             {
-                Debug.Log("Too late");
+                minigameResult = false;
+            }
+            if (this.GetIngredient().GetComponent<CoffeeAttributes>() != null)
+            {
+                this.GetIngredient().GetComponent<CoffeeAttributes>().SetIsMinigamePerfect(minigameResult);
             }
             minigameTiming = false;
         }

@@ -224,17 +224,8 @@ public class CustomerBase : BaseStation
                 CustomerLeave();
                 break;
             case 4:
-                ScoreTimerManager.Instance.ResetStreak();
-                CustomerLeave();
-                break;
             case 3:
-                ScoreTimerManager.Instance.ResetStreak();
-                CustomerLeave();
-                break;
             case 2:
-                ScoreTimerManager.Instance.ResetStreak();
-                CustomerLeave();
-                break;
             case 1:
                 ScoreTimerManager.Instance.ResetStreak();
                 CustomerLeave();
@@ -244,7 +235,7 @@ public class CustomerBase : BaseStation
             case -2:
 
                 Reorder();
-                CancelInvoke("CustsomerLeave");
+                CancelInvoke("CustomerLeave");
                 Order();
 
                 break;
