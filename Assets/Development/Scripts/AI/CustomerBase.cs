@@ -212,15 +212,16 @@ public class CustomerBase : BaseStation
         result += (Mathf.Abs(coffeeAttributes.GetSpiciness() - customerAttributes.GetSpiciness()) <= 5) ? 1 : -1;
         result += (Mathf.Abs(coffeeAttributes.GetTemperature() - customerAttributes.GetTemperature()) <= 5) ? 1 : -1;
         result += (Mathf.Abs(coffeeAttributes.GetStrength() - customerAttributes.GetStrength()) <= 5) ? 1 : -1;
+
+        int minigameResult = coffeeAttributes.GetIsMinigamePerfect() ? 1 : 0;
+        ScoreTimerManager.Instance.score += result * (minigameResult + 1);
         
-        ScoreTimerManager.Instance.score += result;
-        int minigameResult = coffeeAttributes.GetIsMinigamePerfect() ? 1: 0;
         switch (result)
         {
             case 5:
                 Perfect();
                 ScoreTimerManager.Instance.IncrementStreak();
-                ScoreTimerManager.Instance.score += result * ScoreTimerManager.Instance.StreakCount * (minigameResult+1);
+                ScoreTimerManager.Instance.score += result * ScoreTimerManager.Instance.StreakCount;
                 CustomerLeave();
                 break;
             case 4:
