@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class CustomerReview : MonoBehaviour
 {
     private int cafeCleanliness;
-    private string customerMood; // use customerBase.customerMood when implemented
-    private bool favouriteIngredientServed;
+    private float cafeCrowdedness;
+    private float timeToServe;
     private int reviewScore = 0;
     private string reviewText;
     private CustomerBase orderOwner;
@@ -27,38 +29,39 @@ public class CustomerReview : MonoBehaviour
 
     public void GenerateReview(CustomerBase customer)
     {
-        Debug.Log("GenerateReview()");
         orderOwner = customer;
         cafeCleanliness = GetCafeCleanliness();
-        customerMood = GetCustomerMood();
-        favouriteIngredientServed = GetCustomerFavouriteIngredient();
-        reviewScore = CalculateReviewScore(cafeCleanliness, customerMood, favouriteIngredientServed);
+        cafeCrowdedness = GetCafeCrowd();
+        timeToServe = GetTimeToServe();
+        reviewScore = CalculateReviewScore(cafeCleanliness, cafeCrowdedness, timeToServe);
         reviewText = GenerateReviewText(reviewScore);
-        Debug.Log("this is review text");
     }
 
     private int GetCafeCleanliness()
     {
-        GameObject[] itemsToCleanUp = GameObject.FindGameObjectsWithTag("Player"); //change to "cleanup" or whatever when messes are ready
-        cafeCleanliness = itemsToCleanUp.Length;
+        // Did we run out of tags?
+        //GameObject[] garbageToCleanUp = GameObject.FindGameObjectsWithTag("Garbage");
+        GameObject[] spillsToCleanUp = GameObject.FindGameObjectsWithTag("Mess");
+        //GameObject[] itemsToCleanUp = spillsToCleanUp.Concat(garbageToCleanUp).ToArray();
+        cafeCleanliness = spillsToCleanUp.Length;
         return cafeCleanliness;
     }
 
-    private string GetCustomerMood()
+    private float GetCafeCrowd()
     {
-        //customerMood = customerBase.GetCustomerMood(); // when GetCustomerMood() is implemented
-        customerMood = "mad";
-        return customerMood;
+        int customerCount = GameObject.FindGameObjectsWithTag("Customer").Length;
+        int maxCustomers = CustomerManager.Instance.numberOfCustomers;
+        cafeCrowdedness = customerCount / maxCustomers;
+        return cafeCrowdedness;
     }
 
-    private bool GetCustomerFavouriteIngredient()
+    private float GetTimeToServe()
     {
-        //favouriteIngredientServed = customerBase.GetFavouriteIngredient(); // when GetFavouriteIngredient is implemented
-        favouriteIngredientServed = true;
-        return favouriteIngredientServed;
+        timeToServe = orderOwner.orderTimer;
+        return timeToServe;
     }
 
-    private int CalculateReviewScore(int cafeCleanliness, string customerMood, bool favouriteIngredientServed)
+    private int CalculateReviewScore(int cafeCleanliness, float cafeCrowdedness, float timeToServe)
     {
         int reviewScore = 0; // Initialize the local variable
 
@@ -80,22 +83,14 @@ public class CustomerReview : MonoBehaviour
                 break;
         }
 
-        // Adjust score based on customerMood
-        switch (customerMood.ToLower()) // Case insensitive match
-        {
-            case "mad":
-                reviewScore += 0; // Not necessary as it doesn't change the score, but kept for clarity
-                break;
-            case "happy":
-                reviewScore += 1;
-                break;
-            default:
-                // Optionally handle unexpected mood values here
-                break;
-        }
+        // Adjust score based on cafe crowdedness
+        if (cafeCrowdedness > 50.0f)
+            reviewScore += 1;
+        else if (cafeCrowdedness <= 50.0f)
+            reviewScore += 0;
 
-        // Adjust score based on favouriteIngredientServed
-        if (favouriteIngredientServed)
+        // Adjust score based on how long it took to serve the customer
+        if (timeToServe < 45.0f)
             reviewScore += 1;
 
         return reviewScore;

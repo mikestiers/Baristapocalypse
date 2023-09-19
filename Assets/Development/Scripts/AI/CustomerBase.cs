@@ -23,6 +23,8 @@ public class CustomerBase : BaseStation
     public int customerNumber;
     public float distThreshold;
     public GameObject customerDialogue;
+    public float orderTimer = 0f;
+    private bool isOrderTimerRunning = false;
     [SerializeField] private Canvas customerNumberCanvas;
     [SerializeField] private Text customerNumberText;
     [SerializeField] private Text customerNameText;
@@ -115,6 +117,7 @@ public class CustomerBase : BaseStation
             if (agent.remainingDistance < distThreshold)
             {
                 agent.isStopped = true;
+                StartOrderTimer();
                 if (frontofLine == true)
                 {
                     SetCustomerState(CustomerState.Ordering);
@@ -124,7 +127,9 @@ public class CustomerBase : BaseStation
                     return;
                 }
                 else
+                {
                     SetCustomerState(CustomerState.Waiting);
+                }
             }
         }
 
@@ -137,13 +142,17 @@ public class CustomerBase : BaseStation
             }
         }
         //Debug.Log("The customer is " + currentState + " and is going to " + agent.destination);
+
+        if (isOrderTimerRunning)
+        {
+            orderTimer += Time.deltaTime;
+        }
     }
 
     //Get customer order
     //UI displays attributes
     public virtual void Order()
     {
-        UIManager.Instance.ShowCustomerReview(this);
         Invoke("CustomerLeave", 60f);
     }
 
@@ -151,7 +160,6 @@ public class CustomerBase : BaseStation
     public virtual void CustomerLeave()
     {
         SetCustomerState(CustomerState.Leaving);
-        UIManager.Instance.ShowCustomerReview(this);
         agent.SetDestination(exit.position);
     }
 
@@ -168,6 +176,8 @@ public class CustomerBase : BaseStation
     public void JustGotHandedCoffee(CoffeeAttributes coffee)
     {
         CustomerReaction(coffee, coffeeAttributes);
+        StopOrderTimer();
+        UIManager.Instance.ShowCustomerReview(this);
     }
 
     public override void Interact(PlayerStateMachine player)
@@ -180,23 +190,18 @@ public class CustomerBase : BaseStation
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
             interactParticle.Play();
         }
-
         //if waiting for order
-        if (GetCustomerState() == CustomerState.Insit)
+        else if (GetCustomerState() == CustomerState.Insit)
         {
-            if (player.HasIngredient())
+            // Give coffee to customer
+            if (player.GetIngredient().CompareTag("CoffeeCup"))
             {
-                //give coffee to customer
-                if (player.GetIngredient().CompareTag("CoffeeCup"))
-                {
-                    player.GetIngredient().SetIngredientParent(this);
-                    JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
-                    SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
-                    interactParticle.Play();
-                }
+                player.GetIngredient().SetIngredientParent(this);
+                JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
+                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
+                interactParticle.Play();
             }
         }
-
     }
 
     private void CustomerReaction(CoffeeAttributes coffeeAttributes, CoffeeAttributes customerAttributes)
@@ -213,19 +218,26 @@ public class CustomerBase : BaseStation
         switch (result)
         {
             case 5:
-
                 Perfect();
-                ScoreTimerManager.Instance.score += result;
+                ScoreTimerManager.Instance.IncrementStreak();
+                ScoreTimerManager.Instance.score += result * ScoreTimerManager.Instance.StreakCount;
                 CustomerLeave();
-
                 break;
             case 4:
-            case 3:
-            case 2:
-            case 1:
-
+                ScoreTimerManager.Instance.ResetStreak();
                 CustomerLeave();
-
+                break;
+            case 3:
+                ScoreTimerManager.Instance.ResetStreak();
+                CustomerLeave();
+                break;
+            case 2:
+                ScoreTimerManager.Instance.ResetStreak();
+                CustomerLeave();
+                break;
+            case 1:
+                ScoreTimerManager.Instance.ResetStreak();
+                CustomerLeave();
                 break;
 
             case -1:
@@ -262,5 +274,14 @@ public class CustomerBase : BaseStation
         Debug.Log("customer is not happy with the serving and wants you to try again");
     }
 
+    private void StartOrderTimer()
+    {
+        orderTimer = 0f;
+        isOrderTimerRunning = true;
+    }
 
+    private void StopOrderTimer()
+    {
+        isOrderTimerRunning = false;
+    }
 }
