@@ -201,6 +201,11 @@ public class UIManager : Singleton<UIManager>
         }
     }
 
+    public float GetReviewScore()
+    {
+        return customerReview.GetAverageReviewScore();
+    }
+
     private void Update()
     {
         timer.text = ScoreTimerManager.Instance.timeRemaining.ToString("n2");

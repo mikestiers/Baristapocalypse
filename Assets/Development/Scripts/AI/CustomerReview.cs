@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class CustomerReview : MonoBehaviour
 {
+    private static int averageReviewScore = 0;
+    private static int numReviews = 0;
     private int cafeCleanliness;
     private float cafeCrowdedness;
     private float timeToServe;
@@ -93,6 +96,8 @@ public class CustomerReview : MonoBehaviour
         if (timeToServe < 45.0f)
             reviewScore += 1;
 
+        numReviews++;
+        averageReviewScore += reviewScore;
         return reviewScore;
     }
 
@@ -130,5 +135,10 @@ public class CustomerReview : MonoBehaviour
 
         string reviewText = $"This place {cafeDescription}";
         return reviewText;
+    }
+
+    public int GetAverageReviewScore()
+    {
+        return averageReviewScore / numReviews;
     }
 }

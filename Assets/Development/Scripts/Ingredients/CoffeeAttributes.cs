@@ -9,6 +9,12 @@ public class CoffeeAttributes : MonoBehaviour
     [SerializeField] private int strength;
     [SerializeField] private int temperature;
     [SerializeField] private int spiciness;
+    private bool isMinigamePerfect;
+
+    private void Start()
+    {
+        isMinigamePerfect = false;
+    }
 
     public int GetSweetness()
     {
@@ -50,6 +56,16 @@ public class CoffeeAttributes : MonoBehaviour
     public void AddSpiciness(int spiciness)
     {
         this.spiciness += spiciness;
+    }
+
+    public void SetIsMinigamePerfect(bool minigame)
+    {
+        isMinigamePerfect = minigame;
+    }
+
+    public bool GetIsMinigamePerfect()
+    {
+        return isMinigamePerfect;
     }
     
 }

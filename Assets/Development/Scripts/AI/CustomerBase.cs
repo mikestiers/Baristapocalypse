@@ -213,8 +213,9 @@ public class CustomerBase : BaseStation
         result += (Mathf.Abs(coffeeAttributes.GetTemperature() - customerAttributes.GetTemperature()) <= 5) ? 1 : -1;
         result += (Mathf.Abs(coffeeAttributes.GetStrength() - customerAttributes.GetStrength()) <= 5) ? 1 : -1;
 
-        ScoreTimerManager.Instance.score += result;
-
+        int minigameResult = coffeeAttributes.GetIsMinigamePerfect() ? 1 : 0;
+        ScoreTimerManager.Instance.score += result * (minigameResult + 1);
+        
         switch (result)
         {
             case 5:
@@ -224,17 +225,8 @@ public class CustomerBase : BaseStation
                 CustomerLeave();
                 break;
             case 4:
-                ScoreTimerManager.Instance.ResetStreak();
-                CustomerLeave();
-                break;
             case 3:
-                ScoreTimerManager.Instance.ResetStreak();
-                CustomerLeave();
-                break;
             case 2:
-                ScoreTimerManager.Instance.ResetStreak();
-                CustomerLeave();
-                break;
             case 1:
                 ScoreTimerManager.Instance.ResetStreak();
                 CustomerLeave();
@@ -244,7 +236,7 @@ public class CustomerBase : BaseStation
             case -2:
 
                 Reorder();
-                CancelInvoke("CustsomerLeave");
+                CancelInvoke("CustomerLeave");
                 Order();
 
                 break;
