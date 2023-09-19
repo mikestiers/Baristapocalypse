@@ -134,25 +134,31 @@ public class UIManager : Singleton<UIManager>
     {
         if (orderStats != null)
         {
-            // Find the child GameObject of orderStats where the review will go
-            // Gets the script component and initialize the variable
-            // Sets the review text and the review score (star rating)
-            GameObject customerReviewUIObject = orderStats.GetCustomerReview();
-            customerReview = orderStats.GetComponent<CustomerReview>(); 
+            GameObject customerReviewUIObject = orderStats.GetCustomerReview(customer);
             if (customerReviewUIObject != null)
             {
-                Debug.Log($"Showing Review for {customer}");
-                Text customerReviewText = customerReviewUIObject.GetComponent<Text>();
-                customerReview.GenerateReview(customer);
-                customerReviewText.text = customerReview.ReviewText;
-                Debug.Log("Review Score: " + customerReview.ReviewScore);
-                UpdateStarRating(customerReview.ReviewScore);
-                customerReviewUIObject.SetActive(true);
+                customerReview = customerReviewUIObject.GetComponentInParent<CustomerReview>();
+                if (customerReview != null)
+                {
+                    Text customerReviewText = customerReviewUIObject.GetComponent<Text>();
+                    customerReview.GenerateReview(customer);
+                    customerReviewText.text = customerReview.ReviewText;
+                    UpdateStarRating(customerReview.ReviewScore);
+                    customerReviewUIObject.SetActive(true);
+                }
+                else
+                {
+                    Debug.Log($"CustomerReview component not found on parent for {customer}");
+                }
+            }
+            else
+            {
+                Debug.LogError($"customerReviewUIObject is null for {customer}");
             }
         }
         else
         {
-            Debug.Log($"No order stats provided by {customer}");
+            Debug.Log($"Order Stats are null for {customer}");
             return;
         }
     }

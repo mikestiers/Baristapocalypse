@@ -202,7 +202,6 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
 
     public Ingredient GetIngredient()
     {
-        
         return ingredient;
     }
 
@@ -297,7 +296,6 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
         ingredientIndicatorText.text = currentIndicator;
     }
 
-
     // Mess Interface implementation
 
     public Transform GetMessTransform()
@@ -324,5 +322,4 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
     {
         return selectedMess != null;
     }
-  
 }
