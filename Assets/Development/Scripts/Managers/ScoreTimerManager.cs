@@ -32,6 +32,7 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
 
         if (timeRemaining <= 0 && gameManager.gameState == GameState.RUNNING)
         {
+            score = score * Mathf.FloorToInt(UIManager.Instance.GetReviewScore());
             UIManager.Instance.finalScore.text = "Score: " + score.ToString();
             if (score >= 50)
             {

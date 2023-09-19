@@ -31,7 +31,6 @@ public class UIManager : Singleton<UIManager>
     public Text score;
     public TextMeshProUGUI gameOverText;
     public TextMeshProUGUI finalScore;
-    public TextMeshProUGUI reviewScoreMultiplier;
 
     [Header("Order Stats")]
     public Transform ordersPanel;
@@ -200,6 +199,11 @@ public class UIManager : Singleton<UIManager>
                 starImage.color = Color.red;
             }
         }
+    }
+
+    public float GetReviewScore()
+    {
+        return customerReview.GetAverageReviewScore();
     }
 
     private void Update()
