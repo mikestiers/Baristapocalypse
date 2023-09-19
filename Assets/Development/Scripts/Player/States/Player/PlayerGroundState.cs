@@ -27,13 +27,12 @@ public class PlayerGroundState : PlayerBaseState
         stateMachine.inputManager.JumpEvent += OnJump;
         stateMachine.inputManager.DashEvent += OnDash;
         stateMachine.inputManager.ThrowEvent += OnThrow;
+        stateMachine.inputManager.InteractEvent += Interact;
+        stateMachine.inputManager.InteractAltEvent += InteractAlt;
 
         // Define the interactable layer mask to include station, ingredient, and mess layers.
         interactableLayerMask = stateMachine.isStationLayer | stateMachine.isIngredientLayer | stateMachine.isMessLayer | stateMachine.isMopLayer;
 
-        InputManager.Instance.playerInput.Player.Interact.performed += context => stateMachine.Interact(context);
-        InputManager.Instance.playerInput.Player.InteractAlt.performed += context => stateMachine.InteractAlt(context);
-        Debug.Log("Player enter moving state");
 
         RayCastOffset = new Vector3(0, 0.3f, 0);
      }
@@ -49,7 +48,6 @@ public class PlayerGroundState : PlayerBaseState
         stateMachine.GetNumberOfIngredients();
         stateMachine.SetIngredientIndicator();
 
-        //Debug.Log("number of ingrediants" + stateMachine.GetNumberOfIngredients());
         // Perform a single raycast to detect any interactable object.
         float interactDistance = 2.0f;
         if (Physics.Raycast(stateMachine.transform.position + RayCastOffset, stateMachine.transform.forward, out RaycastHit hit, interactDistance, interactableLayerMask))
@@ -59,29 +57,31 @@ public class PlayerGroundState : PlayerBaseState
             if (hit.transform.TryGetComponent(out BaseStation baseStation) && !stateMachine.hasMop)
             {
 
-
                 visualGameObject = baseStation.transform.GetChild(0).gameObject;
                 if (baseStation != stateMachine.selectedStation)
                 {
                     stateMachine.SetSelectedStation(baseStation);
                     stateMachine.Show(visualGameObject);
                 }
-
-
             }
+
             // Logic for Ingredient  on floor Interaction 
             else if (hit.transform.TryGetComponent(out Ingredient ingredient))
             {
-
 
                 if (stateMachine.GetNumberOfIngredients() <= stateMachine.maxIngredients && !stateMachine.hasMop)
                 {
                     ingredienSO = ingredient.IngredientSO;
 
                     if (mouse.leftButton.wasPressedThisFrame)
+                    {
                         stateMachine.GrabIngedientFromFloor(ingredient, ingredienSO);
+                    }
+                    else if (Gamepad.current != null && Gamepad.current.buttonWest.wasPressedThisFrame)
+                    {
+                        stateMachine.GrabIngedientFromFloor(ingredient, ingredienSO);
+                    }
                 }
-
 
 
             }
@@ -113,81 +113,16 @@ public class PlayerGroundState : PlayerBaseState
         else
         {
             // No interactable object hit, clear selected objects.
-            if (visualGameObject != null)
+            if (visualGameObject)
             {
                 stateMachine.Hide(visualGameObject);
-                stateMachine.SetSelectedStation(null);
-                stateMachine.SetSelectedMess(null);
-                stateMachine.SetSelectedMop(null);
             }
-            
+            stateMachine.SetSelectedStation(null);
+            stateMachine.SetSelectedMess(null);
+            stateMachine.SetSelectedMop(null);
         }
         Debug.DrawRay(stateMachine.transform.position + RayCastOffset, stateMachine.transform.forward, Color.green);
 
-
-        // //  Pick ingredient from station 
-        // float interactDistance = 6.0f;
-        // if (Physics.Raycast(stateMachine.transform.position + new Vector3(0, 0.1f, 0), stateMachine.transform.forward, out RaycastHit raycastHit, interactDistance, stateMachine.isStationLayer))
-        // {
-        //     if (raycastHit.transform.TryGetComponent(out BaseStation baseStation))
-        //     {
-        //         visualGameObject = baseStation.transform.GetChild(0).gameObject;
-        //         if (baseStation != stateMachine.selectedStation)
-        //         {
-        //             stateMachine.SetSelectedStation(baseStation);
-        //             stateMachine.Show(visualGameObject);
-        //         }
-        //     }
-        //     else
-        //     {
-        //         stateMachine.SetSelectedStation(null);
-        //     }
-        // }
-        // else
-        // {
-        //     stateMachine.Hide(visualGameObject);
-        //     stateMachine.SetSelectedStation(null);
-        // }
-        // Debug.DrawRay(stateMachine.transform.position + new Vector3(0, 0.5f, 0), stateMachine.transform.forward, Color.green);
-        //
-        // // Pick ingredient from floor
-        // float floriIteractDistance = 3.0f;
-        // if (Physics.Raycast(stateMachine.transform.position, stateMachine.transform.forward, out RaycastHit raycastHitIngredient, floriIteractDistance, stateMachine.isIngredientLayer))
-        // {
-        //     if (stateMachine.GetNumberOfIngredients() <= stateMachine.maxIngredients)
-        //     {
-        //         if (raycastHitIngredient.transform.TryGetComponent(out  floorIngredient))
-        //         {
-        //             ingredienSO = floorIngredient.IngredientSO;
-        //
-        //             if (mouse.leftButton.wasPressedThisFrame)
-        //                 stateMachine.GrabIngedientFromFloor(floorIngredient, ingredienSO);
-        //         }
-        //     }
-        // }
-        //
-        // //  Interact with mess
-        // if (Physics.Raycast(stateMachine.transform.position, stateMachine.transform.forward, out RaycastHit raycastHitMess, floriIteractDistance, stateMachine.isMessLayer))
-        // {
-        //    
-        //     if (raycastHitMess.transform.TryGetComponent(out MessBase mess))
-        //     {
-        //         if (mess != stateMachine.selectedMess)
-        //         {
-        //             stateMachine.SetSelectedMess(mess);
-        //             
-        //         }
-        //         Debug.Log("Detecting)" + mess);
-        //     }
-        //     else
-        //     {
-        //         stateMachine.SetSelectedMess(null);
-        //     }
-        // }
-        // else
-        // {
-        //     stateMachine.SetSelectedMess(null);
-        // }
     }
 
     public override void Exit()
@@ -195,6 +130,8 @@ public class PlayerGroundState : PlayerBaseState
         stateMachine.inputManager.JumpEvent -= OnJump;
         stateMachine.inputManager.DashEvent -= OnDash;
         stateMachine.inputManager.ThrowEvent -= OnThrow;
+        stateMachine.inputManager.InteractEvent -= Interact;
+        stateMachine.inputManager.InteractAltEvent -= InteractAlt;
     }
 
     public void OnJump()
@@ -250,6 +187,34 @@ public class PlayerGroundState : PlayerBaseState
         }
     }
 
-   
+    public void Interact()
+    {
+        if (stateMachine.selectedStation)
+        {
+            stateMachine.selectedStation.Interact(stateMachine);
+        }
+
+        if (stateMachine.selectedMess)
+        {
+            stateMachine.selectedMess.Interact(stateMachine);
+        }
+
+    }
+
+    public void InteractAlt()
+    {
+        if (stateMachine.selectedStation)
+        {
+            stateMachine.selectedStation.InteractAlt(stateMachine);
+        }
+        if (stateMachine.selectedMess)
+        {
+            stateMachine.selectedMess.InteractAlt(stateMachine);
+        }
+        if (stateMachine.selectedMop)
+        {
+            stateMachine.selectedMop.InteractAlt(stateMachine);
+        }
+    }
 }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [DefaultExecutionOrder(-1)]
-public class InputManager : Singleton<InputManager>, PlayerInput.IPlayerActions
+public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
 {
     public Vector2 MovementValue { get; private set; }
 
@@ -21,30 +21,84 @@ public class InputManager : Singleton<InputManager>, PlayerInput.IPlayerActions
     [HideInInspector] public Vector3 moveDir;
     [HideInInspector] public Vector3 curMoveInput;
 
-    [HideInInspector] public PlayerInput playerInput;
+    [HideInInspector] public ControllerInputs controllerInputs;
 
-    protected override void Awake()
+    // Player Configuration
+    [SerializeField] private MeshRenderer playerMesh;
+    private PlayerConfiguration playerConfig;
+
+    private void Awake()
     {
-        base.Awake();
-        playerInput = new PlayerInput();
+        controllerInputs = new ControllerInputs();
     }
 
     private void Start()
     {
-        playerInput.Player.SetCallbacks(this);// SetCallbacks calls the methods for us
-        playerInput.Player.Enable();
+        //controllerInputs.Player.SetCallbacks(this);// SetCallbacks calls the methods for us
+        //controllerInputs.Player.Enable();
     }
 
     private void OnDestroy()
     {
-        playerInput.Player.Disable();
+        //controllerInputs.Player.Disable();
+    }
+
+    public void InitializePlayer(PlayerConfiguration pc)
+    {
+        playerConfig = pc;
+        playerMesh.material = pc.PlayerMaterial;
+        playerConfig.Input.onActionTriggered += Input_onActionTriggered;
+    }
+
+    private void Input_onActionTriggered(InputAction.CallbackContext obj)
+    {
+        // Move
+        if (obj.action.name == controllerInputs.Player.Move.name)
+        {
+            OnMove(obj);
+        }
+
+        // Interact
+        if (obj.action.name == controllerInputs.Player.Interact.name)
+        {
+            OnInteract(obj);
+        }
+
+        // InteractAlt
+        if (obj.action.name == controllerInputs.Player.InteractAlt.name)
+        {
+            OnInteractAlt(obj);
+        }
+
+        // Dash
+        if (obj.action.name == controllerInputs.Player.Dash.name)
+        {
+            OnDash(obj);
+        }
+
+        // Throw
+        if (obj.action.name == controllerInputs.Player.Throw.name)
+        {
+            OnThrow(obj);
+        }
+
+        // Jump
+        if (obj.action.name == controllerInputs.Player.Jump.name)
+        {
+            OnJump(obj);
+        }
+
+        // pause
+        if (obj.action.name == controllerInputs.Player.Pause.name)
+        {
+            OnPause(obj);
+        }
     }
 
     public void OnInteract(InputAction.CallbackContext context)
     {
-        if (context.performed) { return; }
-
-        InteractEvent?.Invoke();
+        if (context.performed)
+            InteractEvent?.Invoke();
     }
 
     public void OnJump(InputAction.CallbackContext context)
@@ -69,9 +123,8 @@ public class InputManager : Singleton<InputManager>, PlayerInput.IPlayerActions
 
     public void OnInteractAlt(InputAction.CallbackContext context)
     {
-        if (context.performed) { return; }
-
-        InteractAltEvent?.Invoke();
+        if (context.performed)
+            InteractAltEvent?.Invoke();
     }
 
     public void OnPause(InputAction.CallbackContext context)
