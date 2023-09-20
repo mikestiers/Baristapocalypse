@@ -9,7 +9,7 @@ public class PlayerConfigurationManager : MonoBehaviour
 {
     private List<PlayerConfiguration> playerConfigs;
 
-    [SerializeField] private int MaxPlayers = 2;
+    //[SerializeField] private int MaxPlayers = 4;
 
     public static PlayerConfigurationManager Instance { get; private set; }
 
@@ -24,7 +24,13 @@ public class PlayerConfigurationManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(Instance);
             playerConfigs = new List<PlayerConfiguration>();
+            GetComponent<PlayerInputManager>().DisableJoining();
         }
+    }
+
+    public void SetPlayerConfigComponent()
+    {
+        GetComponent<PlayerInputManager>().EnableJoining();
     }
 
     public List<PlayerConfiguration> GetPlayerConfigs()
