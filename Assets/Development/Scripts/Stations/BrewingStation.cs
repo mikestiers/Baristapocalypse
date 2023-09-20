@@ -146,6 +146,11 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
                 this.GetIngredient().GetComponent<CoffeeAttributes>().SetIsMinigamePerfect(minigameResult);
             }
             minigameTiming = false;
+            OnMinigameTimingStarted?.Invoke(this, new IHasMinigameTiming.OnMinigameTimingEventArgs
+            {
+                minigameTimingNormalized = 0f,
+                sweetSpotPosition = sweetSpotPosition
+            });
         }
         if (minigameTimer >= maxMinigameTimer)
         {
