@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using Unity.VisualScripting;
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
@@ -77,7 +76,7 @@ public class PlayerGroundState : PlayerBaseState
                     {
                         stateMachine.GrabIngedientFromFloor(ingredient, ingredienSO);
                     }
-                    else if (Gamepad.current != null && Gamepad.current.buttonWest.wasPressedThisFrame)
+                    else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
                     {
                         stateMachine.GrabIngedientFromFloor(ingredient, ingredienSO);
                     }
@@ -149,7 +148,7 @@ public class PlayerGroundState : PlayerBaseState
 
         if (stateMachine.GetNumberOfIngredients() > 0) 
         { 
-            if (stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
+            if (stateMachine.CheckIfHoldingLiquid() > 0)//stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
             {
                 MessBase.SpawnMess(stateMachine.spillPrefab , stateMachine.spillSpawnPoint);
                 stateMachine.ThrowIngedient();

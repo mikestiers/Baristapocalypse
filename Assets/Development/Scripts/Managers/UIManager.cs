@@ -113,7 +113,7 @@ public class UIManager : Singleton<UIManager>
         #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
         #else
-            Aplication.Quit();
+            Application.Quit();
         #endif
     }
 

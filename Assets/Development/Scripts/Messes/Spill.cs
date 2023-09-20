@@ -20,16 +20,16 @@ public class Spill : MessBase
     {
            if (player.hasMop == true ) 
            { 
-                  if (cleaningProgress < totalProgress )
-                  {
-                    // scale down the spill game object or play animation 
-                   cleaningProgress++;
-                  }
-                  if (cleaningProgress == totalProgress)
-                  {
-                     Destroy(player.GetMess().gameObject);
-                      cleaningProgress = 0;
-                  }
+                if (cleaningProgress < totalProgress )
+                {
+                // scale down the spill game object or play animation 
+                    cleaningProgress++;
+                }
+                if (cleaningProgress == totalProgress)
+                {
+                    Destroy(player.GetMess().gameObject);
+                    cleaningProgress = 0;
+                }
                  
            }
            else 
@@ -44,10 +44,6 @@ public class Spill : MessBase
         player.SetSelectedMess(null); // we may not need this
 
         Debug.Log("Cleaning progress" + cleaningProgress);
-        
-
-        //Debug.Log("Mess position" + player.GetMessTransform().position);
-
     }
 
     private void OnTriggerStay(Collider other)
