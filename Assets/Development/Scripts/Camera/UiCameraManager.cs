@@ -202,7 +202,7 @@ public class UiCameraManager : MonoBehaviour
     void PlayScene() 
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
-        SceneManager.LoadScene("WhiteBox");
+        SceneManager.LoadScene("TestScene");
         gameObject.SetActive(false);
     }
     void closeGame() 
