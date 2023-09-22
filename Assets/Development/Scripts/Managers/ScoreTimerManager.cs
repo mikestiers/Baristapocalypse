@@ -9,7 +9,6 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
     public int score = 0;
     public UnityEvent LoseEvent = new UnityEvent();
     public UnityEvent WinEvent = new UnityEvent();
-    [SerializeField] private GameManager gameManager;
     public int StreakCount { get; private set; }
 
     // Start is called before the first frame update
@@ -29,7 +28,7 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
     void Update()
     {
         timeRemaining -= Time.deltaTime;
-        if (timeRemaining <= 0 && gameManager.gameState == GameState.RUNNING)
+        if (timeRemaining <= 0 && GameManager.Instance.gameState == GameState.RUNNING)
         {
             timeRemaining = 0;
             score *= Mathf.FloorToInt(CustomerReview.GetAverageReviewScore());
@@ -43,7 +42,7 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
             {
                 Lose();
             }
-            gameManager.gameState = GameState.GAMEOVER;
+            GameManager.Instance.gameState = GameState.GAMEOVER;
         }  
     }
 
