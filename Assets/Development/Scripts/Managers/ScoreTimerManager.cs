@@ -29,10 +29,11 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
     void Update()
     {
         timeRemaining -= Time.deltaTime;
-
         if (timeRemaining <= 0 && gameManager.gameState == GameState.RUNNING)
         {
-            score = score * Mathf.FloorToInt(UIManager.Instance.GetReviewScore());
+            timeRemaining = 0;
+            score *= Mathf.FloorToInt(CustomerReview.GetAverageReviewScore());
+            Debug.Log($"score {score}");
             UIManager.Instance.finalScore.text = "Score: " + score.ToString();
             if (score >= 50)
             {

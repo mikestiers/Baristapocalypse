@@ -160,6 +160,7 @@ public class CustomerBase : BaseStation
     public virtual void CustomerLeave()
     {
         SetCustomerState(CustomerState.Leaving);
+        //UIManager.Instance.ShowCustomerReview(this);
         agent.SetDestination(exit.position);
     }
 
