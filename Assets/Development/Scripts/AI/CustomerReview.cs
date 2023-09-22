@@ -137,8 +137,11 @@ public class CustomerReview : MonoBehaviour
         return reviewText;
     }
 
-    public int GetAverageReviewScore()
+    public static int GetAverageReviewScore()
     {
-        return averageReviewScore / numReviews;
+        if (numReviews != 0)
+            return averageReviewScore / numReviews;
+        else
+            return 1;
     }
 }
