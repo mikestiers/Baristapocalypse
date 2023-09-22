@@ -208,10 +208,10 @@ public class UiCameraManager : MonoBehaviour
     void closeGame() 
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
         #else
-            Aplication.Quit();
+            Application.Quit();
         #endif
     }
 }

@@ -175,6 +175,25 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
         return numberOfIngredientsHeld;
     }
 
+    public int CheckIfHoldingLiquid()
+    {
+        int count = 0;
+        foreach (Transform holdPoint in ingredientHoldPoints)
+        {
+            if (holdPoint.childCount > 0)
+            {
+                Ingredient ingredient = holdPoint.GetChild(0).GetComponent<Ingredient>();
+                
+                if (ingredient.GetIngredientSO().objectTag == "Milk")
+                {
+                    count++;
+                }
+            }
+        }
+        return count;
+
+    }
+
     public Transform GetNextHoldPoint()
     {
         for (int i = 0; i < ingredientHoldPoints.Length; i++)
