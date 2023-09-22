@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Camera))]
 public class CameraManager : MonoBehaviour
 {
-    [SerializeField] List<Transform> targets = new List<Transform>();
+    public List<Transform> targets = new List<Transform>();
     [SerializeField] Vector3 offset;
     [SerializeField] float smoothTime = .5f;
     [SerializeField] float minZoom = 50f;
@@ -20,6 +20,7 @@ public class CameraManager : MonoBehaviour
     private void Start()
     {
         cam = GetComponent<Camera>();
+            
     }
 
     private void Update()
