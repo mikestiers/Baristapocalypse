@@ -112,10 +112,10 @@ public class PlayerGroundState : PlayerBaseState
         else
         {
             // No interactable object hit, clear selected objects.
-            if (visualGameObject)
-            {
-                stateMachine.Hide(visualGameObject);
-            }
+            //if (visualGameObject)
+            //{
+            //    stateMachine.Hide(visualGameObject);
+            //}
             stateMachine.SetSelectedStation(null);
             stateMachine.SetSelectedMess(null);
             stateMachine.SetSelectedMop(null);

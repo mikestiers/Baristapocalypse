@@ -50,11 +50,13 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
     [field: SerializeField] public LayerMask isMopLayer { get; private set; }
     [HideInInspector] public Collider messCollider;
     [HideInInspector] public bool hasMop;
+    [HideInInspector] public bool hasGun;
     [field: SerializeField] public LayerMask isMessLayer { get; private set; }
 
     [SerializeField] public MessSO spillPrefab;
     [SerializeField] public Transform spillSpawnPoint;
     [SerializeField] public GameObject mopOnPlayer;
+    [SerializeField] public GameObject gunOnPlayer;
 
 
 
@@ -156,6 +158,8 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
     { 
        selectedMop = mop;
     }
+
+    public bool HasNoIngredients => GetNumberOfIngredients() == 0;
 
     public int GetNumberOfIngredients()
     {

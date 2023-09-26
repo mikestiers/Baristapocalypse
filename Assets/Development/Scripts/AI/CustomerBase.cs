@@ -28,6 +28,7 @@ public class CustomerBase : BaseStation
     [SerializeField] private Canvas customerNumberCanvas;
     [SerializeField] private Text customerNumberText;
     [SerializeField] private Text customerNameText;
+    [SerializeField] private DetachedHead detachedHead;
 
     //private CustomerState currentState;
 
@@ -181,8 +182,28 @@ public class CustomerBase : BaseStation
         UIManager.Instance.ShowCustomerReview(this);
     }
 
+    void HeadDetach()
+    {
+        //customerHead.SetParent(null);
+        //Rigidbody rigidBody = customerHead.AddComponent<Rigidbody>();
+        //customerHead.AddComponent<SphereCollider>();
+        //rigidBody.useGravity = true;
+        //rigidBody.AddForce(transform.up * 250);
+        //customerHead.AddComponent<DetachedHead>();
+        detachedHead.Initialize();
+        //yield return new WaitForSeconds(5);
+        //rigidBody.useGravity = false;
+        //rigidBody.constraints = RigidbodyConstraints.FreezeAll;
+    }
+
     public override void Interact(PlayerStateMachine player)
     {
+        if (player.hasGun)
+        {
+            HeadDetach();
+            agent.speed = 0;
+            return;
+        }
         //check customer state
         if (GetCustomerState() == CustomerState.Ordering)
         {
