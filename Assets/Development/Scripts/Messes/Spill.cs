@@ -9,41 +9,24 @@ public class Spill : MessBase
     [SerializeField] private int totalProgress = 4; // amount of timer required to clean spill (temporary)
     [SerializeField] private float slipSpeed = 0.8f;
    
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     public override void Interact(PlayerStateMachine player)
     {
-           if (player.hasMop == true ) 
-           { 
-                if (cleaningProgress < totalProgress )
+        if (player.IsHoldingPickup)
+        {
+            if (player.Pickup.attributes.Contains(Pickup.PickupAttribute.CleansUpSpills))
+            {
+                if (cleaningProgress < totalProgress)
                 {
-                // scale down the spill game object or play animation 
+                    // scale down the spill game object or play animation 
                     cleaningProgress++;
                 }
-                if (cleaningProgress == totalProgress)
+                if (cleaningProgress >= totalProgress)
                 {
-                    Destroy(player.GetMess().gameObject);
-                    cleaningProgress = 0;
+                    Destroy(gameObject);
                 }
-                 
-           }
-           else 
-           {
-                Debug.Log("cant clean");
-                return;
-        
-           }
 
-
-        // Reset the selectedMess field to null after the interaction is complete.
-        player.SetSelectedMess(null); // we may not need this
-
-        Debug.Log("Cleaning progress" + cleaningProgress);
+            }
+        }
     }
 
     private void OnTriggerStay(Collider other)

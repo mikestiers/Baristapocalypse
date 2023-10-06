@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class Gun : BaseStation
 {
-
     [SerializeField] private GameObject gunOnPlayer;
     [SerializeField] private GameObject gunInStation;
 
@@ -30,9 +29,5 @@ public class Gun : BaseStation
             gunInStation.SetActive(true);
             player.hasGun = false;
         }
-
-
     }
-
-
 }

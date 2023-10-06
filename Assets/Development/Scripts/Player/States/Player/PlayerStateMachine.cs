@@ -58,7 +58,20 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
     [SerializeField] public GameObject mopOnPlayer;
     [SerializeField] public GameObject gunOnPlayer;
 
+    [Header("Pickups")]
+    public Transform pickupLocation;
+    public float pickupThrowForce;
 
+    [HideInInspector]
+    public Pickup Pickup
+    {
+        get
+        {
+            if (IsHoldingPickup)
+                return pickupLocation.GetChild(0).GetComponent<Pickup>();
+            return null;
+        }
+    }
 
     // When station selected
     private GameObject visualGameObject;
@@ -262,6 +275,9 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
 
     public void GrabIngedientFromFloor(Ingredient floorIngredient,IngredientSO ingredientSO )
     {
+        if (IsHoldingPickup)
+            return;
+
         floorIngredient.SetIngredientParent(this);
         floorIngredient.DestroyIngredient();
 
@@ -344,5 +360,44 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
     public bool HasMess()
     {
         return selectedMess != null;
+    }
+
+    public bool IsHoldingPickup => pickupLocation.childCount > 0;
+    public void DoPickup(Pickup pickup)
+    {
+        if (IsHoldingPickup || !HasNoIngredients)
+            return;
+
+        Pickup p = Instantiate(pickup, pickupLocation) as Pickup;
+        
+        if (p.IsCustomer)
+        {
+            p.GetNavMeshAgent().enabled = false;
+            p.GetCustomer().isPickedUp = true;
+        }
+        
+        p.GetRigidBody().constraints = RigidbodyConstraints.FreezeAll;
+        p.transform.localRotation = Quaternion.identity;
+        p.transform.localPosition = Vector3.zero;
+        p.GetCollider().enabled = false;
+        Destroy(pickup.gameObject);
+    }
+
+    public void ThrowPickup()
+    {
+        if (pickupLocation.childCount == 0)
+            return;
+
+        Pickup p = pickupLocation.GetChild(0).GetComponent<Pickup>();
+
+        if (p.IsCustomer)
+        {
+            p.GetCustomer().isPickedUp = false;
+        }
+
+        p.transform.SetParent(null);
+        p.GetCollider().enabled = true;
+        p.GetRigidBody().constraints = RigidbodyConstraints.None;
+        p.GetRigidBody().AddForce(transform.forward * (pickupThrowForce * p.GetThrowForceMultiplier()));
     }
 }

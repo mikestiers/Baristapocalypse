@@ -51,6 +51,11 @@ public class PlayerGroundState : PlayerBaseState
         float interactDistance = 2.0f;
         if (Physics.Raycast(stateMachine.transform.position + RayCastOffset, stateMachine.transform.forward, out RaycastHit hit, interactDistance, interactableLayerMask))
         {
+            if (hit.transform.TryGetComponent(out Pickup pickup))
+            {
+                if (mouse.rightButton.wasPressedThisFrame)
+                    stateMachine.DoPickup(pickup);
+            }
             // Check the type of the hit object.
             // Logic for Station Interaction
             if (hit.transform.TryGetComponent(out BaseStation baseStation) && !stateMachine.hasMop)
@@ -176,6 +181,10 @@ public class PlayerGroundState : PlayerBaseState
 
     public void OnThrow()
     {
+        if (stateMachine.IsHoldingPickup)
+        {
+            stateMachine.ThrowPickup();
+        }
         if (stateMachine.GetNumberOfIngredients() > 0)
         {
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.throwIngredient);

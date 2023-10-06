@@ -24,6 +24,7 @@ public class CustomerBase : BaseStation
     public float distThreshold;
     public GameObject customerDialogue;
     public float orderTimer = 0f;
+    public bool isPickedUp;
     private bool isOrderTimerRunning = false;
     [SerializeField] private Canvas customerNumberCanvas;
     [SerializeField] private Text customerNumberText;
