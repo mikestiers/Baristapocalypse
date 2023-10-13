@@ -8,12 +8,12 @@ public class BaseStation : MonoBehaviour, IIngredientParent
     
     private Ingredient ingredient;
     
-    public virtual void Interact(PlayerStateMachine player)
+    public virtual void Interact(PlayerController player)
     {
         
         //Debug.LogError("BaseCounter.Interact();");
     }
-    public virtual void InteractAlt(PlayerStateMachine player)
+    public virtual void InteractAlt(PlayerController player)
     {
         //Debug.LogError("BaseCounter.InteractAlt();");
     }

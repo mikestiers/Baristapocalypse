@@ -81,7 +81,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         
     }
 
-    public override void Interact(PlayerStateMachine player)
+    public override void Interact(PlayerController player)
     {
         
         if (player.GetNumberOfIngredients() >= 1)

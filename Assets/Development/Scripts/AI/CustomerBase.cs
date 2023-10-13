@@ -181,7 +181,7 @@ public class CustomerBase : BaseStation
         UIManager.Instance.ShowCustomerReview(this);
     }
 
-    public override void Interact(PlayerStateMachine player)
+    public override void Interact(PlayerController player)
     {
         //check customer state
         if (GetCustomerState() == CustomerState.Ordering)

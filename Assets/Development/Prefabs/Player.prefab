@@ -385,8 +385,8 @@ GameObject:
   m_Component:
   - component: {fileID: 533563683556402451}
   - component: {fileID: 533563683556402450}
+  - component: {fileID: 1024751596296165092}
   - component: {fileID: 7263414053255238152}
-  - component: {fileID: 533563683556402460}
   - component: {fileID: 8848886544079564540}
   - component: {fileID: -859235823650325503}
   m_Layer: 0
@@ -434,6 +434,52 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 2
+--- !u!114 &1024751596296165092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 533563683556402463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2278603552e903d4692cf7ad91790e32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 0
+  jumpForce: 0
+  ingredienThrowForce: 0
+  isGroundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  groundCheckRadius: 0.3
+  groundCheck: {fileID: 533563682798100843}
+  dashForce: 0
+  dashTime: 0
+  isStationLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  isIngredientLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  ingredientInstanceHolder: {fileID: 533563681979775763}
+  ingredientHoldPoints:
+  - {fileID: 2069000730}
+  - {fileID: 1344855492}
+  - {fileID: 1976909953}
+  - {fileID: 1193085190}
+  isMopLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  isMessLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  spillPrefab: {fileID: 11400000, guid: 436597cbe317b964f940835852e0f1a3, type: 2}
+  spillSpawnPoint: {fileID: 1216517093796491857}
+  hasMop: 0
+  <mopOnPlayer>k__BackingField: {fileID: 1757816199780796126}
+  inputManager: {fileID: -859235823650325503}
+  ingredientIndicatorText: {fileID: 1310037080}
 --- !u!114 &7263414053255238152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -446,62 +492,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ee0c75024a6e5740b3f39c1203cf103, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &533563683556402460
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 533563683556402463}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c22cb47df71950d4e943593d795de5b3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <moveSpeed>k__BackingField: 0
-  <jumpForce>k__BackingField: 0
-  <ingredienThrowForce>k__BackingField: 0
-  <isGroundLayer>k__BackingField:
-    serializedVersion: 2
-    m_Bits: 8
-  <groundCheckRadius>k__BackingField: 0.3
-  <groundCheck>k__BackingField: {fileID: 533563682798100843}
-  isGrounded: 0
-  dashForce: 0
-  dashTime: 0
-  <isStationLayer>k__BackingField:
-    serializedVersion: 2
-    m_Bits: 64
-  <isIngredientLayer>k__BackingField:
-    serializedVersion: 2
-    m_Bits: 128
-  ingredientCollider: {fileID: 0}
-  ingredientInstanceHolder: {fileID: 533563681979775763}
-  <ingredientHoldPoint>k__BackingField: {fileID: 533563681979775760}
-  currentHoldPointIndex: 0
-  numberOfIngredientsHeld: 0
-  maxIngredients: 4
-  ingredientHoldPoints:
-  - {fileID: 2069000730}
-  - {fileID: 1344855492}
-  - {fileID: 1976909953}
-  - {fileID: 1193085190}
-  curMoveInput: {x: 0, y: 0, z: 0}
-  moveDir: {x: 0, y: 0, z: 0}
-  selectedMess: {fileID: 0}
-  <isMopLayer>k__BackingField:
-    serializedVersion: 2
-    m_Bits: 512
-  messCollider: {fileID: 0}
-  hasMop: 0
-  <isMessLayer>k__BackingField:
-    serializedVersion: 2
-    m_Bits: 256
-  spillPrefab: {fileID: 11400000, guid: 436597cbe317b964f940835852e0f1a3, type: 2}
-  spillSpawnPoint: {fileID: 1216517093796491857}
-  mopOnPlayer: {fileID: 1757816199780796126}
-  inputManager: {fileID: 0}
-  ingredientIndicatorText: {fileID: 1310037080}
 --- !u!136 &8848886544079564540
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -764,7 +754,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3156295779590949838, guid: 3d4f4652d1981644abdddd756e58f75a, type: 3}
       propertyPath: m_VersionIndex
-      value: 2746
+      value: 2749
       objectReference: {fileID: 0}
     - target: {fileID: 3415405397789738506, guid: 3d4f4652d1981644abdddd756e58f75a, type: 3}
       propertyPath: m_RootOrder
@@ -828,7 +818,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7626672288444890228, guid: 3d4f4652d1981644abdddd756e58f75a, type: 3}
       propertyPath: m_VersionIndex
-      value: 1878
+      value: 1881
       objectReference: {fileID: 0}
     - target: {fileID: 7696197177049244353, guid: 3d4f4652d1981644abdddd756e58f75a, type: 3}
       propertyPath: m_Mesh
