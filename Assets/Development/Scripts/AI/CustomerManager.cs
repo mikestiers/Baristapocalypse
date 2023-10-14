@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,11 +7,11 @@ using UnityEngine.UI;
 
 public class CustomerManager : Singleton<CustomerManager>
 {
-    public Transform Counter;
-    public Transform barEntrance;
+    [SerializeField] private Transform Counter;
+    [SerializeField] private Transform barEntrance;
     [SerializeField] private Transform exit;
-    public float delay = 8.0f;
-    public int numberOfCustomers = 5;
+    [SerializeField] private float delay = 8.0f;
+    [SerializeField] private int numberOfCustomers = 5;
     private int customerNumber = 0;
     List<string> customerNames = new List<string>
         {
@@ -45,17 +46,18 @@ public class CustomerManager : Singleton<CustomerManager>
     public List<CustomerBase> customersOutsideList = new List<CustomerBase>();
 
     private CustomerLineQueuing LineQueue;
+    private CustomerBarFloor barFloor;
 
     //temp stuff -> Ddog will make something more robust
     public GameObject[] Chairs;
-    public int chairNumber;
+    //private int chairNumber = 0;
 
     // Start is called before the first frame update
     private void Start()
     {
         List<Vector3> waitingQueuePostionList = new List<Vector3>();
         if (Chairs.Length <= 0) Chairs = GameObject.FindGameObjectsWithTag("Waypoint");
-        chairNumber = UnityEngine.Random.Range(0, Chairs.Length);
+        //chairNumber = UnityEngine.Random.Range(0, Chairs.Length);
 
         //where the firstposition is located in scene
         Vector3 firstposition = new Vector3(Counter.position.x, 0, Counter.position.z);
@@ -67,6 +69,7 @@ public class CustomerManager : Singleton<CustomerManager>
 
         //LineQueue.OnCustomerArrivedAtFrontOfQueue += WaitingQueue_OnCustomerArrivedAtFrontOfQueue; might be used for future code?
         LineQueue = new CustomerLineQueuing(waitingQueuePostionList);
+        barFloor = new CustomerBarFloor(Chairs);
 
         StartCoroutine(NewCustomer(delay));
     }
@@ -99,16 +102,17 @@ public class CustomerManager : Singleton<CustomerManager>
             LineQueue.AddCustomer(customersOutsideList[0]);
             customersOutsideList.RemoveAt(0);
         }
+        else
+        {
+            customersOutsideList[0].CustomerLeave();
+            customersOutsideList.RemoveAt(0);
+        }
     }
 
     public void Leaveline()
     {
         CustomerBase customer = LineQueue.GetFirstInQueue();
-
-        customer.Walkto(Chairs[chairNumber].transform.position);
-        customer.SetCustomerState(CustomerBase.CustomerState.Insit);
-        chairNumber += 4;
-        chairNumber %= Chairs.Length;
+        barFloor.TrySendToChair(customer);
     }
 
     private void SpawnCustomer()
@@ -126,7 +130,21 @@ public class CustomerManager : Singleton<CustomerManager>
             newcustomer.SetCustomerName(customerNames[randomCustomer]);
             customerNames.RemoveAt(randomCustomer);
         }
+    
     }
+    public int TotalCustomers()
+    {
+        int totalCustomers = LineQueue.GetLineCount() + barFloor.GetTotalCustomersOnFloor();
+
+        return totalCustomers;
+    }
+    public int TotalMaxCapacity()
+    {
+        int maxCapacity = Chairs.Length + numberOfCustomers;
+
+        return maxCapacity;
+    }
+
 
     /* i didnt delete just incase it can be used for future code
 
