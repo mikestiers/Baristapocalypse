@@ -9,11 +9,11 @@ public class MessBase : MonoBehaviour, IMessParent
     private IMessParent messParent;
     [HideInInspector] public MessBase mess;
 
-    public virtual void Interact(PlayerStateMachine player)
+    public virtual void Interact(PlayerController player)
     {
 
     }
-    public virtual void InteractAlt(PlayerStateMachine player)
+    public virtual void InteractAlt(PlayerController player)
     {
         
     }

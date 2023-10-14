@@ -13,7 +13,7 @@ using UnityEngine.UI;
 using static UnityEngine.EventSystems.EventTrigger;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class CustomerBase : BaseStation
+public class CustomerBase : Base
 {
     //public Transform target;
     public NavMeshAgent agent;
@@ -181,7 +181,7 @@ public class CustomerBase : BaseStation
         UIManager.Instance.ShowCustomerReview(this);
     }
 
-    public override void Interact(PlayerStateMachine player)
+    public override void Interact(PlayerController player)
     {
         //check customer state
         if (GetCustomerState() == CustomerState.Ordering)

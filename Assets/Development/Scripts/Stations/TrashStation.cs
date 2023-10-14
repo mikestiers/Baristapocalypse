@@ -5,7 +5,7 @@ using UnityEngine;
 public class TrashStation : BaseStation
 {
     [SerializeField] private ParticleSystem interactParticle;
-    public override void Interact(PlayerStateMachine player)
+    public override void Interact(PlayerController player)
     {
         if (player.GetNumberOfIngredients() >= 1)
         {

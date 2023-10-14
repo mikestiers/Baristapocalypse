@@ -14,7 +14,7 @@ public class Mop : BaseStation
         mopOnPlayer.SetActive(false);
         mopInStation.SetActive(true);
     }
-    public override void InteractAlt(PlayerStateMachine player) 
+    public override void InteractAlt(PlayerController player) 
       {
         mopOnPlayer = GameObject.Find("mopVisuals");
 

@@ -2,15 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseStation : MonoBehaviour, IIngredientParent
+public class Base : MonoBehaviour, IIngredientParent
 {
     [SerializeField] private Transform stationTopPoint;
-    
+
     private Ingredient ingredient;
-    
+
     public virtual void Interact(PlayerController player)
     {
-        
+
         //Debug.LogError("BaseCounter.Interact();");
     }
     public virtual void InteractAlt(PlayerController player)
@@ -42,6 +42,4 @@ public class BaseStation : MonoBehaviour, IIngredientParent
     {
         return ingredient != null;
     }
-
-
 }

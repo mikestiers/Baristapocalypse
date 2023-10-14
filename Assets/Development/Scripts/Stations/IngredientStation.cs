@@ -9,7 +9,7 @@ public class IngredientStation : BaseStation
     [SerializeField] private IngredientSO ingredientSO;
     [SerializeField] private ParticleSystem interactParticle;
 
-    public override void Interact(PlayerStateMachine player)
+    public override void Interact(PlayerController player)
     {
         if (!HasIngredient())
         {
