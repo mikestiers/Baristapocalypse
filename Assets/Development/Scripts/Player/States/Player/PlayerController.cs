@@ -29,9 +29,12 @@ public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
     [Header("Interactables")]
     [SerializeField] private LayerMask isStationLayer;
     [SerializeField] private LayerMask isIngredientLayer;
+    [SerializeField] private LayerMask isCustomerLayer;
     [SerializeField] private GameObject ingredientInstanceHolder;
     private BaseStation selectedStation;
-    private Collider ingredientCollider;
+    private Base selectedCustomer;
+    public float sphereCastRadius = 0.5f;
+    //private Collider ingredientCollider;
 
     [Header("Ingredients Data")]
     [SerializeField] public Transform[] ingredientHoldPoints; // Array to hold multiple ingredient
@@ -93,9 +96,9 @@ public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
         if (groundCheckRadius <= 0) groundCheckRadius = 0.05f;
 
         //Define the interactable layer mask to include station, ingredient, and mess layers.
-        interactableLayerMask = isStationLayer | isIngredientLayer | isMessLayer | isMopLayer;
+        interactableLayerMask = isStationLayer | isIngredientLayer | isMessLayer | isMopLayer | isCustomerLayer ;
 
-        RayCastOffset = new Vector3(0, 0.3f, 0);
+        RayCastOffset = new Vector3(0, 0.4f, 0);
     }
 
     private void OnEnable()
@@ -130,7 +133,6 @@ public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
         float interactDistance = 2.0f;
         if (Physics.Raycast(transform.position + RayCastOffset, transform.forward, out RaycastHit hit, interactDistance, interactableLayerMask))
         {
-            // Check the type of the hit object.
             // Logic for Station Interaction
             if (hit.transform.TryGetComponent(out BaseStation baseStation) && !hasMop)
             {
@@ -195,7 +197,26 @@ public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
             SetSelectedMess(null);
             SetSelectedMop(null);
         }
+
+        // Customer Interaction Logic
+        float customerInteractDistance = 4.0f;
+        //if (Physics.Raycast(transform.position + RayCastOffset, transform.forward, out RaycastHit hitCustomer, customerInteractDistance, interactableLayerMask))
+        if (Physics.SphereCast(transform.position + RayCastOffset, sphereCastRadius, transform.forward, out RaycastHit hitCustomer, customerInteractDistance, interactableLayerMask))
+        {
+            if (hitCustomer.transform.TryGetComponent(out Base customerBase) && !hasMop)
+            {
+                visualGameObject = customerBase.transform.GetChild(0).gameObject;
+                if (customerBase != selectedCustomer)
+                {
+                    SetSelectedCustomer(customerBase);
+                    Show(visualGameObject);
+                }
+            }
+        }
+
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward, Color.green);
+        Debug.DrawRay(transform.position + RayCastOffset, transform.forward * customerInteractDistance, Color.red);
+        
     }
 
     public bool IsGrounded()
@@ -219,7 +240,12 @@ public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
         {
             selectedStation.Interact(this);
         }
-      
+
+        if (selectedCustomer)
+        {
+            selectedCustomer.Interact(this);
+        }
+
         if (selectedMess)
         {
             selectedMess.Interact(this);
@@ -298,10 +324,17 @@ public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
 
     }
 
+    public void SetSelectedCustomer(Base customer)
+    {
+        selectedCustomer = customer;
+    }
+
     public void SetSelectedMop(Mop mop) 
     { 
        selectedMop = mop;
     }
+
+
 
     public int GetNumberOfIngredients()
     {
@@ -477,5 +510,12 @@ public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
     public bool HasMess()
     {
         return selectedMess != null;
+    }
+
+    // temp for debugging 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position + transform.forward * 4, sphereCastRadius);
     }
 }

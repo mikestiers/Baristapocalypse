@@ -13,7 +13,7 @@ using UnityEngine.UI;
 using static UnityEngine.EventSystems.EventTrigger;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class CustomerBase : BaseStation
+public class CustomerBase : Base
 {
     //public Transform target;
     public NavMeshAgent agent;
