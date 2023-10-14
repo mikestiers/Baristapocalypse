@@ -54,7 +54,7 @@ public class GameManager : Singleton<GameManager>
 
     private void OnSceneChanged(Scene currentScene, Scene nextScene)
     {
-        if (nextScene.name == "WhiteBox")
+        if (nextScene.name == "TestScene")
         {
             SpawnPlayers(player1Active, player2Active, player3Active, player4Active);
         }
