@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Spill : MessBase
+
+public class Spill : MonoBehaviour
 {
     private int cleaningProgress = 0; // start clenaing progress for spill
     [SerializeField] private int totalProgress = 4; // amount of timer required to clean spill (temporary)
     [SerializeField] private float slipSpeed = 0.8f;
    
-    public override void Interact(PlayerStateMachine player)
+    public void Interact(PlayerStateMachine player)
     {
         if (player.IsHoldingPickup)
         {
@@ -24,7 +25,6 @@ public class Spill : MessBase
                 {
                     Destroy(gameObject);
                 }
-
             }
         }
     }
@@ -38,7 +38,7 @@ public class Spill : MessBase
              Debug.Log("this is the player" + rb);
              Vector3 movedirection = rb.transform.forward;
              rb.AddForce(movedirection * slipSpeed , ForceMode.VelocityChange);
-            stateMachine.ThrowIngedient();
+             stateMachine.ThrowIngedient();
         }
     }
 }

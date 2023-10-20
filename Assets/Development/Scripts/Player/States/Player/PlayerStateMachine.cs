@@ -7,7 +7,7 @@ using TMPro;
 
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
+public class PlayerStateMachine : StateMachine, IIngredientParent
 {
     // Player Instance
     [HideInInspector] public static PlayerStateMachine Instance { get; private set; }
@@ -45,18 +45,12 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
     [HideInInspector] public Vector3 moveDir;
 
     //  Mess Data
-    [HideInInspector] public MessBase selectedMess; 
-    [HideInInspector] public Mop selectedMop { get; private set; }
     [field: SerializeField] public LayerMask isMopLayer { get; private set; }
     [HideInInspector] public Collider messCollider;
-    [HideInInspector] public bool hasMop;
-    [HideInInspector] public bool hasGun;
     [field: SerializeField] public LayerMask isMessLayer { get; private set; }
 
     [SerializeField] public MessSO spillPrefab;
     [SerializeField] public Transform spillSpawnPoint;
-    [SerializeField] public GameObject mopOnPlayer;
-    [SerializeField] public GameObject gunOnPlayer;
 
     [Header("Pickups")]
     public Transform pickupLocation;
@@ -160,16 +154,6 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
     {
         selectedStation = baseStation;
 
-    }
-    public void SetSelectedMess(MessBase mess)
-    {
-        selectedMess = mess;
-
-    }
-
-    public void SetSelectedMop(Mop mop) 
-    { 
-       selectedMop = mop;
     }
 
     public bool HasNoIngredients => GetNumberOfIngredients() == 0;
@@ -337,31 +321,6 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
 
     // Mess Interface implementation
 
-    public Transform GetMessTransform()
-    {
-        return selectedMess.transform;
-    }
-
-    public void SetMess(MessBase mess)
-    {
-        this.selectedMess = mess;
-    }
-
-    public MessBase GetMess()
-    {
-        return selectedMess;
-    }
-
-    public void ClearMess()
-    {
-        selectedMess = null; ;
-    }
-
-    public bool HasMess()
-    {
-        return selectedMess != null;
-    }
-
     public bool IsHoldingPickup => pickupLocation.childCount > 0;
     public void DoPickup(Pickup pickup)
     {
@@ -375,10 +334,10 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
             p.GetNavMeshAgent().enabled = false;
             p.GetCustomer().isPickedUp = true;
         }
-        
-        p.GetRigidBody().constraints = RigidbodyConstraints.FreezeAll;
-        p.transform.localRotation = Quaternion.identity;
-        p.transform.localPosition = Vector3.zero;
+
+        p.RemoveRigidBody();
+        p.transform.localRotation = Quaternion.Euler(p.holdingRotation);
+        p.transform.localPosition = p.holdingPosition;
         p.GetCollider().enabled = false;
         Destroy(pickup.gameObject);
     }
@@ -397,7 +356,7 @@ public class PlayerStateMachine : StateMachine, IIngredientParent, IMessParent
 
         p.transform.SetParent(null);
         p.GetCollider().enabled = true;
-        p.GetRigidBody().constraints = RigidbodyConstraints.None;
-        p.GetRigidBody().AddForce(transform.forward * (pickupThrowForce * p.GetThrowForceMultiplier()));
+        p.AddRigidbody();
+        p.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * p.GetThrowForceMultiplier()));
     }
 }

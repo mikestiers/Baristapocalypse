@@ -58,7 +58,7 @@ public class PlayerGroundState : PlayerBaseState
             }
             // Check the type of the hit object.
             // Logic for Station Interaction
-            if (hit.transform.TryGetComponent(out BaseStation baseStation) && !stateMachine.hasMop)
+            if (hit.transform.TryGetComponent(out BaseStation baseStation))
             {
 
                 visualGameObject = baseStation.transform.GetChild(0).gameObject;
@@ -68,12 +68,19 @@ public class PlayerGroundState : PlayerBaseState
                     stateMachine.Show(visualGameObject);
                 }
             }
+            else if (hit.transform.TryGetComponent(out Spill spill))
+            {
+                if (mouse.leftButton.wasPressedThisFrame)
+                {
+                    spill.Interact(stateMachine);
+                }
+            }
 
             // Logic for Ingredient  on floor Interaction 
             else if (hit.transform.TryGetComponent(out Ingredient ingredient))
             {
 
-                if (stateMachine.GetNumberOfIngredients() <= stateMachine.maxIngredients && !stateMachine.hasMop)
+                if (stateMachine.GetNumberOfIngredients() <= stateMachine.maxIngredients && !stateMachine.IsHoldingPickup)
                 {
                     ingredienSO = ingredient.IngredientSO;
 
@@ -89,30 +96,6 @@ public class PlayerGroundState : PlayerBaseState
 
 
             }
-
-            // Logic for Mess Interaction
-            else if (hit.transform.TryGetComponent(out MessBase mess))
-            {
-                visualGameObject = mess.transform.GetChild(0).gameObject;
-                if (mess != stateMachine.selectedMess)
-                {
-                    stateMachine.SetSelectedMess(mess);
-                    if (stateMachine.hasMop)
-                    {
-                        stateMachine.Show(visualGameObject);
-                    }
-                }
-                Debug.Log("Detecting " + mess);
-            }
-            // logic for Mop Interaction
-            else if (hit.transform.TryGetComponent(out Mop Mop)) 
-            {
-                if (Mop != stateMachine.selectedMop) 
-                {
-                    stateMachine.SetSelectedMop(Mop);
-                }
-                Debug.Log("Geting " + Mop);
-            }
         }
         else
         {
@@ -122,8 +105,6 @@ public class PlayerGroundState : PlayerBaseState
             //    stateMachine.Hide(visualGameObject);
             //}
             stateMachine.SetSelectedStation(null);
-            stateMachine.SetSelectedMess(null);
-            stateMachine.SetSelectedMop(null);
         }
         Debug.DrawRay(stateMachine.transform.position + RayCastOffset, stateMachine.transform.forward, Color.green);
 
@@ -155,7 +136,8 @@ public class PlayerGroundState : PlayerBaseState
         { 
             if (stateMachine.CheckIfHoldingLiquid() > 0)//stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
             {
-                MessBase.SpawnMess(stateMachine.spillPrefab , stateMachine.spillSpawnPoint);
+                StateMachine.Instantiate(stateMachine.spillPrefab.prefab, stateMachine.spillSpawnPoint.position, Quaternion.identity);
+                //MessBase.SpawnMess(stateMachine.spillPrefab , stateMachine.spillSpawnPoint);
                 stateMachine.ThrowIngedient();
                 Debug.Log("tienes Leche " + stateMachine.spillPrefab.name);
                 
@@ -201,12 +183,6 @@ public class PlayerGroundState : PlayerBaseState
         {
             stateMachine.selectedStation.Interact(stateMachine);
         }
-
-        if (stateMachine.selectedMess)
-        {
-            stateMachine.selectedMess.Interact(stateMachine);
-        }
-
     }
 
     public void InteractAlt()
@@ -214,14 +190,6 @@ public class PlayerGroundState : PlayerBaseState
         if (stateMachine.selectedStation)
         {
             stateMachine.selectedStation.InteractAlt(stateMachine);
-        }
-        if (stateMachine.selectedMess)
-        {
-            stateMachine.selectedMess.InteractAlt(stateMachine);
-        }
-        if (stateMachine.selectedMop)
-        {
-            stateMachine.selectedMop.InteractAlt(stateMachine);
         }
     }
 }

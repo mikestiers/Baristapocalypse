@@ -199,8 +199,10 @@ public class CustomerBase : BaseStation
 
     public override void Interact(PlayerStateMachine player)
     {
-        if (player.hasGun)
+        Debug.Log("Interact Dead?");
+        if (player.IsHoldingPickup && player.Pickup.attributes.Contains(Pickup.PickupAttribute.KillsCustomer))
         {
+            Debug.Log("Dead?");
             HeadDetach();
             agent.speed = 0;
             return;
