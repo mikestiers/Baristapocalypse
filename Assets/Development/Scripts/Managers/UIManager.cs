@@ -75,7 +75,7 @@ public class UIManager : Singleton<UIManager>
     private void RestartGame()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("TestScene");
+        SceneManager.LoadScene("LevelScene");
     }
 
     private void ClosePause()

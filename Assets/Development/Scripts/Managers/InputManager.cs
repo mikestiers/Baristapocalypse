@@ -52,47 +52,47 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
 
     private void Input_onActionTriggered(InputAction.CallbackContext obj)
     {
-        // Move
-        if (obj.action.name == controllerInputs.Player.Move.name)
-        {
-            OnMove(obj);
-        }
-
-        // Interact
-        if (obj.action.name == controllerInputs.Player.Interact.name)
-        {
-            OnInteract(obj);
-        }
-
-        // InteractAlt
-        if (obj.action.name == controllerInputs.Player.InteractAlt.name)
-        {
-            OnInteractAlt(obj);
-        }
-
-        // Dash
-        if (obj.action.name == controllerInputs.Player.Dash.name)
-        {
-            OnDash(obj);
-        }
-
-        // Throw
-        if (obj.action.name == controllerInputs.Player.Throw.name)
-        {
-            OnThrow(obj);
-        }
-
-        // Jump
-        if (obj.action.name == controllerInputs.Player.Jump.name)
-        {
-            OnJump(obj);
-        }
-
-        // pause
-        if (obj.action.name == controllerInputs.Player.Pause.name)
-        {
-            OnPause(obj);
-        }
+      // // Move
+      // if (obj.action.name == controllerInputs.Player.Move.name)
+      // {
+      //     OnMove(obj);
+      // }
+      //
+      // // Interact
+      // if (obj.action.name == controllerInputs.Player.Interact.name)
+      // {
+      //     OnInteract(obj);
+      // }
+      //
+      // // InteractAlt
+      // if (obj.action.name == controllerInputs.Player.InteractAlt.name)
+      // {
+      //     OnInteractAlt(obj);
+      // }
+      //
+      // // Dash
+      // if (obj.action.name == controllerInputs.Player.Dash.name)
+      // {
+      //     OnDash(obj);
+      // }
+      //
+      // // Throw
+      // if (obj.action.name == controllerInputs.Player.Throw.name)
+      // {
+      //     OnThrow(obj);
+      // }
+      //
+      // // Jump
+      // if (obj.action.name == controllerInputs.Player.Jump.name)
+      // {
+      //     OnJump(obj);
+      // }
+      //
+      // // pause
+      // if (obj.action.name == controllerInputs.Player.Pause.name)
+      // {
+      //     OnPause(obj);
+      // }
     }
 
     public void OnInteract(InputAction.CallbackContext context)

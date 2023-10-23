@@ -54,7 +54,7 @@ public class GameManager : Singleton<GameManager>
 
     private void OnSceneChanged(Scene currentScene, Scene nextScene)
     {
-        if (nextScene.name == "TestScene")
+        if (nextScene.name == "LevelScene")
         {
             SpawnPlayers(player1Active, player2Active, player3Active, player4Active);
         }

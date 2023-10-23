@@ -20147,6 +20147,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1762f224c4c79e8449d394d6d17d440c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  play: {fileID: 0}
+  mainMenu: {fileID: 0}
+  playButton: {fileID: 0}
   gameState: 0
   player1Prefab: {fileID: 0}
   player2Prefab: {fileID: 0}
@@ -20444,8 +20447,8 @@ MonoBehaviour:
   - {fileID: 1065496446}
   offset: {x: 0, y: 70, z: -70}
   smoothTime: 0.5
-  minZoom: 40
   maxZoom: 25
+  minZoom: 40
   zoomLimiter: 50
 --- !u!1 &1169943585
 GameObject:
@@ -25889,6 +25892,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveDir: {x: 0, y: 0, z: 0}
   curMoveInput: {x: 0, y: 0, z: 0}
+  playerMesh: {fileID: 0}
 --- !u!4 &1583617572
 Transform:
   m_ObjectHideFlags: 0
