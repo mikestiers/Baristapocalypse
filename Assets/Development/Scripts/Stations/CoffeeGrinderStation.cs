@@ -11,7 +11,7 @@ public class CoffeeGrinderStation : BaseStation, IHasProgress
     [SerializeField] private ParticleSystem interactParticle;
 
     private int grindProgress = 0;
-    public override void Interact(PlayerStateMachine player)
+    public override void Interact(PlayerController player)
     {
         if (!HasIngredient())
         {
@@ -57,7 +57,7 @@ public class CoffeeGrinderStation : BaseStation, IHasProgress
         }
     }
 
-    public override void InteractAlt(PlayerStateMachine player)
+    public override void InteractAlt(PlayerController player)
     {
         //Grind coffee if on table and valid input
         if (HasIngredient() && HasValidRecipe(GetIngredient().GetIngredientSO()))

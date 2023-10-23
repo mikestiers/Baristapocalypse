@@ -13,7 +13,7 @@ using UnityEngine.UI;
 using static UnityEngine.EventSystems.EventTrigger;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class CustomerBase : BaseStation
+public class CustomerBase : Base
 {
     //public Transform target;
     public NavMeshAgent agent;
@@ -24,12 +24,10 @@ public class CustomerBase : BaseStation
     public float distThreshold;
     public GameObject customerDialogue;
     public float orderTimer = 0f;
-    public bool isPickedUp;
     private bool isOrderTimerRunning = false;
     [SerializeField] private Canvas customerNumberCanvas;
     [SerializeField] private Text customerNumberText;
     [SerializeField] private Text customerNameText;
-    [SerializeField] private DetachedHead detachedHead;
 
     //private CustomerState currentState;
 
@@ -183,30 +181,8 @@ public class CustomerBase : BaseStation
         UIManager.Instance.ShowCustomerReview(this);
     }
 
-    void HeadDetach()
+    public override void Interact(PlayerController player)
     {
-        //customerHead.SetParent(null);
-        //Rigidbody rigidBody = customerHead.AddComponent<Rigidbody>();
-        //customerHead.AddComponent<SphereCollider>();
-        //rigidBody.useGravity = true;
-        //rigidBody.AddForce(transform.up * 250);
-        //customerHead.AddComponent<DetachedHead>();
-        detachedHead.Initialize();
-        //yield return new WaitForSeconds(5);
-        //rigidBody.useGravity = false;
-        //rigidBody.constraints = RigidbodyConstraints.FreezeAll;
-    }
-
-    public override void Interact(PlayerStateMachine player)
-    {
-        Debug.Log("Interact Dead?");
-        if (player.IsHoldingPickup && player.Pickup.attributes.Contains(Pickup.PickupAttribute.KillsCustomer))
-        {
-            Debug.Log("Dead?");
-            HeadDetach();
-            agent.speed = 0;
-            return;
-        }
         //check customer state
         if (GetCustomerState() == CustomerState.Ordering)
         {

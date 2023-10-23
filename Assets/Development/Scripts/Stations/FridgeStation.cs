@@ -23,7 +23,7 @@ public class FridgeStation : BaseStation, IHasProgress
         currentIngredienIndicator.text = currentIngredient.name;
     }
 
-    public override void Interact(PlayerStateMachine player)
+    public override void Interact(PlayerController player)
     {
         if (!HasIngredient())
         {   
@@ -48,7 +48,7 @@ public class FridgeStation : BaseStation, IHasProgress
         }
     }
 
-    public override void InteractAlt(PlayerStateMachine player)
+    public override void InteractAlt(PlayerController player)
     {
         if(ingredientListSOIndex >= ingredientListSO.Length-1)
         {
