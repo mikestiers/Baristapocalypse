@@ -222,7 +222,7 @@ public class CustomerBase : Base
             if (player.GetIngredient().CompareTag("CoffeeCup"))
             {
                 player.GetIngredient().SetIngredientParent(this);
-                JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
+                //JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
                 interactParticle.Play();
             }

@@ -204,6 +204,11 @@ public class PlayerController : MonoBehaviour, IIngredientParent
                 }
             }
         }
+        else
+        {
+            // No interactable object hit, clear selected objects.
+            SetSelectedCustomer(null);
+        }
 
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward, Color.green);
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward * customerInteractDistance, Color.red);
