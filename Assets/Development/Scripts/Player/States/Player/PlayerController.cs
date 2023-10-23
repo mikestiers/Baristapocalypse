@@ -161,7 +161,7 @@ public class PlayerController : MonoBehaviour, IIngredientParent
             {
                 if (mouse.leftButton.wasPressedThisFrame)
                 {
-                    Interact();
+                    spill.Interact(this);
                 }
             }
 
