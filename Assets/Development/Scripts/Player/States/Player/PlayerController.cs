@@ -8,7 +8,7 @@ using Unity.VisualScripting;
 using UnityEditorInternal;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
+public class PlayerController : MonoBehaviour, IIngredientParent
 {
     // Player Instance
     [HideInInspector] public static PlayerController Instance { get; private set; }
@@ -52,15 +52,24 @@ public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
     [SerializeField] private LayerMask isMessLayer;
     [SerializeField] private MessSO spillPrefab;
     [SerializeField] private Transform spillSpawnPoint;
-    private MessBase selectedMess;
-    private Mop selectedMop;
-    //private Collider messCollider;
-    [HideInInspector] public bool hasMop;
 
-    [field: SerializeField] public GameObject mopOnPlayer { get; private set; }
+    [Header("Pickups")]
+    public Transform pickupLocation;
+    public float pickupThrowForce;
+    [HideInInspector]
+    public Pickup Pickup
+    {
+        get
+        {
+            if (IsHoldingPickup)
+                return pickupLocation.GetChild(0).GetComponent<Pickup>();
+            return null;
+        }
+    }
 
     // to organize
     private IngredientSO ingredienSO;
+    public bool HasNoIngredients => GetNumberOfIngredients() == 0;
     private Mouse mouse = Mouse.current;
     private LayerMask interactableLayerMask; // A single LayerMask for all interactable objects
     private Vector3 RayCastOffset; // Temp for raising Raycast poin of origin
@@ -133,8 +142,13 @@ public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
         float interactDistance = 2.0f;
         if (Physics.Raycast(transform.position + RayCastOffset, transform.forward, out RaycastHit hit, interactDistance, interactableLayerMask))
         {
+            if (hit.transform.TryGetComponent(out Pickup pickup))
+            {
+                if (mouse.rightButton.wasPressedThisFrame)
+                    this.DoPickup(pickup);
+            }
             // Logic for Station Interaction
-            if (hit.transform.TryGetComponent(out BaseStation baseStation) && !hasMop)
+            if (hit.transform.TryGetComponent(out BaseStation baseStation))
             {
                 visualGameObject = baseStation.transform.GetChild(0).gameObject;
                 if (baseStation != selectedStation)
@@ -143,11 +157,18 @@ public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
                     Show(visualGameObject);
                 }
             }
+            else if (hit.transform.TryGetComponent(out Spill spill))
+            {
+                if (mouse.leftButton.wasPressedThisFrame)
+                {
+                    Interact();
+                }
+            }
 
             // Logic for Ingredient  on floor Interaction 
             else if (hit.transform.TryGetComponent(out Ingredient ingredient))
             {
-                if (GetNumberOfIngredients() <= maxIngredients && !hasMop)
+                if (GetNumberOfIngredients() <= maxIngredients && !IsHoldingPickup)
                 {
                     ingredienSO = ingredient.IngredientSO;
 
@@ -161,41 +182,11 @@ public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
                     }
                 }
             }
-
-            // Logic for Mess Interaction
-            else if (hit.transform.TryGetComponent(out MessBase mess))
-            {
-                visualGameObject = mess.transform.GetChild(0).gameObject;
-                if (mess != selectedMess)
-                {
-                    SetSelectedMess(mess);
-                    if (hasMop)
-                    {
-                        Show(visualGameObject);
-                    }
-                }
-                Debug.Log("Detecting " + mess);
-            }
-            // logic for Mop Interaction
-            else if (hit.transform.TryGetComponent(out Mop Mop))
-            {
-                if (Mop != selectedMop)
-                {
-                    SetSelectedMop(Mop);
-                }
-                Debug.Log("Geting " + Mop);
-            }
         }
         else
         {
             // No interactable object hit, clear selected objects.
-            if (visualGameObject)
-            {
-                Hide(visualGameObject);
-            }
             SetSelectedStation(null);
-            SetSelectedMess(null);
-            SetSelectedMop(null);
         }
 
         // Customer Interaction Logic
@@ -203,7 +194,7 @@ public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
         //if (Physics.Raycast(transform.position + RayCastOffset, transform.forward, out RaycastHit hitCustomer, customerInteractDistance, interactableLayerMask))
         if (Physics.SphereCast(transform.position + RayCastOffset, sphereCastRadius, transform.forward, out RaycastHit hitCustomer, customerInteractDistance, interactableLayerMask))
         {
-            if (hitCustomer.transform.TryGetComponent(out Base customerBase) && !hasMop)
+            if (hitCustomer.transform.TryGetComponent(out Base customerBase))
             {
                 visualGameObject = customerBase.transform.GetChild(0).gameObject;
                 if (customerBase != selectedCustomer)
@@ -233,7 +224,7 @@ public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
 
         rb.MovePosition(rb.position + curMoveInput);
     }
-   
+
     public void Interact()
     {
         if (selectedStation)
@@ -245,11 +236,6 @@ public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
         {
             selectedCustomer.Interact(this);
         }
-
-        if (selectedMess)
-        {
-            selectedMess.Interact(this);
-        }
     }
 
     public void InteractAlt()
@@ -257,14 +243,6 @@ public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
         if (selectedStation)
         {
             selectedStation.InteractAlt(this);
-        }
-        if (selectedMess)
-        {
-            selectedMess.InteractAlt(this);
-        }
-        if (selectedMop) 
-        { 
-            selectedMop.InteractAlt(this);
         }
     }
 
@@ -282,7 +260,7 @@ public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
         {
             if (CheckIfHoldingLiquid() > 0)//stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
             {
-                MessBase.SpawnMess(spillPrefab, spillSpawnPoint);
+                Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
                 ThrowIngedient();
             }
         }
@@ -303,6 +281,10 @@ public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
 
     public void OnThrow()
     {
+        if (IsHoldingPickup)
+        {
+            ThrowPickup();
+        }
         if (GetNumberOfIngredients() > 0)
         {
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.throwIngredient);
@@ -318,23 +300,11 @@ public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
         selectedStation = baseStation;
 
     }
-    public void SetSelectedMess(MessBase mess)
-    {
-        selectedMess = mess;
-
-    }
 
     public void SetSelectedCustomer(Base customer)
     {
         selectedCustomer = customer;
     }
-
-    public void SetSelectedMop(Mop mop) 
-    { 
-       selectedMop = mop;
-    }
-
-
 
     public int GetNumberOfIngredients()
     {
@@ -435,6 +405,8 @@ public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
 
     public void GrabIngedientFromFloor(Ingredient floorIngredient,IngredientSO ingredientSO )
     {
+        if (IsHoldingPickup)
+            return;
         floorIngredient.SetIngredientParent(this);
         floorIngredient.DestroyIngredient();
 
@@ -487,29 +459,43 @@ public class PlayerController : MonoBehaviour, IIngredientParent, IMessParent
     }
 
     // Mess Interface implementation
-    public Transform GetMessTransform()
+    public bool IsHoldingPickup => pickupLocation.childCount > 0;
+    public void DoPickup(Pickup pickup)
     {
-        return selectedMess.transform;
+        if (IsHoldingPickup || !HasNoIngredients)
+            return;
+
+        Pickup p = Instantiate(pickup, pickupLocation) as Pickup;
+
+        if (p.IsCustomer)
+        {
+            p.GetNavMeshAgent().enabled = false;
+            p.GetCustomer().isPickedUp = true;
+        }
+
+        p.RemoveRigidBody();
+        p.transform.localRotation = Quaternion.Euler(p.holdingRotation);
+        p.transform.localPosition = p.holdingPosition;
+        p.GetCollider().enabled = false;
+        Destroy(pickup.gameObject);
     }
 
-    public void SetMess(MessBase mess)
+    public void ThrowPickup()
     {
-        this.selectedMess = mess;
-    }
+        if (pickupLocation.childCount == 0)
+            return;
 
-    public MessBase GetMess()
-    {
-        return selectedMess;
-    }
+        Pickup p = pickupLocation.GetChild(0).GetComponent<Pickup>();
 
-    public void ClearMess()
-    {
-        selectedMess = null; ;
-    }
+        if (p.IsCustomer)
+        {
+            p.GetCustomer().isPickedUp = false;
+        }
 
-    public bool HasMess()
-    {
-        return selectedMess != null;
+        p.transform.SetParent(null);
+        p.GetCollider().enabled = true;
+        p.AddRigidbody();
+        p.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * p.GetThrowForceMultiplier()));
     }
 
     // temp for debugging 
