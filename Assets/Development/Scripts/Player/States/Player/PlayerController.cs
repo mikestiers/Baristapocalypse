@@ -197,6 +197,7 @@ public class PlayerController : MonoBehaviour, IIngredientParent
         {
             // No interactable object hit, clear selected objects.
             SetSelectedStation(null);
+            Hide(visualGameObject);
         }
 
         // Customer Interaction Logic
@@ -218,6 +219,7 @@ public class PlayerController : MonoBehaviour, IIngredientParent
         {
             // No interactable object hit, clear selected objects.
             SetSelectedCustomer(null);
+            Hide(visualGameObject);
         }
 
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward, Color.green);
