@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEditorInternal;
+
+
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour, IIngredientParent
@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour, IIngredientParent
 
     private void OnEnable()
     {
-        inputManager.JumpEvent += OnJump;
+        //inputManager.JumpEvent += OnJump;
         inputManager.DashEvent += OnDash;
         inputManager.ThrowEvent += OnThrow;
         inputManager.InteractEvent += Interact;
@@ -121,7 +121,7 @@ public class PlayerController : MonoBehaviour, IIngredientParent
 
     private void OnDisable()
     {
-        inputManager.JumpEvent -= OnJump;
+        //inputManager.JumpEvent -= OnJump;
         inputManager.DashEvent -= OnDash;
         inputManager.ThrowEvent -= OnThrow;
         inputManager.InteractEvent -= Interact;
@@ -142,10 +142,16 @@ public class PlayerController : MonoBehaviour, IIngredientParent
         float interactDistance = 2.0f;
         if (Physics.Raycast(transform.position + RayCastOffset, transform.forward, out RaycastHit hit, interactDistance, interactableLayerMask))
         {
+            // Logic for PickUp Interaction
             if (hit.transform.TryGetComponent(out Pickup pickup))
             {
                 if (mouse.rightButton.wasPressedThisFrame)
                     this.DoPickup(pickup);
+                else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
+                {
+                    this.DoPickup(pickup);
+                }
+
             }
             // Logic for Station Interaction
             if (hit.transform.TryGetComponent(out BaseStation baseStation))
@@ -160,6 +166,10 @@ public class PlayerController : MonoBehaviour, IIngredientParent
             else if (hit.transform.TryGetComponent(out Spill spill))
             {
                 if (mouse.leftButton.wasPressedThisFrame)
+                {
+                    spill.Interact(this);
+                }
+                else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
                 {
                     spill.Interact(this);
                 }
@@ -251,10 +261,10 @@ public class PlayerController : MonoBehaviour, IIngredientParent
         }
     }
 
-    public void OnJump()
-    {
-        // Jump logic if we want jumping
-    }
+   //public void OnJump()
+   //{
+   //    // Jump logic if we want jumping
+   //}
 
     public void OnDash()
     {
