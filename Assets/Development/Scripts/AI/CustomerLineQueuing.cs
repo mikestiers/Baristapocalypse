@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using System;
+using System.Linq;
 
 
 public class CustomerLineQueuing
@@ -65,5 +66,12 @@ public class CustomerLineQueuing
     public void OrderTaken(CustomerBase customer)
     {
 
-    } 
+    }
+    
+    public int GetLineCount()
+    {
+        int TotalCount = customerList.Count;
+        
+        return TotalCount;
+    }
 }

@@ -52,8 +52,8 @@ public class CustomerReview : MonoBehaviour
 
     private float GetCafeCrowd()
     {
-        int customerCount = GameObject.FindGameObjectsWithTag("Customer").Length;
-        int maxCustomers = CustomerManager.Instance.numberOfCustomers;
+        int customerCount = CustomerManager.Instance.TotalCustomers();
+        int maxCustomers = CustomerManager.Instance.TotalMaxCapacity();
         cafeCrowdedness = customerCount / maxCustomers;
         return cafeCrowdedness;
     }
