@@ -25,6 +25,7 @@ public class UIManager : Singleton<UIManager>
     public GameObject gameOverMenu;
     public GameObject pauseMenu;
     public GameObject tutorialMenu;
+    public GameObject ordersMenu;
 
     [Header("Text")]
     public Text timer;
@@ -70,6 +71,7 @@ public class UIManager : Singleton<UIManager>
     {
         timer.enabled = true;
         score.enabled = true;
+        ordersMenu.SetActive(true);
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;
     }
@@ -112,7 +114,7 @@ public class UIManager : Singleton<UIManager>
         ScoreTimerManager.Instance.ResetTimerScore();
         timer.enabled = false;
         score.enabled = false;
-
+        ordersMenu.SetActive(false);
         pauseMenu.SetActive(false);
         gameOverMenu.SetActive(false);
         Time.timeScale = 1f;
