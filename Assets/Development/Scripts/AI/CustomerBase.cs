@@ -25,6 +25,7 @@ public class CustomerBase : Base
     public GameObject customerDialogue;
     public float orderTimer = 0f;
     private bool isOrderTimerRunning = false;
+    public float customerLeaveTime = 60f;
     [SerializeField] private Canvas customerNumberCanvas;
     [SerializeField] private Text customerNumberText;
     [SerializeField] private Text customerNameText;
@@ -153,7 +154,7 @@ public class CustomerBase : Base
     //UI displays attributes
     public virtual void Order()
     {
-        Invoke("CustomerLeave", 60f);
+        Invoke("CustomerLeave", customerLeaveTime);
     }
 
 
