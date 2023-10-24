@@ -18081,7 +18081,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 930288301}
-  m_LocalRotation: {x: -0.00084016385, y: 0.97416526, z: -0.22580567, w: -0.0036246143}
+  m_LocalRotation: {x: -0.0008401677, y: 0.97416526, z: -0.22580567, w: -0.003624631}
   m_LocalPosition: {x: 18.59, y: 40.31, z: 83.85}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -38855,7 +38855,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1831037811
 RectTransform:
   m_ObjectHideFlags: 0
@@ -42462,7 +42462,7 @@ GameObject:
   - component: {fileID: 2045825003}
   - component: {fileID: 2045825002}
   m_Layer: 5
-  m_Name: Audio
+  m_Name: Audio3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43813,7 +43813,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0.29993, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -43889,7 +43889,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0.29993, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -43964,8 +43964,8 @@ RectTransform:
   m_Father: {fileID: 2888496882852567172}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.29993, y: 0}
+  m_AnchorMax: {x: 0.29993, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -44480,7 +44480,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2888496882963384428}
         m_TargetAssemblyTypeName: VolumeSettings, Assembly-CSharp
         m_MethodName: SetSFXVolume
         m_Mode: 1
@@ -44584,7 +44584,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2888496882963384428}
         m_TargetAssemblyTypeName: VolumeSettings, Assembly-CSharp
         m_MethodName: SetMusicVolume
         m_Mode: 1
@@ -44705,8 +44705,8 @@ RectTransform:
   m_Father: {fileID: 2888496882066673120}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.29993, y: 0}
+  m_AnchorMax: {x: 0.29993, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -44798,7 +44798,7 @@ GameObject:
   - component: {fileID: 2888496882963384426}
   - component: {fileID: 2888496882963384428}
   m_Layer: 5
-  m_Name: Audio (1)
+  m_Name: Audio
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44880,9 +44880,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55ead9ad4d8c10143a6a1a91c6a15bd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myMixer: {fileID: 0}
-  musicSlider: {fileID: 0}
-  SFXSlider: {fileID: 0}
+  myMixer: {fileID: 24100000, guid: 4ae82ebe5af4fb447bbc9a21aa66f1a4, type: 2}
+  musicSlider: {fileID: 2888496882538505189}
+  SFXSlider: {fileID: 2888496882432346670}
 --- !u!1 &2888496883100907461
 GameObject:
   m_ObjectHideFlags: 0
