@@ -24,11 +24,13 @@ public class CustomerBase : Base
     public float distThreshold;
     public GameObject customerDialogue;
     public float orderTimer = 0f;
+    public bool isPickedUp;
     private bool isOrderTimerRunning = false;
     public float customerLeaveTime = 60f;
     [SerializeField] private Canvas customerNumberCanvas;
     [SerializeField] private Text customerNumberText;
     [SerializeField] private Text customerNameText;
+    [SerializeField] private DetachedHead detachedHead;
 
     //private CustomerState currentState;
 
@@ -182,8 +184,30 @@ public class CustomerBase : Base
         UIManager.Instance.ShowCustomerReview(this);
     }
 
+    void HeadDetach()
+    {
+        //customerHead.SetParent(null);
+        //Rigidbody rigidBody = customerHead.AddComponent<Rigidbody>();
+        //customerHead.AddComponent<SphereCollider>();
+        //rigidBody.useGravity = true;
+        //rigidBody.AddForce(transform.up * 250);
+        //customerHead.AddComponent<DetachedHead>();
+        detachedHead.Initialize();
+        //yield return new WaitForSeconds(5);
+        //rigidBody.useGravity = false;
+        //rigidBody.constraints = RigidbodyConstraints.FreezeAll;
+    }
+
     public override void Interact(PlayerController player)
     {
+        Debug.Log("Interact Dead?");
+        if (player.IsHoldingPickup && player.Pickup.attributes.Contains(Pickup.PickupAttribute.KillsCustomer))
+        {
+            Debug.Log("Dead?");
+            HeadDetach();
+            agent.speed = 0;
+            return;
+        }
         //check customer state
         if (GetCustomerState() == CustomerState.Ordering)
         {
@@ -199,7 +223,7 @@ public class CustomerBase : Base
             if (player.GetIngredient().CompareTag("CoffeeCup"))
             {
                 player.GetIngredient().SetIngredientParent(this);
-                JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
+                //JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
                 interactParticle.Play();
             }

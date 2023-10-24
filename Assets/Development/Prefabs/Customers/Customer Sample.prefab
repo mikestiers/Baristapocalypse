@@ -255,6 +255,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5249093044415968319}
+  - component: {fileID: 8484585654411725913}
   m_Layer: 10
   m_Name: Head
   m_TagString: Customer
@@ -280,6 +281,19 @@ Transform:
   m_Father: {fileID: 5640675751676341536}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8484585654411725913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393675180259305296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8898912e12277e34a95b6dd2953eb51c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blood: {fileID: 1954165853586051675, guid: 10e5e31cf22104149ae12d4c8696516f, type: 3}
 --- !u!1 &1604853931562314124
 GameObject:
   m_ObjectHideFlags: 0
@@ -843,6 +857,7 @@ GameObject:
   - component: {fileID: 4398326610705668731}
   - component: {fileID: 4092279481114173512}
   - component: {fileID: 5640675751676341539}
+  - component: {fileID: 8530179824857224679}
   m_Layer: 10
   m_Name: Customer Sample
   m_TagString: Customer
@@ -891,9 +906,11 @@ MonoBehaviour:
   distThreshold: 0
   customerDialogue: {fileID: 2430203159097677186}
   orderTimer: 0
+  isPickedUp: 0
   customerNumberCanvas: {fileID: 7644296860494902969}
   customerNumberText: {fileID: 279206825771054927}
   customerNameText: {fileID: 4498963730972658836}
+  detachedHead: {fileID: 8484585654411725913}
   coffeeAttributes: {fileID: 4092279481114173512}
   interactParticle: {fileID: 2366831991706752079}
   currentState: 6
@@ -979,6 +996,25 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &8530179824857224679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5640675751676341541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75bb163e3ea79f54eb344463980b00e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attributes: 
+  holdingPosition: {x: 0, y: 0, z: 0}
+  holdingRotation: {x: 0, y: 0, z: 0}
+  customer: {fileID: -1901236288692940652}
+  collider: {fileID: 5640675751676341543}
+  navMeshAgent: {fileID: 5640675751676341539}
+  throwForceMultiplier: 5
 --- !u!1 &8571327297907685429
 GameObject:
   m_ObjectHideFlags: 0
