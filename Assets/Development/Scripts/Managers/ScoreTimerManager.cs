@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class ScoreTimerManager : Singleton<ScoreTimerManager>
 {
-    public float timeRemaining = 240f;
+    public float timeRemainingDefault = 300f;
+    public float timeRemaining;
     public int score = 0;
     public UnityEvent LoseEvent = new UnityEvent();
     public UnityEvent WinEvent = new UnityEvent();
@@ -14,7 +16,7 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
     // Start is called before the first frame update
     void Start()
     {
-
+        timeRemaining = timeRemainingDefault;
     }
 
     protected override void Awake()
@@ -27,23 +29,27 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
     // Update is called once per frame
     void Update()
     {
-        timeRemaining -= Time.deltaTime;
-        if (timeRemaining <= 0 && GameManager.Instance.gameState == GameState.RUNNING)
+        if(SceneManager.GetActiveScene().name == "TestScene")
         {
-            timeRemaining = 0;
-            score *= Mathf.FloorToInt(CustomerReview.GetAverageReviewScore());
-            Debug.Log($"score {score}");
-            UIManager.Instance.finalScore.text = "Score: " + score.ToString();
-            if (score >= 50)
+            timeRemaining -= Time.deltaTime;
+            if (timeRemaining <= 0 && GameManager.Instance.gameState == GameState.RUNNING)
             {
-                Win();
+                timeRemaining = 0;
+                score *= Mathf.FloorToInt(CustomerReview.GetAverageReviewScore());
+                Debug.Log($"score {score}");
+                UIManager.Instance.finalScore.text = "Score: " + score.ToString();
+                if (score >= 50)
+                {
+                    Win();
+                }
+                else
+                {
+                    Lose();
+                }
+                GameManager.Instance.gameState = GameState.GAMEOVER;
             }
-            else
-            {
-                Lose();
-            }
-            GameManager.Instance.gameState = GameState.GAMEOVER;
-        }  
+        }
+        
     }
 
     private void Lose()
@@ -68,6 +74,13 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
     public void ResetStreak()
     {
         StreakCount = 0;
+    }
+
+    public void ResetTimerScore()
+    {
+        timeRemaining = timeRemainingDefault;
+        score = 0;
+
     }
 
     /*  I Quoted this out cuz i moved it to customer reactions in customerbase.cs

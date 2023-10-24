@@ -68,13 +68,20 @@ public class UIManager : Singleton<UIManager>
     }
     private void ReturnToGame()
     {
+        timer.enabled = true;
+        score.enabled = true;
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;
     }
 
     private void RestartGame()
     {
+        //Reset score timer
+        ScoreTimerManager.Instance.ResetTimerScore();
+
         Time.timeScale = 1f;
+        gameOverMenu.SetActive(false);
+        GameManager.Instance.gameState = GameState.RUNNING;
         SceneManager.LoadScene("TestScene");
     }
 
@@ -102,6 +109,10 @@ public class UIManager : Singleton<UIManager>
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         SceneManager.LoadScene("Main Menu Scene");
+        ScoreTimerManager.Instance.ResetTimerScore();
+        timer.enabled = false;
+        score.enabled = false;
+
         pauseMenu.SetActive(false);
         gameOverMenu.SetActive(false);
         Time.timeScale = 1f;
