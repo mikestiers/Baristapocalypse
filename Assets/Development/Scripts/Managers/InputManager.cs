@@ -34,13 +34,13 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
 
     private void Start()
     {
-       controllerInputs.Player.SetCallbacks(this);// SetCallbacks calls the methods for us
-       controllerInputs.Player.Enable();
+      //controllerInputs.Player.SetCallbacks(this);// SetCallbacks calls the methods for us
+      //controllerInputs.Player.Enable();
     }
 
     private void OnDestroy()
     {
-        controllerInputs.Player.Disable();
+        //controllerInputs.Player.Disable();
     }
 
     public void InitializePlayer(PlayerConfiguration pc)
