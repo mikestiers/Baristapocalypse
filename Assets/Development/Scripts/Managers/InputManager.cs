@@ -17,11 +17,14 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
     public event Action GrabEvent;
     public event Action ThrowEvent;
 
-    //player movement input
+    // player movement input
     [HideInInspector] public Vector3 moveDir;
     [HideInInspector] public Vector3 curMoveInput;
 
     [HideInInspector] public ControllerInputs controllerInputs;
+
+    // Player controller dead zone for sensitivity
+    private float deadZone = 0.5f;
 
     // Player Configuration
     [SerializeField] private MeshRenderer playerMesh;
@@ -34,13 +37,13 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
 
     private void Start()
     {
-      //controllerInputs.Player.SetCallbacks(this);// SetCallbacks calls the methods for us
-      //controllerInputs.Player.Enable();
+        controllerInputs.Player.SetCallbacks(this);// SetCallbacks calls the methods for us
+        controllerInputs.Player.Enable();
     }
 
     private void OnDestroy()
     {
-        //controllerInputs.Player.Disable();
+        controllerInputs.Player.Disable();
     }
 
     public void InitializePlayer(PlayerConfiguration pc)
@@ -116,9 +119,17 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
         }
 
         Vector2 move = context.action.ReadValue<Vector2>();
-        move.Normalize();
 
-        moveDir = new Vector3(move.x, 0, move.y).normalized;
+        // check if input is within dead zone
+        if (move.magnitude < deadZone)
+        {
+            moveDir = Vector3.zero;
+        }
+        else
+        {
+            move.Normalize();
+            moveDir = new Vector3(move.x, 0, move.y).normalized;
+        }
     }
 
     public void OnInteractAlt(InputAction.CallbackContext context)
