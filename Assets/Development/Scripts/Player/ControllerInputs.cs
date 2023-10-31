@@ -98,6 +98,15 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DebugConsole"",
+                    ""type"": ""Button"",
+                    ""id"": ""b435b883-8a61-4dd8-8bce-75782982756e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -320,6 +329,17 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                     ""action"": ""Throw"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a904327f-f283-43da-86b9-154a71d69c7d"",
+                    ""path"": ""<Keyboard>/backquote"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""DebugConsole"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -364,6 +384,7 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
         m_Player_Grab = m_Player.FindAction("Grab", throwIfNotFound: true);
         m_Player_Throw = m_Player.FindAction("Throw", throwIfNotFound: true);
+        m_Player_DebugConsole = m_Player.FindAction("DebugConsole", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -431,6 +452,7 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Dash;
     private readonly InputAction m_Player_Grab;
     private readonly InputAction m_Player_Throw;
+    private readonly InputAction m_Player_DebugConsole;
     public struct PlayerActions
     {
         private @ControllerInputs m_Wrapper;
@@ -443,6 +465,7 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
         public InputAction @Grab => m_Wrapper.m_Player_Grab;
         public InputAction @Throw => m_Wrapper.m_Player_Throw;
+        public InputAction @DebugConsole => m_Wrapper.m_Player_DebugConsole;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -476,6 +499,9 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                 @Throw.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnThrow;
                 @Throw.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnThrow;
                 @Throw.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnThrow;
+                @DebugConsole.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugConsole;
+                @DebugConsole.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugConsole;
+                @DebugConsole.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugConsole;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -504,6 +530,9 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                 @Throw.started += instance.OnThrow;
                 @Throw.performed += instance.OnThrow;
                 @Throw.canceled += instance.OnThrow;
+                @DebugConsole.started += instance.OnDebugConsole;
+                @DebugConsole.performed += instance.OnDebugConsole;
+                @DebugConsole.canceled += instance.OnDebugConsole;
             }
         }
     }
@@ -536,5 +565,6 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
         void OnDash(InputAction.CallbackContext context);
         void OnGrab(InputAction.CallbackContext context);
         void OnThrow(InputAction.CallbackContext context);
+        void OnDebugConsole(InputAction.CallbackContext context);
     }
 }

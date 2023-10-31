@@ -46,7 +46,7 @@ public class CustomerManager : Singleton<CustomerManager>
     public List<CustomerBase> customersOutsideList = new List<CustomerBase>();
 
     private CustomerLineQueuing LineQueue;
-    private CustomerBarFloor barFloor;
+    public CustomerBarFloor barFloor;
 
     //temp stuff -> Ddog will make something more robust
     public GameObject[] Chairs;

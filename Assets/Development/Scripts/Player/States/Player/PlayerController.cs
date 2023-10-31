@@ -117,6 +117,7 @@ public class PlayerController : MonoBehaviour, IIngredientParent
         inputManager.ThrowEvent += OnThrow;
         inputManager.InteractEvent += Interact;
         inputManager.InteractAltEvent += InteractAlt;
+        inputManager.DebugConsoleEvent += ShowDebugConsole;
     }
 
     private void OnDisable()
@@ -126,6 +127,7 @@ public class PlayerController : MonoBehaviour, IIngredientParent
         inputManager.ThrowEvent -= OnThrow;
         inputManager.InteractEvent -= Interact;
         inputManager.InteractAltEvent -= InteractAlt;
+        inputManager.DebugConsoleEvent -= ShowDebugConsole;
     }
 
     private void Update()
@@ -184,11 +186,11 @@ public class PlayerController : MonoBehaviour, IIngredientParent
 
                     if (mouse.leftButton.wasPressedThisFrame)
                     {
-                        GrabIngedientFromFloor(ingredient, ingredienSO);
+                        GrabIngredientFromFloor(ingredient, ingredienSO);
                     }
                     else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
                     {
-                        GrabIngedientFromFloor(ingredient, ingredienSO);
+                        GrabIngredientFromFloor(ingredient, ingredienSO);
                     }
                 }
             }
@@ -420,7 +422,7 @@ public class PlayerController : MonoBehaviour, IIngredientParent
         }
     }
 
-    public void GrabIngedientFromFloor(Ingredient floorIngredient,IngredientSO ingredientSO )
+    public void GrabIngredientFromFloor(Ingredient floorIngredient,IngredientSO ingredientSO )
     {
         if (IsHoldingPickup)
             return;
@@ -520,5 +522,11 @@ public class PlayerController : MonoBehaviour, IIngredientParent
     {
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position + transform.forward * 4, sphereCastRadius);
+    }
+
+    public void ShowDebugConsole()
+    {
+        UIManager.Instance.debugConsole.SetActive(!UIManager.Instance.debugConsoleActive);
+        UIManager.Instance.debugConsoleActive = !UIManager.Instance.debugConsoleActive;
     }
 }

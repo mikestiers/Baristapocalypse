@@ -27,7 +27,7 @@ public class CustomerBase : Base
     public bool isPickedUp;
     private bool isOrderTimerRunning = false;
     public float customerLeaveTime = 60f;
-    [SerializeField] private Canvas customerNumberCanvas;
+    [SerializeField] public Canvas customerNumberCanvas;
     [SerializeField] private Text customerNumberText;
     [SerializeField] private Text customerNameText;
     [SerializeField] private DetachedHead detachedHead;
@@ -223,7 +223,7 @@ public class CustomerBase : Base
             if (player.GetIngredient().CompareTag("CoffeeCup"))
             {
                 player.GetIngredient().SetIngredientParent(this);
-                //JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
+                JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
                 interactParticle.Play();
             }
@@ -292,7 +292,7 @@ public class CustomerBase : Base
         Debug.Log("customer is not happy with the serving and wants you to try again");
     }
 
-    private void StartOrderTimer()
+    public void StartOrderTimer()
     {
         orderTimer = 0f;
         isOrderTimerRunning = true;
