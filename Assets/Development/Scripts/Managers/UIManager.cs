@@ -45,6 +45,10 @@ public class UIManager : Singleton<UIManager>
     //public Sprite filledStarSprite;
     //public Sprite emptyStarSprite;
 
+    [Header("DebugConsole")]
+    public GameObject debugConsole;
+    public bool debugConsoleActive = false;
+
     private void Start()
     {
         if (toGame)

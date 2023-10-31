@@ -17,6 +17,8 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
     public event Action GrabEvent;
     public event Action ThrowEvent;
 
+    public event Action DebugConsoleEvent;
+
     //player movement input
     [HideInInspector] public Vector3 moveDir;
     [HideInInspector] public Vector3 curMoveInput;
@@ -34,13 +36,13 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
 
     private void Start()
     {
-      //controllerInputs.Player.SetCallbacks(this);// SetCallbacks calls the methods for us
-      //controllerInputs.Player.Enable();
+        controllerInputs.Player.SetCallbacks(this);// SetCallbacks calls the methods for us
+        controllerInputs.Player.Enable();
     }
 
     private void OnDestroy()
     {
-        //controllerInputs.Player.Disable();
+        controllerInputs.Player.Disable();
     }
 
     public void InitializePlayer(PlayerConfiguration pc)
@@ -158,5 +160,11 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
     {
         if (context.performed)
             ThrowEvent?.Invoke();
+    }
+
+    public void OnDebugConsole(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            DebugConsoleEvent?.Invoke();
     }
 }
