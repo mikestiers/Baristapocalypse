@@ -52,6 +52,23 @@ public class CustomerLineQueuing
         }
     }
 
+    public CustomerBase RemoveFromQueue(CustomerBase customer)
+    {
+        if (customerList.Count == 0)
+            return null;
+        else
+        {
+            Debug.Log($"Thrown customer {customer.customerNumber}");
+            for (int i = 0; i < customerList.Count; i++)
+            {
+                CustomerBase customerBase = customerList[i];
+                Debug.Log($"Thrown customer index {i}");
+                customerList.RemoveAt(i);
+            }
+            return customer;
+        }
+    }
+
 
     //Moves Customer Through the line
    private void RelocateAllCustomer()

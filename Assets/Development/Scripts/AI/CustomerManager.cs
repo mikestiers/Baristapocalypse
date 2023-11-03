@@ -45,7 +45,7 @@ public class CustomerManager : Singleton<CustomerManager>
 
     public List<CustomerBase> customersOutsideList = new List<CustomerBase>();
 
-    private CustomerLineQueuing LineQueue;
+    public CustomerLineQueuing LineQueue;
     public CustomerBarFloor barFloor;
 
     //temp stuff -> Ddog will make something more robust
