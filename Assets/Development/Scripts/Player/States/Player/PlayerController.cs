@@ -162,7 +162,7 @@ public class PlayerController : MonoBehaviour, IIngredientParent
                 if (baseStation != selectedStation)
                 {
                     SetSelectedStation(baseStation);
-                    //Show(visualGameObject);
+                    Show(visualGameObject);
                 }
             }
             else if (hit.transform.TryGetComponent(out Spill spill))
@@ -289,7 +289,6 @@ public class PlayerController : MonoBehaviour, IIngredientParent
     IEnumerator Dash()
     {
         float startTime = Time.time;
-        Debug.Log("dash");
 
         while (Time.time < startTime + dashTime)
         {

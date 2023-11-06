@@ -193,6 +193,16 @@ public class UIManager : Singleton<UIManager>
                     Destroy(t.gameObject);
                     return;
                 }
+                else if (o.GetOrderOwner().customerNumber == customer.customerNumber)
+                {
+                    // This exists because pickups are cloned, so the connection to the order prefab is lost
+                    Destroy(t.gameObject);
+                    return;
+                }
+                else
+                {
+                    Debug.Log($"Customer Order UI not found for {customer.customerNumber}");
+                }
             }
         }
     }
