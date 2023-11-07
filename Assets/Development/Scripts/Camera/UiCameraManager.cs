@@ -32,6 +32,9 @@ public class UiCameraManager : MonoBehaviour
     [SerializeField] private Button WindowModeButton;
     [SerializeField] private GameObject FullScreenGO;
     [SerializeField] private GameObject WindowModeGO;
+    [SerializeField] private Resolution[] resolutions;
+    [SerializeField] private Dropdown resoultionDropDown;
+   
     // Add Players To Sceen
     [SerializeField] private Button Player1;
     [SerializeField] private Button Player2;
@@ -55,6 +58,24 @@ public class UiCameraManager : MonoBehaviour
     public void Start()
     {
         MainmenuCamera.Priority = 1;
+        // this is for screen resolutions
+        resolutions = Screen.resolutions;
+        resoultionDropDown.ClearOptions();
+        List<string> options = new List<string>();
+        int currentResolutionIndex = 0;
+        for (int i = 0; i < resolutions.Length; i++)
+        {
+            string option = resolutions[i].width + " x " + resolutions[i].height +" : " + resolutions[i].refreshRate;
+            options.Add(option);
+            if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height) 
+            {
+                currentResolutionIndex = i;
+            }
+        }
+        resoultionDropDown.AddOptions(options);
+        resoultionDropDown.value = currentResolutionIndex;
+        resoultionDropDown.RefreshShownValue();
+
 
         if (ExitGame)
             ExitGame.onClick.AddListener(closeGame);
@@ -238,5 +259,12 @@ public class UiCameraManager : MonoBehaviour
         WindowModeGO.SetActive(false);
         FullScreenGO.SetActive(true);    
         Screen.fullScreen = false;       
+    }
+
+   
+    public void SetREsolution(int resolutionIndex) 
+    {
+        Resolution resolution = resolutions[resolutionIndex];
+        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
     }
 }
