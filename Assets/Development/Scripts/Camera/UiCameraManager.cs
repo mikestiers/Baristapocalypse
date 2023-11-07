@@ -27,6 +27,11 @@ public class UiCameraManager : MonoBehaviour
     [SerializeField] private Button MainMenuFromSelection;
     // Settings Menu Buttons
     [SerializeField] private Button MainMenuFromSettings;
+    [SerializeField] private bool isFullScreen = true;
+    [SerializeField] private Button FullScreenButton;
+    [SerializeField] private Button WindowModeButton;
+    [SerializeField] private GameObject FullScreenGO;
+    [SerializeField] private GameObject WindowModeGO;
     // Add Players To Sceen
     [SerializeField] private Button Player1;
     [SerializeField] private Button Player2;
@@ -86,6 +91,12 @@ public class UiCameraManager : MonoBehaviour
 
         if (Player4)
             Player4.onClick.AddListener(PlayerSpawn4);
+
+        if (FullScreenButton)
+            FullScreenButton.onClick.AddListener(SetFullScreen);
+
+        if (WindowModeButton)
+            WindowModeButton.onClick.AddListener(SetWindowMode);
     }
 
     void PlayerSpawn4()
@@ -213,5 +224,26 @@ public class UiCameraManager : MonoBehaviour
         #else
             Application.Quit();
         #endif
+    }
+
+    void SetFullScreen()
+    {
+        FullScreenGO.SetActive(false);
+        WindowModeGO.SetActive(true);
+        if (FullScreenGO ==  false) 
+        {
+            Screen.fullScreen = true;
+        }
+         
+    }
+
+    void SetWindowMode() 
+    {
+        WindowModeGO.SetActive(false);
+        FullScreenGO.SetActive(true);
+        if(WindowModeGO == false) 
+        { 
+            Screen.fullScreen = false;
+        }
     }
 }
