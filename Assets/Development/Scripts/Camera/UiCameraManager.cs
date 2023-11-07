@@ -230,20 +230,13 @@ public class UiCameraManager : MonoBehaviour
     {
         FullScreenGO.SetActive(false);
         WindowModeGO.SetActive(true);
-        if (FullScreenGO ==  false) 
-        {
-            Screen.fullScreen = true;
-        }
-         
+        Screen.fullScreen = true;     
     }
 
     void SetWindowMode() 
     {
         WindowModeGO.SetActive(false);
-        FullScreenGO.SetActive(true);
-        if(WindowModeGO == false) 
-        { 
-            Screen.fullScreen = false;
-        }
+        FullScreenGO.SetActive(true);    
+        Screen.fullScreen = false;       
     }
 }
