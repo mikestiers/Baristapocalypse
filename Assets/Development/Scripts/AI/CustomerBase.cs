@@ -27,6 +27,7 @@ public class CustomerBase : Base
     public bool isPickedUp;
     private bool isOrderTimerRunning = false;
     public float customerLeaveTime = 60f;
+    public float deadTimerSeconds = 5.0f;
     [SerializeField] public Canvas customerNumberCanvas;
     [SerializeField] private Text customerNumberText;
     [SerializeField] private Text customerNameText;
@@ -39,7 +40,7 @@ public class CustomerBase : Base
     public enum CustomerState
     {
         //add movetosit when sits are available
-        Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init
+        Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead
     }
 
     public CustomerBase()
@@ -109,6 +110,10 @@ public class CustomerBase : Base
     {
         if (agent.destination == null) return;
 
+        if (isPickedUp)
+        {
+            SetCustomerState(CustomerState.PickedUp);
+        }
 
         if (GetCustomerState() == CustomerState.Insit)
         {
@@ -186,24 +191,30 @@ public class CustomerBase : Base
 
     void HeadDetach()
     {
-        //customerHead.SetParent(null);
-        //Rigidbody rigidBody = customerHead.AddComponent<Rigidbody>();
-        //customerHead.AddComponent<SphereCollider>();
-        //rigidBody.useGravity = true;
-        //rigidBody.AddForce(transform.up * 250);
-        //customerHead.AddComponent<DetachedHead>();
         detachedHead.Initialize();
-        //yield return new WaitForSeconds(5);
-        //rigidBody.useGravity = false;
-        //rigidBody.constraints = RigidbodyConstraints.FreezeAll;
+        SetCustomerState(CustomerState.Dead);
+        StartCoroutine(DeadTimer());
+    }
+
+    public void Dead()
+    {
+        SetCustomerState(CustomerState.Dead);
+        StartCoroutine(DeadTimer());
+    }
+
+    IEnumerator DeadTimer()
+    {
+        yield return new WaitForSeconds(deadTimerSeconds);
+        UIManager.Instance.RemoveCustomerUiOrder(this);
+        CustomerManager.Instance.LineQueue.GetFirstInQueue(); // moves everyone up one and pops out position 0
+        CustomerManager.Instance.LineQueue.RemoveFromQueue(this);
+        Destroy(gameObject);
     }
 
     public override void Interact(PlayerController player)
     {
-        Debug.Log("Interact Dead?");
         if (player.IsHoldingPickup && player.Pickup.attributes.Contains(Pickup.PickupAttribute.KillsCustomer))
         {
-            Debug.Log("Dead?");
             HeadDetach();
             agent.speed = 0;
             return;

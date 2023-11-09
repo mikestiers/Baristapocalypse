@@ -199,7 +199,7 @@ public class PlayerController : MonoBehaviour, IIngredientParent
         {
             // No interactable object hit, clear selected objects.
             SetSelectedStation(null);
-            Hide(visualGameObject);
+            //Hide(visualGameObject);
         }
 
         // Customer Interaction Logic
@@ -213,7 +213,7 @@ public class PlayerController : MonoBehaviour, IIngredientParent
                 if (customerBase != selectedCustomer)
                 {
                     SetSelectedCustomer(customerBase);
-                    Show(visualGameObject);
+                    //Show(visualGameObject);
                 }
             }
         }
@@ -221,7 +221,7 @@ public class PlayerController : MonoBehaviour, IIngredientParent
         {
             // No interactable object hit, clear selected objects.
             SetSelectedCustomer(null);
-            Hide(visualGameObject);
+            //Hide(visualGameObject);
         }
 
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward, Color.green);
@@ -289,7 +289,6 @@ public class PlayerController : MonoBehaviour, IIngredientParent
     IEnumerator Dash()
     {
         float startTime = Time.time;
-        Debug.Log("dash");
 
         while (Time.time < startTime + dashTime)
         {
@@ -509,6 +508,7 @@ public class PlayerController : MonoBehaviour, IIngredientParent
         if (p.IsCustomer)
         {
             p.GetCustomer().isPickedUp = false;
+            p.GetCustomer().Dead();
         }
 
         p.transform.SetParent(null);
