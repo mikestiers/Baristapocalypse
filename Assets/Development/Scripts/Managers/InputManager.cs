@@ -23,6 +23,9 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
     [HideInInspector] public Vector3 moveDir;
     [HideInInspector] public Vector3 curMoveInput;
 
+    // controller dead zone sensitivity
+    private float deadZone = 0.5f;
+
     [HideInInspector] public ControllerInputs controllerInputs;
 
     // Player Configuration
@@ -118,9 +121,16 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
         }
 
         Vector2 move = context.action.ReadValue<Vector2>();
-        move.Normalize();
-
-        moveDir = new Vector3(move.x, 0, move.y).normalized;
+        // check if input is within dead zone
+        if (move.magnitude < deadZone)
+        {
+            moveDir = Vector3.zero;
+        }
+        else
+        {
+            move.Normalize();
+            moveDir = new Vector3(move.x, 0, move.y).normalized;
+        }
     }
 
     public void OnInteractAlt(InputAction.CallbackContext context)
