@@ -222,5 +222,14 @@ public class UIManager : Singleton<UIManager>
     {
         timer.text = ScoreTimerManager.Instance.timeRemaining.ToString("n2");
         score.text = ScoreTimerManager.Instance.score.ToString();
+
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            tutorialMenu.SetActive(true);
+        }
+        if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            tutorialMenu.SetActive(false);
+        }
     }
 }
