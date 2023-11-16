@@ -2,18 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class IngredientSelectionUI : MonoBehaviour
 {
+    [SerializeField] private GameObject ingredientMenu;
+
     [Header("Drink Stat Sliders")]
     [SerializeField] private Slider tempSlider;
     [SerializeField] private Slider sweetSlider;
     [SerializeField] private Slider spicySlider;
     [SerializeField] private Slider strengthSlider;
-
-    // TODO - Decide if using premapped buttons with listeners for each of the 24 buttons or if using:
-    //          string level;
-    //          level = EventSystem.current.currentSelectedGameObject.name;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -21,8 +20,8 @@ public class IngredientSelectionUI : MonoBehaviour
         {
             Debug.Log("Player Collided With trigger");
 
-            // TODO - Display UI ingredient menu
-            // TODO - Play UI ingredient menu grow animation
+            //Display UI ingredient menu
+            Show(ingredientMenu);
         }
     }
 
@@ -32,8 +31,8 @@ public class IngredientSelectionUI : MonoBehaviour
         {
             Debug.Log("Player left trigger collider");
 
-            // TODO - Hide UI ingredient menu
-            // TODO - Play UI ingredient shrink animation
+            // Hide UI ingredient menu
+            StartCoroutine(CloseMenu());
         }
     }
 
@@ -42,14 +41,44 @@ public class IngredientSelectionUI : MonoBehaviour
     //          - Reset sliders after cursor moves off buttons
     
     // TODO - Add Ingredient to inventory after selection
-
-    private void Hide()
+    public void AddBean()
     {
-        gameObject.SetActive(false);
+        string buttonName;
+        buttonName = EventSystem.current.currentSelectedGameObject.name;
     }
 
-    private void Show()
+    public void AddSweetener()
     {
-        gameObject.SetActive(true);
+        string buttonName;
+        buttonName = EventSystem.current.currentSelectedGameObject.name;
+    }
+
+    public void AddLiquid()
+    {
+        string buttonName;
+        buttonName = EventSystem.current.currentSelectedGameObject.name;
+    }
+
+    public void AddBiomatter()
+    {
+        string buttonName;
+        buttonName = EventSystem.current.currentSelectedGameObject.name;
+    }
+
+    private void Hide(GameObject obj)
+    {
+        obj.SetActive(false);
+    }
+
+    private void Show(GameObject obj)
+    {
+        obj.SetActive(true);
+    }
+
+    IEnumerator CloseMenu()
+    {
+        ingredientMenu.GetComponent<Animator>().Play("Ingredient_UI_Shrink");
+        yield return new WaitForSeconds(0.5f);
+        Hide(ingredientMenu);
     }
 }
