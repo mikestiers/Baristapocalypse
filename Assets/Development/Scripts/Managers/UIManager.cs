@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System;
 using TMPro;
 
 public class UIManager : Singleton<UIManager>
@@ -41,9 +38,6 @@ public class UIManager : Singleton<UIManager>
     [Header("Customer Review")]
     private CustomerReview customerReview;
     public GameObject starPrefab;
-    //public Transform starRating;
-    //public Sprite filledStarSprite;
-    //public Sprite emptyStarSprite;
 
     [Header("DebugConsole")]
     public GameObject debugConsole;
@@ -69,7 +63,6 @@ public class UIManager : Singleton<UIManager>
             closePause.onClick.AddListener(ClosePause);
         if (restartGame)
             restartGame.onClick.AddListener(RestartGame);
-
     }
     private void ReturnToGame()
     {
@@ -149,40 +142,33 @@ public class UIManager : Singleton<UIManager>
 
     public void ShowCustomerReview(CustomerBase customer)
     {
-        if (orderStats != null)
+        // This can be better by moving customer review script to the customer object
+        foreach (Transform t in ordersPanel)
         {
-            GameObject customerReviewUIObject = orderStats.GetCustomerReview(customer);
-            if (customerReviewUIObject != null)
+            OrderStats o = t.GetComponent<OrderStats>();
+            if (o != null)
             {
-                customerReview = customerReviewUIObject.GetComponentInParent<CustomerReview>();
-                if (customerReview != null)
+                if (o.GetOrderOwner() == customer)
                 {
-                    Text customerReviewText = customerReviewUIObject.GetComponent<Text>();
+                    Transform customerReviewTransform = t.gameObject.transform.Find("CustomerReview");
+                    Text customerReviewText = customerReviewTransform.gameObject.GetComponent<Text>();
+                    customerReview = customerReviewTransform.GetComponentInParent<CustomerReview>();
                     customerReview.GenerateReview(customer);
                     customerReviewText.text = customerReview.ReviewText;
                     UpdateStarRating(customerReview.ReviewScore);
-                    customerReviewUIObject.SetActive(true);
+                    customerReviewTransform.gameObject.SetActive(true);
+                    return;
                 }
                 else
                 {
-                    Debug.Log($"CustomerReview component not found on parent for {customer}");
+                    Debug.Log($"Customer Order UI not found for {customer.customerNumber}");
                 }
             }
-            else
-            {
-                Debug.LogError($"customerReviewUIObject is null for {customer}");
-            }
-        }
-        else
-        {
-            Debug.Log($"Order Stats are null for {customer}");
-            return;
         }
     }
 
     public void RemoveCustomerUiOrder(CustomerBase customer)
     {
-        // TODO: Add ingredients
         foreach (Transform t in ordersPanel)
         {
             OrderStats o = t.GetComponent<OrderStats>();
@@ -196,6 +182,7 @@ public class UIManager : Singleton<UIManager>
                 else if (o.GetOrderOwner().customerNumber == customer.customerNumber)
                 {
                     // This exists because pickups are cloned, so the connection to the order prefab is lost
+                    // Just search for the customer based on their number in case owner is lost
                     Destroy(t.gameObject);
                     return;
                 }

@@ -1,20 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
-using System;
-using System.Linq;
-
 
 public class CustomerLineQueuing
 {
     private List<Vector3> positionList;
     private List<CustomerBase> customerList;
-    //public event EventHandler OnCustomerAdded;
-    //public event EventHandler OnCustomerArrivedAtFrontOfQueue;
-    
 
-    //sorry if it seam all over the place -> no worries madood its all good
     public CustomerLineQueuing(List<Vector3> positionList)
     {
         this.positionList = positionList;
@@ -29,12 +20,9 @@ public class CustomerLineQueuing
     public void AddCustomer(CustomerBase customer)
     {
         customerList.Add(customer);
-
         customer.Walkto(positionList[customerList.IndexOf(customer)]);
-
         if(customerList.IndexOf(customer) == 0) customer.frontofLine = true;
     }
-
 
     //Gets the customer at front of queue
     public CustomerBase GetFirstInQueue()
@@ -69,7 +57,6 @@ public class CustomerLineQueuing
         }
     }
 
-
     //Moves Customer Through the line
    private void RelocateAllCustomer()
     {
@@ -78,11 +65,6 @@ public class CustomerLineQueuing
             customerList[i].Walkto(positionList[i]);
             if(i == 0) customerList[i].frontofLine = true;
         }
-    }
-
-    public void OrderTaken(CustomerBase customer)
-    {
-
     }
     
     public int GetLineCount()

@@ -33,19 +33,4 @@ public class OrderStats : MonoBehaviour
         spicinessSlider.value = customer.coffeeAttributes.GetSpiciness() * .10f;
         customerNumberText.text = customer.customerNumber.ToString();
     }
-
-    // Return the customer review object to UIManager so that it can be enabled
-    public GameObject GetCustomerReview(CustomerBase customer)
-    {
-        OrderStats[] allOrderStats = Object.FindObjectsOfType<OrderStats>();
-        foreach (OrderStats orderStats in allOrderStats)
-        {
-            if (orderStats.orderOwner.GetInstanceID() == customer.GetInstanceID())
-            {
-                customerReview = orderStats.customerReview;
-                return customerReview;
-            }
-        }
-        return null;
-    }
 }

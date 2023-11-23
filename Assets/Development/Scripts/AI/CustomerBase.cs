@@ -1,53 +1,203 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using TMPro;
-using Unity.Burst.Intrinsics;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
-using static UnityEngine.EventSystems.EventTrigger;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class CustomerBase : Base
 {
-    //public Transform target;
+    [Header("Navigation")]
     public NavMeshAgent agent;
-    private Transform exit;
     public bool frontofLine;
+    public float distThreshold;
+    public GameObject[] Line;
+    public int LineIndex;
+    private Transform exit;
+
+    [Header("Identifiers")]
     public string customerName;
     public int customerNumber;
-    public float distThreshold;
-    public GameObject customerDialogue;
-    public float orderTimer = 0f;
-    public bool isPickedUp;
-    private bool isOrderTimerRunning = false;
+
+    [Header("Coffee Attributes")]
+    public CoffeeAttributes coffeeAttributes;
+
+    [Header("State Related")]
+    public CustomerState currentState;
+    public float? orderTimer = null;
     public float customerLeaveTime = 60f;
     public float deadTimerSeconds = 5.0f;
+
+    [Header("Visuals")]
     [SerializeField] public Canvas customerNumberCanvas;
     [SerializeField] private Text customerNumberText;
     [SerializeField] private Text customerNameText;
+    [SerializeField] private ParticleSystem interactParticle;
     [SerializeField] private DetachedHead detachedHead;
-
-    //private CustomerState currentState;
-
-    public static CustomerBase Instance { get; private set; }
+    [SerializeField] private ScoreTimerManager scoreTimerManager;
+    [SerializeField] public GameObject customerDialogue;
 
     public enum CustomerState
     {
-        //add movetosit when sits are available
         Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead
     }
 
-    public CustomerBase()
+    public virtual void Start()
     {
         SetCustomerState(CustomerState.Init);
+        SetCustomerVisualIdentifiers();
+
+        agent = GetComponent<NavMeshAgent>();
+        exit = CustomerManager.Instance.GetExit();
+        if (distThreshold <= 0) distThreshold = 0.5f;
     }
 
+    public virtual void Update()
+    {
+        if (orderTimer != null)
+            orderTimer += Time.deltaTime;
+
+        switch (currentState)
+        {
+            case CustomerState.Wandering:
+                UpdateWandering();
+                break;
+            case CustomerState.Waiting:
+                UpdateWaiting();
+                break;
+            case CustomerState.Ordering:
+                UpdateOrdering();
+                break;
+            case CustomerState.Moving:
+                UpdateMoving();
+                break;
+            case CustomerState.Leaving:
+                UpdateLeaving();
+                break;
+            case CustomerState.Insit:
+                UpdateInsit();
+                break;
+            case CustomerState.Init:
+                UpdateInit();
+                break;
+            case CustomerState.Loitering:
+                UpdateLoitering();
+                break;
+            case CustomerState.PickedUp:
+                UpdatePickedUp();
+                break;
+            case CustomerState.Dead:
+                UpdateDead();
+                break;
+        }
+    }
+
+    // UPDATE<action> METHODS
+    // Any Update<action> method is called by the Update() switch case.
+    // When a customer's state has changed, the appropriate Update<action> method is called
+    private void UpdateWandering()
+    {
+        // To be implmented or removed
+    }
+
+    private void UpdateWaiting()
+    {
+        // To be implmented or removed
+    }
+
+    private void UpdateOrdering()
+    {
+        if (orderTimer == null)
+            Order();
+    }
+
+    private void UpdateMoving()
+    {
+        if (agent.remainingDistance < distThreshold)
+        {
+            agent.isStopped = true;
+            if (frontofLine == true)
+            {
+                SetCustomerState(CustomerState.Ordering);
+            }
+            else
+            {
+                SetCustomerState(CustomerState.Waiting);
+            }
+        }
+    }
+
+    private void UpdateLeaving()
+    {
+        if (agent.remainingDistance < distThreshold)
+        {
+            Destroy(gameObject);
+            Debug.Log("this is our disappearing customer issue"); // if you see this, the customer probably disappeared and the review didn't show.  something about being close to the entrance causes the player to destroy on leaving
+            UIManager.Instance.RemoveCustomerUiOrder(this);
+        }
+    }
+
+    private void UpdateInsit()
+    {
+        customerDialogue.SetActive(false);
+        if (orderTimer >= customerLeaveTime)
+            CustomerLeave();
+    }
+
+    private void UpdateInit()
+    {
+        // To be implmented or removed
+    }
+
+    private void UpdateLoitering()
+    {
+        // To be implmented or removed
+    }
+
+    private void UpdatePickedUp()
+    {
+        // To be implmented or removed
+    }
+
+    private void UpdateDead()
+    {
+        // To be implmented or removed
+    }
+
+    // INTERACTION
+    // Anything related to interacting with the customer goes here
+    // This includes delivering a drink, picking up, throwing, assaulting, etc...
+    public override void Interact(PlayerController player)
+    {
+        // Customer is going to be thrown or assaulted with a weapon
+        if (player.IsHoldingPickup && player.Pickup.attributes.Contains(Pickup.PickupAttribute.KillsCustomer))
+        {
+            HeadDetach();
+            agent.speed = 0;
+            return;
+        }
+
+        // Take customer order
+        if (GetCustomerState() == CustomerState.Ordering)
+        {
+            CustomerManager.Instance.Leaveline();
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
+            interactParticle.Play();
+        }
+
+        // Deliver customer order
+        else if (GetCustomerState() == CustomerState.Insit && player.GetIngredient().CompareTag("CoffeeCup"))
+        {
+            player.GetIngredient().SetIngredientParent(this);
+            JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
+            interactParticle.Play();
+        }
+    }
+
+    // CUSTOMER STATE METHODS
+    // Setting or retrieving customer state should be done through
+    // thse methods.  Do not set the state like customerstate = "Leaving"
     public CustomerState GetCustomerState()
     {
         return currentState;
@@ -57,135 +207,56 @@ public class CustomerBase : Base
     {
         currentState = newState;
     }
-    public void SetCustomerName(String newName)
+
+    // CUSTOMER IDENTIFICATION METHODS
+    // These methods are for setting or displaying visual identifiers
+    // such as customer names, reviews, dialogue, numbers, etc...
+     public void SetCustomerName(String newName)
     {
         customerName = newName;
     }
 
-    public CoffeeAttributes coffeeAttributes;
-    [SerializeField] private ParticleSystem interactParticle;
-    //Initial State
-    public CustomerState currentState = CustomerState.Init;
-
-    //Waiting In line to order Array
-    public GameObject[] Line;
-    public int LineIndex;
-
-    [SerializeField] private ScoreTimerManager scoreTimerManager;
-
-    /// <summary>
-    ///  For the arrays im thinking of moving them to some other script like a level script or something to be actually be 
-    ///  accesible by all customer prefabs on what Index they currently are in 
-    ///  (im thinking of copying something like the queue DT with had from programming fundi to the line array)
-    ///  we can also add sits as an array instead of waypoints
-    /// </summary>
-
-
-    /// <summary> Suggested stuff in common
-    /// timer for time to deal with? we can have a universal starting one then we can override it after in like different character classes
-    /// name? for if we want to pursue name writing in cup and calling, or just to have it here in base class
-    /// 
-    /// </summary>
-
-
-
-    // Start is called before the first frame update
-    public virtual void Start()
+    public void SetCustomerVisualIdentifiers()
     {
-        agent = GetComponent<NavMeshAgent>();
-        exit = CustomerManager.Instance.GetExit();
-
-        // Set the customer number and name appearing over the customer's head
-        customerDialogue.SetActive(false);
-        customerNumberCanvas.enabled = false;
         customerNumberText.text = customerNumber.ToString();
         customerNameText.text = customerName;
-
-        if (distThreshold <= 0) distThreshold = 0.5f;
+        customerDialogue.SetActive(false);
+        customerNumberCanvas.enabled = false;
     }
 
-
-    // Update is called once per frame
-    public virtual void Update()
+    public void DisplayCustomerVisualIdentifiers()
     {
-        if (agent.destination == null) return;
-
-        if (isPickedUp)
-        {
-            SetCustomerState(CustomerState.PickedUp);
-        }
-
-        if (GetCustomerState() == CustomerState.Insit)
-        {
-            customerDialogue.SetActive(false);
-        }
-
-        if (GetCustomerState() == CustomerState.Moving)
-        {
-            if (agent.remainingDistance < distThreshold)
-            {
-                agent.isStopped = true;
-                StartOrderTimer();
-                if (frontofLine == true)
-                {
-                    SetCustomerState(CustomerState.Ordering);
-                    customerNumberCanvas.enabled = true;
-                    customerDialogue.SetActive(true);
-                    UIManager.Instance.ShowCustomerUiOrder(this);
-                    return;
-                }
-                else
-                {
-                    SetCustomerState(CustomerState.Waiting);
-                }
-            }
-        }
-
-        if (GetCustomerState() == CustomerState.Leaving)
-        {
-            if (agent.remainingDistance < distThreshold)
-            {
-                Destroy(gameObject);
-                UIManager.Instance.RemoveCustomerUiOrder(this);
-            }
-        }
-        //Debug.Log("The customer is " + currentState + " and is going to " + agent.destination);
-
-        if (isOrderTimerRunning)
-        {
-            orderTimer += Time.deltaTime;
-        }
+        customerNumberCanvas.enabled = true;
+        customerDialogue.SetActive(true);
+        UIManager.Instance.ShowCustomerUiOrder(this);
     }
 
-    //Get customer order
-    //UI displays attributes
+    // CUSTOMER ACTION METHODS
+    // These methods are when a customer is to perform an action
+    // Should be called from the Update<action> method when customer state changes
     public virtual void Order()
     {
-        Invoke("CustomerLeave", customerLeaveTime);
+        StartOrderTimer();
+        DisplayCustomerVisualIdentifiers();
+        // which state sends it to find a seat?
     }
-
 
     public virtual void CustomerLeave()
     {
         SetCustomerState(CustomerState.Leaving);
-        //UIManager.Instance.ShowCustomerReview(this);
         agent.SetDestination(exit.position);
     }
 
     public void Walkto(Vector3 Spot)
     {
         if (agent.isStopped) agent.isStopped = false;
-
-
         agent.SetDestination(Spot);
-
         SetCustomerState(CustomerState.Moving);
     }
 
     public void JustGotHandedCoffee(CoffeeAttributes coffee)
     {
         CustomerReaction(coffee, coffeeAttributes);
-        StopOrderTimer();
         UIManager.Instance.ShowCustomerReview(this);
     }
 
@@ -211,36 +282,10 @@ public class CustomerBase : Base
         Destroy(gameObject);
     }
 
-    public override void Interact(PlayerController player)
-    {
-        if (player.IsHoldingPickup && player.Pickup.attributes.Contains(Pickup.PickupAttribute.KillsCustomer))
-        {
-            HeadDetach();
-            agent.speed = 0;
-            return;
-        }
-        //check customer state
-        if (GetCustomerState() == CustomerState.Ordering)
-        {
-            Order();
-            CustomerManager.Instance.Leaveline();
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
-            interactParticle.Play();
-        }
-        //if waiting for order
-        else if (GetCustomerState() == CustomerState.Insit)
-        {
-            // Give coffee to customer
-            if (player.GetIngredient().CompareTag("CoffeeCup"))
-            {
-                player.GetIngredient().SetIngredientParent(this);
-                JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
-                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
-                interactParticle.Play();
-            }
-        }
-    }
-
+    // CUSTOMER REACTION METHODS
+    // This section is used for anything related to custome reactions
+    // which are typically based off the quality of the drink or other environmental
+    // factors, such as order wait time, wifi, radio, pat on the back, etc...
     private void CustomerReaction(CoffeeAttributes coffeeAttributes, CoffeeAttributes customerAttributes)
     {
         int result = 0;
@@ -252,7 +297,7 @@ public class CustomerBase : Base
 
         int minigameResult = coffeeAttributes.GetIsMinigamePerfect() ? 1 : 0;
         ScoreTimerManager.Instance.score += result * (minigameResult + 1);
-        
+        Debug.Log($"Result for {customerNumber}: {result}");
         switch (result)
         {
             case 5:
@@ -261,6 +306,7 @@ public class CustomerBase : Base
                 ScoreTimerManager.Instance.score += result * ScoreTimerManager.Instance.StreakCount;
                 CustomerLeave();
                 break;
+
             case 4:
             case 3:
             case 2:
@@ -275,7 +321,6 @@ public class CustomerBase : Base
                 Reorder();
                 CancelInvoke("CustomerLeave");
                 Order();
-
                 break;
 
             case -3:
@@ -285,7 +330,6 @@ public class CustomerBase : Base
                 Angry();
                 ScoreTimerManager.Instance.score += result;
                 CustomerLeave();
-
                 break;
         }
     }
@@ -294,10 +338,12 @@ public class CustomerBase : Base
     {
         Debug.Log("the customer is not happy with the serving");
     }
+
     private void Perfect()
     {
         Debug.Log("you did great!");
     }
+
     private void Reorder()
     {
         Debug.Log("customer is not happy with the serving and wants you to try again");
@@ -306,11 +352,10 @@ public class CustomerBase : Base
     public void StartOrderTimer()
     {
         orderTimer = 0f;
-        isOrderTimerRunning = true;
     }
 
-    private void StopOrderTimer()
+    public void StopOrderTimer()
     {
-        isOrderTimerRunning = false;
+        orderTimer = null;
     }
 }
