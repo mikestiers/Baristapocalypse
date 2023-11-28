@@ -93,13 +93,6 @@ public class CustomerBase : Base
         }
     }
 
-
-    [ClientRpc]
-    private void UpdateCustomerStateClientRpc()
-    {
-
-    }
-
     // UPDATE<action> METHODS
     // Any Update<action> method is called by the Update() switch case.
     // When a customer's state has changed, the appropriate Update<action> method is called
