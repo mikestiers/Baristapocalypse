@@ -38,6 +38,7 @@ public class CustomerReview : MonoBehaviour
         timeToServe = GetTimeToServe();
         reviewScore = CalculateReviewScore(cafeCleanliness, cafeCrowdedness, timeToServe);
         reviewText = GenerateReviewText(reviewScore);
+        customer.StopOrderTimer();
     }
 
     private int GetCafeCleanliness()
@@ -60,8 +61,7 @@ public class CustomerReview : MonoBehaviour
 
     private float GetTimeToServe()
     {
-        timeToServe = orderOwner.orderTimer;
-        return timeToServe;
+        return orderOwner.orderTimer != null ? (float)orderOwner.orderTimer : 0;
     }
 
     private int CalculateReviewScore(int cafeCleanliness, float cafeCrowdedness, float timeToServe)

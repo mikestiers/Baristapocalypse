@@ -488,7 +488,7 @@ public class PlayerController : MonoBehaviour, IIngredientParent
         if (p.IsCustomer)
         {
             p.GetNavMeshAgent().enabled = false;
-            p.GetCustomer().isPickedUp = true;
+            p.GetCustomer().SetCustomerState(CustomerBase.CustomerState.PickedUp);
         }
 
         p.RemoveRigidBody();
@@ -507,7 +507,6 @@ public class PlayerController : MonoBehaviour, IIngredientParent
 
         if (p.IsCustomer)
         {
-            p.GetCustomer().isPickedUp = false;
             p.GetCustomer().Dead();
         }
 

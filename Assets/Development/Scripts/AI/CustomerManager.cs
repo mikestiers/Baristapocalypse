@@ -130,21 +130,21 @@ public class CustomerManager : Singleton<CustomerManager>
             newcustomer.SetCustomerName(customerNames[randomCustomer]);
             customerNames.RemoveAt(randomCustomer);
         }
-    
     }
+
     public int TotalCustomers()
     {
         int totalCustomers = LineQueue.GetLineCount() + barFloor.GetTotalCustomersOnFloor();
 
         return totalCustomers;
     }
+
     public int TotalMaxCapacity()
     {
         int maxCapacity = Chairs.Length + numberOfCustomers;
 
         return maxCapacity;
     }
-
 
     /* i didnt delete just incase it can be used for future code
 
