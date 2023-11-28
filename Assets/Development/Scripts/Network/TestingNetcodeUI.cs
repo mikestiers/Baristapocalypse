@@ -40,9 +40,13 @@ public class TestingNetcodeUI : NetworkBehaviour
 
         }
 
+        if (initializeLevel)
+        {
         // temp to assign camera to player
-        playerController = FindObjectOfType<PlayerController>();
-        initializeLevel.AddCameraToPlayer(playerController.gameObject);
+            playerController = FindObjectOfType<PlayerController>();
+            initializeLevel.AddCameraToPlayer(playerController.gameObject);
+
+        }
 
     }
 }
