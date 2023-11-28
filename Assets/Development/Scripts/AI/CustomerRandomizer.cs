@@ -1,9 +1,10 @@
 using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class CustomerRandomizer : MonoBehaviour
+public class CustomerRandomizer : NetworkBehaviour
 {
     [SerializeField] public CustomerRaceSO[] Races;
     public List<GameObject> heads = new List<GameObject>();
@@ -15,23 +16,34 @@ public class CustomerRandomizer : MonoBehaviour
     void Start()
     {
         int customerIndex = Random.Range(0, Races.Length);
-        race= Races[customerIndex];
-        
-        coffeePreferences = GetComponent<CoffeeAttributes>();
 
-        coffeePreferences.AddBitterness(UnityEngine.Random.Range(race.minBitterness, race.maxBitterness + 1));
-        coffeePreferences.AddSpiciness(UnityEngine.Random.Range(race.minSpiciness, race.maxSpiciness + 1));
-        coffeePreferences.AddStrength(UnityEngine.Random.Range(race.minStrength, race.maxStrength +1));
-        coffeePreferences.AddSweetness(UnityEngine.Random.Range(race.minSweetness, race.maxSweetness + 1));
-        coffeePreferences.AddTemperature(UnityEngine.Random.Range(race.minTemperature, race.maxTemperature + 1));
+        race = Races[customerIndex];
 
-
-
+        int randomBitterness = Random.Range(race.minBitterness, race.maxBitterness + 1);
+        int randomSpiciness = Random.Range(race.minSpiciness, race.maxSpiciness + 1);
+        int randomStrength = Random.Range(race.minStrength, race.maxStrength + 1);
+        int randomSweetness = Random.Range(race.minSweetness, race.maxSweetness + 1);
+        int randomTemperature = Random.Range(race.minTemperature, race.maxTemperature + 1);
         int headIndex = Random.Range(0, heads.Count);
         int bodyIndex = Random.Range(0, bodies.Count);
+
+        StartClientRpc(headIndex, bodyIndex, randomBitterness, randomSpiciness, randomStrength, randomSweetness, randomTemperature);
+
+    }
+
+    [ClientRpc]
+    private void StartClientRpc(int headIndex, int bodyIndex, int randomBitterness, int randomSpiciness, int randomStrength, int randomSweetness, int randomTemperature)
+    {
+        coffeePreferences = GetComponent<CoffeeAttributes>();
+
+        coffeePreferences.AddBitterness(randomBitterness);
+        coffeePreferences.AddSpiciness(randomSpiciness);
+        coffeePreferences.AddStrength(randomStrength);
+        coffeePreferences.AddSweetness(randomSweetness);
+        coffeePreferences.AddTemperature(randomTemperature);
+
         heads[headIndex].SetActive(true);
         bodies[bodyIndex].SetActive(true);
-     
     }
 }
 

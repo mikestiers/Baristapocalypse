@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public abstract class Singleton<T> : MonoBehaviour where T : Component
+public abstract class Singleton<T> : NetworkBehaviour where T : Component
 {
     static T _instance;
     // Start is called before the first frame update

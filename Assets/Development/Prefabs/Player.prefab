@@ -389,6 +389,8 @@ GameObject:
   - component: {fileID: 7263414053255238152}
   - component: {fileID: 8848886544079564540}
   - component: {fileID: -859235823650325503}
+  - component: {fileID: -779976938515169710}
+  - component: {fileID: -6965992176024722572}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -482,6 +484,10 @@ MonoBehaviour:
   spillSpawnPoint: {fileID: 1216517093796491857}
   pickupLocation: {fileID: 6136085202976597964}
   pickupThrowForce: 400
+  spawnpoint1: {fileID: 9025337834021455784, guid: 4246f2a1cc3516840b64b3c5b56f0fef, type: 3}
+  spawnpoint2: {fileID: 4856791865419215880, guid: 6e984c7a44615f048a8ab78e144f15f9, type: 3}
+  spawnpoint3: {fileID: 8500810014702359368, guid: 17c0014cce199e945a8b7b3d38aa3bbe, type: 3}
+  spawnpoint4: {fileID: 2044351039913167885, guid: 386585616513d154a82123c3edcf5d0c, type: 3}
   inputManager: {fileID: -859235823650325503}
   ingredientIndicatorText: {fileID: 1310037080}
 --- !u!114 &7263414053255238152
@@ -525,6 +531,48 @@ MonoBehaviour:
   moveDir: {x: 0, y: 0, z: 0}
   curMoveInput: {x: 0, y: 0, z: 0}
   playerMesh: {fileID: 3089131226742103817}
+--- !u!114 &-779976938515169710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 533563683556402463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+--- !u!114 &-6965992176024722572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 533563683556402463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ee73cf91a770604f8cab9c37fb5777c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 0
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 0
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  InLocalSpace: 0
+  Interpolate: 1
 --- !u!1 &3925568205562815882
 GameObject:
   m_ObjectHideFlags: 0

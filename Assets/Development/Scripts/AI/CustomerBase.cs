@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -92,6 +93,13 @@ public class CustomerBase : Base
         }
     }
 
+
+    [ClientRpc]
+    private void UpdateCustomerStateClientRpc()
+    {
+
+    }
+
     // UPDATE<action> METHODS
     // Any Update<action> method is called by the Update() switch case.
     // When a customer's state has changed, the appropriate Update<action> method is called
@@ -108,7 +116,10 @@ public class CustomerBase : Base
     private void UpdateOrdering()
     {
         if (orderTimer == null)
-            Order();
+        {
+            //Order();
+            OrderClientRpc();
+        }
     }
 
     private void UpdateMoving()
@@ -239,6 +250,12 @@ public class CustomerBase : Base
         StartOrderTimer();
         DisplayCustomerVisualIdentifiers();
         // which state sends it to find a seat?
+    }
+
+    [ClientRpc]
+    private void OrderClientRpc()
+    {
+        Order();
     }
 
     public virtual void CustomerLeave()
