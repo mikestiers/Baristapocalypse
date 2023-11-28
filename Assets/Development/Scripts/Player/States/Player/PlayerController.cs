@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
-
-
+using Unity.Netcode;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerController : MonoBehaviour, IIngredientParent
+public class PlayerController : NetworkBehaviour, IIngredientParent
 {
     // Player Instance
     [HideInInspector] public static PlayerController Instance { get; private set; }
@@ -56,6 +55,14 @@ public class PlayerController : MonoBehaviour, IIngredientParent
     [Header("Pickups")]
     public Transform pickupLocation;
     public float pickupThrowForce;
+
+    // Testing Spawnpoints
+    public Transform spawnpoint1;
+    public Transform spawnpoint2;
+    public Transform spawnpoint3;
+    public Transform spawnpoint4;
+
+
     [HideInInspector]
     public Pickup Pickup
     {
@@ -93,6 +100,18 @@ public class PlayerController : MonoBehaviour, IIngredientParent
 
     private void Start()
     {
+        // Testing
+        //check amount of players spawned and move player to that position
+        if (GameManager.Instance.spawnpoint == 0 || GameManager.Instance.spawnpoint >= 4)
+            transform.position = spawnpoint1.position;
+        else if (GameManager.Instance.spawnpoint == 1)
+            transform.position = spawnpoint2.position;
+        else if (GameManager.Instance.spawnpoint == 2)
+            transform.position = spawnpoint3.position;
+        else if (GameManager.Instance.spawnpoint == 3)
+            transform.position = spawnpoint4.position;
+
+
         //Get components
         rb = GetComponent<Rigidbody>();
 
@@ -132,6 +151,11 @@ public class PlayerController : MonoBehaviour, IIngredientParent
 
     private void Update()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
+
         // Ground Check
         IsGrounded();
         // player movement

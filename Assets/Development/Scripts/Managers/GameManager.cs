@@ -27,6 +27,9 @@ public class GameManager : Singleton<GameManager>
     public GameObject player3Prefab;
     public GameObject player4Prefab;
 
+    //spawnpoints for network
+    public int spawnpoint = 0;
+
     //spawn players if button was pressed in main menu
     public bool player1Active = false;
     public bool player2Active = false;

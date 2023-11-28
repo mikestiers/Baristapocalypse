@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 16938436}
   - component: {fileID: 16938435}
   - component: {fileID: 16938434}
-  - component: {fileID: 16938433}
+  - component: {fileID: 825884512421301795}
   m_Layer: 5
   m_Name: DebugConsole
   m_TagString: Untagged
@@ -149,7 +149,7 @@ MonoBehaviour:
   m_CaretWidth: 1
   m_ReadOnly: 0
   m_ShouldActivateOnSelect: 1
---- !u!114 &16938433
+--- !u!114 &825884512421301795
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -158,11 +158,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 16938431}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 306f6ed21a117fc46b82b4782987fef9, type: 3}
+  m_Script: {fileID: 11500000, guid: cf90e7ed1d5545d46ad52f376070e872, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugInput: {fileID: 16938434}
-  coffeeCup: {fileID: 60174643358703362, guid: 16f45021e29e87c49bc70ad28ed6e02b, type: 3}
+  debugInput: {fileID: 0}
+  coffeeCup: {fileID: 0}
   player: {fileID: 0}
 --- !u!1 &240090024
 GameObject:
@@ -1083,7 +1083,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 16938433}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: DebugConsole, Assembly-CSharp
         m_MethodName: TryCommand
         m_Mode: 1
@@ -4231,6 +4231,7 @@ GameObject:
   - component: {fileID: 5867048477265250297}
   - component: {fileID: 1425074276}
   - component: {fileID: 1425074277}
+  - component: {fileID: 2960582574488747016}
   m_Layer: 5
   m_Name: HUD
   m_TagString: Untagged
@@ -4365,6 +4366,8 @@ MonoBehaviour:
   ordersPanel: {fileID: 2799833194102717902}
   ordersUiPrefab: {fileID: 5308759679528095304, guid: 2dc51058e5b38b94aa00c6eca32f7cd5, type: 3}
   starPrefab: {fileID: 6657550230311073171, guid: 6d4da51480d972c46802f0d0b614b765, type: 3}
+  debugConsole: {fileID: 0}
+  debugConsoleActive: 0
 --- !u!114 &1425074277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4386,6 +4389,22 @@ MonoBehaviour:
   WinEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2960582574488747016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5867048477265250296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &5867048477283439209
 GameObject:
   m_ObjectHideFlags: 0

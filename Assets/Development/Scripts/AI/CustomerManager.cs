@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -41,12 +42,16 @@ public class CustomerManager : Singleton<CustomerManager>
             "Rod",
             "Turner"
         };
-    public CustomerBase customerPrefab;
+
+
+    public NetworkObject customerPrefab;
 
     public List<CustomerBase> customersOutsideList = new List<CustomerBase>();
 
     public CustomerLineQueuing LineQueue;
     public CustomerBarFloor barFloor;
+
+    private NetworkObject newcustomer;
 
     //temp stuff -> Ddog will make something more robust
     public GameObject[] Chairs;
@@ -72,6 +77,7 @@ public class CustomerManager : Singleton<CustomerManager>
         barFloor = new CustomerBarFloor(Chairs);
 
         StartCoroutine(NewCustomer(delay));
+
     }
 
     //maybe randomize time of spawning of customers
@@ -81,15 +87,23 @@ public class CustomerManager : Singleton<CustomerManager>
         {
             //yield return new WaitUntil(() -> customers.isServed);
             yield return new WaitForSeconds(delayS);
-
+            int randomCustomer = UnityEngine.Random.Range(0, customerNames.Count);
             //while(gameObject is playin) set timer
             if (customerPrefab != null)
             {
-                SpawnCustomer();
+
+                SpawnCustomerClientRpc();
+                GiveCustomerNameClientRpc(randomCustomer);
 
                 StartCoroutine(CustomerEnterStore());
             }
         }
+    }
+
+    [ClientRpc]
+    public void SpawnCustomerClientRpc()
+    {
+        SpawnCustomer();
     }
 
     public IEnumerator CustomerEnterStore()
@@ -109,6 +123,7 @@ public class CustomerManager : Singleton<CustomerManager>
         }
     }
 
+
     public void Leaveline()
     {
         CustomerBase customer = LineQueue.GetFirstInQueue();
@@ -117,17 +132,28 @@ public class CustomerManager : Singleton<CustomerManager>
 
     private void SpawnCustomer()
     {
-        CustomerBase newcustomer = Instantiate(customerPrefab, barEntrance.transform.position, Quaternion.identity);
-        customersOutsideList.Add(newcustomer);
+        newcustomer = Instantiate(customerPrefab, barEntrance.transform.position, Quaternion.identity);
+
+        // Ensure that the spawned object is spawned on the network
+        newcustomer.Spawn();
+
+        customersOutsideList.Add(newcustomer.GetComponent<CustomerBase>());
+
         customerNumber += 1;
 
+    }
+
+    [ClientRpc]
+    public void GiveCustomerNameClientRpc(int randomCustomer)
+    {
         // Assign customer number and choose a random name from the list.  If list becomes empty, no names are assigned
         // We have 25 names so far (the names of everyone on the team), but we can add more
-        newcustomer.customerNumber = customerNumber;
+
+        newcustomer.GetComponent<CustomerBase>().customerNumber = customerNumber;
         if (customerNames.Count >= 1)
         {
-            int randomCustomer = UnityEngine.Random.Range(0, customerNames.Count);
-            newcustomer.SetCustomerName(customerNames[randomCustomer]);
+            //int randomCustomer = UnityEngine.Random.Range(0, customerNames.Count);
+            newcustomer.GetComponent<CustomerBase>().SetCustomerName(customerNames[randomCustomer]);
             customerNames.RemoveAt(randomCustomer);
         }
     }
