@@ -62,7 +62,7 @@ public class DebugConsole : MonoBehaviour
                     {
                         customer.agent.isStopped = true;
                         customer.StartOrderTimer();
-                        customer.SetCustomerState(CustomerState.Ordering);
+                        customer.SetCustomerStateServerRpc(CustomerState.Ordering);
                         customer.customerNumberCanvas.enabled = true;
                         UIManager.Instance.ShowCustomerUiOrder(customer);
                         CustomerManager.Instance.barFloor.TrySendToChair(customer);

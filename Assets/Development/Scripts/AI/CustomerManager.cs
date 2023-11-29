@@ -123,9 +123,9 @@ public class CustomerManager : Singleton<CustomerManager>
         }
     }
 
-
     public void Leaveline()
     {
+        Debug.Log("hiii");
         CustomerBase customer = LineQueue.GetFirstInQueue();
         barFloor.TrySendToChair(customer);
     }

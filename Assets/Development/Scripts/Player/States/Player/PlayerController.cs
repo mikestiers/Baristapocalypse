@@ -233,7 +233,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         {
             if (hitCustomer.transform.TryGetComponent(out Base customerBase))
             {
-                UIDebug.Instance.UpdateDebugMessage("Hitting customer" + customerBase.GetInstanceID().ToString());//********************************** remove after testing
+                
 
                 visualGameObject = customerBase.transform.GetChild(0).gameObject;
                 if (customerBase != selectedCustomer)
@@ -272,11 +272,13 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         rb.MovePosition(rb.position + curMoveInput);
     }
 
+
     public void Interact()
     {
         if (selectedStation)
         {
             selectedStation.Interact(this);
+
         }
 
         if (selectedCustomer)
@@ -516,7 +518,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         if (p.IsCustomer)
         {
             p.GetNavMeshAgent().enabled = false;
-            p.GetCustomer().SetCustomerState(CustomerBase.CustomerState.PickedUp);
+            p.GetCustomer().SetCustomerStateServerRpc(CustomerBase.CustomerState.PickedUp);
         }
 
         p.RemoveRigidBody();
