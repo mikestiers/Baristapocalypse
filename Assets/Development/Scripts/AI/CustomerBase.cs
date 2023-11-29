@@ -173,6 +173,8 @@ public class CustomerBase : Base
     // This includes delivering a drink, picking up, throwing, assaulting, etc...
     public override void Interact(PlayerController player)
     {
+        if (!IsOwner) return;
+
         // Customer is going to be thrown or assaulted with a weapon
         if (player.IsHoldingPickup && player.Pickup.attributes.Contains(Pickup.PickupAttribute.KillsCustomer))
         {

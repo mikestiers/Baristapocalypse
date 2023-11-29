@@ -233,6 +233,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         {
             if (hitCustomer.transform.TryGetComponent(out Base customerBase))
             {
+                UIDebug.Instance.UpdateDebugMessage("Hitting customer" + customerBase.GetInstanceID().ToString());//********************************** remove after testing
+
                 visualGameObject = customerBase.transform.GetChild(0).gameObject;
                 if (customerBase != selectedCustomer)
                 {
@@ -252,6 +254,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward * customerInteractDistance, Color.red);
         
     }
+
+
 
     public bool IsGrounded()
     {
