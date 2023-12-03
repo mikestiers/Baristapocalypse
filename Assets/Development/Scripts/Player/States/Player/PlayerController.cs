@@ -43,6 +43,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     private int maxIngredients = 4; // Keep track of the maximum number of ingredients the player can have
 
     [SerializeField] public Rigidbody rb { get; private set; }
+    [SerializeField] public Animator anim { get; private set; }
     private Vector3 curMoveInput;
     private Vector3 moveDir;
 
@@ -114,6 +115,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
         //Get components
         rb = GetComponent<Rigidbody>();
+        anim = GetComponentInChildren<Animator>();
 
         //Set variables if null
         if (moveSpeed <= 0) moveSpeed = 10.0f;
@@ -261,9 +263,21 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     public void Move(float moveSpeed)
     {
-        if (inputManager.moveDir == Vector3.zero) return;
+        if (inputManager.moveDir == Vector3.zero)
+        {
+            anim.SetFloat("vertical", 0);
+            anim.SetFloat("horizontal", 0);
+            return;
+        }
+        
         curMoveInput = inputManager.moveDir * moveSpeed * Time.deltaTime;
         transform.forward = inputManager.moveDir;
+
+        // Check movement direction
+        float forwardDot = Vector3.Dot(inputManager.moveDir, transform.right);
+        float rightDot = Vector3.Dot(inputManager.moveDir, transform.forward);
+        anim.SetFloat("vertical", forwardDot);
+        anim.SetFloat("horizontal", rightDot);
 
         rb.MovePosition(rb.position + curMoveInput);
     }
