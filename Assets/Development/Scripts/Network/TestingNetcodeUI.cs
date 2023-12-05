@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Dreamteck.Splines;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -44,7 +45,8 @@ public class TestingNetcodeUI : NetworkBehaviour
         {
         // temp to assign camera to player
             playerController = FindObjectOfType<PlayerController>();
-            initializeLevel.AddCameraToPlayer(playerController.gameObject);
+            // initializeLevel.AddCameraToPlayer(playerController.gameObject);
+          
 
         }
 

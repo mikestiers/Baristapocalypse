@@ -23,8 +23,8 @@ public class InitializeLevel : MonoBehaviour
         //}
     }
 
-    public void AddCameraToPlayer(GameObject playerOnScene)
+   /* public void AddCameraToPlayer(GameObject playerOnScene)
     {
         virtualCamera.GetComponent<CameraManager>().targets.Add(playerOnScene.transform);
-    }
+    }*/
 }
