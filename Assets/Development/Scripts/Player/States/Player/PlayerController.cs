@@ -112,6 +112,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         else if (GameManager.Instance.spawnpoint == 3)
             transform.position = spawnpoint4.position;
 
+        GameManager.Instance.spawnpoint++;
 
         //Get components
         rb = GetComponent<Rigidbody>();
@@ -235,6 +236,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         {
             if (hitCustomer.transform.TryGetComponent(out Base customerBase))
             {
+                
+
                 visualGameObject = customerBase.transform.GetChild(0).gameObject;
                 if (customerBase != selectedCustomer)
                 {
@@ -254,6 +257,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward * customerInteractDistance, Color.red);
         
     }
+
+
 
     public bool IsGrounded()
     {
@@ -282,11 +287,13 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         rb.MovePosition(rb.position + curMoveInput);
     }
 
+
     public void Interact()
     {
         if (selectedStation)
         {
             selectedStation.Interact(this);
+
         }
 
         if (selectedCustomer)
@@ -526,7 +533,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         if (p.IsCustomer)
         {
             p.GetNavMeshAgent().enabled = false;
-            p.GetCustomer().SetCustomerState(CustomerBase.CustomerState.PickedUp);
+            p.GetCustomer().SetCustomerStateServerRpc(CustomerBase.CustomerState.PickedUp);
         }
 
         p.RemoveRigidBody();

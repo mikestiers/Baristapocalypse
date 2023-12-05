@@ -45,7 +45,7 @@ public class CustomerBase : Base
 
     public virtual void Start()
     {
-        SetCustomerState(CustomerState.Init);
+        SetCustomerStateServerRpc(CustomerState.Init);
         SetCustomerVisualIdentifiers();
 
         agent = GetComponent<NavMeshAgent>();
@@ -93,13 +93,6 @@ public class CustomerBase : Base
         }
     }
 
-
-    [ClientRpc]
-    private void UpdateCustomerStateClientRpc()
-    {
-
-    }
-
     // UPDATE<action> METHODS
     // Any Update<action> method is called by the Update() switch case.
     // When a customer's state has changed, the appropriate Update<action> method is called
@@ -129,11 +122,11 @@ public class CustomerBase : Base
             agent.isStopped = true;
             if (frontofLine == true)
             {
-                SetCustomerState(CustomerState.Ordering);
+                SetCustomerStateServerRpc(CustomerState.Ordering);
             }
             else
             {
-                SetCustomerState(CustomerState.Waiting);
+                SetCustomerStateServerRpc(CustomerState.Waiting);
             }
         }
     }
@@ -191,7 +184,7 @@ public class CustomerBase : Base
         // Take customer order
         if (GetCustomerState() == CustomerState.Ordering)
         {
-            CustomerManager.Instance.Leaveline();
+            LeaveLineServerRpc();
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
             interactParticle.Play();
         }
@@ -206,6 +199,20 @@ public class CustomerBase : Base
         }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void LeaveLineServerRpc()
+    {
+        Debug.Log("serverrpc");
+        LeaveLineClientRpc();
+    }
+
+    [ClientRpc]
+    private void LeaveLineClientRpc()
+    {
+        Debug.Log("customer leaving");
+        CustomerManager.Instance.Leaveline();
+    }
+
     // CUSTOMER STATE METHODS
     // Setting or retrieving customer state should be done through
     // thse methods.  Do not set the state like customerstate = "Leaving"
@@ -214,7 +221,15 @@ public class CustomerBase : Base
         return currentState;
     }
 
-    public void SetCustomerState(CustomerState newState)
+    //Maybe dont need, can try to get rid of it later
+    [ServerRpc]
+    public void SetCustomerStateServerRpc(CustomerState newState)
+    {
+        SetCustomerStateClientRpc(newState);
+    }
+
+    [ClientRpc]
+    public void SetCustomerStateClientRpc(CustomerState newState)
     {
         currentState = newState;
     }
@@ -260,7 +275,7 @@ public class CustomerBase : Base
 
     public virtual void CustomerLeave()
     {
-        SetCustomerState(CustomerState.Leaving);
+        SetCustomerStateServerRpc(CustomerState.Leaving);
         agent.SetDestination(exit.position);
     }
 
@@ -268,7 +283,7 @@ public class CustomerBase : Base
     {
         if (agent.isStopped) agent.isStopped = false;
         agent.SetDestination(Spot);
-        SetCustomerState(CustomerState.Moving);
+        SetCustomerStateServerRpc(CustomerState.Moving);
     }
 
     public void JustGotHandedCoffee(CoffeeAttributes coffee)
@@ -280,13 +295,13 @@ public class CustomerBase : Base
     void HeadDetach()
     {
         detachedHead.Initialize();
-        SetCustomerState(CustomerState.Dead);
+        SetCustomerStateServerRpc(CustomerState.Dead);
         StartCoroutine(DeadTimer());
     }
 
     public void Dead()
     {
-        SetCustomerState(CustomerState.Dead);
+        SetCustomerStateServerRpc(CustomerState.Dead);
         StartCoroutine(DeadTimer());
     }
 
@@ -297,6 +312,11 @@ public class CustomerBase : Base
         CustomerManager.Instance.LineQueue.GetFirstInQueue(); // moves everyone up one and pops out position 0
         CustomerManager.Instance.LineQueue.RemoveFromQueue(this);
         Destroy(gameObject);
+    }
+
+    public int GetCustomerNumber()
+    {
+        return customerNumber;
     }
 
     // CUSTOMER REACTION METHODS
