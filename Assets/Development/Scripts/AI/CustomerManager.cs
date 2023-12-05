@@ -65,7 +65,7 @@ public class CustomerManager : Singleton<CustomerManager>
         //chairNumber = UnityEngine.Random.Range(0, Chairs.Length);
 
         //where the firstposition is located in scene
-        Vector3 firstposition = new Vector3(Counter.position.x, 0, Counter.position.z);
+        Vector3 firstposition = new Vector3(Counter.position.x, 0, Counter.position.z + 1.5f);
         float positionSize = 2f;
         for (int i = 0; i < numberOfCustomers; i++)
         {
