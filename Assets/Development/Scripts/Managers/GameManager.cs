@@ -67,7 +67,6 @@ public class GameManager : Singleton<GameManager>
     {
         //playerInput = new PlayerInput();
         //playerInput.Player.Enable();
-
     }
 
     private void OnDestroy()

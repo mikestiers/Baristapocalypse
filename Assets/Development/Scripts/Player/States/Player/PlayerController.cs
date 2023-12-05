@@ -111,6 +111,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         else if (GameManager.Instance.spawnpoint == 3)
             transform.position = spawnpoint4.position;
 
+        GameManager.Instance.spawnpoint++;
 
         //Get components
         rb = GetComponent<Rigidbody>();
