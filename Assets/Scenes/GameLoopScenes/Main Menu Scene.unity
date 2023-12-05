@@ -161,7 +161,6 @@ RectTransform:
   - {fileID: 1541689120}
   - {fileID: 1830295056}
   - {fileID: 1994976067}
-  - {fileID: 1567503594}
   m_Father: {fileID: 296283959}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0.367, z: 0}
@@ -3285,7 +3284,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 211896493}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: -0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.12}
   m_LocalScale: {x: 0.02, y: 0.02, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3322,7 +3321,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -3341,7 +3340,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 211896496}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 565875402}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: SetEasyDifficulty
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &211896496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5727,6 +5738,7 @@ RectTransform:
   - {fileID: 762363146}
   - {fileID: 212878862}
   - {fileID: 2118343054}
+  - {fileID: 1567503594}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -13415,6 +13427,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2592040155797389379, guid: 4f04091c3505b7c40aae316fa5f75b22, type: 3}
   m_PrefabInstance: {fileID: 564650757}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &565875402 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1235815955711702325, guid: 86e91c89622072944a450f17eefbf679, type: 3}
+  m_PrefabInstance: {fileID: 1235815955488811874}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1762f224c4c79e8449d394d6d17d440c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &578803343
 GameObject:
   m_ObjectHideFlags: 0
@@ -21688,7 +21711,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1020053360}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.12}
   m_LocalScale: {x: 0.02, y: 0.02, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -21725,7 +21748,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -21744,7 +21767,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1020053363}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 565875402}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: SetHardDifficulty
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1020053363
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35529,21 +35564,21 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1567503593}
-  m_LocalRotation: {x: -0.10452837, y: 0, z: 0, w: 0.9945219}
-  m_LocalPosition: {x: 0, y: 0, z: 0.00000012203107}
-  m_LocalScale: {x: 1.0000001, y: 0.99999994, z: 1.0000002}
+  m_LocalRotation: {x: -0.10452784, y: 0.003181495, z: 0.00033438829, w: 0.99451685}
+  m_LocalPosition: {x: 0, y: 0, z: -7.5}
+  m_LocalScale: {x: 1.24589, y: 0.60117936, z: 0.9819911}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1385536306}
   - {fileID: 211896494}
   - {fileID: 1597643212}
   - {fileID: 1020053361}
-  m_Father: {fileID: 9688903}
-  m_RootOrder: 7
+  m_Father: {fileID: 296283959}
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: -12, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000015258789, y: 0}
+  m_AnchoredPosition: {x: 10.76, y: 0.75}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1577695777
@@ -36440,7 +36475,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1597643211}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.12}
   m_LocalScale: {x: 0.02, y: 0.02, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -36477,7 +36512,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -36496,7 +36531,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1597643214}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 565875402}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: SetMediumDifficulty
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1597643214
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43381,7 +43428,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1973596138}
-  m_LocalRotation: {x: -0.06716185, y: 0.8836353, z: -0.13378438, w: -0.4435987}
+  m_LocalRotation: {x: -0.067161836, y: 0.8836353, z: -0.13378437, w: -0.44359875}
   m_LocalPosition: {x: 1.6, y: 43.28, z: 121.12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
