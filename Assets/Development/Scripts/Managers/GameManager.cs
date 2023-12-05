@@ -43,6 +43,12 @@ public class GameManager : Singleton<GameManager>
     [HideInInspector]
     //public PlayerInput playerInput;
 
+    //DifficultySettings
+    public int cusFrequency = 1; //customer frequency
+    public int minCustomers = 1;
+    public int maxCustomers = 2;
+    public int cusPatience = 0; //customer patience
+
     public delegate void PlayerSpawnHandler(bool player1Active, bool player2Active, bool player3Active, bool player4Active);
 
     public static event PlayerSpawnHandler OnPlayersSpawned;
@@ -78,6 +84,24 @@ public class GameManager : Singleton<GameManager>
     public void SetPlayButtonActive()
     {
         playButton.SetActive(true);
+    }
+
+    public void SetEasyDifficulty()
+    {
+        //simple difficulty features
+        Debug.Log("Easy");
+    }
+
+    public void SetMediumDifficulty()
+    {
+        //Medium difficulty featuers
+        Debug.Log("Medium");
+    }
+
+    public void SetHardDifficulty()
+    {
+        //Hard difficulty features
+        Debug.Log("Hard");
     }
 
 }
