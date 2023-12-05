@@ -27,7 +27,7 @@ public class IngredientSelectionUI : BaseStation
         ingredientListSOIndex = 0;
         currentIngredient = ingredientListSO[ingredientListSOIndex];
 
-        player = FindObjectOfType<PlayerController>();
+        //player = FindObjectOfType<PlayerController>();
     }
 
     private void Update()
@@ -102,6 +102,7 @@ public class IngredientSelectionUI : BaseStation
     {
         if (other.tag == "Player")
         {
+            player = other.GetComponent<PlayerController>();
             Debug.Log("Player Collided With trigger");
 
             //Display UI ingredient menu
