@@ -31,7 +31,13 @@ public class TestingNetcodeUI : NetworkBehaviour
         spawnCustomerButton.onClick.AddListener(SpawnCustomer);
     }
 
-    private void SpawnCustomer()
+    private void Start()
+    {
+        NetworkManager.Singleton.StartHost();
+        SpawnCustomer();
+    }
+
+    public void SpawnCustomer()
     {
         if (IsServer)
         {

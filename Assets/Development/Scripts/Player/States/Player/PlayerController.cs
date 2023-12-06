@@ -185,11 +185,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
             // Logic for Station Interaction
             if (hit.transform.TryGetComponent(out BaseStation baseStation))
             {
-                visualGameObject = baseStation.transform.GetChild(0).gameObject;
+               //visualGameObject = baseStation.transform.GetChild(0).gameObject;
                 if (baseStation != selectedStation)
                 {
                     SetSelectedStation(baseStation);
-                    Show(visualGameObject);
+                    //Show(visualGameObject);
                 }
             }
             else if (hit.transform.TryGetComponent(out Spill spill))
@@ -238,7 +238,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
             {
                 
 
-                visualGameObject = customerBase.transform.GetChild(0).gameObject;
+                //visualGameObject = customerBase.transform.GetChild(0).gameObject;
                 if (customerBase != selectedCustomer)
                 {
                     SetSelectedCustomer(customerBase);

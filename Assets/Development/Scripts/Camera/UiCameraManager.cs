@@ -6,6 +6,7 @@ using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
+using Unity.Netcode;
 
 public class UiCameraManager : MonoBehaviour
 {
@@ -53,6 +54,8 @@ public class UiCameraManager : MonoBehaviour
     [SerializeField] private GameObject MainMenuTab;
     [SerializeField] private GameObject ExitMenuTab;
     [SerializeField] private GameObject PlayMenuTab;
+
+    [SerializeField] private TestingNetcodeUI netcodeUI;
 
     // Start is called before the first frame update
     public void Start()
@@ -234,8 +237,9 @@ public class UiCameraManager : MonoBehaviour
     void PlayScene() 
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
-        SceneManager.LoadScene("TestScene");
+        SceneManager.LoadScene("TestScene2");
         gameObject.SetActive(false);
+
     }
     void closeGame() 
     {
