@@ -24,6 +24,16 @@ public class PhysicsManager : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        //foreach (GameObject station in stations)
+        //{
+        //    station.GetComponent<Collider>().isTrigger = true;
+        //    station.GetComponent<Rigidbody>().useGravity = true;
+        //    station.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+        //}
+    }
+
     private void OnTriggerStay(Collider other)
     {
         Debug.Log($"Is floating {other.gameObject.name}");
