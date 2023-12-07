@@ -20,6 +20,7 @@ public class PhysicsManager : MonoBehaviour
         {
             station.GetComponent<Collider>().isTrigger = false;
             station.GetComponent<Rigidbody>().useGravity = true;
+            station.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezeRotation;
         }
     }
 
