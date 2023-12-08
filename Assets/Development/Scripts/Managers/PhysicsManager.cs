@@ -53,7 +53,7 @@ public class PhysicsManager : MonoBehaviour
             else
             {
                 Debug.Log("Up");
-                rb.AddForce(Vector3.up * floatForce, ForceMode.Force);
+                rb.AddForce(Vector3.up * (floatForce * Random.Range(0.95f, 1.05f)), ForceMode.Force);
             }
         }
     }
