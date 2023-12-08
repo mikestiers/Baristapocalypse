@@ -3,17 +3,16 @@ using UnityEngine;
 public class BlackHole : MonoBehaviour
 {
     public float gravitationalPull = 10f; // Adjustable gravitational pull strength
-    public float spiralForce = 5f; // Adjustable spiral force strength
-    private SphereCollider sphereCollider;
-    private float angle;
-    private float rotationSpeed;
-    private float rotationDistance;
-    private bool isBeingPulled = false;
-
-
-    private void Start()
+    public float centerForce = 3.7f;
+    public float rightForce = 3.5f;
+    private void OnValidate()
     {
-        sphereCollider = GetComponent<SphereCollider>();
+        if (centerForce <= rightForce)
+        {
+            Debug.LogError("centerForce needs to be greater than rightForce");
+            centerForce = 3.7f;
+            rightForce = 3.5f;
+        }
     }
 
     void OnTriggerStay(Collider other)
@@ -27,32 +26,19 @@ public class BlackHole : MonoBehaviour
     private void ApplyBlackHoleEffect(Rigidbody targetRigidbody)
     {
         Debug.Log("In the blackhole");
-
-        angle += rotationSpeed * Time.deltaTime;
-        //if (!isBeingPulled)
-        //{
-        //    rotationDistance = Vector3.Distance(targetRigidbody.gameObject.transform.position, sphereCollider.center);
-        //    isBeingPulled = true;
-        //}
-
-
+        targetRigidbody.useGravity = false;
         Vector3 directionToCenter = transform.position - targetRigidbody.position;
-        float distance = directionToCenter.magnitude;
+        //float distance = directionToCenter.magnitude;
+        float distance = Vector3.Distance(transform.position, targetRigidbody.position);
 
-        // Gravitational pull force
-        //Vector3 gravitationalForce = directionToCenter.normalized * gravitationalPull / distance; // Force decreases with distance
-        //targetRigidbody.AddForce(gravitationalForce, ForceMode.Acceleration);
+        // Middle Force
+        Vector3 gravitationalForce = directionToCenter.normalized * (gravitationalPull / distance); // Force decreases with distance
 
-        //// Spiral force
-        float radius = sphereCollider.radius;
+        // Right and Up Force
+        targetRigidbody.transform.LookAt(transform.position);
+        Vector3 rightForce = (targetRigidbody.transform.up + targetRigidbody.transform.right) * (gravitationalPull / distance);
+        targetRigidbody.AddForce((gravitationalForce * 3.7f) + (rightForce * 3.5f), ForceMode.Force);
 
-        // Calculate the new position
-        float x = Mathf.Cos(angle) * radius;
-        float z = Mathf.Sin(angle) * radius;
-        //float y = targetRigidbody.position.y; // Keep the original Y position
-
-        // Set the new position relative to the center object
-        targetRigidbody.position = new Vector3(x, targetRigidbody.transform.position.y, z);
-
+        targetRigidbody.velocity = Vector3.ClampMagnitude(targetRigidbody.velocity, 5.0f);
     }
 }
