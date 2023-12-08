@@ -230,7 +230,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         }
 
         // Customer Interaction Logic
-        float customerInteractDistance = 4.0f;
+        float customerInteractDistance = 5.0f;
         //if (Physics.Raycast(transform.position + RayCastOffset, transform.forward, out RaycastHit hitCustomer, customerInteractDistance, interactableLayerMask))
         if (Physics.SphereCast(transform.position + RayCastOffset, sphereCastRadius, transform.forward, out RaycastHit hitCustomer, customerInteractDistance, interactableLayerMask))
         {
