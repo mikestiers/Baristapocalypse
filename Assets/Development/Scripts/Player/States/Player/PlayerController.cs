@@ -92,6 +92,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     [SerializeField] private TextMeshPro ingredientIndicatorText;
     private string currentIndicator;
 
+    private string macarenaAnim = "MacarenaDance";
+
     private void Awake()
     {
         if (Instance != null) { Instance = this; }
@@ -157,6 +159,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         if (!IsOwner)
         {
             return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.M)) 
+        {
+            anim.Play(macarenaAnim);
         }
 
         // Ground Check
