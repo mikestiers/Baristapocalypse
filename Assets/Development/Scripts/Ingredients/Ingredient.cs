@@ -1,13 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class Ingredient : MonoBehaviour
+public class Ingredient : NetworkBehaviour
 {
     
     [field: SerializeField] public IngredientSO IngredientSO { get; private set; }
 
     private IIngredientParent ingredientParent;
+    private IngredientFollowTransform followTransform;
+
+    protected virtual void Awake()
+    {
+        followTransform = GetComponent<IngredientFollowTransform>();   
+    }
 
     public IngredientSO GetIngredientSO()
     {
@@ -16,7 +23,22 @@ public class Ingredient : MonoBehaviour
 
     public void SetIngredientParent(IIngredientParent ingredientParent)
     {
-        if(this.ingredientParent != null)
+        SetIngredientParentServerRpc(ingredientParent.GetNetworkObject());
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetIngredientParentServerRpc(NetworkObjectReference ingredientParentNetworkObjectReference)
+    {
+        SetIngredientParentClientRpc(ingredientParentNetworkObjectReference);   
+    }
+
+    [ClientRpc]
+    private void SetIngredientParentClientRpc(NetworkObjectReference ingredientParentNetworkObjectReference)
+    {
+        ingredientParentNetworkObjectReference.TryGet(out NetworkObject ingredientParentNetworkObject);
+        IIngredientParent ingredientParent = ingredientParentNetworkObject.GetComponent<IIngredientParent>();
+
+        if (this.ingredientParent != null)
         {
             this.ingredientParent.ClearIngredient();
         }
@@ -28,8 +50,31 @@ public class Ingredient : MonoBehaviour
         }
         ingredientParent.SetIngredient(this);
 
-        transform.parent = ingredientParent.GetIngredientTransform();
-        transform.localPosition = Vector3.zero;
+        followTransform.SetTargetTransform(ingredientParent.GetIngredientTransform());
+    }
+
+    public void DisableIngredientCollision(Ingredient ingredient)
+    {
+        DisableIngredientCollisionServerRpc(ingredient.GetNetworkObject());
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DisableIngredientCollisionServerRpc(NetworkObjectReference ingredientNetworkObjectReference)
+    {
+        DisableIngredientCollisionClientRpc(ingredientNetworkObjectReference);
+    }
+
+    [ClientRpc]
+    private void DisableIngredientCollisionClientRpc(NetworkObjectReference ingredientNetworkObjectReference)
+    {
+        ingredientNetworkObjectReference.TryGet(out NetworkObject ingredientNetworkObject);
+        Ingredient ingredient = ingredientNetworkObject.GetComponent<Ingredient>();
+        // Disable the collider immediately after instantiation
+        Collider ingredientCollider = ingredient.GetComponent<Collider>();
+        if (ingredientCollider != null)
+        {
+            ingredientCollider.enabled = false;
+        }
     }
 
     public IIngredientParent GetIngredientParent()
@@ -37,24 +82,28 @@ public class Ingredient : MonoBehaviour
         return ingredientParent;
     }
 
-    public void DestroyIngredient()
+    public static void DestroyIngredient(Ingredient ingredient)
     {
-        ingredientParent.ClearIngredient();
+        BaristapocalypseMultiplayer.Instance.DestroyIngredient(ingredient);
+    }
+
+    public static void SpawnIngredient(IngredientSO ingredientSO, IIngredientParent ingredientParent)
+    {
+        BaristapocalypseMultiplayer.Instance.SpawnIngredient(ingredientSO, ingredientParent);
+    }
+
+    public NetworkObject GetNetworkObject()
+    {
+        return NetworkObject;
+    }
+
+    public void DestroySelf()
+    {
         Destroy(gameObject);
     }
 
-    public static Ingredient SpawnIngredient(IngredientSO ingredientSO, IIngredientParent ingredientParent)
+    public void ClearIngredientOnParent()
     {
-        GameObject ingredientPrefab = Instantiate(ingredientSO.prefab);
-        Ingredient ingredient = ingredientPrefab.GetComponent<Ingredient>();
-        ingredient.GetComponent<Ingredient>().SetIngredientParent(ingredientParent);
-        // Disable the collider immediately after instantiation
-        Collider ingredientCollider = ingredient.GetComponent<Collider>();
-        if (ingredientCollider != null)
-        {
-            ingredientCollider.enabled = false;
-        }
-
-        return ingredient;
+        ingredientParent.ClearIngredient();
     }
 }

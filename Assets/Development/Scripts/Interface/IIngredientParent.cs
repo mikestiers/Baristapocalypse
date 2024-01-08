@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public interface IIngredientParent
@@ -9,4 +10,5 @@ public interface IIngredientParent
     public Ingredient GetIngredient();
     public void ClearIngredient();
     public bool HasIngredient();
+    public NetworkObject GetNetworkObject();
 }

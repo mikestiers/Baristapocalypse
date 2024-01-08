@@ -471,7 +471,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         if (IsHoldingPickup)
             return;
         floorIngredient.SetIngredientParent(this);
-        floorIngredient.DestroyIngredient();
+        Ingredient.DestroyIngredient(floorIngredient);
 
         Transform nextHoldPoint = GetNextHoldPoint();
         if (nextHoldPoint != null)
@@ -493,7 +493,13 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     public bool HasIngredient()
     {
-        return GetNumberOfIngredients() >= maxIngredients;
+        return ingredient != null;
+        //return GetNumberOfIngredients() >= maxIngredients;
+    }
+
+    public NetworkObject GetNetworkObject()
+    {
+        return NetworkObject;
     }
 
     public void Show(GameObject visualGameObject)

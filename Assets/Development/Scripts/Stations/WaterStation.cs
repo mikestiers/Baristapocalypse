@@ -35,7 +35,7 @@ public class WaterStation : BaseStation, IHasProgress
             {
                 if (player.GetIngredient().CompareTag("Milk")) //check if player has milk ingredient
                 {
-                    player.GetIngredient().DestroyIngredient(); //destroy ingredient
+                    Ingredient.DestroyIngredient(player.GetIngredient()); //destroy ingredient
                 }
             }
             else

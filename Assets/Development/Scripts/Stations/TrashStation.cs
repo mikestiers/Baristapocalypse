@@ -15,7 +15,7 @@ public class TrashStation : BaseStation
                 if (holdPoint.childCount > 0)
                 {
                     Ingredient ingredient = holdPoint.GetComponentInChildren<Ingredient>();
-                    ingredient.DestroyIngredient();
+                    Ingredient.DestroyIngredient(ingredient);
                     SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
                     //interactParticle.Play();
                 }

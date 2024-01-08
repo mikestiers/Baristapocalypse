@@ -19,14 +19,14 @@ public class DebugConsole : MonoBehaviour
             {
                 if (player.GetNextHoldPoint())
                 {
-                    Ingredient i = Ingredient.SpawnIngredient(coffeeCup.IngredientSO, player);
-                    CoffeeAttributes coffeeAttributes = i.GetComponent<CoffeeAttributes>();
-                    coffeeAttributes.AddSweetness(int.Parse(args[1]));
-                    coffeeAttributes.AddBitterness(int.Parse(args[2]));
-                    coffeeAttributes.AddStrength(int.Parse(args[3]));
-                    coffeeAttributes.AddTemperature(int.Parse(args[4]));
-                    coffeeAttributes.AddSpiciness(int.Parse(args[5]));
-                    player.GetNumberOfIngredients();
+                    //Ingredient i = Ingredient.SpawnIngredient(coffeeCup.IngredientSO, player);
+                    //CoffeeAttributes coffeeAttributes = i.GetComponent<CoffeeAttributes>();
+                    //coffeeAttributes.AddSweetness(int.Parse(args[1]));
+                    //coffeeAttributes.AddBitterness(int.Parse(args[2]));
+                    //coffeeAttributes.AddStrength(int.Parse(args[3]));
+                    //coffeeAttributes.AddTemperature(int.Parse(args[4]));
+                    //coffeeAttributes.AddSpiciness(int.Parse(args[5]));
+                    //player.GetNumberOfIngredients();
                 }
             }
             catch { }

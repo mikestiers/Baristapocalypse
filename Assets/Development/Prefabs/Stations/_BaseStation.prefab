@@ -42,6 +42,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2305830337154933689}
   - component: {fileID: 9108354143576796918}
+  - component: {fileID: 7109546293884197120}
   m_Layer: 6
   m_Name: _BaseStation
   m_TagString: Untagged
@@ -80,6 +81,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.5, y: 1.5, z: 1.5}
   m_Center: {x: 0, y: 0.75, z: 0}
+--- !u!114 &7109546293884197120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8083973324504194466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1001 &477213081560120479
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -213,7 +230,8 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 583818407699021206, guid: e312cba3d0b81e84b9ef28e30b6a6978, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: e312cba3d0b81e84b9ef28e30b6a6978, type: 3}
 --- !u!4 &4401207707358592941 stripped
 Transform:

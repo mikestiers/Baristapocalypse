@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class CoffeeGrinderStation : BaseStation, IHasProgress
@@ -15,7 +16,17 @@ public class CoffeeGrinderStation : BaseStation, IHasProgress
     {
         if (!HasIngredient())
         {
-            if (player.GetNumberOfIngredients() >= 1)
+            if (player.HasIngredient())
+            {
+                if (HasValidRecipe(player.GetIngredient().GetIngredientSO()))
+                {
+                    Ingredient ingredient = player.GetIngredient();
+                    player.GetIngredient().SetIngredientParent(this);
+     
+                    InteractLogicPlaceObjectOnGrinderServerRpc();
+                }
+            }
+            /*if (player.GetNumberOfIngredients() >= 1)
             {
                 foreach (Transform holdPoint in player.ingredientHoldPoints)
                 {
@@ -35,8 +46,7 @@ public class CoffeeGrinderStation : BaseStation, IHasProgress
                         break;
                     }
                 }
-
-            }
+            }*/
         }
         else
         {
@@ -57,23 +67,63 @@ public class CoffeeGrinderStation : BaseStation, IHasProgress
         }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void InteractLogicPlaceObjectOnGrinderServerRpc()
+    {
+        InteractLogicPlaceObjectOnGrinderClientRpc();
+    }
+
+    [ClientRpc]
+    private void InteractLogicPlaceObjectOnGrinderClientRpc()
+    {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
+        interactParticle.Play();
+        grindProgress = 0;
+
+        OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
+        {
+            progressNormalized = 0f
+        });
+    }
+
     public override void InteractAlt(PlayerController player)
     {
         //Grind coffee if on table and valid input
         if (HasIngredient() && HasValidRecipe(GetIngredient().GetIngredientSO()))
         {
-            grindProgress++;
-            CoffeeGrindRecipeSO coffeeGrindRecipeSO = GetCoffeeGrindRecipeSOWithInput(GetIngredient().GetIngredientSO());
-            OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
-            {
-                progressNormalized = (float)grindProgress / coffeeGrindRecipeSO.grindMax
-            });
-            if (grindProgress >= coffeeGrindRecipeSO.grindMax)
-            { 
-                IngredientSO coffeeGrindSO = GetCoffeeGrind(GetIngredient().GetIngredientSO());
-                GetIngredient().DestroyIngredient();
-                Ingredient.SpawnIngredient(coffeeGrindSO, this);
-            }
+            GrindBeanServerRpc();
+            TestGrindProgressDoneServerRpc();
+        }
+    }
+    [ServerRpc(RequireOwnership = false)]
+    private void GrindBeanServerRpc()
+    {
+        GrindBeanClientRpc();
+    }
+
+    [ClientRpc]
+    private void GrindBeanClientRpc()
+    {
+        grindProgress++;
+        CoffeeGrindRecipeSO coffeeGrindRecipeSO = GetCoffeeGrindRecipeSOWithInput(GetIngredient().GetIngredientSO());
+        OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
+        {
+            progressNormalized = (float)grindProgress / coffeeGrindRecipeSO.grindMax
+        });
+        
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void TestGrindProgressDoneServerRpc()
+    {
+        CoffeeGrindRecipeSO coffeeGrindRecipeSO = GetCoffeeGrindRecipeSOWithInput(GetIngredient().GetIngredientSO());
+
+        if (grindProgress >= coffeeGrindRecipeSO.grindMax)
+        {
+            IngredientSO coffeeGrindSO = GetCoffeeGrind(GetIngredient().GetIngredientSO());
+
+            Ingredient.DestroyIngredient(GetIngredient());
+            Ingredient.SpawnIngredient(coffeeGrindSO, this);
         }
     }
 

@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class BaseStation : MonoBehaviour, IIngredientParent
+public class BaseStation : NetworkBehaviour, IIngredientParent
 {
     [SerializeField] private Transform stationTopPoint;
     
@@ -43,5 +44,8 @@ public class BaseStation : MonoBehaviour, IIngredientParent
         return ingredient != null;
     }
 
-
+    public NetworkObject GetNetworkObject()
+    {
+        return NetworkObject;
+    }
 }
