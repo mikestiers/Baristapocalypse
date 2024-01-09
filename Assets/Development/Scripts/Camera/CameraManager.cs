@@ -5,8 +5,17 @@ using UnityEngine;
 [RequireComponent(typeof(Camera))]
 public class CameraManager : MonoBehaviour
 {
-    public List<Transform> targets = new List<Transform>();
-    [SerializeField] Vector3 offset;
+    // asign to player by network id
+    // follow a spline
+    // look at the player 
+    // rotate towards the center of the screen
+
+    
+
+
+    /*
+   // public List<Transform> targets = new List<Transform>();
+   // [SerializeField] Vector3 offset;
     [SerializeField] float smoothTime = .5f;
     [SerializeField] float maxZoom = 45f;
     [SerializeField] float minZoom = 25f;
@@ -76,5 +85,5 @@ public class CameraManager : MonoBehaviour
             bounds.Encapsulate(targets[i].position);
         }
         return bounds.center;
-    }
+    }*/
 }
