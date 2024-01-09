@@ -11,7 +11,7 @@ public class CustomerManager : Singleton<CustomerManager>
     [SerializeField] private Transform Counter;
     [SerializeField] private Transform barEntrance;
     [SerializeField] private Transform exit;
-    [SerializeField] private float delay = 8.0f;
+    [SerializeField] private float delay = 8.0f; //difficulty change
     [SerializeField] private int numberOfCustomers = 5;
     private int customerNumber = 0;
     List<string> customerNames = new List<string>
@@ -110,7 +110,7 @@ public class CustomerManager : Singleton<CustomerManager>
     {
         yield return new WaitForSeconds(1f);
 
-        if (LineQueue.CanAddCustomer() == true)
+        if (LineQueue.CanAddCustomer() == true) // add condition for waves? 
         {
             //we can randomize this aswell just set 0 to a random integer from modulo if size of list
             LineQueue.AddCustomer(customersOutsideList[0]);
