@@ -1,21 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Dreamteck.Splines;
+
 
 [RequireComponent(typeof(Camera))]
 public class CameraManager : MonoBehaviour
 {
-    // asign to player by network id
-    // follow a spline
-    // look at the player 
-    // rotate towards the center of the screen
-
-    
-
-
-    /*
    // public List<Transform> targets = new List<Transform>();
-   // [SerializeField] Vector3 offset;
+    [SerializeField] Vector3 offset;
+    [SerializeField] GameObject Player;
     [SerializeField] float smoothTime = .5f;
     [SerializeField] float maxZoom = 45f;
     [SerializeField] float minZoom = 25f;
@@ -29,10 +23,10 @@ public class CameraManager : MonoBehaviour
     private void Start()
     {
         cam = GetComponent<Camera>();
-            
+
     }
 
-    private void Update()
+   /* private void Update()
     {
         if (hasListShrunk == false)
         {
@@ -41,21 +35,21 @@ public class CameraManager : MonoBehaviour
             hasListShrunk = true;
         }
     }
-
+   */
     private void LateUpdate()
     {
-        if(targets.Count <= 0) return;
+        if (Player = null) return;
 
-        Move();
+       // Move();
         Zoom();
     }
 
     void Zoom()
     {
-        float newZoom = Mathf.Lerp(minZoom, maxZoom, GetGreatesDistance() / zoomLimiter);
+        float newZoom = Mathf.Lerp(minZoom, maxZoom, zoomLimiter);
         cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, newZoom, Time.deltaTime);
     }
-    void Move() 
+   /* void Move()
     {
         Vector3 centerPoint = GetCenterPoint();
 
@@ -63,27 +57,21 @@ public class CameraManager : MonoBehaviour
 
         transform.position = Vector3.SmoothDamp(transform.position, newPosition, ref velocity, smoothTime);
     }
-
-    float GetGreatesDistance() 
+   
+    float GetGreatesDistance()
     {
         var bounds = new Bounds(targets[0].position, Vector3.zero);
-        for (int i = 0; i < targets.Count; i++) 
+        for (int i = 0; i < targets.Count; i++)
         {
             bounds.Encapsulate(targets[i].position);
         }
         return bounds.size.x;
     }
-    Vector3 GetCenterPoint() 
-    { 
-        if (targets.Count == 1) 
-        {
-            return targets[0].position;
-        }
-        var bounds = new Bounds(targets[0].position, Vector3.zero);
-        for (int i = 0; i < targets.Count; i++) 
-        {
-            bounds.Encapsulate(targets[i].position);
-        }
-        return bounds.center;
-    }*/
+   
+    Vector3 GetCenterPoint()
+    {
+        Player;
+    }
+   */
 }
+
