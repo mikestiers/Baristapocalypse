@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,9 @@ public class CustomerManager : Singleton<CustomerManager>
     [SerializeField] private Transform exit;
     [SerializeField] private float delay = 8.0f; //difficulty change
     [SerializeField] private int numberOfCustomers = 5;
+    [SerializeField] private int customersLeftinWave;
+    [SerializeField] private int WavesLeft;
+    [SerializeField] private int customersInStore = 0;
     private int customerNumber = 0;
     List<string> customerNames = new List<string>
         {
@@ -50,6 +54,7 @@ public class CustomerManager : Singleton<CustomerManager>
 
     public CustomerLineQueuing LineQueue;
     public CustomerBarFloor barFloor;
+    public DifficultySettings difficultySettings; //will move to GameManager when gamemanager is owki, change references to GameManager aswell
 
     private NetworkObject newcustomer;
 
@@ -75,6 +80,13 @@ public class CustomerManager : Singleton<CustomerManager>
         //LineQueue.OnCustomerArrivedAtFrontOfQueue += WaitingQueue_OnCustomerArrivedAtFrontOfQueue; might be used for future code?
         LineQueue = new CustomerLineQueuing(waitingQueuePostionList);
         barFloor = new CustomerBarFloor(Chairs);
+        difficultySettings = new DifficultySettings(1); // change constructor to set difficulty when moving to GameManager, made this way just for testing
+
+        customersLeftinWave = difficultySettings.GetNumberofCustomersInwave();
+        WavesLeft = difficultySettings.GetNumberOfWaves();
+
+        UIManager.Instance.CustomersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
+        UIManager.Instance.SpawnMode.text = "Serving Customers";
 
         StartCoroutine(NewCustomer(delay));
 
@@ -94,11 +106,44 @@ public class CustomerManager : Singleton<CustomerManager>
 
                 SpawnCustomerClientRpc();
                 GiveCustomerNameClientRpc(randomCustomer);
-
                 StartCoroutine(CustomerEnterStore());
+                customersInStore++;
+                customersLeftinWave--;
+                UIManager.Instance.CustomersInStore.text = ("Customers in Store: ") + customersInStore.ToString();
+                UIManager.Instance.CustomersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
+
+                if (customersLeftinWave <= 0) yield break;
             }
         }
     }
+
+    // Trigger Time Between waves
+    public void NextShift()
+    {
+        difficultySettings.NextShift();
+        customersLeftinWave = difficultySettings.GetNumberofCustomersInwave();
+        WavesLeft = difficultySettings.GetNumberOfWaves();
+
+        //Trigger UI
+        UIManager.Instance.SpawnMode.text = "Resting";
+
+        StartCoroutine(RestPeriod(difficultySettings.GetTimeBetweenWaves()));
+
+    }
+
+    //Timer for Inbetween Waves
+    public IEnumerator RestPeriod(float timer)
+    {
+        yield return new WaitForSeconds(timer);
+
+        //Trigger UI
+        UIManager.Instance.SpawnMode.text = "Serving Customers";
+        UIManager.Instance.CustomersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
+        
+
+        StartCoroutine(NewCustomer(delay));
+    }
+
 
     [ClientRpc]
     public void SpawnCustomerClientRpc()
@@ -201,5 +246,15 @@ public class CustomerManager : Singleton<CustomerManager>
     public Transform GetExit()
     {
         return exit;
+    }
+
+    public int GetCustomerLeftinStore()
+    {
+        return customersInStore;
+    }
+
+    public void ReduceCustomerInStore()
+    {
+        customersInStore--;
     }
 }

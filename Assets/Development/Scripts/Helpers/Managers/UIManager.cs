@@ -43,6 +43,12 @@ public class UIManager : Singleton<UIManager>
     public GameObject debugConsole;
     public bool debugConsoleActive = false;
 
+    [Header("DifficultyTesting")]
+    public Text CustomersLeft;
+    public Text CustomersInStore;
+    public Text SpawnMode;
+
+
     private void Start()
     {
         if (toGame)

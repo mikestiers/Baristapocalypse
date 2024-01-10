@@ -52,11 +52,23 @@ public class DifficultySettings
 
     }
 
-    public void nextshift()
+    public void NextShift()
     {
         Shift++;
     }
 
+    public int GetNumberOfWaves()
+    {
+        return numberOfWaves;
+    }
 
+    public int GetNumberofCustomersInwave()
+    {
+        return numberOfCustomersInWave;
+    }
 
+    public float GetTimeBetweenWaves()
+    {
+        return timeBetweenWaves;
+    }
 }
