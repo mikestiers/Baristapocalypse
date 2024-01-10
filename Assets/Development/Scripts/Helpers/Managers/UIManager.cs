@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.Audio;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -29,6 +30,7 @@ public class UIManager : Singleton<UIManager>
     public Text score;
     public TextMeshProUGUI gameOverText;
     public TextMeshProUGUI finalScore;
+    public Text volSliderText;
 
     [Header("Order Stats")]
     public Transform ordersPanel;
@@ -42,6 +44,10 @@ public class UIManager : Singleton<UIManager>
     [Header("DebugConsole")]
     public GameObject debugConsole;
     public bool debugConsoleActive = false;
+
+    [Header("Slider")]
+    public Slider volSlider;
+    public AudioMixer mixer;
 
     private void Start()
     {
@@ -63,6 +69,12 @@ public class UIManager : Singleton<UIManager>
             closePause.onClick.AddListener(ClosePause);
         if (restartGame)
             restartGame.onClick.AddListener(RestartGame);
+        if (volSlider)
+        {
+            volSlider.onValueChanged.AddListener((value) => OnSliderValueChanged(value));
+            if (volSliderText)
+                volSliderText.text = volSlider.value.ToString();
+        }
     }
     private void ReturnToGame()
     {
@@ -229,4 +241,14 @@ public class UIManager : Singleton<UIManager>
             tutorialMenu.SetActive(false);
         }
     }
+    void OnSliderValueChanged(float value)
+    {
+        if (volSliderText)
+            volSliderText.text = value.ToString();
+
+        if (mixer)
+            mixer.SetFloat("Master", value);
+    }
+
+
 }
