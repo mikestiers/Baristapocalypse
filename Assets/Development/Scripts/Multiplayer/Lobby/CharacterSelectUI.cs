@@ -5,7 +5,9 @@ using UnityEngine.UI;
 
 public class CharacterSelectUI : MonoBehaviour
 {
+    [SerializeField] private Button mainMenuButton;
     [SerializeField] private Button readyButton;
+    
 
     private void Awake()
     {
