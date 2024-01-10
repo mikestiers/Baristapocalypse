@@ -50,4 +50,9 @@ public class CharacterSelectPlayer : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+
+    private void OnDestroy()
+    {
+        BaristapocalypseMultiplayer.Instance.OnPlayerDataNetworkListChanged -= BaristapocalypseMultiplayer_OnPlayerDataNetworkListChanged;
+    }
 }
