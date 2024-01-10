@@ -101,19 +101,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     private void Start()
     {
-        // Testing
-        //check amount of players spawned and move player to that position
-        if (GameManager.Instance.spawnpoint == 0 || GameManager.Instance.spawnpoint >= 4)
-            transform.position = spawnpoint1.position;
-        else if (GameManager.Instance.spawnpoint == 1)
-            transform.position = spawnpoint2.position;
-        else if (GameManager.Instance.spawnpoint == 2)
-            transform.position = spawnpoint3.position;
-        else if (GameManager.Instance.spawnpoint == 3)
-            transform.position = spawnpoint4.position;
-
-        GameManager.Instance.spawnpoint++;
-
         //Get components
         rb = GetComponent<Rigidbody>();
         anim = GetComponentInChildren<Animator>();

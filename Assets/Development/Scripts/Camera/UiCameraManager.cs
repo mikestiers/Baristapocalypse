@@ -101,18 +101,6 @@ public class UiCameraManager : MonoBehaviour
         if (MainMenuFromSettings)
             MainMenuFromSettings.onClick.AddListener(ReturnFromSettings);
 
-        if (Player1)
-            Player1.onClick.AddListener(PlayerSpawn1);
-
-        if (Player2)
-            Player2.onClick.AddListener(PlayerSpawn2);
-
-        if (Player3)
-            Player3.onClick.AddListener(PlayerSpawn3);
-
-        if (Player4)
-            Player4.onClick.AddListener(PlayerSpawn4);
-
         if (FullScreenButton)
             FullScreenButton.onClick.AddListener(SetFullScreen);
 
@@ -120,49 +108,6 @@ public class UiCameraManager : MonoBehaviour
             WindowModeButton.onClick.AddListener(SetWindowMode);
     }
 
-    void PlayerSpawn4()
-    {
-        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
-        if (Player4Yellow != null)
-        {
-            Instantiate(Player4Yellow, Player4SpawnPoint);
-        }
-        GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().player4Active = true;
-        return;
-
-    }
-    void PlayerSpawn3()
-    {
-        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
-        if (Player3Green != null)
-        {
-            Instantiate(Player3Green, Player3SpawnPoint);
-        }
-        GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().player3Active = true;
-        return;
-
-    }
-    void PlayerSpawn2()
-    {
-        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
-        if (Player2Blue != null)
-        {
-            Instantiate(Player2Blue, Player2SpawnPoint);
-        }
-        GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().player2Active = true;
-        return;
-
-    }
-    void PlayerSpawn1() 
-    {
-        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
-        if (Player1Red != null) 
-        { 
-           Instantiate(Player1Red, Player1SpawnPoint);
-        }
-        GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().player1Active = true;
-        return;
-    }
     void ReturnFromSettings() 
     { 
         if(SettingsCamera.Priority ==1) 
