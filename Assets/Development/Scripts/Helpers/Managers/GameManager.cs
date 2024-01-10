@@ -7,11 +7,14 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Unity.Netcode;
 using static Unity.Burst.Intrinsics.Arm;
 
 [DefaultExecutionOrder(-1)]
-public class GameManager : Singleton<GameManager>
+public class GameManager : NetworkBehaviour
 {
+    public static GameManager Instance { get; private set; }
+
     // Testing
     [SerializeField] private GameObject play;
     [SerializeField] private GameObject mainMenu;
@@ -69,17 +72,10 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    private void Start()
+    private void Awake()
     {
-        //playerInput = new PlayerInput();
-        //playerInput.Player.Enable();
+        Instance = this;
     }
-
-    private void OnDestroy()
-    {
-        //playerInput.Player.Disable();
-    }
-
     public void SetPlayButtonActive()
     {
         playButton.SetActive(true);

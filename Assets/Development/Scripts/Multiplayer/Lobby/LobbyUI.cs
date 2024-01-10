@@ -18,65 +18,25 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private Button startHostingButton;
     [SerializeField] private Button backButton;
 
-    private void Start()
+    private void Awake()
     {
         if (hostLobbyButton)
-            hostLobbyButton.onClick.AddListener(ToHostSettings);
+        {
+            hostLobbyButton.onClick.AddListener(() =>
+            {
+                BaristapocalypseMultiplayer.Instance.StartHost();
+                Loader.LoadNetwork(Loader.Scene.CharacterSelectScene);
+            });
+        }
+            
         if (joinLobbyButton)
-            joinLobbyButton.onClick.AddListener(ToJoinLobbies);
-        if (startHostingButton)
-            startHostingButton.onClick.AddListener(ToLobby);
-        if (backButton)
-            backButton.onClick.AddListener(ToPreviousPanel);
-    }
-
-    private void ToHostSettings()
-    {
-        multiplayerPanel.SetActive(false);
-        hostSettingsPanel.SetActive(true);
-    }
-
-    private void ToJoinLobbies()
-    {
-        multiplayerPanel.SetActive(false);
-        joinLobbyPanel.SetActive(true);
-    }
-
-    private void ToLobby()
-    {
-        //Set up logic to Load into a specific that lobby and display on the lobby stuff
-
-        hostSettingsPanel.SetActive(false);
-        lobbyPanel.SetActive(true);
-    }
-
-    //Goes to the previous Panel by checking which panel is currently active
-    private void ToPreviousPanel()
-    {
-        if (multiplayerPanel.activeInHierarchy)
         {
-            //leave Multiplayer scene/section
-            return;
-        }
-        if (hostSettingsPanel.activeInHierarchy)
-        {
-            hostSettingsPanel.SetActive(false);
-            multiplayerPanel.SetActive(true);
-            return;
-        }
-        if (lobbyPanel.activeInHierarchy)
-        {
-            lobbyPanel.SetActive(false);
-
-            //Logic for closing a Lobby forcibly here!!!
-
-            multiplayerPanel.SetActive(true);
-            return;
-        }
-        if(joinLobbyPanel.activeInHierarchy)
-        {
-            joinLobbyPanel.SetActive(false);
-            multiplayerPanel.SetActive(true);
+            joinLobbyButton.onClick.AddListener(() =>
+            {
+                BaristapocalypseMultiplayer.Instance.StartClient();
+            });
         }
     }
+
+    
 }

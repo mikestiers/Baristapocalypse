@@ -2372,6 +2372,68 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 813563084}
   m_CullTransparentMesh: 1
+--- !u!1 &854818452
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 854818455}
+  - component: {fileID: 854818454}
+  - component: {fileID: 854818453}
+  m_Layer: 0
+  m_Name: BaristapocalypseMultiplayer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &854818453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854818452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 2132822357
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+--- !u!114 &854818454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854818452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0057ec5363c87145935c0fb9aeee647, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ingredientListSO: {fileID: 11400000, guid: d24fc2a30b947c649be1b5d0960b3220, type: 2}
+--- !u!4 &854818455
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854818452}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &908959879
 GameObject:
   m_ObjectHideFlags: 0
@@ -2944,7 +3006,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: "\u200B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4197,7 +4259,6 @@ GameObject:
   - component: {fileID: 1647500688}
   - component: {fileID: 1647500687}
   - component: {fileID: 1647500686}
-  - component: {fileID: 1647500690}
   - component: {fileID: 1647500691}
   m_Layer: 5
   m_Name: Lobby
@@ -4292,18 +4353,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1647500690
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1647500685}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b19bd18940748547a1c0e2e7e07b28a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1647500691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4316,14 +4365,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c77229fb40f11114096329f43b945365, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MultiplayerPanel: {fileID: 1674222755}
-  HostSettingsPanel: {fileID: 1558561494}
-  LobbyPanel: {fileID: 1683131011}
-  JoinLobbyPanel: {fileID: 1289803706}
-  HostLobbyButton: {fileID: 1747507604}
-  JoinLobbyButton: {fileID: 219348889}
-  StartHostingButton: {fileID: 1376724308}
-  BackButton: {fileID: 89407864}
+  multiplayerPanel: {fileID: 1674222755}
+  hostSettingsPanel: {fileID: 1558561494}
+  lobbyPanel: {fileID: 1683131011}
+  joinLobbyPanel: {fileID: 1289803706}
+  hostLobbyButton: {fileID: 1747507604}
+  joinLobbyButton: {fileID: 219348889}
+  startHostingButton: {fileID: 0}
+  backButton: {fileID: 89407864}
 --- !u!1 &1674222755
 GameObject:
   m_ObjectHideFlags: 0
@@ -4717,7 +4766,7 @@ MonoBehaviour:
       OverridingTargetPrefab: {fileID: 0}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
-    ConnectionApproval: 0
+    ConnectionApproval: 1
     ConnectionData: 
     EnableTimeResync: 0
     TimeResyncInterval: 30

@@ -27,6 +27,11 @@ public class BaristapocalypseMultiplayer : NetworkBehaviour
         NetworkManager.Singleton.StartHost();
     }
 
+    public void StartClient()
+    {
+        NetworkManager.Singleton.StartClient();
+    }
+
     private void NetworkManager_ConnectionApprovalCallback(NetworkManager.ConnectionApprovalRequest connectionApprovalRequest, NetworkManager.ConnectionApprovalResponse connectionApprovalResponse)
     {
         if (SceneManager.GetActiveScene().name != Loader.Scene.CharacterSelectScene.ToString())

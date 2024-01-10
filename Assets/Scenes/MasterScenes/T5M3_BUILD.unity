@@ -16162,68 +16162,6 @@ Mesh:
     offset: 0
     size: 0
     path: 
---- !u!1 &620141415
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 620141418}
-  - component: {fileID: 620141417}
-  - component: {fileID: 620141416}
-  m_Layer: 0
-  m_Name: BaristapocalypseMultiplayer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &620141416
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 620141415}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2413619378
-  AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
---- !u!114 &620141417
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 620141415}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0057ec5363c87145935c0fb9aeee647, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ingredientListSO: {fileID: 11400000, guid: d24fc2a30b947c649be1b5d0960b3220, type: 2}
---- !u!4 &620141418
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 620141415}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 31
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &633694241
 GameObject:
   m_ObjectHideFlags: 0
@@ -36243,6 +36181,10 @@ PrefabInstance:
     - target: {fileID: 2057572932697623282, guid: 0aff971ed2ad1a047911ff422b84c64a, type: 3}
       propertyPath: m_Name
       value: TestingNetcodeUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 2057572932697623282, guid: 0aff971ed2ad1a047911ff422b84c64a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2057572932697623283, guid: 0aff971ed2ad1a047911ff422b84c64a, type: 3}
       propertyPath: GlobalObjectIdHash

@@ -9,8 +9,6 @@ using static Cinemachine.CinemachineTriggerAction.ActionSettings;
 
 public class LobbyManager : MonoBehaviour
 {
-
-
     private Lobby hostLobby;
     private Lobby joinedLobby;
     private float heartbeatTimer;
