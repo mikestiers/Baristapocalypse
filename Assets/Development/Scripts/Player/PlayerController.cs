@@ -579,4 +579,24 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         UIManager.Instance.debugConsole.SetActive(!UIManager.Instance.debugConsoleActive);
         UIManager.Instance.debugConsoleActive = !UIManager.Instance.debugConsoleActive;
     }
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
+            Instance = this;
+        }
+
+        if (IsServer)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+        }
+    }
+
+    private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
+    {
+        if(clientId == OwnerClientId && HasIngredient()) {
+            Ingredient.DestroyIngredient(GetIngredient());
+        }
+    }
 }

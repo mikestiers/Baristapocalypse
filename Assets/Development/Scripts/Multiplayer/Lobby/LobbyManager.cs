@@ -9,23 +9,35 @@ using static Cinemachine.CinemachineTriggerAction.ActionSettings;
 
 public class LobbyManager : MonoBehaviour
 {
+
+
     private Lobby hostLobby;
     private Lobby joinedLobby;
     private float heartbeatTimer;
     private float lobbyUpdateTimer;
     private string playerName;
 
-    private async void Start()
+    public static LobbyManager Instance { get; private set; }
+
+    private void Awake()
     {
-        await UnityServices.InitializeAsync();
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
 
-        AuthenticationService.Instance.SignedIn += () =>
+        InitializeUnityAuthentication();
+    }
+
+    private async void InitializeUnityAuthentication()
+    {
+        if(UnityServices.State != ServicesInitializationState.Initialized)
         {
-            Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
-        };
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            InitializationOptions initializationOptions = new InitializationOptions();
+            initializationOptions.SetProfile(Random.Range(0, 1000).ToString());
 
-        playerName = "CodeMonkey" + UnityEngine.Random.Range(10, 99);
+            await UnityServices.InitializeAsync(initializationOptions);
+
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        }
     }
 
     private void Update()
@@ -65,15 +77,13 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    private async void CreateLobby()
+    public async void CreateLobby(string lobbyName, bool isPrivate)
     {
         try
         {
-            string lobbyName = "MyLobby";
-            int maxPlayers = 4;
             CreateLobbyOptions createLobbyOptions = new CreateLobbyOptions
             {
-                IsPrivate = false,
+                IsPrivate = isPrivate,
                 Player = GetPlayer(),
                 Data = new Dictionary<string, DataObject>
                 {
@@ -82,7 +92,7 @@ public class LobbyManager : MonoBehaviour
                 }
             };
 
-            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, createLobbyOptions);
+            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, BaristapocalypseMultiplayer.MAX_PLAYERS, createLobbyOptions);
             hostLobby = lobby;
             joinedLobby = hostLobby;
 

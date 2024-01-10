@@ -7,76 +7,76 @@ using UnityEngine.UI;
 public class LobbyUI : MonoBehaviour
 {
     [Header ("Panels")]
-    [SerializeField] private GameObject MultiplayerPanel;
-    [SerializeField] private GameObject HostSettingsPanel;
-    [SerializeField] private GameObject LobbyPanel;
-    [SerializeField] private GameObject JoinLobbyPanel;
+    [SerializeField] private GameObject multiplayerPanel;
+    [SerializeField] private GameObject hostSettingsPanel;
+    [SerializeField] private GameObject lobbyPanel;
+    [SerializeField] private GameObject joinLobbyPanel;
 
     [Header ("Buttons")]
-    [SerializeField] private Button HostLobbyButton;
-    [SerializeField] private Button JoinLobbyButton;
-    [SerializeField] private Button StartHostingButton;
-    [SerializeField] private Button BackButton;
+    [SerializeField] private Button hostLobbyButton;
+    [SerializeField] private Button joinLobbyButton;
+    [SerializeField] private Button startHostingButton;
+    [SerializeField] private Button backButton;
 
     private void Start()
     {
-        if (HostLobbyButton)
-            HostLobbyButton.onClick.AddListener(ToHostSettings);
-        if (JoinLobbyButton)
-            JoinLobbyButton.onClick.AddListener(ToJoinLobbies);
-        if (StartHostingButton)
-            StartHostingButton.onClick.AddListener(ToLobby);
-        if (BackButton)
-            BackButton.onClick.AddListener(ToPreviousPanel);
+        if (hostLobbyButton)
+            hostLobbyButton.onClick.AddListener(ToHostSettings);
+        if (joinLobbyButton)
+            joinLobbyButton.onClick.AddListener(ToJoinLobbies);
+        if (startHostingButton)
+            startHostingButton.onClick.AddListener(ToLobby);
+        if (backButton)
+            backButton.onClick.AddListener(ToPreviousPanel);
     }
 
     private void ToHostSettings()
     {
-        MultiplayerPanel.SetActive(false);
-        HostSettingsPanel.SetActive(true);
+        multiplayerPanel.SetActive(false);
+        hostSettingsPanel.SetActive(true);
     }
 
     private void ToJoinLobbies()
     {
-        MultiplayerPanel.SetActive(false);
-        JoinLobbyPanel.SetActive(true);
+        multiplayerPanel.SetActive(false);
+        joinLobbyPanel.SetActive(true);
     }
 
     private void ToLobby()
     {
         //Set up logic to Load into a specific that lobby and display on the lobby stuff
 
-        HostSettingsPanel.SetActive(false);
-        LobbyPanel.SetActive(true);
+        hostSettingsPanel.SetActive(false);
+        lobbyPanel.SetActive(true);
     }
 
     //Goes to the previous Panel by checking which panel is currently active
     private void ToPreviousPanel()
     {
-        if (MultiplayerPanel.activeInHierarchy)
+        if (multiplayerPanel.activeInHierarchy)
         {
             //leave Multiplayer scene/section
             return;
         }
-        if (HostSettingsPanel.activeInHierarchy)
+        if (hostSettingsPanel.activeInHierarchy)
         {
-            HostSettingsPanel.SetActive(false);
-            MultiplayerPanel.SetActive(true);
+            hostSettingsPanel.SetActive(false);
+            multiplayerPanel.SetActive(true);
             return;
         }
-        if (LobbyPanel.activeInHierarchy)
+        if (lobbyPanel.activeInHierarchy)
         {
-            LobbyPanel.SetActive(false);
+            lobbyPanel.SetActive(false);
 
             //Logic for closing a Lobby forcibly here!!!
 
-            MultiplayerPanel.SetActive(true);
+            multiplayerPanel.SetActive(true);
             return;
         }
-        if(JoinLobbyPanel.activeInHierarchy)
+        if(joinLobbyPanel.activeInHierarchy)
         {
-            JoinLobbyPanel.SetActive(false);
-            MultiplayerPanel.SetActive(true);
+            joinLobbyPanel.SetActive(false);
+            multiplayerPanel.SetActive(true);
         }
     }
 }
