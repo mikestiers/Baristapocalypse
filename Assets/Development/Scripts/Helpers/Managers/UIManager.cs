@@ -44,9 +44,11 @@ public class UIManager : Singleton<UIManager>
     public bool debugConsoleActive = false;
 
     [Header("DifficultyTesting")]
-    public Text CustomersLeft;
-    public Text CustomersInStore;
-    public Text SpawnMode;
+    public Text customersLeft;
+    public Text customersInStore;
+    public Text spawnMode;
+    public Text wavesleft;
+    public Text shift;
 
 
     private void Start()

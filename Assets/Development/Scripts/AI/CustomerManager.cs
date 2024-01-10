@@ -12,7 +12,8 @@ public class CustomerManager : Singleton<CustomerManager>
     [SerializeField] private Transform Counter;
     [SerializeField] private Transform barEntrance;
     [SerializeField] private Transform exit;
-    [SerializeField] private float delay = 8.0f; //difficulty change
+    [SerializeField] private float minDelay = 6.0f;
+    [SerializeField] private float maxDelay = 10.0f; //difficulty change
     [SerializeField] private int numberOfCustomers = 5;
     [SerializeField] private int customersLeftinWave;
     [SerializeField] private int WavesLeft;
@@ -80,13 +81,21 @@ public class CustomerManager : Singleton<CustomerManager>
         //LineQueue.OnCustomerArrivedAtFrontOfQueue += WaitingQueue_OnCustomerArrivedAtFrontOfQueue; might be used for future code?
         LineQueue = new CustomerLineQueuing(waitingQueuePostionList);
         barFloor = new CustomerBarFloor(Chairs);
-        difficultySettings = new DifficultySettings(1); // change constructor to set difficulty when moving to GameManager, made this way just for testing
+        difficultySettings = new DifficultySettings(0); // change constructor to set difficulty when moving to GameManager, made this way just for testing
 
         customersLeftinWave = difficultySettings.GetNumberofCustomersInwave();
         WavesLeft = difficultySettings.GetNumberOfWaves();
 
-        UIManager.Instance.CustomersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
-        UIManager.Instance.SpawnMode.text = "Serving Customers";
+        UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
+        UIManager.Instance.spawnMode.text = "Serving Customers";
+        UIManager.Instance.shift.text = ("Shift " + difficultySettings.GetShift().ToString());
+        UIManager.Instance.wavesleft.text = ("Waves Left: " + WavesLeft.ToString());
+
+        minDelay = difficultySettings.GetMinDelay();
+        maxDelay = difficultySettings.GetMaxDelay();
+
+
+        float delay = UnityEngine.Random.Range(minDelay, maxDelay);
 
         StartCoroutine(NewCustomer(delay));
 
@@ -97,8 +106,9 @@ public class CustomerManager : Singleton<CustomerManager>
     {
         while (true)
         {
+            float delay = UnityEngine.Random.Range(minDelay, maxDelay);
             //yield return new WaitUntil(() -> customers.isServed);
-            yield return new WaitForSeconds(delayS);
+            yield return new WaitForSeconds(delay);
             int randomCustomer = UnityEngine.Random.Range(0, customerNames.Count);
             //while(gameObject is playin) set timer
             if (customerPrefab != null)
@@ -109,8 +119,8 @@ public class CustomerManager : Singleton<CustomerManager>
                 StartCoroutine(CustomerEnterStore());
                 customersInStore++;
                 customersLeftinWave--;
-                UIManager.Instance.CustomersInStore.text = ("Customers in Store: ") + customersInStore.ToString();
-                UIManager.Instance.CustomersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
+                UIManager.Instance.customersInStore.text = ("Customers in Store: ") + customersInStore.ToString();
+                UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
 
                 if (customersLeftinWave <= 0) yield break;
             }
@@ -118,14 +128,21 @@ public class CustomerManager : Singleton<CustomerManager>
     }
 
     // Trigger Time Between waves
-    public void NextShift()
+    public void NextWave()
     {
-        difficultySettings.NextShift();
+        WavesLeft--;
+        if (WavesLeft <= 0) 
+        {
+            difficultySettings.NextShift();
+            WavesLeft = difficultySettings.GetNumberOfWaves();
+            UIManager.Instance.shift.text = ("Shift " + difficultySettings.GetShift().ToString());
+        }
+        
         customersLeftinWave = difficultySettings.GetNumberofCustomersInwave();
-        WavesLeft = difficultySettings.GetNumberOfWaves();
+        UIManager.Instance.wavesleft.text = ("Waves Left: " + WavesLeft.ToString());
 
         //Trigger UI
-        UIManager.Instance.SpawnMode.text = "Resting";
+        UIManager.Instance.spawnMode.text = "Resting";
 
         StartCoroutine(RestPeriod(difficultySettings.GetTimeBetweenWaves()));
 
@@ -137,9 +154,10 @@ public class CustomerManager : Singleton<CustomerManager>
         yield return new WaitForSeconds(timer);
 
         //Trigger UI
-        UIManager.Instance.SpawnMode.text = "Serving Customers";
-        UIManager.Instance.CustomersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
-        
+        UIManager.Instance.spawnMode.text = "Serving Customers";
+        UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
+
+        float delay = UnityEngine.Random.Range(minDelay, maxDelay);
 
         StartCoroutine(NewCustomer(delay));
     }
