@@ -46,7 +46,9 @@ public class UIManager : Singleton<UIManager>
     public bool debugConsoleActive = false;
 
     [Header("Slider")]
-    public Slider volSlider;
+    public Slider musicSlider;
+    public Slider sfxSlider;
+    public Slider mainVolumeSlider;
     public AudioMixer mixer;
 
     private void Start()
@@ -69,12 +71,14 @@ public class UIManager : Singleton<UIManager>
             closePause.onClick.AddListener(ClosePause);
         if (restartGame)
             restartGame.onClick.AddListener(RestartGame);
-        if (volSlider)
-        {
-            volSlider.onValueChanged.AddListener((value) => OnSliderValueChanged(value));
-            if (volSliderText)
-                volSliderText.text = volSlider.value.ToString();
-        }
+
+
+        //if (volSlider)
+        //{
+        //    volSlider.onValueChanged.AddListener((value) => OnSliderValueChanged(value));
+        //    if (volSliderText)
+        //        volSliderText.text = volSlider.value.ToString();
+        //}
     }
     private void ReturnToGame()
     {
@@ -241,13 +245,23 @@ public class UIManager : Singleton<UIManager>
             tutorialMenu.SetActive(false);
         }
     }
-    void OnSliderValueChanged(float value)
+    public void SetMusicVolume(float value)
     {
-        if (volSliderText)
-            volSliderText.text = value.ToString();
+        //if (volSliderText)
+        //    volSliderText.text = value.ToString();
 
-        if (mixer)
-            mixer.SetFloat("Master", value);
+        mixer.SetFloat("Music", musicSlider.value);
+
+    }
+
+    public void SetSFXVolume(float value)
+    {
+        mixer.SetFloat("SFX", sfxSlider.value);
+    }
+    
+    public void SetMainVolume(float value)
+    {
+        mixer.SetFloat("MainVolume", mainVolumeSlider.value);
     }
 
 
