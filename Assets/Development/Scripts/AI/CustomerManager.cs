@@ -66,6 +66,10 @@ public class CustomerManager : Singleton<CustomerManager>
     // Start is called before the first frame update
     private void Start()
     {
+        //this is to check the amount of players
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        int numberOfPlayers = (players.Length - Mathf.FloorToInt(players.Length * 0.5f));
+
         List<Vector3> waitingQueuePostionList = new List<Vector3>();
         if (Chairs.Length <= 0) Chairs = GameObject.FindGameObjectsWithTag("Waypoint");
         //chairNumber = UnityEngine.Random.Range(0, Chairs.Length);
@@ -81,7 +85,7 @@ public class CustomerManager : Singleton<CustomerManager>
         //LineQueue.OnCustomerArrivedAtFrontOfQueue += WaitingQueue_OnCustomerArrivedAtFrontOfQueue; might be used for future code?
         LineQueue = new CustomerLineQueuing(waitingQueuePostionList);
         barFloor = new CustomerBarFloor(Chairs);
-        difficultySettings = new DifficultySettings(1); // change constructor to set difficulty when moving to GameManager, made this way just for testing
+        difficultySettings = new DifficultySettings(1 , numberOfPlayers); // change constructor to set difficulty when moving to GameManager, made this way just for testing
 
         customersLeftinWave = difficultySettings.GetNumberofCustomersInwave();
         WavesLeft = difficultySettings.GetNumberOfWaves();
@@ -93,7 +97,7 @@ public class CustomerManager : Singleton<CustomerManager>
 
         minDelay = difficultySettings.GetMinDelay();
         maxDelay = difficultySettings.GetMaxDelay();
-
+        difficultySettings.SetAmountOfPlayers(numberOfPlayers); // setdifficulty based on amount of players
 
         float delay = UnityEngine.Random.Range(minDelay, maxDelay);
 

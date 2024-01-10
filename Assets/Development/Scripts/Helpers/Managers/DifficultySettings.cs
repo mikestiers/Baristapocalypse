@@ -13,31 +13,73 @@ public class DifficultySettings
     private int numberOfWaves;
     private float minDelay;
     private float maxDelay;
+    private int playerCount;
 
-    public DifficultySettings(int difficultyLevelChosen)
+    public DifficultySettings(int difficultyLevelChosen, int InitplayerCount)
     {
         difficultyLevel = difficultyLevelChosen;
+        Debug.Log(InitplayerCount);
 
         switch (difficultyLevel)
         {
             case 0:
-                numberOfCustomersInWave = 15;
                 difficultyString = "Easy";
-                numberOfWaves = 3;
+                numberOfCustomersInWave = 15 + Mathf.FloorToInt(InitplayerCount * 1.5f);
                 minDelay = 8.0f;
                 maxDelay = 15.0f;
+                numberOfWaves = 3;
+
                 break;
 
             case 1:
-                numberOfCustomersInWave = 5;
                 difficultyString = "Medium";
+                numberOfCustomersInWave = 5 + (InitplayerCount * 2); // set to 5 just for testing purposes
+               
                 minDelay = 6.0f;
                 maxDelay = 10.0f;
-                switch(Shift)
+                numberOfWaves = 3;
+
+                break;
+
+            case 2:
+                numberOfCustomersInWave = 10 + (InitplayerCount * 3);
+                difficultyString = "Hard";
+                
+                minDelay = 6.0f;
+                maxDelay = 8.0f;
+                numberOfWaves = 4;
+                break;
+
+        }
+
+
+    }
+
+    public void NextShift()
+    {
+        Shift++;
+
+        switch(difficultyLevel)
+        {
+            case 0:
+                //easy
+                minDelay = 8.0f;
+                maxDelay = 15.0f;
+
+                numberOfWaves = 3;
+
+                break;
+
+            case 1:
+                //medium
+                minDelay = 6.0f;
+                maxDelay = 10.0f;
+
+                switch (Shift) 
                 {
-                    case 1: case 2: case 3: case 4:  case 5:
+                    case 2: case 3: case 4:case 5:
                         numberOfWaves = 3;
-                            break;
+                        break;
                     case 6: case 7: case 8:
                         numberOfWaves = 4;
                         break;
@@ -46,28 +88,60 @@ public class DifficultySettings
                         break;
 
                 }
+
                 break;
 
             case 2:
-                numberOfCustomersInWave = 10;
-                difficultyString = "Hard";
-                numberOfWaves = Mathf.FloorToInt(4 + Shift * 0.5f);
+                //hard
                 minDelay = 6.0f;
                 maxDelay = 8.0f;
+
+                numberOfWaves = Mathf.FloorToInt(4 + Shift * 0.5f);
+
                 break;
 
         }
 
-    }
 
-    public void NextShift()
-    {
-        Shift++;
     }
 
     public int GetShift()
     {
         return Shift;
+    }
+
+    public void NextWave()
+    {
+        numberOfWaves--;
+
+        //decreasing the amount of delay between customers spawning
+        minDelay -= 0.5f;
+        maxDelay -= 0.5f;
+
+        //adjusting amount of customers based on wave numbers /// increasing amount of customers every wave
+        switch (difficultyLevel)
+        {
+            case 0:
+                //easy
+                numberOfCustomersInWave += (5 + (2 * playerCount));
+
+                break; 
+
+            case 1:
+                //medium
+                numberOfCustomersInWave += (5 + (4 * playerCount));
+
+                break;
+
+            case 2:
+                //hard
+                numberOfCustomersInWave += (5 + (4 * playerCount));
+
+                break;
+
+        }
+
+
     }
 
 
@@ -94,5 +168,10 @@ public class DifficultySettings
     public float GetMaxDelay() 
     {
         return maxDelay;
+    }
+
+    public void SetAmountOfPlayers(int playeramount)
+    {
+       playerCount = playeramount;
     }
 }

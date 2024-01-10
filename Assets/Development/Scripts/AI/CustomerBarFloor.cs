@@ -26,6 +26,7 @@ public class CustomerBarFloor
             customer.SetCustomerStateServerRpc(CustomerBase.CustomerState.Insit);
 
         }
+        //Add If there are no empty chairs get them to roam instead
     }
 
     private Chair GetEmptyChair()
