@@ -29,7 +29,7 @@ public class DifficultySettings
                 break;
 
             case 1:
-                numberOfCustomersInWave = 10;
+                numberOfCustomersInWave = 5;
                 difficultyString = "Medium";
                 minDelay = 6.0f;
                 maxDelay = 10.0f;

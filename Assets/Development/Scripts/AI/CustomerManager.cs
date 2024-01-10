@@ -81,7 +81,7 @@ public class CustomerManager : Singleton<CustomerManager>
         //LineQueue.OnCustomerArrivedAtFrontOfQueue += WaitingQueue_OnCustomerArrivedAtFrontOfQueue; might be used for future code?
         LineQueue = new CustomerLineQueuing(waitingQueuePostionList);
         barFloor = new CustomerBarFloor(Chairs);
-        difficultySettings = new DifficultySettings(0); // change constructor to set difficulty when moving to GameManager, made this way just for testing
+        difficultySettings = new DifficultySettings(1); // change constructor to set difficulty when moving to GameManager, made this way just for testing
 
         customersLeftinWave = difficultySettings.GetNumberofCustomersInwave();
         WavesLeft = difficultySettings.GetNumberOfWaves();
