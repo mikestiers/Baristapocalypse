@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,14 +10,19 @@ public class LobbyUI : MonoBehaviour
     [Header ("Panels")]
     [SerializeField] private GameObject multiplayerPanel;
     [SerializeField] private GameObject hostSettingsPanel;
-    [SerializeField] private GameObject lobbyPanel;
-    [SerializeField] private GameObject joinLobbyPanel;
 
     [Header ("Buttons")]
     [SerializeField] private Button hostLobbyButton;
-    [SerializeField] private Button joinLobbyButton;
-    [SerializeField] private Button startHostingButton;
+    [SerializeField] private Button quickJoinLobbyButton;
+    [SerializeField] private Button joinLobbyByCodeButton;
+    [SerializeField] private Button createPrivateLobbyButton;
+    [SerializeField] private Button createPublicLobbyButton;
     [SerializeField] private Button backButton;
+
+    [Header("Input Field")]
+    [SerializeField] private TMP_InputField lobbyNameInputField;
+    [SerializeField] private TMP_InputField maxPlayersInputField;
+    [SerializeField] private TMP_InputField lobbyCodeInputField;
 
     private void Awake()
     {
@@ -24,16 +30,40 @@ public class LobbyUI : MonoBehaviour
         {
             hostLobbyButton.onClick.AddListener(() =>
             {
-                BaristapocalypseMultiplayer.Instance.StartHost();
-                Loader.LoadNetwork(Loader.Scene.CharacterSelectScene);
+                multiplayerPanel.SetActive(false);
+                hostSettingsPanel.SetActive(true);
             });
         }
             
-        if (joinLobbyButton)
+        if (quickJoinLobbyButton)
         {
-            joinLobbyButton.onClick.AddListener(() =>
+            quickJoinLobbyButton.onClick.AddListener(() =>
             {
-                BaristapocalypseMultiplayer.Instance.StartClient();
+                LobbyManager.Instance.QuickJoinLobby();
+            });
+        }
+
+        if(joinLobbyByCodeButton)
+        {
+            joinLobbyByCodeButton.onClick.AddListener(() =>
+            {
+                LobbyManager.Instance.JoinLobbyByCode(lobbyCodeInputField.text);
+            });
+        }
+
+        if (createPrivateLobbyButton)
+        {
+            createPrivateLobbyButton.onClick.AddListener(() =>
+            {
+                LobbyManager.Instance.CreateLobby(lobbyNameInputField.text, true, int.Parse(maxPlayersInputField.text));
+            });
+        }
+
+        if (createPublicLobbyButton)
+        {
+            createPublicLobbyButton.onClick.AddListener(() =>
+            {
+                LobbyManager.Instance.CreateLobby(lobbyNameInputField.text, false, int.Parse(maxPlayersInputField.text));
             });
         }
     }

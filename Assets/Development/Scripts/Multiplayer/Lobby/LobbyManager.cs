@@ -75,7 +75,7 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    public async void CreateLobby(string lobbyName, bool isPrivate)
+    public async void CreateLobby(string lobbyName, bool isPrivate, int maxPlayers)
     {
         try
         {
@@ -83,19 +83,23 @@ public class LobbyManager : MonoBehaviour
             {
                 IsPrivate = isPrivate,
                 Player = GetPlayer(),
-                Data = new Dictionary<string, DataObject>
-                {
-                    {"GameMode", new DataObject(DataObject.VisibilityOptions.Public, "Baristapocalypse")},
-                    {"Difficulty", new DataObject(DataObject.VisibilityOptions.Public, "Easy")}
-                }
             };
 
-            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, BaristapocalypseMultiplayer.MAX_PLAYERS, createLobbyOptions);
+            int numPlayers = maxPlayers;
+            if(numPlayers > BaristapocalypseMultiplayer.MAX_PLAYERS)
+            {
+                numPlayers = BaristapocalypseMultiplayer.MAX_PLAYERS;
+            }
+
+            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, numPlayers, createLobbyOptions);
             hostLobby = lobby;
             joinedLobby = hostLobby;
 
             Debug.Log("Created Lobby! " + lobby.Name + " " + lobby.MaxPlayers + lobby.Id + " " + lobby.LobbyCode);
             PrintPlayers(hostLobby);
+
+            BaristapocalypseMultiplayer.Instance.StartHost();
+            Loader.LoadNetwork(Loader.Scene.CharacterSelectScene);
         }
         catch (LobbyServiceException e)
         {
@@ -123,7 +127,7 @@ public class LobbyManager : MonoBehaviour
             Debug.Log("Lobbies found: " + queryResponse.Results.Count);
             foreach (Lobby lobby in queryResponse.Results)
             {
-                Debug.Log(lobby.Name + " " + lobby.MaxPlayers + " " + lobby.Data["GameMode"].Value);
+                Debug.Log(lobby.Name + " " + lobby.MaxPlayers);
             }
         }
         catch (LobbyServiceException e)
@@ -132,7 +136,7 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    private async void JoinLobbyByCode(string lobbyCode)
+    public async void JoinLobbyByCode(string lobbyCode)
     {
         try
         {
@@ -153,11 +157,12 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    private async void QuickJoinLobby()
+    public async void QuickJoinLobby()
     {
         try
         {
-            await LobbyService.Instance.QuickJoinLobbyAsync();
+            joinedLobby = await LobbyService.Instance.QuickJoinLobbyAsync();
+            BaristapocalypseMultiplayer.Instance.StartClient();
         }
         catch (LobbyServiceException e)
         {
@@ -176,6 +181,11 @@ public class LobbyManager : MonoBehaviour
         };
     }
 
+    public Lobby GetLobby()
+    {
+        return joinedLobby;
+    }
+
 
     private void PrintPlayers()
     {
@@ -184,7 +194,7 @@ public class LobbyManager : MonoBehaviour
 
     private void PrintPlayers(Lobby lobby)
     {
-        Debug.Log("Players in Lobby " + lobby.Name + " " + lobby.Data["GameMode"].Value + " " + lobby.Data["Difficulty"].Value);
+        Debug.Log("Players in Lobby " + lobby.Name);
         foreach (Player player in lobby.Players)
         {
             Debug.Log(player.Id + " " + player.Data["PlayerName"].Value);
