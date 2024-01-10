@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
 using Unity.Services.Authentication;
+using System;
 
 public class BaristapocalypseMultiplayer : NetworkBehaviour
 {
@@ -11,6 +12,9 @@ public class BaristapocalypseMultiplayer : NetworkBehaviour
 
     [SerializeField] private IngredientListSO ingredientListSO;
     public static BaristapocalypseMultiplayer Instance { get; private set; }
+
+    public event EventHandler OnTryingToJoinGame;
+    public event EventHandler OnFailToJoinGame;
 
     private void Awake()
     {  
@@ -22,13 +26,16 @@ public class BaristapocalypseMultiplayer : NetworkBehaviour
     public void StartHost()
     {
         NetworkManager.Singleton.ConnectionApprovalCallback += NetworkManager_ConnectionApprovalCallback;
-        NetworkManager.Singleton.OnClientConnectedCallback += NetworkManager_OnClientConnectedCallback;
-        //NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_Server_OnClientDisconnectCallback;
+
         NetworkManager.Singleton.StartHost();
     }
 
+    
     public void StartClient()
     {
+        OnTryingToJoinGame?.Invoke(this, EventArgs.Empty);
+
+        NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
         NetworkManager.Singleton.StartClient();
     }
 
@@ -51,10 +58,11 @@ public class BaristapocalypseMultiplayer : NetworkBehaviour
         connectionApprovalResponse.Approved = true;
     }
 
-    private void NetworkManager_OnClientConnectedCallback(ulong clientId)
+    private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
     {
-        
+        OnFailToJoinGame?.Invoke(this, EventArgs.Empty);
     }
+
 
     public void SpawnIngredient(IngredientSO ingredientSO, IIngredientParent ingredientParent)
     {

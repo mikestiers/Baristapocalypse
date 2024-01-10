@@ -22,10 +22,10 @@ public class GameManager : NetworkBehaviour
     
     //Input Events
     public Vector2 MovementValue { get; private set; }
-    
+
     public GameState gameState = GameState.RUNNING;
 
-    public GameObject player1Prefab;
+    [SerializeField] private Transform player1Prefab;
     public GameObject player2Prefab;
     public GameObject player3Prefab;
     public GameObject player4Prefab;
@@ -39,23 +39,23 @@ public class GameManager : NetworkBehaviour
         playButton.SetActive(true);
     }
 
-    public void SetEasyDifficulty()
+    public override void OnNetworkSpawn()
     {
-        //simple difficulty features
-        Debug.Log("Easy");
+        if (IsServer)
+        {
+            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
+        }
     }
 
-    public void SetMediumDifficulty()
+    private void SceneManager_OnLoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
     {
-        //Medium difficulty featuers
-        Debug.Log("Medium");
+        foreach(ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            Transform playerTransform = Instantiate(player1Prefab);
+            playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+        }
     }
 
-    public void SetHardDifficulty()
-    {
-        //Hard difficulty features
-        Debug.Log("Hard");
-    }
 
 }
 
