@@ -14,10 +14,23 @@ public class CharacterSelectUI : MonoBehaviour
 
     private void Awake()
     {
-        readyButton.onClick.AddListener(() =>
+        if (mainMenuButton)
         {
-            CharacterSelectReady.Instance.SetPlayerReady();
-        });
+            mainMenuButton.onClick.AddListener(() =>
+            {
+                LobbyManager.Instance.LeaveLobby();
+                Loader.Load(Loader.Scene.LobbyScene);
+            });
+        }
+
+        if (readyButton)
+        {
+            readyButton.onClick.AddListener(() =>
+            {
+                CharacterSelectReady.Instance.SetPlayerReady();
+            });
+        }
+        
     }
 
     private void Start()

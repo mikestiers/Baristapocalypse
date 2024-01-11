@@ -40,6 +40,7 @@ public class CharacterSelectReady : NetworkBehaviour
 
         if (allClientsReady)
         {
+            LobbyManager.Instance.DeleteLobby();
             Loader.LoadNetwork(Loader.Scene.T5M3_BUILD);
         }
     }
