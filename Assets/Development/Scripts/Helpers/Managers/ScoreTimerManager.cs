@@ -1,17 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class ScoreTimerManager : Singleton<ScoreTimerManager>
 {
-    public float timeRemainingDefault = 300f;
-    public float timeRemaining;
+    public NetworkVariable<float> timeRemainingDefault = new NetworkVariable<float>(300f);
+    public NetworkVariable<float> timeRemaining;
     public int score = 0;
     public UnityEvent LoseEvent = new UnityEvent();
     public UnityEvent WinEvent = new UnityEvent();
     public int StreakCount { get; private set; }
+    private string activeGameScene = "T5M3_BUILD";
 
     // Start is called before the first frame update
     void Start()
@@ -29,12 +31,12 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
     // Update is called once per frame
     void Update()
     {
-        if(SceneManager.GetActiveScene().name == "TestScene")
+        if(SceneManager.GetActiveScene().name == activeGameScene) //
         {
-            timeRemaining -= Time.deltaTime;
-            if (timeRemaining <= 0 && GameManager.Instance.gameState == GameState.RUNNING)
+            timeRemaining.Value -= Time.deltaTime;
+            if (timeRemaining.Value <= 0 && GameManager.Instance.gameState == GameState.RUNNING)
             {
-                timeRemaining = 0;
+                timeRemaining = new NetworkVariable<float>(0);
                 score *= Mathf.FloorToInt(CustomerReview.GetAverageReviewScore());
                 Debug.Log($"score {score}");
                 UIManager.Instance.finalScore.text = "Score: " + score.ToString();
