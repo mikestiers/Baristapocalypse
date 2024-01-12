@@ -6,11 +6,11 @@ using UnityEngine.UI;
 public class OrderStats : MonoBehaviour
 {
     [Header("Customer Order")]
-    [SerializeField] private Slider temperatureSlider;
-    [SerializeField] private Slider sweetnessSlider;
-    [SerializeField] private Slider spicinessSlider;
-    [SerializeField] private Slider strengthSlider;
     [SerializeField] private Text customerNumberText;
+    [SerializeField] private OrderStatsSegments temperatureSegments;
+    [SerializeField] private OrderStatsSegments sweetnessSegments;
+    [SerializeField] private OrderStatsSegments spicinessSegments;
+    [SerializeField] private OrderStatsSegments strengthSegments;
     
     [Header("Customer Review")]
     [SerializeField] private GameObject customerReview;
@@ -25,10 +25,10 @@ public class OrderStats : MonoBehaviour
     public void Initialize(CustomerBase customer)
     {
         orderOwner = customer;
-        temperatureSlider.value = customer.coffeeAttributes.GetTemperature() * .10f;
-        sweetnessSlider.value = customer.coffeeAttributes.GetSweetness() * .10f;
-        spicinessSlider.value = customer.coffeeAttributes.GetSpiciness() * .10f;
-        strengthSlider.value = customer.coffeeAttributes.GetStrength() * .10f;
         customerNumberText.text = customer.customerNumber.ToString();
+        temperatureSegments.targetAttributeValue = customer.coffeeAttributes.GetTemperature();
+        sweetnessSegments.targetAttributeValue = customer.coffeeAttributes.GetSweetness();
+        spicinessSegments.targetAttributeValue = customer.coffeeAttributes.GetSpiciness();
+        strengthSegments.targetAttributeValue = customer.coffeeAttributes.GetStrength();
     }
 }
