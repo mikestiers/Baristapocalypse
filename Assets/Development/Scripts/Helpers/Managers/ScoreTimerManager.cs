@@ -7,8 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class ScoreTimerManager : Singleton<ScoreTimerManager>
 {
-    public NetworkVariable<float> timeRemainingDefault = new NetworkVariable<float>(20f);
-    public NetworkVariable<float> timeRemaining;
+    public float timeRemainingDefault = 300f;
+    public float timeRemaining;
     public int score = 0;
     public UnityEvent LoseEvent = new UnityEvent();
     public UnityEvent WinEvent = new UnityEvent();
@@ -33,41 +33,69 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
     {
         if(SceneManager.GetActiveScene().name == activeGameScene) //
         {
-            timeRemaining.Value -= Time.deltaTime;
-            if (timeRemaining.Value <= 0 && GameManager.Instance.gameState == GameState.RUNNING)
+            timeRemaining -= Time.deltaTime;
+            if (timeRemaining <= 0 && GameManager.Instance.gameState == GameState.RUNNING)
             {
-                timeRemaining = new NetworkVariable<float>(0);
+                timeRemaining = 0;
                 score *= Mathf.FloorToInt(CustomerReview.GetAverageReviewScore());
                 Debug.Log($"score {score}");
                 UIManager.Instance.finalScore.text = "Score: " + score.ToString();
                 if (score >= 50)
                 {
-                    Win();
+                    WinServerRpc();
                 }
                 else
                 {
-                    Lose();
+                    LoseServerRpc();
                 }
+                
                 GameManager.Instance.gameState = GameState.GAMEOVER;
             }
         }
         
     }
 
-    private void Lose()
+    [ServerRpc(RequireOwnership = false)]
+    public void LoseServerRpc()
+    {
+        LoseClientRpc();
+    }
+
+
+    [ClientRpc]
+    public void LoseClientRpc()
+    {
+        Lose();
+    }
+
+    public void Lose()
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.gameover);
         UIManager.Instance.gameOverMenu.SetActive(true);
         UIManager.Instance.gameOverText.text = "You Lose!";
         Time.timeScale = 0f;
     }
-    private void Win()
+
+    [ServerRpc(RequireOwnership = false)]
+    public void WinServerRpc()
+    {
+        WinClientRpc();
+    }
+
+    [ClientRpc]
+    public void WinClientRpc()
+    {
+        Win();
+    }
+
+    public void Win()
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.victory);
         UIManager.Instance.gameOverMenu.SetActive(true);
         UIManager.Instance.gameOverText.text = "You Win!";
         Time.timeScale = 0f;
     }
+
     public void IncrementStreak()
     {
         StreakCount++;
@@ -82,7 +110,6 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
     {
         timeRemaining = timeRemainingDefault;
         score = 0;
-
     }
 
 }

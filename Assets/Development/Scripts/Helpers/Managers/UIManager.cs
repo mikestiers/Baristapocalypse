@@ -221,7 +221,7 @@ public class UIManager : Singleton<UIManager>
 
     private void Update()
     {
-        timer.text = ScoreTimerManager.Instance.timeRemaining.Value.ToString("n2");
+        timer.text = ScoreTimerManager.Instance.timeRemaining.ToString("n2");
         score.text = ScoreTimerManager.Instance.score.ToString();
 
         if (Input.GetKeyDown(KeyCode.Tab))
