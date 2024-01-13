@@ -1,14 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.XR;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Unity.Netcode;
-using static Unity.Burst.Intrinsics.Arm;
 
 [DefaultExecutionOrder(-1)]
 public class GameManager : NetworkBehaviour
@@ -34,6 +28,10 @@ public class GameManager : NetworkBehaviour
     private bool isLocalGamePaused = false;
     private NetworkVariable<bool> isGamePaused = new NetworkVariable<bool>(false);
     private Dictionary<ulong, bool> playerPauseDictionary;
+
+    public event EventHandler OnLocalGamePaused;
+    public event EventHandler OnLocalGameUnpaused;
+
     public event EventHandler OnMultiplayerGamePaused;
     public event EventHandler OnMultiplayerGameUnpaused;
 
@@ -46,7 +44,6 @@ public class GameManager : NetworkBehaviour
     private void Start()
     {
         InputManager.Instance.PauseEvent += InputManager_PauseEvent;
-
     }
 
     private void InputManager_PauseEvent(object sender, EventArgs e)
@@ -61,11 +58,11 @@ public class GameManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        isGamePaused.OnValueChanged += isGamePaused_OnValueChanged;
         if (IsServer)
         {
-            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
+            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted; 
         }
-        isGamePaused.OnValueChanged += isGamePaused_OnValueChanged;
     }
 
     private void isGamePaused_OnValueChanged(bool previousValue, bool newValue)
@@ -97,13 +94,14 @@ public class GameManager : NetworkBehaviour
         if (isLocalGamePaused) 
         {
             PauseGameServerRpc();
-            
-            UIManager.Instance.pauseMenu.SetActive(true); // UI pause menu
+
+            OnLocalGamePaused?.Invoke(this, EventArgs.Empty);
         }
         else
         {
             UnpauseGameServerRpc();
-            UIManager.Instance.pauseMenu.SetActive(false); // UI pause menu
+
+            OnLocalGameUnpaused?.Invoke(this, EventArgs.Empty);
         }
     }
 

@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class ScoreTimerManager : Singleton<ScoreTimerManager>
 {
-    public NetworkVariable<float> timeRemainingDefault = new NetworkVariable<float>(300f);
+    public NetworkVariable<float> timeRemainingDefault = new NetworkVariable<float>(20f);
     public NetworkVariable<float> timeRemaining;
     public int score = 0;
     public UnityEvent LoseEvent = new UnityEvent();
@@ -85,33 +85,4 @@ public class ScoreTimerManager : Singleton<ScoreTimerManager>
 
     }
 
-    /*  I Quoted this out cuz i moved it to customer reactions in customerbase.cs
-
-      public void GetScoreComparison(CoffeeAttributes coffeeAttributes, CoffeeAttributes customerAttributes)
-      {
-
-          int result = 0;
-          if (Mathf.Abs(coffeeAttributes.GetSweetness() - customerAttributes.GetSweetness()) <= 5)
-          {
-              result += 1;
-          }
-          if (Mathf.Abs(coffeeAttributes.GetBitterness() - customerAttributes.GetBitterness()) <= 5)
-          {
-              result += 1;
-          }
-          if (Mathf.Abs(coffeeAttributes.GetSpiciness() - customerAttributes.GetSpiciness()) <= 5)
-          {
-              result += 1;
-          }
-          if (Mathf.Abs(coffeeAttributes.GetTemperature() - customerAttributes.GetTemperature()) <= 5)
-          {
-              result += 1;
-          }
-          if (Mathf.Abs(coffeeAttributes.GetStrength() - customerAttributes.GetStrength()) <= 5)
-          {
-              result += 1;
-          }
-          score += result;
-      }
-    */
 }
