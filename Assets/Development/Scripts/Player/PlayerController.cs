@@ -63,7 +63,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     public Transform spawnpoint3;
     public Transform spawnpoint4;
 
-
     [HideInInspector]
     public Pickup Pickup
     {

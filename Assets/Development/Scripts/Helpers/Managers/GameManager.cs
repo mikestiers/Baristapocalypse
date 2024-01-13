@@ -30,10 +30,30 @@ public class GameManager : NetworkBehaviour
     public GameObject player3Prefab;
     public GameObject player4Prefab;
 
+    // Pause
+    private bool isLocalGamePaused = false;
+    private NetworkVariable<bool> isGamePaused = new NetworkVariable<bool>(false);
+    private Dictionary<ulong, bool> playerPauseDictionary;
+    public event EventHandler OnMultiplayerGamePaused;
+    public event EventHandler OnMultiplayerGameUnpaused;
+
     private void Awake()
     {
         Instance = this;
+        playerPauseDictionary = new Dictionary<ulong, bool>();
     }
+
+    private void Start()
+    {
+        InputManager.Instance.PauseEvent += InputManager_PauseEvent;
+
+    }
+
+    private void InputManager_PauseEvent(object sender, EventArgs e)
+    {
+        TogglePauseGame();
+    }
+
     public void SetPlayButtonActive()
     {
         playButton.SetActive(true);
@@ -44,6 +64,21 @@ public class GameManager : NetworkBehaviour
         if (IsServer)
         {
             NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
+        }
+        isGamePaused.OnValueChanged += isGamePaused_OnValueChanged;
+    }
+
+    private void isGamePaused_OnValueChanged(bool previousValue, bool newValue)
+    {
+        if (isGamePaused.Value) 
+        {
+            Time.timeScale = 0f;
+            OnMultiplayerGamePaused?.Invoke(this, EventArgs.Empty);
+        }
+        else
+        {
+            Time.timeScale = 1f;
+            OnMultiplayerGameUnpaused?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -56,6 +91,54 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    private void TogglePauseGame()
+    {
+        isLocalGamePaused = !isLocalGamePaused;
+        if (isLocalGamePaused) 
+        {
+            PauseGameServerRpc();
+            
+            UIManager.Instance.pauseMenu.SetActive(true); // UI pause menu
+        }
+        else
+        {
+            UnpauseGameServerRpc();
+            UIManager.Instance.pauseMenu.SetActive(false); // UI pause menu
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void PauseGameServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        playerPauseDictionary[serverRpcParams.Receive.SenderClientId] = true;
+
+        TestGamePauseState();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void UnpauseGameServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        playerPauseDictionary[serverRpcParams.Receive.SenderClientId] = false;
+
+        TestGamePauseState();
+    }
+
+    private void TestGamePauseState()
+    {
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            if (playerPauseDictionary.ContainsKey(clientId) && playerPauseDictionary[clientId])
+            {
+                // This PLayer is paused
+                isGamePaused.Value = true;
+                return;
+            }
+        }
+
+        // All Players are unpaused
+        isGamePaused.Value = false;
+
+    }
 
 }
 
