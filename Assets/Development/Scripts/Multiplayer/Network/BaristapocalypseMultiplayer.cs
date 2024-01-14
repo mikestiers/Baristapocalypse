@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 using Unity.Services.Authentication;
 using System;
 
-public class BaristapocalypseMultiplayer : NetworkBehaviour
+public class BaristapocalypseMultiplayer  : NetworkBehaviour
 {
     public const int MAX_PLAYERS = 4;
 

@@ -333,14 +333,15 @@ public class CustomerBase : Base
         result += (Mathf.Abs(coffeeAttributes.GetStrength() - customerAttributes.GetStrength()) <= 5) ? 1 : -1;
 
         int minigameResult = coffeeAttributes.GetIsMinigamePerfect() ? 1 : 0;
-        ScoreTimerManager.Instance.score += result * (minigameResult + 1);
+        //ScoreTimerManager.Instance.score += result * (minigameResult + 1);
         Debug.Log($"Result for {customerNumber}: {result}");
+        
         switch (result)
         {
             case 5:
                 Perfect();
-                ScoreTimerManager.Instance.IncrementStreak();
-                ScoreTimerManager.Instance.score += result * ScoreTimerManager.Instance.StreakCount;
+               // ScoreTimerManager.Instance.IncrementStreak();
+               // ScoreTimerManager.Instance.score += result * ScoreTimerManager.Instance.StreakCount;
                 CustomerLeave();
                 break;
 
@@ -348,7 +349,7 @@ public class CustomerBase : Base
             case 3:
             case 2:
             case 1:
-                ScoreTimerManager.Instance.ResetStreak();
+                //ScoreTimerManager.Instance.ResetStreak();
                 CustomerLeave();
                 break;
 
@@ -365,7 +366,7 @@ public class CustomerBase : Base
             case -5:
 
                 Angry();
-                ScoreTimerManager.Instance.score += result;
+               // ScoreTimerManager.Instance.score += result;
                 CustomerLeave();
                 break;
         }

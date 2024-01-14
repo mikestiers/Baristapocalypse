@@ -1,14 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.XR;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Unity.Netcode;
-using static Unity.Burst.Intrinsics.Arm;
 
 [DefaultExecutionOrder(-1)]
 public class GameManager : NetworkBehaviour
@@ -23,27 +17,192 @@ public class GameManager : NetworkBehaviour
     //Input Events
     public Vector2 MovementValue { get; private set; }
 
-    public GameState gameState = GameState.RUNNING;
+    // Game State vars
+    private NetworkVariable<GameState> gameState = new NetworkVariable<GameState>(GameState.WaitingToStart);
+    private NetworkVariable<float> countdownToStartTimer = new NetworkVariable<float>(3f);
+    private NetworkVariable<float> gamePlayingTimer = new NetworkVariable<float>(0f);
+    private float gamePlayingTimerMax = 15f;
+    private bool isLocalPlayerReady;
 
     [SerializeField] private Transform player1Prefab;
     public GameObject player2Prefab;
     public GameObject player3Prefab;
     public GameObject player4Prefab;
 
+    // Pause Vars
+    private bool isLocalGamePaused = false;
+    private NetworkVariable<bool> isGamePaused = new NetworkVariable<bool>(false);
+
+    private Dictionary<ulong, bool> playerReadyDictionary;
+    private Dictionary<ulong, bool> playerPauseDictionary;
+
+    // UI Events
+    public event EventHandler OnGameStateChanged;
+
+    public event EventHandler OnLocalGamePaused;
+    public event EventHandler OnLocalGameUnpaused;
+
+    public event EventHandler OnMultiplayerGamePaused;
+    public event EventHandler OnMultiplayerGameUnpaused;
+
+    public event EventHandler OnLocalPlayerReadyChanged;
+
     private void Awake()
     {
         Instance = this;
+ 
+        playerReadyDictionary = new Dictionary<ulong, bool>();
+        playerPauseDictionary = new Dictionary<ulong, bool>();
     }
-    public void SetPlayButtonActive()
+
+    private void Start()
     {
-        playButton.SetActive(true);
+        if (InputManager.Instance)
+        {
+            InputManager.Instance.PauseEvent += InputManager_PauseEvent;
+            InputManager.Instance.InteractEvent += InputManager_OnInteractEvent;
+        }
+    }
+
+    private void InputManager_OnInteractEvent()
+    {
+        if (gameState.Value == GameState.WaitingToStart) 
+        {
+            //gameState = GameState.CountdownToStart;
+            //OnGameStateChanged?.Invoke(this, EventArgs.Empty);
+            isLocalPlayerReady = true;
+            OnLocalPlayerReadyChanged?.Invoke(this, EventArgs.Empty);
+
+            SetPlayerReadyServerRpc();
+
+        }
     }
 
     public override void OnNetworkSpawn()
     {
+        gameState.OnValueChanged += GameState_OnValueChanged;
+        isGamePaused.OnValueChanged += isGamePaused_OnValueChanged;
         if (IsServer)
         {
-            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
+            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted; 
+        }
+    }
+
+    private void GameState_OnValueChanged(GameState previousValue, GameState newValue)
+    {
+        OnGameStateChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetPlayerReadyServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        playerReadyDictionary[serverRpcParams.Receive.SenderClientId] = true;
+
+        bool allClientsReady = true;
+        foreach(ulong clientId in NetworkManager.Singleton.ConnectedClientsIds) 
+        { 
+            if (!playerReadyDictionary.ContainsKey(clientId) || !playerReadyDictionary[clientId] ) 
+            { 
+                // This Player Is not ready
+                allClientsReady = false;
+                break;
+            }
+        }
+
+        if (allClientsReady) 
+        {
+            gameState.Value = GameState.CountdownToStart;
+        }
+
+    }
+
+    private void Update()
+    {
+        if (!IsServer) { return; }
+
+        switch (gameState.Value) 
+        { 
+            case GameState.WaitingToStart:
+                break;
+
+            case GameState.CountdownToStart:
+                countdownToStartTimer.Value -= Time.deltaTime;
+                if (countdownToStartTimer.Value < 0f)
+                {
+                    gameState.Value = GameState.GamePlaying;
+                    gamePlayingTimer.Value = gamePlayingTimerMax;
+                }
+                break;
+
+            case GameState.GamePlaying:
+                gamePlayingTimer.Value -= Time.deltaTime;
+                if (gamePlayingTimer.Value < 0f)
+                {
+                    gameState.Value = GameState.GameOver;
+                    //OnGameStateChanged?.Invoke(this, EventArgs.Empty);
+                }
+                break;
+
+            case GameState.GameOver:
+                break;
+
+                
+        }
+        Debug.Log(gameState);
+    }
+
+    public bool IsGamePlaying()
+    {
+        return gameState.Value == GameState.GamePlaying;
+    }
+
+    public bool IsCountdownToStartActive() 
+    {
+        return gameState.Value == GameState.CountdownToStart;
+    }
+
+    public float GetCountdownToStartTimer()
+    {
+        return countdownToStartTimer.Value;
+    }
+
+    public bool IsGameOver()
+    {
+        return gameState.Value == GameState.GameOver;
+    }
+
+    public float GetGamePlayingTimer()
+    {
+        return gamePlayingTimer.Value;
+    }
+
+    public bool IsLocalPlayerReady()
+    {
+        return isLocalPlayerReady;
+    }
+
+    private void InputManager_PauseEvent(object sender, EventArgs e)
+    {
+        TogglePauseGame();
+    }
+
+    public void SetPlayButtonActive()
+    {
+        //playButton.SetActive(true);
+    }
+
+
+    private void isGamePaused_OnValueChanged(bool previousValue, bool newValue)
+    {
+        if (isGamePaused.Value) 
+        {
+            Time.timeScale = 0f;
+            OnMultiplayerGamePaused?.Invoke(this, EventArgs.Empty);
+        }
+        else
+        {
+            Time.timeScale = 1f;
+            OnMultiplayerGameUnpaused?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -56,11 +215,62 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    private void TogglePauseGame()
+    {
+        isLocalGamePaused = !isLocalGamePaused;
+        if (isLocalGamePaused) 
+        {
+            PauseGameServerRpc();
+
+            OnLocalGamePaused?.Invoke(this, EventArgs.Empty);
+        }
+        else
+        {
+            UnpauseGameServerRpc();
+
+            OnLocalGameUnpaused?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void PauseGameServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        playerPauseDictionary[serverRpcParams.Receive.SenderClientId] = true;
+
+        TestGamePauseState();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void UnpauseGameServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        playerPauseDictionary[serverRpcParams.Receive.SenderClientId] = false;
+
+        TestGamePauseState();
+    }
+
+    private void TestGamePauseState()
+    {
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            if (playerPauseDictionary.ContainsKey(clientId) && playerPauseDictionary[clientId])
+            {
+                // This PLayer is paused
+                isGamePaused.Value = true;
+                return;
+            }
+        }
+
+        // All Players are unpaused
+        isGamePaused.Value = false;
+
+    }
 
 }
 
 public enum GameState
 {
-    RUNNING, PAUSED, GAMEOVER
-
+    WaitingToStart,
+    CountdownToStart,
+    GamePlaying,
+    GameOver,
 }

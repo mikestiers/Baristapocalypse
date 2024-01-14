@@ -63,7 +63,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     public Transform spawnpoint3;
     public Transform spawnpoint4;
 
-
     [HideInInspector]
     public Pickup Pickup
     {
@@ -277,6 +276,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     public void Interact()
     {
+        if (!GameManager.Instance.IsGamePlaying()) return;
+
         if (selectedStation)
         {
             selectedStation.Interact(this);
@@ -291,6 +292,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     public void InteractAlt()
     {
+        if (!GameManager.Instance.IsGamePlaying()) return;
+
         if (selectedStation)
         {
             selectedStation.InteractAlt(this);

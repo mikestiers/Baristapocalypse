@@ -43,6 +43,10 @@ public class UIManager : Singleton<UIManager>
     public GameObject debugConsole;
     public bool debugConsoleActive = false;
 
+    // Scenes
+    private string activeGameScene = "T5M3_BUILD";
+    private string mainMenuScene = "LobbyScene"; // using lobby scene in the mean time, need changing to Main menu
+
     private void Start()
     {
         if (toGame)
@@ -76,12 +80,12 @@ public class UIManager : Singleton<UIManager>
     private void RestartGame()
     {
         //Reset score timer
-        ScoreTimerManager.Instance.ResetTimerScore();
+        //ScoreTimerManager.Instance.ResetTimerScore();
 
         Time.timeScale = 1f;
         gameOverMenu.SetActive(false);
-        GameManager.Instance.gameState = GameState.RUNNING;
-        SceneManager.LoadScene("TestScene");
+        //GameManager.Instance.gameState = GameState.RUNNING;
+        SceneManager.LoadScene(activeGameScene);
     }
 
     private void ClosePause()
@@ -107,8 +111,8 @@ public class UIManager : Singleton<UIManager>
     private void ShowMainMenu()
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
-        SceneManager.LoadScene("Main Menu Scene");
-        ScoreTimerManager.Instance.ResetTimerScore();
+        SceneManager.LoadScene(mainMenuScene); 
+        //ScoreTimerManager.Instance.ResetTimerScore();
         timer.enabled = false;
         score.enabled = false;
         ordersMenu.SetActive(false);
@@ -217,8 +221,8 @@ public class UIManager : Singleton<UIManager>
 
     private void Update()
     {
-        timer.text = ScoreTimerManager.Instance.timeRemaining.ToString("n2");
-        score.text = ScoreTimerManager.Instance.score.ToString();
+       //timer.text = ScoreTimerManager.Instance.timeRemaining.ToString("n2");
+       //score.text = ScoreTimerManager.Instance.score.ToString();
 
         if (Input.GetKeyDown(KeyCode.Tab))
         {

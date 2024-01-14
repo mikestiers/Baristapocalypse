@@ -27,7 +27,6 @@ public class UiCameraManager : MonoBehaviour
     [SerializeField] private Button MainMenuFromSelection;
     // Settings Menu Buttons
     [SerializeField] private Button MainMenuFromSettings;
-    [SerializeField] private bool isFullScreen = true;
     [SerializeField] private Button FullScreenButton;
     [SerializeField] private Button WindowModeButton;
     [SerializeField] private GameObject FullScreenGO;

@@ -1,12 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 [DefaultExecutionOrder(-1)]
 public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
 {
+    public static InputManager Instance { get; private set; }
+
     public Vector2 MovementValue { get; private set; }
 
     public event Action JumpEvent;
@@ -16,6 +19,7 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
     public event Action DashEvent;
     public event Action GrabEvent;
     public event Action ThrowEvent;
+    public event EventHandler PauseEvent;
 
     public event Action DebugConsoleEvent;
 
@@ -32,9 +36,15 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
     [SerializeField] private MeshRenderer playerMesh;
     private PlayerConfiguration playerConfig;
 
+    // Pause Variables
+
     private void Awake()
     {
+        Instance = this;
         controllerInputs = new ControllerInputs();
+        //playerPauseDictionary = new Dictionary<ulong, bool>(); playerPauseDictionary = new Dictionary<ulong, bool>();
+
+
     }
 
     private void Start()
@@ -48,57 +58,57 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
         controllerInputs.Player.Disable();
     }
 
-    public void InitializePlayer(PlayerConfiguration pc)
-    {
-        playerConfig = pc;
-        playerMesh.material = pc.PlayerMaterial;
-        playerConfig.Input.onActionTriggered += Input_onActionTriggered;
-    }
+    //public void InitializePlayer(PlayerConfiguration pc)
+    //{
+    //    playerConfig = pc;
+    //    playerMesh.material = pc.PlayerMaterial;
+    //    playerConfig.Input.onActionTriggered += Input_onActionTriggered;
+    //}
 
-    private void Input_onActionTriggered(InputAction.CallbackContext obj)
-    {
-        // Move
-        if (obj.action.name == controllerInputs.Player.Move.name)
-        {
-            OnMove(obj);
-        }
+    //private void Input_onActionTriggered(InputAction.CallbackContext obj)
+    //{
+    //    // Move
+    //    if (obj.action.name == controllerInputs.Player.Move.name)
+    //    {
+    //        OnMove(obj);
+    //    }
 
-        // Interact
-        if (obj.action.name == controllerInputs.Player.Interact.name)
-        {
-            OnInteract(obj);
-        }
+    //    // Interact
+    //    if (obj.action.name == controllerInputs.Player.Interact.name)
+    //    {
+    //        OnInteract(obj);
+    //    }
 
-        // InteractAlt
-        if (obj.action.name == controllerInputs.Player.InteractAlt.name)
-        {
-            OnInteractAlt(obj);
-        }
+    //    // InteractAlt
+    //    if (obj.action.name == controllerInputs.Player.InteractAlt.name)
+    //    {
+    //        OnInteractAlt(obj);
+    //    }
 
-        // Dash
-        if (obj.action.name == controllerInputs.Player.Dash.name)
-        {
-            OnDash(obj);
-        }
+    //    // Dash
+    //    if (obj.action.name == controllerInputs.Player.Dash.name)
+    //    {
+    //        OnDash(obj);
+    //    }
 
-        // Throw
-        if (obj.action.name == controllerInputs.Player.Throw.name)
-        {
-            OnThrow(obj);
-        }
+    //    // Throw
+    //    if (obj.action.name == controllerInputs.Player.Throw.name)
+    //    {
+    //        OnThrow(obj);
+    //    }
 
-        // Jump
-        if (obj.action.name == controllerInputs.Player.Jump.name)
-        {
-            OnJump(obj);
-        }
+    //    // Jump
+    //    if (obj.action.name == controllerInputs.Player.Jump.name)
+    //    {
+    //        OnJump(obj);
+    //    }
 
-        // pause
-        if (obj.action.name == controllerInputs.Player.Pause.name)
-        {
-            OnPause(obj);
-        }
-    }
+    //    // pause
+    //    if (obj.action.name == controllerInputs.Player.Pause.name)
+    //    {
+    //        OnPause(obj);
+    //    }
+    //}
 
     public void OnInteract(InputAction.CallbackContext context)
     {
@@ -142,16 +152,7 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
     public void OnPause(InputAction.CallbackContext context)
     {
         if (context.performed)
-        {
-            if (UIManager.Instance.gameOverMenu.activeSelf)
-            {
-                return;
-            }
-            bool isPaused = !UIManager.Instance.pauseMenu.activeSelf;
-            UIManager.Instance.pauseMenu.SetActive(isPaused);
-
-            Time.timeScale = isPaused ? 0f : 1f;
-        }
+            PauseEvent?.Invoke(this, EventArgs.Empty);
     }
 
     public void OnDash(InputAction.CallbackContext context)

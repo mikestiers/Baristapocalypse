@@ -11,7 +11,6 @@ public class DisplayAttributes : MonoBehaviour
     [SerializeField] private Canvas customerNumberCanvas;
     [SerializeField] private Text customerNumberText;
     [SerializeField] private Text customerNameText;
-    [SerializeField] private bool displayCustomerNameText = true;
     [SerializeField] private CustomerBase customerBase;
     private CoffeeAttributes coffeeAttributes;
 
