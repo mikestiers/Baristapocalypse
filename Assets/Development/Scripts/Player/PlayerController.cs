@@ -123,7 +123,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         //inputManager.JumpEvent += OnJump;
         inputManager.DashEvent += OnDash;
         inputManager.ThrowEvent += OnThrow;
-        inputManager.InteractEvent += Interact;
+        inputManager.InteractEvent += Interact ;
         inputManager.InteractAltEvent += InteractAlt;
         inputManager.DebugConsoleEvent += ShowDebugConsole;
     }
@@ -585,7 +585,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
     {
-        if(clientId == OwnerClientId && HasIngredient()) {
+        if(clientId == OwnerClientId && HasIngredient()) // HasIngredient 
+        {
             Ingredient.DestroyIngredient(GetIngredient());
         }
     }
