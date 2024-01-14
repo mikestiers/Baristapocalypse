@@ -19,7 +19,7 @@ public class CharacterSelectUI : MonoBehaviour
             mainMenuButton.onClick.AddListener(() =>
             {
                 LobbyManager.Instance.LeaveLobby();
-                Loader.Load(Loader.Scene.LobbyScene);
+                Loader.LoadNetwork(Loader.Scene.LobbyScene);
             });
         }
 
