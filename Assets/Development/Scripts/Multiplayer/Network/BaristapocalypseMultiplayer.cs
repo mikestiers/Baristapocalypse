@@ -2,17 +2,98 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.SceneManagement;
+using Unity.Services.Authentication;
+using System;
 
-public class BaristapocalypseMultiplayer : NetworkBehaviour
+public class BaristapocalypseMultiplayer  : NetworkBehaviour
 {
-    [SerializeField] private IngredientListSO ingredientListSO;
+    public const int MAX_PLAYERS = 4;
 
+    [SerializeField] private IngredientListSO ingredientListSO;
     public static BaristapocalypseMultiplayer Instance { get; private set; }
+
+    public event EventHandler OnTryingToJoinGame;
+    public event EventHandler OnFailToJoinGame;
+    public event EventHandler OnPlayerDataNetworkListChanged;
+
+    private NetworkList<PlayerData> playerDataNetworkList;
 
     private void Awake()
     {  
-        Instance = this; 
+        Instance = this;
+
+        DontDestroyOnLoad(gameObject);
+
+        playerDataNetworkList = new NetworkList<PlayerData>();
+        playerDataNetworkList.OnListChanged += PlayerDataNetworkList_OnListChanged;
     }
+
+    private void PlayerDataNetworkList_OnListChanged(NetworkListEvent<PlayerData> changeEvent)
+    {
+        OnPlayerDataNetworkListChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void StartHost()
+    {
+        NetworkManager.Singleton.ConnectionApprovalCallback += NetworkManager_ConnectionApprovalCallback;
+        NetworkManager.Singleton.OnClientConnectedCallback += NetworkManager_OnClientConnectedCallback;
+        NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_Server_OnClientDisconnectCallback;
+        NetworkManager.Singleton.StartHost();
+    }
+
+    private void NetworkManager_Server_OnClientDisconnectCallback(ulong clientId)
+    {
+        for(int i=0; i<playerDataNetworkList.Count; i++)
+        {
+            PlayerData playerData = playerDataNetworkList[i];
+            if(playerData.clientId == clientId)
+            {
+                playerDataNetworkList.RemoveAt(i);
+            }
+        }
+    }
+
+    private void NetworkManager_OnClientConnectedCallback(ulong clientId)
+    {
+        playerDataNetworkList.Add(new PlayerData
+        {
+            clientId = clientId,
+        });
+    }
+
+    public void StartClient()
+    {
+        OnTryingToJoinGame?.Invoke(this, EventArgs.Empty);
+
+        NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_Client_OnClientDisconnectCallback;
+        NetworkManager.Singleton.StartClient();
+    }
+
+    private void NetworkManager_ConnectionApprovalCallback(NetworkManager.ConnectionApprovalRequest connectionApprovalRequest, NetworkManager.ConnectionApprovalResponse connectionApprovalResponse)
+    {
+        if (SceneManager.GetActiveScene().name != Loader.Scene.CharacterSelectScene.ToString())
+        {
+            connectionApprovalResponse.Approved = false;
+            connectionApprovalResponse.Reason = "Game has already started";
+            return;
+        }
+
+        if (NetworkManager.Singleton.ConnectedClientsIds.Count >= MAX_PLAYERS)
+        {
+            connectionApprovalResponse.Approved = false;
+            connectionApprovalResponse.Reason = "Game is full";
+            return;
+        }
+
+        connectionApprovalResponse.Approved = true;
+    }
+
+    private void NetworkManager_Client_OnClientDisconnectCallback(ulong clientId)
+    {
+        OnFailToJoinGame?.Invoke(this, EventArgs.Empty);
+    }
+
 
     public void SpawnIngredient(IngredientSO ingredientSO, IIngredientParent ingredientParent)
     {
@@ -72,5 +153,15 @@ public class BaristapocalypseMultiplayer : NetworkBehaviour
         Ingredient ingredient = ingredientNetworkObject.GetComponent<Ingredient>();
 
         ingredient.ClearIngredientOnParent();
+    }
+
+    public bool IsPlayerIndexConnected(int playerIndex)
+    {
+        return playerIndex < playerDataNetworkList.Count;
+    }
+
+    public PlayerData GetPlayerDataFromPlayerIndex(int playerIndex)
+    {
+        return playerDataNetworkList[playerIndex];  
     }
 }

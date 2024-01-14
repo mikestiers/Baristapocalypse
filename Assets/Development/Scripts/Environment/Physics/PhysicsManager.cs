@@ -9,7 +9,6 @@ public class PhysicsManager : MonoBehaviour
     [SerializeField] private float floatForce = 10f;
     [SerializeField] private LayerMask gravityLayer;
     [SerializeField] private float maxFloatDistance = 1f;
-    [SerializeField] private float minFloat = 1.0f;
     [SerializeField] Vector3 startingLocation;
     [SerializeField] List<GameObject> stations;
     bool isFloating;

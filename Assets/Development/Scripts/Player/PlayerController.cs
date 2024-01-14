@@ -63,7 +63,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     public Transform spawnpoint3;
     public Transform spawnpoint4;
 
-
     [HideInInspector]
     public Pickup Pickup
     {
@@ -101,19 +100,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     private void Start()
     {
-        // Testing
-        //check amount of players spawned and move player to that position
-        if (GameManager.Instance.spawnpoint == 0 || GameManager.Instance.spawnpoint >= 4)
-            transform.position = spawnpoint1.position;
-        else if (GameManager.Instance.spawnpoint == 1)
-            transform.position = spawnpoint2.position;
-        else if (GameManager.Instance.spawnpoint == 2)
-            transform.position = spawnpoint3.position;
-        else if (GameManager.Instance.spawnpoint == 3)
-            transform.position = spawnpoint4.position;
-
-        GameManager.Instance.spawnpoint++;
-
         //Get components
         rb = GetComponent<Rigidbody>();
         anim = GetComponentInChildren<Animator>();
@@ -137,7 +123,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         //inputManager.JumpEvent += OnJump;
         inputManager.DashEvent += OnDash;
         inputManager.ThrowEvent += OnThrow;
-        inputManager.InteractEvent += Interact;
+        inputManager.InteractEvent += Interact ;
         inputManager.InteractAltEvent += InteractAlt;
         inputManager.DebugConsoleEvent += ShowDebugConsole;
     }
@@ -290,6 +276,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     public void Interact()
     {
+        if (!GameManager.Instance.IsGamePlaying()) return;
+
         if (selectedStation)
         {
             selectedStation.Interact(this);
@@ -304,6 +292,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     public void InteractAlt()
     {
+        if (!GameManager.Instance.IsGamePlaying()) return;
+
         if (selectedStation)
         {
             selectedStation.InteractAlt(this);
@@ -578,5 +568,26 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     {
         UIManager.Instance.debugConsole.SetActive(!UIManager.Instance.debugConsoleActive);
         UIManager.Instance.debugConsoleActive = !UIManager.Instance.debugConsoleActive;
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
+            Instance = this;
+        }
+
+        if (IsServer)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+        }
+    }
+
+    private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
+    {
+        if(clientId == OwnerClientId && HasIngredient()) // HasIngredient 
+        {
+            Ingredient.DestroyIngredient(GetIngredient());
+        }
     }
 }
