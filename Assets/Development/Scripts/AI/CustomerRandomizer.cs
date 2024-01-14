@@ -19,24 +19,23 @@ public class CustomerRandomizer : NetworkBehaviour
 
         race = Races[customerIndex];
 
-        int randomBitterness = Random.Range(race.minBitterness, race.maxBitterness + 1);
-        int randomSpiciness = Random.Range(race.minSpiciness, race.maxSpiciness + 1);
-        int randomStrength = Random.Range(race.minStrength, race.maxStrength + 1);
-        int randomSweetness = Random.Range(race.minSweetness, race.maxSweetness + 1);
         int randomTemperature = Random.Range(race.minTemperature, race.maxTemperature + 1);
+        int randomSweetness = Random.Range(race.minSweetness, race.maxSweetness + 1);
+        int randomStrength = Random.Range(race.minStrength, race.maxStrength + 1);
+        int randomSpiciness = Random.Range(race.minSpiciness, race.maxSpiciness + 1);
+
         int headIndex = Random.Range(0, heads.Count);
         int bodyIndex = Random.Range(0, bodies.Count);
 
-        StartClientRpc(headIndex, bodyIndex, randomBitterness, randomSpiciness, randomStrength, randomSweetness, randomTemperature);
+        StartClientRpc(headIndex, bodyIndex, randomSpiciness, randomStrength, randomSweetness, randomTemperature);
 
     }
 
     [ClientRpc]
-    private void StartClientRpc(int headIndex, int bodyIndex, int randomBitterness, int randomSpiciness, int randomStrength, int randomSweetness, int randomTemperature)
+    private void StartClientRpc(int headIndex, int bodyIndex, int randomSpiciness, int randomStrength, int randomSweetness, int randomTemperature)
     {
         coffeePreferences = GetComponent<CoffeeAttributes>();
 
-        coffeePreferences.AddBitterness(randomBitterness);
         coffeePreferences.AddSpiciness(randomSpiciness);
         coffeePreferences.AddStrength(randomStrength);
         coffeePreferences.AddSweetness(randomSweetness);

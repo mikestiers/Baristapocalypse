@@ -5,7 +5,6 @@ using UnityEngine;
 public class CoffeeAttributes : MonoBehaviour
 {
     [SerializeField] private int sweetness;
-    [SerializeField] private int bitterness;
     [SerializeField] private int strength;
     [SerializeField] private int temperature;
     [SerializeField] private int spiciness;
@@ -16,46 +15,38 @@ public class CoffeeAttributes : MonoBehaviour
         isMinigamePerfect = false;
     }
 
-    public int GetSweetness()
-    {
-        return sweetness;
-    }
-    public int GetBitterness()
-    {
-        return bitterness;
-    }
-    public int GetStrength()
-    {
-        return strength;
-    }
     public int GetTemperature()
     {
         return temperature;
+    }
+    public int GetSweetness()
+    {
+        return sweetness;
     }
     public int GetSpiciness()
     {
         return spiciness;
     }
+    public int GetStrength()
+    {
+        return strength;
+    }
 
-    public void AddSweetness(int sweetness)
-    {
-        this.sweetness += sweetness;
-    }
-    public void AddBitterness(int bitterness)
-    {
-        this.bitterness += bitterness;
-    }
-    public void AddStrength(int strength)
-    {
-        this.strength += strength;
-    }
     public void AddTemperature(int temperature)
     {
         this.temperature += temperature;
     }
+    public void AddSweetness(int sweetness)
+    {
+        this.sweetness += sweetness;
+    }
     public void AddSpiciness(int spiciness)
     {
         this.spiciness += spiciness;
+    }
+    public void AddStrength(int strength)
+    {
+        this.strength += strength;
     }
 
     public void SetIsMinigamePerfect(bool minigame)

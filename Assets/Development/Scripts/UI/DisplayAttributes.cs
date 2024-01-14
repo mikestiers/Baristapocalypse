@@ -30,7 +30,6 @@ public class DisplayAttributes : MonoBehaviour
     {
         StringBuilder sb = new StringBuilder();
         sb.Append("I want");
-        sb.Append(GetPrefix(coffeeAttributes.GetBitterness()) + "bitterness,");
         sb.Append(GetPrefix(coffeeAttributes.GetSweetness()) + "sweetness,");
         sb.Append(GetPrefix(coffeeAttributes.GetStrength()) + "strength,");
         sb.Append(GetPrefix(coffeeAttributes.GetTemperature()) + "temperature,");
