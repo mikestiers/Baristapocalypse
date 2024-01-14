@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.Audio;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -15,10 +16,11 @@ public class UIManager : Singleton<UIManager>
     public Button toPause;
     public Button closePause;
     public Button restartGame;
+    public Button closeAudioSettings;
 
     [Header("Menu")]
     public GameObject mainMenu;
-    public GameObject settingsMenu;
+    public GameObject audioSettings;
     public GameObject gameOverMenu;
     public GameObject pauseMenu;
     public GameObject tutorialMenu;
@@ -29,6 +31,7 @@ public class UIManager : Singleton<UIManager>
     public Text score;
     public TextMeshProUGUI gameOverText;
     public TextMeshProUGUI finalScore;
+    public Text volSliderText;
 
     [Header("Order Stats")]
     public Transform ordersPanel;
@@ -51,6 +54,14 @@ public class UIManager : Singleton<UIManager>
     public Text shift;
 
 
+    [Header("Slider")]
+    public Slider musicSlider;
+    public Slider sfxSlider;
+    public Slider mainVolumeSlider;
+    public Slider voiceVolumeSlider;
+
+    public AudioMixer mixer;
+
     private void Start()
     {
         if (toGame)
@@ -71,6 +82,16 @@ public class UIManager : Singleton<UIManager>
             closePause.onClick.AddListener(ClosePause);
         if (restartGame)
             restartGame.onClick.AddListener(RestartGame);
+        if (closeAudioSettings)
+            closeAudioSettings.onClick.AddListener(CloseAudioSettings);
+
+
+        //if (volSlider)
+        //{
+        //    volSlider.onValueChanged.AddListener((value) => OnSliderValueChanged(value));
+        //    if (volSliderText)
+        //        volSliderText.text = volSlider.value.ToString();
+        //}
     }
     private void ReturnToGame()
     {
@@ -139,7 +160,13 @@ public class UIManager : Singleton<UIManager>
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         mainMenu.SetActive(false);
-        settingsMenu.SetActive(true);
+        audioSettings.SetActive(true);
+    }
+
+    private void CloseAudioSettings()
+    {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+        audioSettings.SetActive(false);
     }
 
     public void ShowCustomerUiOrder(CustomerBase customer)
@@ -237,4 +264,29 @@ public class UIManager : Singleton<UIManager>
             tutorialMenu.SetActive(false);
         }
     }
+    public void SetMusicVolume(float value)
+    {
+        //if (volSliderText)
+        //    volSliderText.text = value.ToString();
+
+        mixer.SetFloat("Music", musicSlider.value);
+
+    }
+
+    public void SetSFXVolume(float value)
+    {
+        mixer.SetFloat("SFX", sfxSlider.value);
+    }
+    
+    public void SetMainVolume(float value)
+    {
+        mixer.SetFloat("MainVolume", mainVolumeSlider.value);
+    }
+    
+    public void SetVoiceVolume(float value)
+    {
+        mixer.SetFloat("VoiceLines", voiceVolumeSlider.value);
+    }
+
+
 }
