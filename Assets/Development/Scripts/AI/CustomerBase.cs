@@ -277,6 +277,11 @@ public class CustomerBase : Base
     {
         SetCustomerStateServerRpc(CustomerState.Leaving);
         agent.SetDestination(exit.position);
+
+
+        CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
+        UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
+        if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
     }
 
     public void Walkto(Vector3 Spot)

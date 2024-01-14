@@ -46,6 +46,14 @@ public class UIManager : Singleton<UIManager>
     public GameObject debugConsole;
     public bool debugConsoleActive = false;
 
+    [Header("DifficultyTesting")]
+    public Text customersLeft;
+    public Text customersInStore;
+    public Text spawnMode;
+    public Text wavesleft;
+    public Text shift;
+
+
     [Header("Slider")]
     public Slider musicSlider;
     public Slider sfxSlider;
