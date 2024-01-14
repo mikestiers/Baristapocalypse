@@ -93,11 +93,10 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         CoffeeAttributes coffeeAttributes = this.GetIngredient().GetComponent<CoffeeAttributes>();
         foreach (IngredientSO ingredient in ingredientSOList)
         {
-            coffeeAttributes.AddSweetness(ingredient.sweetness);
-            coffeeAttributes.AddBitterness(ingredient.bitterness);
-            coffeeAttributes.AddStrength(ingredient.strength);
             coffeeAttributes.AddTemperature(ingredient.temperature);
+            coffeeAttributes.AddSweetness(ingredient.sweetness);
             coffeeAttributes.AddSpiciness(ingredient.spiciness);
+            coffeeAttributes.AddStrength(ingredient.strength);
         }
     }
 
