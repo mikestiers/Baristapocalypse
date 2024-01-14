@@ -21,7 +21,7 @@ public class GameManager : NetworkBehaviour
     private NetworkVariable<GameState> gameState = new NetworkVariable<GameState>(GameState.WaitingToStart);
     private NetworkVariable<float> countdownToStartTimer = new NetworkVariable<float>(3f);
     private NetworkVariable<float> gamePlayingTimer = new NetworkVariable<float>(0f);
-    private float gamePlayingTimerMax = 15f;
+    private float gamePlayingTimerMax = 120f;
     private bool isLocalPlayerReady;
 
     [SerializeField] private Transform player1Prefab;
@@ -47,6 +47,8 @@ public class GameManager : NetworkBehaviour
     public event EventHandler OnMultiplayerGameUnpaused;
 
     public event EventHandler OnLocalPlayerReadyChanged;
+
+    [SerializeField] private CustomerManager customerManager;
 
     private void Awake()
     {
@@ -138,6 +140,9 @@ public class GameManager : NetworkBehaviour
                 {
                     gameState.Value = GameState.GamePlaying;
                     gamePlayingTimer.Value = gamePlayingTimerMax;
+                    CustomerManager test = Instantiate(customerManager);
+                    test.GetComponent<NetworkObject>().Spawn(true);
+
                 }
                 break;
 
