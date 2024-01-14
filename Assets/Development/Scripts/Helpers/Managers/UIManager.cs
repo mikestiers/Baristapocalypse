@@ -80,11 +80,11 @@ public class UIManager : Singleton<UIManager>
     private void RestartGame()
     {
         //Reset score timer
-        ScoreTimerManager.Instance.ResetTimerScore();
+        //ScoreTimerManager.Instance.ResetTimerScore();
 
         Time.timeScale = 1f;
         gameOverMenu.SetActive(false);
-        GameManager.Instance.gameState = GameState.RUNNING;
+        //GameManager.Instance.gameState = GameState.RUNNING;
         SceneManager.LoadScene(activeGameScene);
     }
 
@@ -112,7 +112,7 @@ public class UIManager : Singleton<UIManager>
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         SceneManager.LoadScene(mainMenuScene); 
-        ScoreTimerManager.Instance.ResetTimerScore();
+        //ScoreTimerManager.Instance.ResetTimerScore();
         timer.enabled = false;
         score.enabled = false;
         ordersMenu.SetActive(false);
@@ -221,8 +221,8 @@ public class UIManager : Singleton<UIManager>
 
     private void Update()
     {
-        timer.text = ScoreTimerManager.Instance.timeRemaining.ToString("n2");
-        score.text = ScoreTimerManager.Instance.score.ToString();
+       //timer.text = ScoreTimerManager.Instance.timeRemaining.ToString("n2");
+       //score.text = ScoreTimerManager.Instance.score.ToString();
 
         if (Input.GetKeyDown(KeyCode.Tab))
         {
