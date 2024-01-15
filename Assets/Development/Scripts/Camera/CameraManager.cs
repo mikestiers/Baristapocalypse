@@ -24,6 +24,8 @@ public class CameraManager : MonoBehaviour
     {
         cam = GetComponent<Camera>();
 
+        
+
     }
 
    /* private void Update()
