@@ -160,7 +160,6 @@ public class IngredientSelectionUI : BaseStation
                 orderStats.sweetnessSegments.potentialIngredientValue = 0;
                 orderStats.spicinessSegments.potentialIngredientValue = 0;
                 orderStats.strengthSegments.potentialIngredientValue = 0;
-                Debug.LogError("whatever");
             }
         }
 
