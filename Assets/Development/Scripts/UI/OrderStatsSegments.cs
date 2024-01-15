@@ -50,6 +50,23 @@ public class OrderStatsSegments : MonoBehaviour
                 segments[(segments.Length / 2) + targetAttributeValue].GetComponent<Image>().color = Color.green;
             if (targetAttributeValue > 0 && cumulative != targetAttributeValue)
                 segments[(segments.Length / 2 - 1) + targetAttributeValue].GetComponent<Image>().color = Color.green;
+            int startIndex = segments.Length / 2 - 1;
+            int endIndex = startIndex + cumulative;
+            if (potentialIngredientValue < 0)
+            {
+                for (int i = endIndex; i > endIndex + potentialIngredientValue; i--)
+                {
+                    segments[i].GetComponent<Image>().color = Color.red;
+                }
+            }
+
+            if (potentialIngredientValue > 0)
+            {
+                for (int i = endIndex; i < endIndex + potentialIngredientValue; i++)
+                {
+                    segments[i].GetComponent<Image>().color = Color.red;
+                }
+            }
             return;
         }
 

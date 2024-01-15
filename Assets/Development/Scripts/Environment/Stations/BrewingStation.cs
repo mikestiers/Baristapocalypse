@@ -7,6 +7,8 @@ using Unity.Netcode;
 
 public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 {
+    public Transform orderStatsRoot;
+    
     public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
     public event EventHandler<IHasMinigameTiming.OnMinigameTimingEventArgs> OnMinigameTimingStarted;
 
@@ -132,6 +134,21 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
                     Ingredient.DestroyIngredient(ingredient);
 
                     InteractLogicPlaceObjectOnBrewingServerRpc();
+
+                    if (orderStatsRoot.childCount > 0)
+                    {
+                        OrderStats orderStats = orderStatsRoot.GetChild(0).GetComponent<OrderStats>();
+                        
+                        orderStats.temperatureSegments.cumulativeIngredientsValue += ingredient.IngredientSO.temperature;
+                        orderStats.sweetnessSegments.cumulativeIngredientsValue += ingredient.IngredientSO.sweetness;
+                        orderStats.spicinessSegments.cumulativeIngredientsValue += ingredient.IngredientSO.spiciness;
+                        orderStats.strengthSegments.cumulativeIngredientsValue += ingredient.IngredientSO.strength;
+
+                        orderStats.temperatureSegments.potentialIngredientValue = 0;
+                        orderStats.sweetnessSegments.potentialIngredientValue = 0;
+                        orderStats.spicinessSegments.potentialIngredientValue = 0;
+                        orderStats.strengthSegments.potentialIngredientValue = 0;
+                    }
                 }
             }
             /*if (player.GetNumberOfIngredients() >= 1)
