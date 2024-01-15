@@ -380,21 +380,21 @@ public class CustomerBase : Base
     {
         Debug.Log("the customer is not happy with the serving");
 
-        customerReactionIndicator.CustomerAngry();
+       //customerReactionIndicator.CustomerAngry();
     }
 
     private void Perfect()
     {
         Debug.Log("you did great!");
 
-        customerReactionIndicator.CustomerHappy();
+       //customerReactionIndicator.CustomerHappy();
     }
 
     private void Reorder()
     {
         Debug.Log("customer is not happy with the serving and wants you to try again");
 
-        customerReactionIndicator.CustomerSad();
+       //customerReactionIndicator.CustomerSad();
     }
 
     public void StartOrderTimer()
