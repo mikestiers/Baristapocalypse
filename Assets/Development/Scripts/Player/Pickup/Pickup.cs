@@ -39,25 +39,59 @@ public class Pickup : NetworkBehaviour
         BaristapocalypseMultiplayer.Instance.SpawnPickupObject(pickupSo,pickupObjectParent);
     }
     
-    // public void SetpickupObjectParent(IPickupObjectParent pickupObjectParent)
-    // {
-    //     if (this.pickupObjectParent != null)
-    //     {
-    //         this.pickupObjectParent.ClearPickup();
-    //     }
-    //
-    //     this.pickupObjectParent = pickupObjectParent;
-    //
-    //     if (pickupObjectParent.HasPickup())
-    //     {
-    //         Debug.Log("Player already has pickup");
-    //     }
-    //     
-    //     this.pickupObjectParent.SetPickup(this);
-    //     
-    //     //FollowTransform.transform()
-    // }
+    public void SetpickupObjectParent(IPickupObjectParent pickupObjectParent)
+    {
+        SetPickupObjectServerRpc(pickupObjectParent.GetNetworkObject());
+    }
+    [ServerRpc(RequireOwnership = false)]
+    private void SetPickupObjectServerRpc(NetworkObjectReference pickupObjectNetworkReference)
+    {
+        SetPickupObjectClientRpc(pickupObjectNetworkReference);
+    }
+    [ClientRpc]
+    private void SetPickupObjectClientRpc(NetworkObjectReference pickupObjectNetworkReference)
+    {
+        pickupObjectNetworkReference.TryGet(out NetworkObject pickupNetworkParentObject);
+        IPickupObjectParent pickupObjectParent = pickupNetworkParentObject.GetComponent<IPickupObjectParent>();
 
+        if (this.pickupObjectParent != null)
+        {
+            this.pickupObjectParent.ClearPickup();
+        }
+    
+        this.pickupObjectParent = pickupObjectParent;
+    
+        if (pickupObjectParent.HasPickup())
+        {
+            Debug.Log("Player already has pickup");
+        }
+        
+        pickupObjectParent.SetPickup(this);
+
+        FollowTransform.SetTargetTransform(pickupObjectParent.GetPickupTransform());
+    }
+
+    public void DisablePickupColliders(Pickup pickup)
+    {
+        DisablePickupObjectCollidersServerRpc(pickup.GetNetworkObject());
+    }
+    
+    [ServerRpc(RequireOwnership = false)]
+    private void DisablePickupObjectCollidersServerRpc(NetworkObjectReference pickupNetworkObjectReference)
+    {
+        DisablePickupObjectCollidersClientRpc(pickupNetworkObjectReference);
+    }
+    
+    [ClientRpc]
+    private void DisablePickupObjectCollidersClientRpc(NetworkObjectReference pickupNetworkObjectReference)
+    {
+        pickupNetworkObjectReference.TryGet(out NetworkObject pickupNetworkObject);
+        Pickup pickupObject = pickupNetworkObject.GetComponent<Pickup>();
+        
+        pickupObject.RemoveRigidBody();
+        pickupObject.GetCollider().enabled = false;
+
+    }
     public IPickupObjectParent GetpickupObjectParent()
     {
         return pickupObjectParent;
@@ -100,6 +134,10 @@ public class Pickup : NetworkBehaviour
         return customer;
     }
 
+    public NetworkObject GetNetworkObject()
+    {
+        return NetworkObject;
+    }
     [Serializable]
     public enum PickupAttribute
     {

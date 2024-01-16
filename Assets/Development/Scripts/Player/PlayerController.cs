@@ -551,7 +551,13 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             return;
        
         // Pickup p = Instantiate(pickup, pickupLocation) as Pickup;
-        Pickup.SpawnPickupItem(pickupSo, this);
+        //Pickup.SpawnPickupItem(pickupSo, this);
+        PickupSO pickupSo = pickup.GetPickupObjectSo();
+
+        if (pickupSo != null)
+        {
+            Pickup.SpawnPickupItem(pickupSo, this);
+        }
         // if (p.IsCustomer)
         // {
         //     p.GetNavMeshAgent().enabled = false;

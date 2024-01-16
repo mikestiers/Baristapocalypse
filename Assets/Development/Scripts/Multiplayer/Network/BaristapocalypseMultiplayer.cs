@@ -116,7 +116,6 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
         ingredient.SetIngredientParent(ingredientParent);
 
         ingredient.DisableIngredientCollision(ingredient);
- 
     }
 
     public int GetIngredientSOIndex(IngredientSO ingredientSO)
@@ -174,30 +173,27 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void SpawnPickupObjectServerRpc(int pickupSoIndex, NetworkObjectReference pickupObjectNetworkObjectReference)
     {
-        
         PickupSO pickupSo = GetPickupSoFromIndex(pickupSoIndex);
-        Debug.Log($"Index: {pickupSoIndex}, PickupSO: {pickupSo}");
         GameObject pickupGameObject = Instantiate(pickupSo.prefab);
-        
+
         NetworkObject pickupObjectNetworkObject = pickupGameObject.GetComponent<NetworkObject>();
         pickupObjectNetworkObject.Spawn(true);
         Pickup pickup = pickupGameObject.GetComponent<Pickup>();
 
         pickupObjectNetworkObjectReference.TryGet(out NetworkObject pickupObjectParentNetworkObject);
-        IPickupObjectParent pickupObjectParent = pickupObjectNetworkObject.GetComponent<IPickupObjectParent>();
+        IPickupObjectParent pickupObjectParent = pickupObjectParentNetworkObject.GetComponent<IPickupObjectParent>();
+        pickup.SetpickupObjectParent(pickupObjectParent);
         
-      //  pickup.SetpickupObjectParent(pickupObjectParent);
-       
+        pickup.DisablePickupColliders(pickup);
     }
 
     public int GetPickupObjectSoIndex(PickupSO pickupSo)
     {
-        Debug.Log(pickupSo +" scanned");
-         return pickupList.PickupListSO.IndexOf(pickupSo);
+        return pickupList.PickupListSO.IndexOf(pickupSo);
     }
 
     public PickupSO GetPickupSoFromIndex(int pickupSoIndex)
     {
-        return pickupList.PickupListSO[pickupSoIndex];
+       return pickupList.PickupListSO[pickupSoIndex];
     }
 }
