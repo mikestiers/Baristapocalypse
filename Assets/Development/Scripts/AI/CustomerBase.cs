@@ -53,6 +53,8 @@ public class CustomerBase : Base
         agent = GetComponent<NavMeshAgent>();
         exit = CustomerManager.Instance.GetExit();
         if (distThreshold <= 0) distThreshold = 0.5f;
+
+        customerReactionIndicator.CustomerHappy();
     }
 
     public virtual void Update()
@@ -392,7 +394,7 @@ public class CustomerBase : Base
     {
         Debug.Log("you did great!");
 
-       customerReactionIndicator.CustomerHappy();
+        customerReactionIndicator.CustomerHappy();
     }
 
     private void Reorder()
