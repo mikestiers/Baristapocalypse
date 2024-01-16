@@ -30,7 +30,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     [SerializeField] private LayerMask isStationLayer;
     [SerializeField] private LayerMask isIngredientLayer;
     [SerializeField] private LayerMask isCustomerLayer;
-    [SerializeField] private GameObject ingredientInstanceHolder;
+    //[SerializeField] private GameObject ingredientInstanceHolder;
     private BaseStation selectedStation;
     private Base selectedCustomer;
     public float sphereCastRadius = 0.5f;
@@ -38,10 +38,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     [Header("Ingredients Data")]
     [SerializeField] public Transform[] ingredientHoldPoints; // Array to hold multiple ingredient
-    private Ingredient ingredient;
+    [SerializeField] private List<Ingredient> ingredientsList = new List<Ingredient>();
     private int currentHoldPointIndex = 0; // keep track of the current HoldPoint index
     private int numberOfIngredientsHeld = 0; // Keep track of the number of ingredients held
-    private int maxIngredients = 4; // Keep track of the maximum number of ingredients the player can have
+    private int maxIngredients = 2; // Keep track of the maximum number of ingredients the player can have
 
     [SerializeField] public Rigidbody rb { get; private set; }
     [SerializeField] public Animator anim { get; private set; }
@@ -76,7 +76,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     }
 
     // to organize
-    private IngredientSO ingredienSO;
+    private IngredientSO ingredientSO;
     public bool HasNoIngredients => GetNumberOfIngredients() == 0;
     private Mouse mouse = Mouse.current;
     private LayerMask interactableLayerMask; // A single LayerMask for all interactable objects
@@ -196,15 +196,15 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
             {
                 if (GetNumberOfIngredients() <= maxIngredients && !IsHoldingPickup)
                 {
-                    ingredienSO = ingredient.IngredientSO;
+                    ingredientSO = ingredient.IngredientSO;
 
                     if (mouse.leftButton.wasPressedThisFrame)
                     {
-                        GrabIngredientFromFloor(ingredient, ingredienSO);
+                        GrabIngredientFromFloor(ingredient, ingredientSO);
                     }
                     else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
                     {
-                        GrabIngredientFromFloor(ingredient, ingredienSO);
+                        GrabIngredientFromFloor(ingredient, ingredientSO);
                     }
                 }
             }
@@ -363,19 +363,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     public int GetNumberOfIngredients()
     {
-        int count = 0;
-        foreach (Transform holdPoint in ingredientHoldPoints)
-        {
-            if (holdPoint.childCount > 0)
-            {
-                Ingredient ingredient = holdPoint.GetChild(0).GetComponent<Ingredient>();
-                if (ingredient != null)
-                {
-                    count++;
-                }
-            }
-        }
-        numberOfIngredientsHeld = count;
+        numberOfIngredientsHeld = ingredientsList.Count;
         return numberOfIngredientsHeld;
     }
 
@@ -400,17 +388,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     public Transform GetNextHoldPoint()
     {
-        for (int i = 0; i < ingredientHoldPoints.Length; i++)
+        if(GetNumberOfIngredients() >= GetMaxIngredients())
         {
-            currentHoldPointIndex = (currentHoldPointIndex + 1) % ingredientHoldPoints.Length;
-            if (ingredientHoldPoints[currentHoldPointIndex].childCount == 0)
-            {
-                return ingredientHoldPoints[currentHoldPointIndex];
-            }
+            return null;
         }
-
-        // If all hold points are occupied, return null
-        return null;
+        return ingredientHoldPoints[GetNumberOfIngredients()];
     }
 
     public Transform GetIngredientTransform()
@@ -420,12 +402,20 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     public void SetIngredient(Ingredient ingredient)
     {
-        this.ingredient = ingredient;
+        if(GetNumberOfIngredients() < GetMaxIngredients())
+        {
+            ingredientsList.Add(ingredient);
+        }
     }
 
     public Ingredient GetIngredient()
     {
-        return ingredient;
+        return ingredientsList[0];
+    }
+
+    public int GetMaxIngredients()
+    {
+        return maxIngredients;
     }
 
     public void ThrowIngedient()
@@ -458,7 +448,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         }
     }
 
-    public void GrabIngredientFromFloor(Ingredient floorIngredient,IngredientSO ingredientSO )
+    public void GrabIngredientFromFloor(Ingredient floorIngredient, IngredientSO ingredientSO)
     {
         if (IsHoldingPickup)
             return;
@@ -480,13 +470,12 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     // Ingredient intarface Implementation
     public void ClearIngredient()
     {
-        ingredient = null;
+        ingredientsList.Clear();
     }
 
     public bool HasIngredient()
     {
-        return ingredient != null;
-        //return GetNumberOfIngredients() >= maxIngredients;
+        return GetNumberOfIngredients() > 0;
     }
 
     public NetworkObject GetNetworkObject()
