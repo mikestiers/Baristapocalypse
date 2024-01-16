@@ -6,9 +6,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class CustomerReactionIndicator : MonoBehaviour
-{
+{ 
+    //Text
     public CustomerReactionTextHappySO[] allReactionTextHappySO;
     public CustomerReactionTextSadSO[] allReactionTextSadSO;
+    public CustomerReactionTextAngrySO[] allReactionTextAngrySO;
+    //Images
     public CustomerReactionHappySO[] allReactionHappySO;
     public CustomerReactionSadSO[] allReactionSadSO;
     public CustomerReactionAngrySO[] allReactionAngrySO;
@@ -25,6 +28,7 @@ public class CustomerReactionIndicator : MonoBehaviour
         // Find all instances of CustomerReaction in the project
         allReactionTextHappySO = FindAllScriptableObjects<CustomerReactionTextHappySO>();
         allReactionTextSadSO = FindAllScriptableObjects<CustomerReactionTextSadSO>();
+        allReactionTextAngrySO = FindAllScriptableObjects<CustomerReactionTextAngrySO>();
         allReactionHappySO = FindAllScriptableObjects<CustomerReactionHappySO>();
         allReactionSadSO = FindAllScriptableObjects<CustomerReactionSadSO>();
         allReactionAngrySO = FindAllScriptableObjects<CustomerReactionAngrySO>();
@@ -72,6 +76,7 @@ public class CustomerReactionIndicator : MonoBehaviour
         // Deactivate the text
         happyTextSlot.gameObject.SetActive(false);
         sadTextSlot.gameObject.SetActive(false);
+        angryTextSlot.gameObject .SetActive(false);
       
    }
    public void CustomerSad() 
@@ -91,8 +96,11 @@ public class CustomerReactionIndicator : MonoBehaviour
         CustomerReactionAngrySO customerReactionASO = allReactionAngrySO[Random.Range(0, allReactionAngrySO.Length)];
         angryImageSlot.sprite = customerReactionASO.Image;
         angryImageSlot.gameObject.SetActive(true);
+        CustomerReactionTextAngrySO customerReactionATSO = allReactionTextAngrySO[Random.Range(0, allReactionTextAngrySO.Length)];
+        angryTextSlot.text = customerReactionATSO.Text;
+        angryTextSlot.gameObject.SetActive(true);
 
-       // StartCoroutine(DeactivateImage());
-   }
+        // StartCoroutine(DeactivateImage());
+    }
 
 }
