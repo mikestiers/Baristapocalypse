@@ -38,6 +38,8 @@ public class CustomerBase : Base
     [SerializeField] private ScoreTimerManager scoreTimerManager;
     [SerializeField] public GameObject customerDialogue;
 
+    //for reactions
+    public CustomerReactionIndicator customerReactionIndicator;
     public enum CustomerState
     {
         Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead
@@ -211,6 +213,7 @@ public class CustomerBase : Base
     {
         Debug.Log("customer leaving");
         CustomerManager.Instance.Leaveline();
+       
     }
 
     // CUSTOMER STATE METHODS
@@ -248,6 +251,7 @@ public class CustomerBase : Base
         customerNameText.text = customerName;
         customerDialogue.SetActive(false);
         customerNumberCanvas.enabled = false;
+       
     }
 
     public void DisplayCustomerVisualIdentifiers()
@@ -276,7 +280,13 @@ public class CustomerBase : Base
     public virtual void CustomerLeave()
     {
         SetCustomerStateServerRpc(CustomerState.Leaving);
+        
         agent.SetDestination(exit.position);
+
+
+        CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
+        UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
+        if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
     }
 
     public void Walkto(Vector3 Spot)
@@ -332,14 +342,15 @@ public class CustomerBase : Base
         result += (Mathf.Abs(coffeeAttributes.GetStrength() - customerAttributes.GetStrength()) <= 5) ? 1 : -1;
 
         int minigameResult = coffeeAttributes.GetIsMinigamePerfect() ? 1 : 0;
-        ScoreTimerManager.Instance.score += result * (minigameResult + 1);
+        //ScoreTimerManager.Instance.score += result * (minigameResult + 1);
         Debug.Log($"Result for {customerNumber}: {result}");
+        
         switch (result)
         {
             case 5:
                 Perfect();
-                ScoreTimerManager.Instance.IncrementStreak();
-                ScoreTimerManager.Instance.score += result * ScoreTimerManager.Instance.StreakCount;
+               // ScoreTimerManager.Instance.IncrementStreak();
+               // ScoreTimerManager.Instance.score += result * ScoreTimerManager.Instance.StreakCount;
                 CustomerLeave();
                 break;
 
@@ -347,7 +358,7 @@ public class CustomerBase : Base
             case 3:
             case 2:
             case 1:
-                ScoreTimerManager.Instance.ResetStreak();
+                //ScoreTimerManager.Instance.ResetStreak();
                 CustomerLeave();
                 break;
 
@@ -364,7 +375,7 @@ public class CustomerBase : Base
             case -5:
 
                 Angry();
-                ScoreTimerManager.Instance.score += result;
+               // ScoreTimerManager.Instance.score += result;
                 CustomerLeave();
                 break;
         }
@@ -373,16 +384,22 @@ public class CustomerBase : Base
     private void Angry()
     {
         Debug.Log("the customer is not happy with the serving");
+
+       //customerReactionIndicator.CustomerAngry();
     }
 
     private void Perfect()
     {
         Debug.Log("you did great!");
+
+       //customerReactionIndicator.CustomerHappy();
     }
 
     private void Reorder()
     {
         Debug.Log("customer is not happy with the serving and wants you to try again");
+
+       //customerReactionIndicator.CustomerSad();
     }
 
     public void StartOrderTimer()

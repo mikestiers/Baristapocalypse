@@ -10,7 +10,6 @@ public class BlackHole2 : MonoBehaviour
     private float angle;
     public float rotationSpeed = 2f;
     private float rotationDistance;
-    private bool isBeingPulled = false;
 
     private Vector3 initialPosition;
     private GameObject objectBeingAbsorbed;

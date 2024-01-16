@@ -35,8 +35,8 @@ public class TestingNetcodeUI : NetworkBehaviour
     {
         if (IsServer)
         {
-            CustomerManager test = Instantiate(customerManager); // temporary
-            test.GetComponent<NetworkObject>().Spawn(true);// temporary***
+            CustomerManager test = Instantiate(customerManager); 
+            test.GetComponent<NetworkObject>().Spawn(true);
 
         }
 
