@@ -5,35 +5,46 @@ using UnityEngine.ProBuilder;
 
 public class DifficultySettings
 {
-    private float timeBetweenWaves = 30.0f;
+    
+    private DifficultySO currentDifficulty;
+
+    private float timeBetweenWaves;
     private int numberOfCustomersInWave;
-    private int difficultyLevel = 1;
-    private string difficultyString = "Medium";
     private int Shift = 1;
     private int numberOfWaves;
     private float minDelay;
     private float maxDelay;
     private int playerCount;
+    private int MaxShift = 5; //do determine end of game
 
-    public DifficultySettings(int difficultyLevelChosen, int InitplayerCount)
+    public DifficultySettings(DifficultySO chosenDifficulty, int InitplayerCount)
     {
-        difficultyLevel = difficultyLevelChosen;
-        Debug.Log(InitplayerCount);
 
-        switch (difficultyLevel)
+        currentDifficulty = chosenDifficulty;
+
+        minDelay = chosenDifficulty.minCustomerSpawnDelay;
+        maxDelay = chosenDifficulty.maxCustomerSpawnDelay;
+
+        timeBetweenWaves += chosenDifficulty.timeBetweenWaves;
+
+        numberOfWaves = chosenDifficulty.InitialnumberOfWaves;
+        numberOfCustomersInWave = chosenDifficulty.numberOfCustomersInWave + Mathf.FloorToInt(InitplayerCount * chosenDifficulty.rateOfIncreaseBasedOnPlayerCount);
+
+        playerCount = InitplayerCount;
+
+        /*
+        switch (currentDifficulty.difficultyString)
         {
-            case 0:
-                difficultyString = "Easy";
-                numberOfCustomersInWave = 15 + Mathf.FloorToInt(InitplayerCount * 1.5f);
+            case "Easy":
+                numberOfCustomersInWave = chosenDifficulty.InitialnumberOfWaves + Mathf.FloorToInt(InitplayerCount * 1.5f);
                 minDelay = 8.0f;
                 maxDelay = 15.0f;
                 numberOfWaves = 3;
 
                 break;
 
-            case 1:
-                difficultyString = "Medium";
-                numberOfCustomersInWave = 5 + (InitplayerCount * 2); // set to 5 just for testing purposes
+            case "Medium":
+                numberOfCustomersInWave = chosenDifficulty.InitialnumberOfWaves + (InitplayerCount * 2);
                
                 minDelay = 6.0f;
                 maxDelay = 10.0f;
@@ -41,9 +52,8 @@ public class DifficultySettings
 
                 break;
 
-            case 2:
-                numberOfCustomersInWave = 10 + (InitplayerCount * 3);
-                difficultyString = "Hard";
+            case "Hard":
+                numberOfCustomersInWave = chosenDifficulty.InitialnumberOfWaves + (InitplayerCount * 3);
                 
                 minDelay = 6.0f;
                 maxDelay = 8.0f;
@@ -51,7 +61,7 @@ public class DifficultySettings
                 break;
 
         }
-
+        */
 
     }
 
@@ -59,48 +69,17 @@ public class DifficultySettings
     {
         Shift++;
 
-        switch(difficultyLevel)
+        if(Shift <= MaxShift) 
         {
-            case 0:
-                //easy
-                minDelay = 8.0f;
-                maxDelay = 15.0f;
-
-                numberOfWaves = 3;
-
-                break;
-
-            case 1:
-                //medium
-                minDelay = 6.0f;
-                maxDelay = 10.0f;
-
-                switch (Shift) 
-                {
-                    case 2: case 3: case 4:case 5:
-                        numberOfWaves = 3;
-                        break;
-                    case 6: case 7: case 8:
-                        numberOfWaves = 4;
-                        break;
-                    case 9: case 10:
-                        numberOfWaves = 5;
-                        break;
-
-                }
-
-                break;
-
-            case 2:
-                //hard
-                minDelay = 6.0f;
-                maxDelay = 8.0f;
-
-                numberOfWaves = Mathf.FloorToInt(4 + Shift * 0.5f);
-
-                break;
-
+            //Trigger End Game
+            return;
         }
+
+
+        minDelay = currentDifficulty.minCustomerSpawnDelay;
+        maxDelay = currentDifficulty.maxCustomerSpawnDelay;
+
+        numberOfWaves = currentDifficulty.InitialnumberOfWaves + Mathf.FloorToInt(Shift * currentDifficulty.RateOfIncreaseInNumberOfWaves);
 
 
     }
@@ -115,10 +94,11 @@ public class DifficultySettings
         numberOfWaves--;
 
         //decreasing the amount of delay between customers spawning
-        minDelay -= 0.5f;
-        maxDelay -= 0.5f;
+        minDelay -= currentDifficulty.rateOFDecresedDelayOfCustomerSpawn;
+        maxDelay -= currentDifficulty.rateOFDecresedDelayOfCustomerSpawn;
 
         //adjusting amount of customers based on wave numbers /// increasing amount of customers every wave
+        /*
         switch (difficultyLevel)
         {
             case 0:
@@ -140,6 +120,8 @@ public class DifficultySettings
                 break;
 
         }
+        */
+        numberOfCustomersInWave += Mathf.FloorToInt(currentDifficulty.RateOfIncreaseInNumberOfWaves + (playerCount * currentDifficulty.rateOfIncreaseBasedOnPlayerCount));
 
 
     }
