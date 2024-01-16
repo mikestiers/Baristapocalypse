@@ -38,6 +38,8 @@ public class CustomerBase : Base
     [SerializeField] private ScoreTimerManager scoreTimerManager;
     [SerializeField] public GameObject customerDialogue;
 
+    //for reactions
+    public CustomerReactionIndicator customerReactionIndicator;
     public enum CustomerState
     {
         Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead
@@ -211,6 +213,7 @@ public class CustomerBase : Base
     {
         Debug.Log("customer leaving");
         CustomerManager.Instance.Leaveline();
+       
     }
 
     // CUSTOMER STATE METHODS
@@ -248,6 +251,7 @@ public class CustomerBase : Base
         customerNameText.text = customerName;
         customerDialogue.SetActive(false);
         customerNumberCanvas.enabled = false;
+       
     }
 
     public void DisplayCustomerVisualIdentifiers()
@@ -276,6 +280,7 @@ public class CustomerBase : Base
     public virtual void CustomerLeave()
     {
         SetCustomerStateServerRpc(CustomerState.Leaving);
+        
         agent.SetDestination(exit.position);
 
 
@@ -379,16 +384,22 @@ public class CustomerBase : Base
     private void Angry()
     {
         Debug.Log("the customer is not happy with the serving");
+
+       //customerReactionIndicator.CustomerAngry();
     }
 
     private void Perfect()
     {
         Debug.Log("you did great!");
+
+       //customerReactionIndicator.CustomerHappy();
     }
 
     private void Reorder()
     {
         Debug.Log("customer is not happy with the serving and wants you to try again");
+
+       //customerReactionIndicator.CustomerSad();
     }
 
     public void StartOrderTimer()
