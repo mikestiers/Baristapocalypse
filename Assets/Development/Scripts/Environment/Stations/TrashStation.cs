@@ -7,13 +7,9 @@ public class TrashStation : BaseStation
 {
     [SerializeField] private ParticleSystem interactParticle;
     private Ingredient ingredient;
-    private PlayerController playerControllerInstance;
-
 
     public override void Interact(PlayerController player)
     {
-        playerControllerInstance = player;
-
         // Temporary thile hold points are fixed
         if (player.HasIngredient())
         {
@@ -48,9 +44,7 @@ public class TrashStation : BaseStation
     [ClientRpc]
     private void InteractClientRpc()
     {
-
-        //Ingredient.DestroyIngredient(ingredient);
-        //Ingredient.DestroyIngredient(ingredient);
+        Ingredient.DestroyIngredient(ingredient);
     }
 
 }
