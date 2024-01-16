@@ -20,9 +20,9 @@ public class CustomerReactionIndicator : MonoBehaviour
     public Image sadImageSlot;
     public Image angryImageSlot;
     [Header("TextReactionSlots")]
-    public Text happyTextSlot;
-    public Text sadTextSlot;
-    public Text angryTextSlot;
+    public Text TextSlot;
+    //public Text sadTextSlot;
+    //public Text angryTextSlot;
     private void Start()
     {
         // Find all instances of CustomerReaction in the project
@@ -33,7 +33,7 @@ public class CustomerReactionIndicator : MonoBehaviour
         allReactionSadSO = FindAllScriptableObjects<CustomerReactionSadSO>();
         allReactionAngrySO = FindAllScriptableObjects<CustomerReactionAngrySO>();
 
-        CustomerAngry();
+       // CustomerAngry();
        //CustomerHappy();
        // CustomerSad();
     }
@@ -57,14 +57,14 @@ public class CustomerReactionIndicator : MonoBehaviour
         happyImageSlot.sprite = customerReactionHSO.Image;
         happyImageSlot.gameObject.SetActive(true);
         CustomerReactionTextHappySO customerReactionHTSO = allReactionTextHappySO[Random.Range(0,allReactionTextHappySO.Length)];
-        happyTextSlot.text = customerReactionHTSO.Text;
-        happyTextSlot.gameObject.SetActive(true);
+        TextSlot.text = customerReactionHTSO.Text;
+       // TextSlot.gameObject.SetActive(true);
 
-       // StartCoroutine(DeactivateImage()); 
+        StartCoroutine(DeactivateImage()); 
     }
 
 
-   private System.Collections.IEnumerator DeactivateImage()
+   private IEnumerator DeactivateImage()
    {
        // Wait for 3 seconds
        yield return new WaitForSeconds(3f);
@@ -74,9 +74,9 @@ public class CustomerReactionIndicator : MonoBehaviour
         sadImageSlot.gameObject.SetActive(false);
         angryImageSlot.gameObject.SetActive(false);
         // Deactivate the text
-        happyTextSlot.gameObject.SetActive(false);
-        sadTextSlot.gameObject.SetActive(false);
-        angryTextSlot.gameObject .SetActive(false);
+       // TextSlot.gameObject.SetActive(false);
+       // sadTextSlot.gameObject.SetActive(false);
+       // angryTextSlot.gameObject .SetActive(false);
       
    }
    public void CustomerSad() 
@@ -85,10 +85,10 @@ public class CustomerReactionIndicator : MonoBehaviour
         sadImageSlot.sprite = customerReactionSSO.Image;
         sadImageSlot.gameObject.SetActive(true);
         CustomerReactionTextSadSO customerReactionSTSO = allReactionTextSadSO[Random.Range(0, allReactionTextSadSO.Length)];
-        sadTextSlot.text = customerReactionSTSO.Text;
-        sadTextSlot.gameObject.SetActive(true);
+        TextSlot.text = customerReactionSTSO.Text;
+       // TextSlot.gameObject.SetActive(true);
 
-        // StartCoroutine(DeactivateImage());
+        StartCoroutine(DeactivateImage());
     }
 
    public void CustomerAngry() 
@@ -97,10 +97,10 @@ public class CustomerReactionIndicator : MonoBehaviour
         angryImageSlot.sprite = customerReactionASO.Image;
         angryImageSlot.gameObject.SetActive(true);
         CustomerReactionTextAngrySO customerReactionATSO = allReactionTextAngrySO[Random.Range(0, allReactionTextAngrySO.Length)];
-        angryTextSlot.text = customerReactionATSO.Text;
-        angryTextSlot.gameObject.SetActive(true);
+        TextSlot.text = customerReactionATSO.Text;
+       // TextSlot.gameObject.SetActive(true);
 
-        // StartCoroutine(DeactivateImage());
+        StartCoroutine(DeactivateImage());
     }
 
 }
