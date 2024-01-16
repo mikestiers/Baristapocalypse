@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CustomerReactionIndicator : MonoBehaviour
 {
-    public CustomerReactionTextSO[] allReactionTextSO;
+    public CustomerReactionTextHappySO[] allReactionTextHappySO;
+    public CustomerReactionTextSadSO[] allReactionTextSadSO;
     public CustomerReactionHappySO[] allReactionHappySO;
     public CustomerReactionSadSO[] allReactionSadSO;
     public CustomerReactionAngrySO[] allReactionAngrySO;
@@ -14,17 +16,22 @@ public class CustomerReactionIndicator : MonoBehaviour
     public Image happyImageSlot;
     public Image sadImageSlot;
     public Image angryImageSlot;
+    [Header("TextReactionSlots")]
+    public Text happyTextSlot;
+    public Text sadTextSlot;
+    public Text angryTextSlot;
     private void Start()
     {
         // Find all instances of CustomerReaction in the project
-        allReactionTextSO = FindAllScriptableObjects<CustomerReactionTextSO>();
+        allReactionTextHappySO = FindAllScriptableObjects<CustomerReactionTextHappySO>();
+        allReactionTextSadSO = FindAllScriptableObjects<CustomerReactionTextSadSO>();
         allReactionHappySO = FindAllScriptableObjects<CustomerReactionHappySO>();
         allReactionSadSO = FindAllScriptableObjects<CustomerReactionSadSO>();
         allReactionAngrySO = FindAllScriptableObjects<CustomerReactionAngrySO>();
 
-       // CustomerAngry();
-       // CustomerHappy();
-        CustomerSad();
+        CustomerAngry();
+       //CustomerHappy();
+       // CustomerSad();
     }
 
     private T[] FindAllScriptableObjects<T>() where T : ScriptableObject
@@ -45,8 +52,11 @@ public class CustomerReactionIndicator : MonoBehaviour
         CustomerReactionHappySO customerReactionHSO = allReactionHappySO[Random.Range(0,allReactionHappySO.Length)];
         happyImageSlot.sprite = customerReactionHSO.Image;
         happyImageSlot.gameObject.SetActive(true);
+        CustomerReactionTextHappySO customerReactionHTSO = allReactionTextHappySO[Random.Range(0,allReactionTextHappySO.Length)];
+        happyTextSlot.text = customerReactionHTSO.Text;
+        happyTextSlot.gameObject.SetActive(true);
 
-        StartCoroutine(DeactivateImage()); 
+       // StartCoroutine(DeactivateImage()); 
     }
 
 
@@ -56,10 +66,12 @@ public class CustomerReactionIndicator : MonoBehaviour
        yield return new WaitForSeconds(3f);
 
         // Deactivate the images
-
         happyImageSlot.gameObject.SetActive(false);
         sadImageSlot.gameObject.SetActive(false);
         angryImageSlot.gameObject.SetActive(false);
+        // Deactivate the text
+        happyTextSlot.gameObject.SetActive(false);
+        sadTextSlot.gameObject.SetActive(false);
       
    }
    public void CustomerSad() 
@@ -67,8 +79,11 @@ public class CustomerReactionIndicator : MonoBehaviour
         CustomerReactionSadSO customerReactionSSO = allReactionSadSO[Random.Range(0, allReactionSadSO.Length)];
         sadImageSlot.sprite = customerReactionSSO.Image;
         sadImageSlot.gameObject.SetActive(true);
+        CustomerReactionTextSadSO customerReactionSTSO = allReactionTextSadSO[Random.Range(0, allReactionTextSadSO.Length)];
+        sadTextSlot.text = customerReactionSTSO.Text;
+        sadTextSlot.gameObject.SetActive(true);
 
-       // StartCoroutine(DeactivateImage());
+        // StartCoroutine(DeactivateImage());
     }
 
    public void CustomerAngry() 
@@ -77,7 +92,7 @@ public class CustomerReactionIndicator : MonoBehaviour
         angryImageSlot.sprite = customerReactionASO.Image;
         angryImageSlot.gameObject.SetActive(true);
 
-        StartCoroutine(DeactivateImage());
+       // StartCoroutine(DeactivateImage());
    }
 
 }
