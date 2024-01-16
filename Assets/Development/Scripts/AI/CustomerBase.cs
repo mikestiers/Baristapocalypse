@@ -392,7 +392,7 @@ public class CustomerBase : Base
     {
         Debug.Log("you did great!");
 
-       //customerReactionIndicator.CustomerHappy();
+       customerReactionIndicator.CustomerHappy();
     }
 
     private void Reorder()

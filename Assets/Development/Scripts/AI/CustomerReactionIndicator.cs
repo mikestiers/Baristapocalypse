@@ -1,26 +1,44 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CustomerReactionIndicator : MonoBehaviour
 {
-    
-    [SerializeField] private Image happyImage;
-    [SerializeField] private Image sadImage;
-    [SerializeField] private Image angryImage;
-
-    private void Awake()
+    public CustomerReactionTextSO[] allReactionTextSO;
+    public CustomerReactionSO[] allReactionSO;
+    public Image happyImageSlot;
+    private void Start()
     {
-        CustomerHappy();
+        // Find all instances of CustomerReaction in the project
+        allReactionTextSO = FindAllScriptableObjects<CustomerReactionTextSO>();
+        allReactionSO = FindAllScriptableObjects<CustomerReactionSO>();
+
+       
     }
 
-    public void CustomerHappy() 
-   {
-      happyImage.gameObject.SetActive(true);
+    private T[] FindAllScriptableObjects<T>() where T : ScriptableObject
+    {
+        string[] guids = AssetDatabase.FindAssets("t:" + typeof(T).Name);
+        T[] scriptableObjects = new T[guids.Length];
 
-      StartCoroutine(DeactivateImage()); 
-   }
+        for (int i = 0; i < guids.Length; i++)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guids[i]);
+            scriptableObjects[i] = AssetDatabase.LoadAssetAtPath<T>(path);
+        }
+
+        return scriptableObjects;
+    }
+    public void CustomerHappy() 
+    {
+        CustomerReactionSO customerReactionSO = allReactionSO[Random.Range(0,allReactionSO.Length)];
+        happyImageSlot.sprite = customerReactionSO.Image;
+        happyImageSlot.gameObject.SetActive(true);
+
+        StartCoroutine(DeactivateImage()); 
+    }
 
 
    private System.Collections.IEnumerator DeactivateImage()
@@ -28,21 +46,21 @@ public class CustomerReactionIndicator : MonoBehaviour
        // Wait for 3 seconds
        yield return new WaitForSeconds(3f);
 
-       // Deactivate the happy image
-       happyImage.gameObject.SetActive(false);
-       sadImage.gameObject.SetActive(false);
-       angryImage.gameObject.SetActive(false);
+        // Deactivate the happy image
+
+        happyImageSlot.gameObject.SetActive(false);
+      
    }
    public void CustomerSad() 
    {
-        sadImage.gameObject.SetActive(true);
+        
 
         StartCoroutine(DeactivateImage());
     }
 
    public void CustomerAngry() 
    {
-      angryImage.gameObject.SetActive(true);
+      
 
       StartCoroutine(DeactivateImage());
    }
