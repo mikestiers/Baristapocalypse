@@ -527,7 +527,6 @@ MonoBehaviour:
   customerNumberCanvas: {fileID: 0}
   customerNumberText: {fileID: 0}
   customerNameText: {fileID: 0}
-  displayCustomerNameText: 1
   customerBase: {fileID: 0}
 --- !u!195 &1237828631663224579
 NavMeshAgent:
@@ -843,6 +842,37 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 1
+--- !u!1 &3426656431178919953
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4961381447448103050}
+  m_Layer: 0
+  m_Name: SpillSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4961381447448103050
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3426656431178919953}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.5, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5640675751676341536}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5640675751676341541
 GameObject:
   m_ObjectHideFlags: 0
@@ -885,6 +915,7 @@ Transform:
   - {fileID: 2456312928997377149}
   - {fileID: 8890427119754575853}
   - {fileID: 8028185746511386370}
+  - {fileID: 4961381447448103050}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -919,6 +950,8 @@ MonoBehaviour:
   detachedHead: {fileID: 8484585654411725913}
   scoreTimerManager: {fileID: 0}
   customerDialogue: {fileID: 2430203159097677186}
+  spillPrefab: {fileID: 11400000, guid: 6b7275261fe99c245a3688777a6d3ec6, type: 2}
+  spillSpawnPoint: {fileID: 4961381447448103050}
 --- !u!136 &5640675751676341543
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -972,7 +1005,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sweetness: 0
-  bitterness: 0
   strength: 0
   temperature: 0
   spiciness: 0

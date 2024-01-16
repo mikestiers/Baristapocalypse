@@ -16,6 +16,7 @@ public class DifficultySettings
     private float maxDelay;
     private int playerCount;
     private int MaxShift = 5; //do determine end of game
+    private float chanceToMess;
 
     public DifficultySettings(DifficultySO chosenDifficulty, int InitplayerCount)
     {
@@ -31,6 +32,8 @@ public class DifficultySettings
         numberOfCustomersInWave = chosenDifficulty.numberOfCustomersInWave + Mathf.FloorToInt(InitplayerCount * chosenDifficulty.rateOfIncreaseBasedOnPlayerCount);
 
         playerCount = InitplayerCount;
+
+        chanceToMess = chosenDifficulty.chanceToMess;
 
         /*
         switch (currentDifficulty.difficultyString)
@@ -155,5 +158,10 @@ public class DifficultySettings
     public void SetAmountOfPlayers(int playeramount)
     {
        playerCount = playeramount;
+    }
+
+    public float GetChanceToMess()
+    {
+        return chanceToMess;
     }
 }

@@ -23,5 +23,7 @@ public class DifficultySO : ScriptableObject
     public float maxCustomerSpawnDelay;
     public float rateOFDecresedDelayOfCustomerSpawn; //0.5f original script
 
+    public float chanceToMess;
+
 
 }

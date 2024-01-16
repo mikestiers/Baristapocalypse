@@ -4,6 +4,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class CustomerBase : Base
@@ -37,6 +38,8 @@ public class CustomerBase : Base
     [SerializeField] private DetachedHead detachedHead;
     [SerializeField] private ScoreTimerManager scoreTimerManager;
     [SerializeField] public GameObject customerDialogue;
+    [SerializeField] private MessSO spillPrefab;
+    [SerializeField] private Transform spillSpawnPoint;
 
     public enum CustomerState
     {
@@ -282,6 +285,8 @@ public class CustomerBase : Base
         CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
         UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
         if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
+
+        if (Random.Range(0, 100) <= CustomerManager.Instance.difficultySettings.GetChanceToMess()) CreateMess();
     }
 
     public void Walkto(Vector3 Spot)
@@ -399,5 +404,10 @@ public class CustomerBase : Base
     public void StopOrderTimer()
     {
         orderTimer = null;
+    }
+
+    public void CreateMess()
+    {
+        Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
     }
 }
