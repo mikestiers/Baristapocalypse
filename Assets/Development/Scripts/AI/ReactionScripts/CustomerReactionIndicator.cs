@@ -33,9 +33,6 @@ public class CustomerReactionIndicator : MonoBehaviour
         allReactionSadSO = FindAllScriptableObjects<CustomerReactionSadSO>();
         allReactionAngrySO = FindAllScriptableObjects<CustomerReactionAngrySO>();
 
-       // CustomerAngry();
-       //CustomerHappy();
-       // CustomerSad();
     }
 
     private T[] FindAllScriptableObjects<T>() where T : ScriptableObject
@@ -51,16 +48,16 @@ public class CustomerReactionIndicator : MonoBehaviour
 
         return scriptableObjects;
     }
-    public void CustomerHappy() 
+    public string CustomerHappy() 
     {
         CustomerReactionHappySO customerReactionHSO = allReactionHappySO[Random.Range(0,allReactionHappySO.Length)];
         happyImageSlot.sprite = customerReactionHSO.Image;
         happyImageSlot.gameObject.SetActive(true);
         CustomerReactionTextHappySO customerReactionHTSO = allReactionTextHappySO[Random.Range(0,allReactionTextHappySO.Length)];
-        TextSlot.text = customerReactionHTSO.Text;
-       // TextSlot.gameObject.SetActive(true);
+       
+        StartCoroutine(DeactivateImage());
 
-        StartCoroutine(DeactivateImage()); 
+        return customerReactionHTSO.Text;
     }
 
 
@@ -73,34 +70,30 @@ public class CustomerReactionIndicator : MonoBehaviour
         happyImageSlot.gameObject.SetActive(false);
         sadImageSlot.gameObject.SetActive(false);
         angryImageSlot.gameObject.SetActive(false);
-        // Deactivate the text
-       // TextSlot.gameObject.SetActive(false);
-       // sadTextSlot.gameObject.SetActive(false);
-       // angryTextSlot.gameObject .SetActive(false);
-      
+       
    }
-   public void CustomerSad() 
+   public string CustomerSad() 
    {
         CustomerReactionSadSO customerReactionSSO = allReactionSadSO[Random.Range(0, allReactionSadSO.Length)];
         sadImageSlot.sprite = customerReactionSSO.Image;
         sadImageSlot.gameObject.SetActive(true);
         CustomerReactionTextSadSO customerReactionSTSO = allReactionTextSadSO[Random.Range(0, allReactionTextSadSO.Length)];
-        TextSlot.text = customerReactionSTSO.Text;
-       // TextSlot.gameObject.SetActive(true);
 
         StartCoroutine(DeactivateImage());
+
+        return customerReactionSTSO.Text;
     }
 
-   public void CustomerAngry() 
+   public string CustomerAngry() 
    {
         CustomerReactionAngrySO customerReactionASO = allReactionAngrySO[Random.Range(0, allReactionAngrySO.Length)];
         angryImageSlot.sprite = customerReactionASO.Image;
         angryImageSlot.gameObject.SetActive(true);
         CustomerReactionTextAngrySO customerReactionATSO = allReactionTextAngrySO[Random.Range(0, allReactionTextAngrySO.Length)];
-        TextSlot.text = customerReactionATSO.Text;
-       // TextSlot.gameObject.SetActive(true);
-
+       
         StartCoroutine(DeactivateImage());
+
+        return customerReactionATSO.Text;
     }
 
 }

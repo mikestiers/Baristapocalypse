@@ -109,30 +109,25 @@ public class CustomerReview : MonoBehaviour
         switch (reviewScore)
         {
             case 0:
-                cafeDescription = "is terrible";
-                customerReactionIndicator.CustomerAngry();
+                cafeDescription = customerReactionIndicator.CustomerAngry();  
                 break;
             case 1:
-                cafeDescription = "kind of sucks";
-                customerReactionIndicator.CustomerAngry();
+                cafeDescription = customerReactionIndicator.CustomerAngry();
                 break;
             case 2:
-                cafeDescription = "is pretty mid bro";
-                customerReactionIndicator.CustomerSad();
+                cafeDescription = customerReactionIndicator.CustomerSad();
                 break;
             case 3:
-                cafeDescription = "has potential";
-                customerReactionIndicator.CustomerSad();
+                cafeDescription = customerReactionIndicator.CustomerSad();
                 break;
             case 4:
-                cafeDescription = "made my day";
-                customerReactionIndicator.CustomerHappy();
+                cafeDescription = customerReactionIndicator.CustomerHappy(); 
                 break;
             default:
                 if (reviewScore >= 5) 
-                { 
-                    cafeDescription = "is amazing";
-                    customerReactionIndicator.CustomerHappy();
+                {
+                    cafeDescription = customerReactionIndicator.CustomerHappy();
+                    
                 }
                 else
                 {
@@ -142,7 +137,7 @@ public class CustomerReview : MonoBehaviour
                 break;
         }
 
-        string reviewText = $"This place {cafeDescription}";
+        string reviewText = $"{cafeDescription}";
         return reviewText;
     }
 
