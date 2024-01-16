@@ -312,7 +312,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1959
+  m_VersionIndex: 1965
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -405,6 +405,7 @@ GameObject:
   - component: {fileID: 3366720151648082664}
   - component: {fileID: 1125012182506645654}
   - component: {fileID: 7237732476668811835}
+  - component: {fileID: -1654601374841702060}
   m_Layer: 10
   m_Name: Mop
   m_TagString: Untagged
@@ -447,6 +448,8 @@ MonoBehaviour:
   collider: {fileID: 7237732476668811835}
   navMeshAgent: {fileID: 0}
   throwForceMultiplier: 1
+  <pickupSo>k__BackingField: {fileID: 11400000, guid: b7e9e5a75daece7478950f9e7ad02106, type: 2}
+  FollowTransform: {fileID: 0}
 --- !u!65 &7237732476668811835
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -460,6 +463,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0702257, y: 2.9860604, z: 1.0712638}
   m_Center: {x: -0.19393337, y: 1.4895884, z: -0.11655474}
+--- !u!114 &-1654601374841702060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3366720151648082663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &3366720151909023083
 GameObject:
   m_ObjectHideFlags: 0
@@ -707,7 +726,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2827
+  m_VersionIndex: 2833
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
