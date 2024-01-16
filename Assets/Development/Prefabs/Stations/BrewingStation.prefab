@@ -406,6 +406,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8086891939505322414}
     m_Modifications:
+    - target: {fileID: 1115883119751181906, guid: 2c5acc53f7abc714f891157b6df75064, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6780517362470376362, guid: 2c5acc53f7abc714f891157b6df75064, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -513,15 +517,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2305830337154933689, guid: a1a86f6dec8a4f547be4f92cb7a6b2c3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.4022007
+      value: -21.88
       objectReference: {fileID: 0}
     - target: {fileID: 2305830337154933689, guid: a1a86f6dec8a4f547be4f92cb7a6b2c3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.01
+      value: -0.65
       objectReference: {fileID: 0}
     - target: {fileID: 2305830337154933689, guid: a1a86f6dec8a4f547be4f92cb7a6b2c3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -2.72
       objectReference: {fileID: 0}
     - target: {fileID: 2305830337154933689, guid: a1a86f6dec8a4f547be4f92cb7a6b2c3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -555,9 +559,17 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -0.484
       objectReference: {fileID: 0}
+    - target: {fileID: 7109546293884197120, guid: a1a86f6dec8a4f547be4f92cb7a6b2c3, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 951099334
+      objectReference: {fileID: 0}
     - target: {fileID: 8083973324504194466, guid: a1a86f6dec8a4f547be4f92cb7a6b2c3, type: 3}
       propertyPath: m_Name
       value: BrewingStation
+      objectReference: {fileID: 0}
+    - target: {fileID: 8280110119343447755, guid: a1a86f6dec8a4f547be4f92cb7a6b2c3, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8797172745711791259, guid: a1a86f6dec8a4f547be4f92cb7a6b2c3, type: 3}
       propertyPath: m_RootOrder
@@ -584,6 +596,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stationTopPoint: {fileID: 5328838951665215557}
+  orderStatsRoot: {fileID: 0}
   ingredientSOList: []
   interactParticle: {fileID: 3823761264207694108}
   ingredientsIndicatorText: {fileID: 220367961}
