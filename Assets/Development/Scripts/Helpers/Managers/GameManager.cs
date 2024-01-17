@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Unity.Netcode;
+using Cinemachine;
 
 [DefaultExecutionOrder(-1)]
 public class GameManager : NetworkBehaviour
@@ -50,6 +51,7 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] private CustomerManager customerManager;
 
+    [SerializeField] private CinemachineVirtualCamera Camera;
     private void Awake()
     {
         Instance = this;
@@ -66,6 +68,7 @@ public class GameManager : NetworkBehaviour
             InputManager.Instance.InteractEvent += InputManager_OnInteractEvent;
         }
     }
+
 
     private void InputManager_OnInteractEvent()
     {
@@ -230,6 +233,7 @@ public class GameManager : NetworkBehaviour
         {
             Transform playerTransform = Instantiate(player1Prefab);
             playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+            Camera.Follow = playerTransform;
         }
     }
 
