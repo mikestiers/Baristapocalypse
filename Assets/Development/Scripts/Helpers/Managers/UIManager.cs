@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.Audio;
+using System.Collections;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -37,10 +38,18 @@ public class UIManager : Singleton<UIManager>
     public Transform ordersPanel;
     public GameObject ordersUiPrefab;
     private OrderStats orderStats;
-    
+
     [Header("Customer Review")]
-    private CustomerReview customerReview;
+    public GameObject customerReviewPrefab;
     public GameObject starPrefab;
+    public GameObject customerReviewPanel;
+    public float rPSpeed;
+    public float rPArrivalThreshold;
+    public float popOutRPTime;
+    private CustomerReview customerReview;
+    private GameObject customerReviewTab;
+    private Vector3 originalRPPosition;
+    private Vector3 popOutRPPosition;
 
     [Header("DebugConsole")]
     public GameObject debugConsole;
@@ -89,7 +98,8 @@ public class UIManager : Singleton<UIManager>
         if (closeAudioSettings)
             closeAudioSettings.onClick.AddListener(CloseAudioSettings);
 
-
+        originalRPPosition = customerReviewPanel.transform.position;
+        popOutRPPosition = new Vector3(0f, customerReviewPanel.transform.position.y, customerReviewPanel.transform.position.z);
         //if (volSlider)
         //{
         //    volSlider.onValueChanged.AddListener((value) => OnSliderValueChanged(value));
@@ -140,7 +150,7 @@ public class UIManager : Singleton<UIManager>
     private void ShowMainMenu()
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
-        SceneManager.LoadScene(mainMenuScene); 
+        SceneManager.LoadScene(mainMenuScene);
         //ScoreTimerManager.Instance.ResetTimerScore();
         timer.enabled = false;
         score.enabled = false;
@@ -153,11 +163,11 @@ public class UIManager : Singleton<UIManager>
     private void QuitGame()
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
-        #else
+#else
             Application.Quit();
-        #endif
+#endif
     }
 
     private void ShowSettingsMenu()
@@ -176,6 +186,7 @@ public class UIManager : Singleton<UIManager>
     public void ShowCustomerUiOrder(CustomerBase customer)
     {
         orderStats = Instantiate(ordersUiPrefab, ordersPanel).GetComponent<OrderStats>();
+        customerReviewTab = Instantiate(customerReviewPrefab, customerReviewPanel.transform);
         orderStats.Initialize(customer);
     }
 
@@ -189,13 +200,12 @@ public class UIManager : Singleton<UIManager>
             {
                 if (o.GetOrderOwner() == customer)
                 {
-                    Transform customerReviewTransform = t.gameObject.transform.Find("CustomerReview");
-                    Text customerReviewText = customerReviewTransform.gameObject.GetComponent<Text>();
-                    customerReview = customerReviewTransform.GetComponentInParent<CustomerReview>();
+                    CustomerReview customerReview = t.gameObject.GetComponent<CustomerReview>();
+                    Text customerReviewText = customerReviewTab.GetComponentInChildren<Text>();
                     customerReview.GenerateReview(customer);
                     customerReviewText.text = customerReview.ReviewText;
                     UpdateStarRating(customerReview.ReviewScore);
-                    customerReviewTransform.gameObject.SetActive(true);
+                    StartCoroutine(MoveRP(popOutRPPosition, originalRPPosition));
                     return;
                 }
                 else
@@ -206,6 +216,23 @@ public class UIManager : Singleton<UIManager>
         }
     }
 
+    private IEnumerator MoveRP(Vector3 target, Vector3 start)
+    {
+        while (Vector3.Distance(customerReviewPanel.transform.position, popOutRPPosition) > rPArrivalThreshold)
+        {
+            Vector3 newPosition = Vector3.Lerp(start, target, rPSpeed * Time.deltaTime);
+            customerReviewPanel.transform.position = newPosition;
+            yield return null;
+        }
+        yield return new WaitForSeconds(popOutRPTime);
+        while (Vector3.Distance(customerReviewPanel.transform.position, popOutRPPosition) > rPArrivalThreshold)
+        {
+            Vector3 newPosition = Vector3.Lerp(target, start, rPSpeed * Time.deltaTime);
+            customerReviewPanel.transform.position = newPosition;
+            yield return null;
+        }
+
+    }
     public void RemoveCustomerUiOrder(CustomerBase customer)
     {
         foreach (Transform t in ordersPanel)
@@ -235,7 +262,7 @@ public class UIManager : Singleton<UIManager>
 
     public void UpdateStarRating(int reviewScore)
     {
-        Transform starRating = customerReview.transform.Find("CustomerReview/StarRating");
+        Transform starRating = customerReviewTab.GetComponent<GridLayoutGroup>().gameObject.transform;
 
         // Instantiate stars. 5 stars max
         for (int i = 1; i <= 5; i++)

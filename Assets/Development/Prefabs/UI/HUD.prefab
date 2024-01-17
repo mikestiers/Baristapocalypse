@@ -2770,6 +2770,67 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &1172647905296192574
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5064591587453941053}
+  - component: {fileID: 455209384002238101}
+  m_Layer: 5
+  m_Name: CustomerReviewPanel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5064591587453941053
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1172647905296192574}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5867048477265250292}
+  m_RootOrder: 19
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 200, y: 0}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 1, y: 1}
+--- !u!114 &455209384002238101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1172647905296192574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_StartCorner: 1
+  m_StartAxis: 0
+  m_CellSize: {x: 200, y: 50}
+  m_Spacing: {x: 0, y: 0}
+  m_Constraint: 0
+  m_ConstraintCount: 2
 --- !u!1 &1330550944341405424
 GameObject:
   m_ObjectHideFlags: 0
@@ -6485,6 +6546,7 @@ RectTransform:
   - {fileID: 2057572932213667733}
   - {fileID: 322847667}
   - {fileID: 1226674160}
+  - {fileID: 5064591587453941053}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6575,8 +6637,9 @@ MonoBehaviour:
   toPause: {fileID: 4687425270961045868}
   closePause: {fileID: 507160446}
   restartGame: {fileID: 8716143479165931}
+  closeAudioSettings: {fileID: 0}
   mainMenu: {fileID: 798143024}
-  settingsMenu: {fileID: 1658997375}
+  audioSettings: {fileID: 0}
   gameOverMenu: {fileID: 1226674157}
   pauseMenu: {fileID: 1618688486}
   tutorialMenu: {fileID: 2935772880731657666}
@@ -6585,11 +6648,26 @@ MonoBehaviour:
   score: {fileID: 240090027}
   gameOverText: {fileID: 1241028831069805091}
   finalScore: {fileID: 8426197485921034362}
+  volSliderText: {fileID: 0}
   ordersPanel: {fileID: 2799833194102717902}
   ordersUiPrefab: {fileID: 5308759679528095304, guid: 5de1edabd0f69164db14f8d4539228bf, type: 3}
+  customerReviewPrefab: {fileID: 8265708648559159930, guid: 823308a6e2d6c834182e765c8fcf1dd2, type: 3}
   starPrefab: {fileID: 6657550230311073171, guid: 6d4da51480d972c46802f0d0b614b765, type: 3}
+  customerReviewPanel: {fileID: 1172647905296192574}
+  rPSpeed: 10
+  rPArrivalThreshold: 0.05
   debugConsole: {fileID: 0}
   debugConsoleActive: 0
+  customersLeft: {fileID: 0}
+  customersInStore: {fileID: 0}
+  spawnMode: {fileID: 0}
+  wavesleft: {fileID: 0}
+  shift: {fileID: 0}
+  musicSlider: {fileID: 0}
+  sfxSlider: {fileID: 0}
+  mainVolumeSlider: {fileID: 0}
+  voiceVolumeSlider: {fileID: 0}
+  mixer: {fileID: 0}
 --- !u!114 &1425074277
 MonoBehaviour:
   m_ObjectHideFlags: 0

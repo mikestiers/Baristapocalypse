@@ -19,10 +19,7 @@ public class CustomerReactionIndicator : MonoBehaviour
     public Image happyImageSlot;
     public Image sadImageSlot;
     public Image angryImageSlot;
-    [Header("TextReactionSlots")]
-    public Text TextSlot;
-    //public Text sadTextSlot;
-    //public Text angryTextSlot;
+
     private void Start()
     {
         // Find all instances of CustomerReaction in the project
