@@ -4,12 +4,11 @@ using UnityEngine;
 using Unity.Netcode;
 
 public class Ingredient : NetworkBehaviour
-{
-    
+{ 
     [field: SerializeField] public IngredientSO IngredientSO { get; private set; }
 
     private IIngredientParent ingredientParent;
-    private IngredientFollowTransform followTransform;
+    public IngredientFollowTransform followTransform;
 
     protected virtual void Awake()
     {

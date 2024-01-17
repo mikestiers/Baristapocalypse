@@ -103,6 +103,13 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void SpawnIngredientServerRpc(int ingredientSOIndex, NetworkObjectReference ingredientParentNetworkObjectReference)
     {
+        SpawnIngredientClientRpc(ingredientSOIndex, ingredientParentNetworkObjectReference);
+    }
+
+    [ClientRpc]
+    private void SpawnIngredientClientRpc(int ingredientSOIndex, NetworkObjectReference ingredientParentNetworkObjectReference)
+    {
+        Debug.Log("Spawning ingredient");
         IngredientSO ingredientSO = GetIngredientSOFromIndex(ingredientSOIndex);
         GameObject ingredientPrefab = Instantiate(ingredientSO.prefab);
 

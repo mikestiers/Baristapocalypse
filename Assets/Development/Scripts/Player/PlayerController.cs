@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
+using Unity.Services.Lobbies.Models;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour, IIngredientParent
@@ -16,7 +17,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     [Header("Player Attributes")]
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpForce;
-    [SerializeField] private float ingredienThrowForce;
+    [SerializeField] private float ingredientThrowForce;
 
     [Header("Ground Check")]
     [SerializeField] private LayerMask isGroundLayer;
@@ -110,7 +111,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         if (jumpForce <= 0) jumpForce = 200.0f;
         if (dashForce <= 0) dashForce = 4000f;
         if (dashTime <= 0) dashTime = 0.1f;
-        if (ingredienThrowForce <= 0) ingredienThrowForce = 10f;
+        if (ingredientThrowForce <= 0) ingredientThrowForce = 10f;
         if (groundCheckRadius <= 0) groundCheckRadius = 0.05f;
 
         //Define the interactable layer mask to include station, ingredient, and mess layers.
@@ -150,9 +151,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         IsGrounded();
         // player movement
         Move(moveSpeed);
-
-        GetNumberOfIngredients();
-        SetIngredientIndicator();
 
         // Perform a single raycast to detect any interactable object.
         float interactDistance = 2.0f;
@@ -194,17 +192,17 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
             // Logic for Ingredient  on floor Interaction 
             else if (hit.transform.TryGetComponent(out Ingredient ingredient))
             {
-                if (GetNumberOfIngredients() <= maxIngredients && !IsHoldingPickup)
+                if (GetNumberOfIngredients() <= GetMaxIngredients() && !IsHoldingPickup)
                 {
-                    ingredientSO = ingredient.IngredientSO;
+                    IngredientSO ingredientSORef = ingredient.GetIngredientSO();
 
                     if (mouse.leftButton.wasPressedThisFrame)
                     {
-                        GrabIngredientFromFloor(ingredient, ingredientSO);
+                        GrabIngredientFromFloor(ingredient, ingredientSORef);
                     }
                     else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
                     {
-                        GrabIngredientFromFloor(ingredient, ingredientSO);
+                        GrabIngredientFromFloor(ingredient, ingredientSORef);
                     }
                 }
             }
@@ -240,10 +238,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward, Color.green);
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward * customerInteractDistance, Color.red);
-        
     }
-
-
 
     public bool IsGrounded()
     {
@@ -281,7 +276,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         if (selectedStation)
         {
             selectedStation.Interact(this);
-
         }
 
         if (selectedCustomer)
@@ -342,9 +336,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         {
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.throwIngredient);
             ThrowIngredient();
-
-            UpdateNumberOfIngredients();
-
         }
     }
 
@@ -361,6 +352,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     public int GetNumberOfIngredients()
     {
+        UpdateNumberOfIngredients();
         return numberOfIngredientsHeld;
     } 
 
@@ -384,11 +376,12 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     public Transform GetNextHoldPoint()
     {
-        if(GetNumberOfIngredients() >= GetMaxIngredients())
+        if(GetNumberOfIngredients() > GetMaxIngredients())
         {
             return null;
         }
-        return ingredientHoldPoints[GetNumberOfIngredients()];
+        Debug.Log("getting hold points " + (numberOfIngredientsHeld-1));
+        return ingredientHoldPoints[GetNumberOfIngredients() - 1];
     }
 
     public Transform GetIngredientTransform()
@@ -398,15 +391,24 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     public void SetIngredient(Ingredient ingredient)
     {
+        Debug.Log("number of ingredients" + GetNumberOfIngredients());
         if(GetNumberOfIngredients() < GetMaxIngredients())
         {
             ingredientsList.Add(ingredient);
+            GetNumberOfIngredients();
+            SetIngredientIndicator();
         }
+        Debug.Log("number of ingredients" + GetNumberOfIngredients());
     }
 
     public Ingredient GetIngredient()
     {
         return ingredientsList[0];
+    }
+
+    public List<Ingredient> GetIngredientsList()
+    {
+        return ingredientsList;
     }
 
     public int GetMaxIngredients()
@@ -419,7 +421,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         for(int i=0; i<ingredientsList.Count; i++)
         {
             if (ingredientsList[i] == null) continue;
-            Debug.Log("ingredients list not null");
 
             //Detach child from hold point
             ingredientsList[i].GetComponent<IngredientFollowTransform>().SetTargetTransform(ingredientsList[i].transform);
@@ -432,28 +433,59 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
             if (ingredientRb != null)
             {
                 ingredientRb.isKinematic = false;
-                ingredientRb.AddForce(transform.forward * ingredienThrowForce, ForceMode.Impulse);
+                ingredientRb.AddForce(transform.forward * ingredientThrowForce, ForceMode.Impulse);
             }
             ingredientIndicatorText.SetText("");
+            RemoveIngredientInListAtIndex(i);
         }
-        ClearIngredient();
+        
     }
 
     public void GrabIngredientFromFloor(Ingredient floorIngredient, IngredientSO ingredientSO)
     {
+        
         if (IsHoldingPickup)
             return;
-        if(ingredientsList.Count < maxIngredients)
+        if(GetNumberOfIngredients() >= GetMaxIngredients())
         {
-            floorIngredient.SetIngredientParent(this);
-            UpdateNumberOfIngredients(); 
+            Debug.Log("max ingredients spawned!");
+            return; 
         }
+
+        Ingredient.DestroyIngredient(floorIngredient);
+        Ingredient.SpawnIngredient(ingredientSO, this);
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
     }
 
     // Ingredient intarface Implementation
     public void ClearIngredient()
     {
-        ingredientsList.Clear();
+        //ingredientsList.Clear();
+    }
+
+    public void RemoveIngredientInListAtIndex(int index)
+    {
+        ingredientsList.RemoveAt(index);
+        if (ingredientsList.Count > 0)
+        {
+            ingredientsList.Insert(0, ingredientsList[0]);
+            ingredientsList.RemoveAt(1);
+            ingredientsList[0].followTransform.SetTargetTransform(ingredientHoldPoints[0]);
+        }
+        SetIngredientIndicator();
+    }
+
+    public void RemoveIngredientInListByReference(Ingredient ingredient)
+    {
+        ingredientsList.Remove(ingredient);
+        if (ingredientsList.Count > 0)
+        {
+            ingredientsList.Insert(0, ingredientsList[0]);
+            ingredientsList.RemoveAt(1);
+            ingredientsList[0].followTransform.SetTargetTransform(ingredientHoldPoints[0]);
+        }
+
+        SetIngredientIndicator();
     }
 
     public bool HasIngredient()
@@ -560,7 +592,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     {
         if(clientId == OwnerClientId && HasIngredient()) // HasIngredient 
         {
-            Ingredient.DestroyIngredient(GetIngredient());
+            for(int i=0; i<ingredientsList.Count; i++) {
+                Ingredient.DestroyIngredient(ingredientsList[i]);
+            }
         }
     }
 }

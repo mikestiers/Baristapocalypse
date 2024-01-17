@@ -122,48 +122,28 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     {
         if (!HasIngredient())
         {
-            if (player.HasIngredient())
-            {
-                if (TryAddIngredient(player.GetIngredient().GetIngredientSO()))
-                {
-                    AddIngredientToListSOServerRpc(BaristapocalypseMultiplayer.Instance.GetIngredientSOIndex(player.GetIngredient().GetIngredientSO()));
-
-                    Ingredient ingredient = player.GetIngredient();
-                    Ingredient.DestroyIngredient(ingredient);
-
-                    InteractLogicPlaceObjectOnBrewingServerRpc();
-                }
-            }
-            /*if (player.GetNumberOfIngredients() >= 1)
+            if (player.GetNumberOfIngredients() >= 1)
             {
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
                 interactParticle.Play();
 
-                for (int i = 0; i < player.ingredientHoldPoints.Length; i++)
+                foreach (Ingredient i in player.GetIngredientsList())
                 {
-                    Transform holdPoint = player.ingredientHoldPoints[i];
-                    if (holdPoint.childCount > 0 )
+                    if (TryAddIngredient(i.GetIngredientSO()))
                     {
-                        Ingredient ingredient = holdPoint.GetComponentInChildren<Ingredient>();
-                        if (TryAddIngredient(ingredient.GetIngredientSO()))
-                        {
-                            ingredient.DestroyIngredient();
-                            if (ingredientSOList.Count >= numIngredientsNeeded)
-                            {
-                                brewingTimer = 0;
-                                brewing = true;
-                                ingredientsIndicatorText.SetText("");
+                        AddIngredientToListSOServerRpc(BaristapocalypseMultiplayer.Instance.GetIngredientSOIndex(player.GetIngredient().GetIngredientSO()));
 
-                                OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
-                                {
-                                    progressNormalized = 0f
-                                });
-                            }
-                        }
+                        player.RemoveIngredientInListByReference(i);
+                        Ingredient.DestroyIngredient(i);
+
+                        InteractLogicPlaceObjectOnBrewingServerRpc();
+
+                        break;
                     }
+                    
                 }
 
-            }*/
+            }
         }
         else
         {

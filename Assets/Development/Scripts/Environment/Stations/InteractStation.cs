@@ -13,10 +13,9 @@ public class InteractStation : BaseStation
             {
                 return; 
             }
-            foreach (Transform holdPoint in player.ingredientHoldPoints)
+            foreach (Ingredient i in player.GetIngredientsList())
             {
-                Ingredient ingredient = holdPoint.GetComponentInChildren<Ingredient>();
-                if (ingredient != null)
+                if (i != null)
                 {
                     player.GetIngredient().SetIngredientParent(this);
                     SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
