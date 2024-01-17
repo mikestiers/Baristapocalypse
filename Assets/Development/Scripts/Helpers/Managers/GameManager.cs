@@ -51,7 +51,9 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] private CustomerManager customerManager;
     [Header("virtualCameras")]
-    [SerializeField] private List<CinemachineVirtualCamera> playerCameras = new List<CinemachineVirtualCamera>();
+    [SerializeField] private CinemachineVirtualCamera playerCamera;
+
+    private bool isLocalPlayer;
 
 
 
@@ -173,6 +175,13 @@ public class GameManager : NetworkBehaviour
             autoTestGamePausedState = false;
             TestGamePauseState();
         }
+
+        if (isLocalPlayer && autoTestGamePausedState)
+        {
+            autoTestGamePausedState = false;
+            TestGamePauseState();
+        }
+
     }
 
     public bool IsGamePlaying()
@@ -245,21 +254,18 @@ public class GameManager : NetworkBehaviour
 
             // Instantiate the player prefab
             Transform playerTransform = Instantiate(player1Prefab);
-            playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+            NetworkObject networkObject = playerTransform.GetComponent<NetworkObject>();
+            networkObject.SpawnAsPlayerObject(clientId, true);
 
-            // Assign the camera to the player
-            if (i < playerCameras.Count)
+            // Assign the camera to the local player
+            if (networkObject.IsLocalPlayer)
             {
-                CinemachineVirtualCamera playerCamera = playerCameras[i];
-
-                if (playerCamera != null)
-                {
-                    playerCamera.Follow = playerTransform;
-                }
-                else
-                {
-                    Debug.LogError($"Camera at index {i} is not assigned in the inspector.");
-                }
+                isLocalPlayer = true;
+                playerCamera.Follow = playerTransform;
+            }
+            else
+            {
+                isLocalPlayer = false;
             }
         }
     }
