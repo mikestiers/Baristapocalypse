@@ -7,10 +7,10 @@ public class OrderStats : MonoBehaviour
 {
     [Header("Customer Order")]
     [SerializeField] private Text customerNumberText;
-    [SerializeField] private OrderStatsSegments temperatureSegments;
-    [SerializeField] private OrderStatsSegments sweetnessSegments;
-    [SerializeField] private OrderStatsSegments spicinessSegments;
-    [SerializeField] private OrderStatsSegments strengthSegments;
+    [SerializeField] public OrderStatsSegments temperatureSegments;
+    [SerializeField] public OrderStatsSegments sweetnessSegments;
+    [SerializeField] public OrderStatsSegments spicinessSegments;
+    [SerializeField] public OrderStatsSegments strengthSegments;
     
     [Header("Customer Review")]
     [SerializeField] private GameObject customerReview;

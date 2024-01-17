@@ -46,6 +46,6 @@ public class Base : NetworkBehaviour, IIngredientParent
 
     public NetworkObject GetNetworkObject()
     {
-        return null;
+        return NetworkObject;
     }
 }

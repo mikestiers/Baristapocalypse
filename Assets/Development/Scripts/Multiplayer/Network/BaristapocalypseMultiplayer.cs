@@ -120,6 +120,9 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
 
     public int GetIngredientSOIndex(IngredientSO ingredientSO)
     {
+        Debug.Log(ingredientSO.sweetness);
+        int i = ingredientListSO.ingredientSOList.IndexOf(ingredientSO);
+        Debug.Log(ingredientListSO.ingredientSOList[i].sweetness);
         return ingredientListSO.ingredientSOList.IndexOf(ingredientSO);
     }
 
