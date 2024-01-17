@@ -24,6 +24,8 @@ public class DifficultySO : ScriptableObject
     public float rateOFDecresedDelayOfCustomerSpawn; //0.5f original script
 
     public float chanceToMess;
+    public float loiterMessEverySec;
+    public float chanceToLoiter;
 
 
 }

@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using Unity.Netcode;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -12,6 +14,10 @@ public class CustomerBase : Base
     [Header("Navigation")]
     public NavMeshAgent agent;
     public bool frontofLine;
+    public bool inLine;
+    public bool leaving = false;
+    public bool makingAMess = false;
+    public bool moving;
     public float distThreshold;
     public GameObject[] Line;
     public int LineIndex;
@@ -27,6 +33,7 @@ public class CustomerBase : Base
     [Header("State Related")]
     public CustomerState currentState;
     public float? orderTimer = null;
+    public float? messTime = null;
     public float customerLeaveTime = 60f;
     public float deadTimerSeconds = 5.0f;
 
@@ -60,6 +67,9 @@ public class CustomerBase : Base
     {
         if (orderTimer != null)
             orderTimer += Time.deltaTime;
+
+        if (messTime != null)
+            messTime += Time.deltaTime; 
 
         switch (currentState)
         {
@@ -107,6 +117,10 @@ public class CustomerBase : Base
     private void UpdateWaiting()
     {
         // To be implmented or removed
+        if (inLine == true) return;
+
+        SetCustomerStateServerRpc(CustomerState.Loitering);
+        
     }
 
     private void UpdateOrdering()
@@ -131,11 +145,15 @@ public class CustomerBase : Base
             {
                 SetCustomerStateServerRpc(CustomerState.Waiting);
             }
+
+            moving = false;
         }
     }
 
     private void UpdateLeaving()
     {
+        messTime = null;
+        leaving = true;
         if (agent.remainingDistance < distThreshold)
         {
             Destroy(gameObject);
@@ -158,7 +176,49 @@ public class CustomerBase : Base
 
     private void UpdateLoitering()
     {
+        if (leaving == true)
+        {
+            SetCustomerStateServerRpc(CustomerState.Leaving);
+            agent.SetDestination(exit.position);
+        }
+    
+
         // To be implmented or removed
+        if(messTime >= CustomerManager.Instance.difficultySettings.GetLoiterMessEverySec())
+        {
+            CreateMess();
+            RestartMessTimer();
+        }
+
+        StartCoroutine(TryGoToRandomPoint(5f));
+    }
+
+    public IEnumerator TryGoToRandomPoint(float delay)
+    {
+        if (leaving == true || moving == true) yield break;
+
+        moving = true;
+
+        yield return new WaitForSeconds(delay);
+
+        float _radius = 5f;
+
+        Vector3 randomPoint = Random.insideUnitSphere * _radius;
+        randomPoint += transform.position;
+
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(randomPoint, out hit, _radius, NavMesh.AllAreas))
+        {
+            // 'hit.position' contains the valid random point on the NavMesh
+            Debug.Log("Random point: " + hit.position);
+
+            Walkto(hit.position);
+        }
+        else
+        {
+            // No valid point found within the specified radius
+            Debug.LogWarning("Could not find a valid random point on the NavMesh.");
+        }
     }
 
     private void UpdatePickedUp()
@@ -200,6 +260,19 @@ public class CustomerBase : Base
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
             interactParticle.Play();
         }
+
+        if(makingAMess == true)
+        {
+            SetCustomerStateServerRpc(CustomerState.Leaving);
+            agent.SetDestination(exit.position);
+            makingAMess = false;
+            leaving = true;
+
+            CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
+            UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
+            if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
+        }
+        
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -278,15 +351,24 @@ public class CustomerBase : Base
 
     public virtual void CustomerLeave()
     {
-        SetCustomerStateServerRpc(CustomerState.Leaving);
-        agent.SetDestination(exit.position);
-
-
-        CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
-        UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
-        if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
-
         if (Random.Range(0, 100) <= CustomerManager.Instance.difficultySettings.GetChanceToMess()) CreateMess();
+        if (Random.Range(0, 100) <= CustomerManager.Instance.difficultySettings.GetChanceToLoiter())
+        {
+            SetCustomerStateServerRpc(CustomerState.Loitering);
+            messTime = 0f;
+            makingAMess = true;
+            moving = false;
+        }
+        else
+        {
+            SetCustomerStateServerRpc(CustomerState.Leaving);
+            agent.SetDestination(exit.position);
+
+
+            CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
+            UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
+            if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
+        }
     }
 
     public void Walkto(Vector3 Spot)
@@ -294,6 +376,7 @@ public class CustomerBase : Base
         if (agent.isStopped) agent.isStopped = false;
         agent.SetDestination(Spot);
         SetCustomerStateServerRpc(CustomerState.Moving);
+        moving = true;
     }
 
     public void JustGotHandedCoffee(CoffeeAttributes coffee)
@@ -406,8 +489,30 @@ public class CustomerBase : Base
         orderTimer = null;
     }
 
+    public void RestartMessTimer()
+    {
+        messTime = 0f;  
+    }
+
+    public void StopMessTimer()
+    {
+        messTime = null;
+    }
     public void CreateMess()
     {
+        SpawnMessServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SpawnMessServerRpc()
+    {
+        SpawnMessClientRpc();
+    }
+
+    [ClientRpc]
+    public void SpawnMessClientRpc()
+    {
         Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
+        messTime = 0f;
     }
 }

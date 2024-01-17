@@ -17,6 +17,8 @@ public class DifficultySettings
     private int playerCount;
     private int MaxShift = 5; //do determine end of game
     private float chanceToMess;
+    private float loiterMessEverySec;
+    private float chanceToLoiter; 
 
     public DifficultySettings(DifficultySO chosenDifficulty, int InitplayerCount)
     {
@@ -34,6 +36,10 @@ public class DifficultySettings
         playerCount = InitplayerCount;
 
         chanceToMess = chosenDifficulty.chanceToMess;
+
+        loiterMessEverySec = chosenDifficulty.loiterMessEverySec;
+
+        chanceToLoiter = chosenDifficulty.chanceToLoiter;
 
         /*
         switch (currentDifficulty.difficultyString)
@@ -163,5 +169,15 @@ public class DifficultySettings
     public float GetChanceToMess()
     {
         return chanceToMess;
+    }
+
+    public float GetLoiterMessEverySec()
+    {
+        return loiterMessEverySec;
+    }
+
+    public float GetChanceToLoiter()
+    {
+        return chanceToLoiter;
     }
 }
