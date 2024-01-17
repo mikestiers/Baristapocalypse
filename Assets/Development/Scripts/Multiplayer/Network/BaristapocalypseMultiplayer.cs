@@ -113,9 +113,6 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
         ingredientParentNetworkObjectReference.TryGet(out NetworkObject ingredientParentNetworkObject);
         IIngredientParent ingredientParent = ingredientParentNetworkObject.GetComponent<IIngredientParent>();
         ingredient.SetIngredientParent(ingredientParent);
-
-        ingredient.DisableIngredientCollision(ingredient);
- 
     }
 
     public int GetIngredientSOIndex(IngredientSO ingredientSO)

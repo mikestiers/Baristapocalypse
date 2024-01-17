@@ -36,7 +36,7 @@ public class Spill : MonoBehaviour
              Rigidbody rb = stateMachine.rb;
              Vector3 movedirection = rb.transform.forward;
              rb.AddForce(movedirection * slipSpeed , ForceMode.VelocityChange);
-            stateMachine.ThrowIngedient();
+            stateMachine.ThrowIngredient();
         }
     }
 }
