@@ -232,11 +232,35 @@ public class GameManager : NetworkBehaviour
 
     private void SceneManager_OnLoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
     {
-        foreach(ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        // foreach(ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        // {
+        //     Transform playerTransform = Instantiate(player1Prefab);
+        //     playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+        //    
+        // }
+
+        for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsIds.Count; i++)
         {
+            ulong clientId = NetworkManager.Singleton.ConnectedClientsIds[i];
+
+            // Instantiate the player prefab
             Transform playerTransform = Instantiate(player1Prefab);
             playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
-           
+
+            // Assign the camera to the player
+            if (i < playerCameras.Count)
+            {
+                CinemachineVirtualCamera playerCamera = playerCameras[i];
+
+                if (playerCamera != null)
+                {
+                    playerCamera.Follow = playerTransform;
+                }
+                else
+                {
+                    Debug.LogError($"Camera at index {i} is not assigned in the inspector.");
+                }
+            }
         }
     }
 
