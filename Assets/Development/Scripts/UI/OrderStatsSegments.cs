@@ -11,27 +11,21 @@ public class OrderStatsSegments : MonoBehaviour
     public int cumulativeIngredientsValue;
     public int potentialIngredientValue;
     public int targetAttributeValue;
+    public GameObject targetAttributeSelector;
+    public GameObject potentialAttributeSelector;
     private int previousCumulativeIngredientsValue;
 
     private void Start()
     {
-        // Reset all segments to the default color (e.g., white)
+        // Reset all segments to inactive
         foreach (var segment in segments)
         {
-            segment.GetComponent<Image>().color = Color.white;
+            segment.SetActive(false);
         }
     }
 
     private void Update()
     {
-        // run updatesegmentcolors when cumulativeIngredientsValue changes
-        
-        //if (cumulativeIngredientsValue != previousCumulativeIngredientsValue)
-        //{
-        //    UpdateSegmentColors(cumulativeIngredientsValue);
-        //    previousCumulativeIngredientsValue = cumulativeIngredientsValue;
-        //}
-
         UpdateSegmentColors(cumulativeIngredientsValue); // remove this later
     }
 
@@ -40,46 +34,16 @@ public class OrderStatsSegments : MonoBehaviour
         // Reset all segments to the default color (e.g., white)
         foreach (var segment in segments)
         {
-            segment.GetComponent<Image>().color = Color.white;
+            segment.GetComponent<Image>().color = Color.green;
+            Color segmentColor = segment.GetComponent<Image>().color;
+            segmentColor.a = 1.0f;
+            segment.SetActive(false);
         }
 
-        // Color the segments blue up to the value
-        if (cumulative == 0)
-        {
-            if (targetAttributeValue < 0 && cumulative != targetAttributeValue)
-                segments[(segments.Length / 2) + targetAttributeValue].GetComponent<Image>().color = Color.green;
-            if (targetAttributeValue > 0 && cumulative != targetAttributeValue)
-                segments[(segments.Length / 2 - 1) + targetAttributeValue].GetComponent<Image>().color = Color.green;
-            if (potentialIngredientValue < 0)
-            {
-                int startIndex = segments.Length / 2 - 1;
-                int endIndex = startIndex + cumulative;
-                for (int i = endIndex; i > endIndex + potentialIngredientValue; i--)
-                {
-                    segments[i].GetComponent<Image>().color = Color.red;
-                }
-            }
+        //if (cumulative == 0)
+        //{
 
-            if (potentialIngredientValue > 0)
-            {
-                int startIndex = segments.Length / 2;
-                int endIndex = startIndex + cumulative;
-                for (int i = endIndex; i < endIndex + potentialIngredientValue; i++)
-                {
-                    segments[i].GetComponent<Image>().color = Color.red;
-                }
-            }
-
-            if (potentialIngredientValue == 0)
-            {
-                for (int i = 0; i < segments.Length; i++)
-                {
-                    if (segments[i].GetComponent<Image>().color == Color.red)
-                        segments[i].GetComponent<Image>().color = Color.white;
-                }   
-            }
-            //return;
-        }
+        //}
 
         if (cumulative >= segments.Length / 2)
         {
@@ -87,63 +51,127 @@ public class OrderStatsSegments : MonoBehaviour
             return;
         }
 
-        if (cumulative < 0)
+        if (targetAttributeValue < 0 && cumulative != targetAttributeValue)
         {
-            int startIndex = segments.Length / 2 - 1;
-            int endIndex = startIndex + cumulative;
-            for (int i = startIndex; i > endIndex; i--)
-            {
-                segments[i].GetComponent<Image>().color = Color.blue;
-            }
-
-            if (potentialIngredientValue < 0)
-            {
-                for (int i = endIndex; i > endIndex + potentialIngredientValue; i--)
-                {
-                    segments[i].GetComponent<Image>().color = Color.red;
-                }
-            }
-
-            if (potentialIngredientValue > 0)
-            {
-                for (int i = endIndex; i < endIndex + potentialIngredientValue; i++)
-                {
-                    segments[i].GetComponent<Image>().color = Color.red;
-                }
-            }
-
+            GameObject targetSegment = segments[(segments.Length / 2) + targetAttributeValue];
+            SetTarget(targetSegment);
         }
-        if (cumulative > 0)
+
+        if (targetAttributeValue > 0 && cumulative != targetAttributeValue)
+        {
+            GameObject targetSegment = segments[(segments.Length / 2 - 1) + targetAttributeValue];
+            SetTarget(targetSegment);
+        }
+
+        if (potentialIngredientValue < 0)
         {
             int startIndex = segments.Length / 2;
             int endIndex = startIndex + cumulative;
-            for (int i = startIndex; i < endIndex; i++)
-            {
-                segments[i].GetComponent<Image>().color = Color.blue;
-            }
-
-            if (potentialIngredientValue < 0)
-            {
-                Debug.Log(endIndex);
-                for (int i = endIndex; i > endIndex + potentialIngredientValue; i--)
-                {
-                    Debug.Log(i + ": " + segments[i]);
-                    segments[i - 2].GetComponent<Image>().color = Color.red;
-                }
-            }
-
-            if (potentialIngredientValue > 0)
-            {
-                for (int i = endIndex; i < endIndex + potentialIngredientValue; i++)
-                {
-                    segments[i].GetComponent<Image>().color = Color.red;
-                }
-            }
+            SetPotential(segments[endIndex + potentialIngredientValue]);
         }
 
-        if (targetAttributeValue < 0 && cumulative != targetAttributeValue)
-            segments[(segments.Length / 2) + targetAttributeValue].GetComponent<Image>().color = Color.green;
-        if (targetAttributeValue > 0 && cumulative != targetAttributeValue)
-            segments[(segments.Length / 2 -1) + targetAttributeValue].GetComponent<Image>().color = Color.green;
+        if (potentialIngredientValue > 0)
+        {
+            int startIndex = segments.Length / 2 - 1;
+            int endIndex = startIndex + cumulative;
+            SetPotential(segments[endIndex + potentialIngredientValue]);
+        }
+
+        if (potentialIngredientValue == 0)
+        {
+            potentialAttributeSelector.SetActive(false);
+        }
+
+        //if (cumulative < 0)
+        //{
+        //    int startIndex = segments.Length / 2 - 1;
+        //    int endIndex = startIndex + cumulative;
+        //    for (int i = startIndex; i > endIndex; i--)
+        //    {
+        //        segments[i].GetComponent<Image>().color = Color.blue;
+        //    }
+
+        //    if (potentialIngredientValue < 0)
+        //    {
+        //        for (int i = endIndex; i > endIndex + potentialIngredientValue; i--)
+        //        {
+        //            segments[i].GetComponent<Image>().color = Color.red;
+        //        }
+        //    }
+
+        //    if (potentialIngredientValue > 0)
+        //    {
+        //        for (int i = endIndex; i < endIndex + potentialIngredientValue; i++)
+        //        {
+        //            segments[i].GetComponent<Image>().color = Color.red;
+        //        }
+        //    }
+
+        //}
+        //if (cumulative > 0)
+        //{
+        //    int startIndex = segments.Length / 2 - 1;
+        //    int endIndex = startIndex + cumulative;
+        //    segments[endIndex].GetComponent<Image>().color = Color.blue;
+        //    segments[endIndex].SetActive(true);
+        //    //for (int i = startIndex; i < endIndex; i++)
+        //    //{
+        //    //    segments[i].GetComponent<Image>().color = Color.blue;
+        //    //}
+
+        //    //if (potentialIngredientValue < 0)
+        //    //{
+        //    //    Debug.Log(endIndex);
+        //    //    for (int i = endIndex; i > endIndex + potentialIngredientValue; i--)
+        //    //    {
+        //    //        Debug.Log(i + ": " + segments[i]);
+        //    //        segments[i - 2].GetComponent<Image>().color = Color.red;
+        //    //    }
+        //    //}
+
+        //    //if (potentialIngredientValue > 0)
+        //    //{
+        //    //    for (int i = endIndex; i < endIndex + potentialIngredientValue; i++)
+        //    //    {
+        //    //        segments[i].GetComponent<Image>().color = Color.red;
+        //    //    }
+        //    //}
+        //}
+
+        //if (targetAttributeValue < 0 && cumulative != targetAttributeValue)
+        //{
+        //    GameObject targetSegment = segments[(segments.Length / 2) + targetAttributeValue];
+        //    targetSegment.SetActive(true);  // GetComponent<Image>().color = Color.green;
+        //                                    //targetAttributeSelector.pare
+        //}
+
+        //if (targetAttributeValue > 0 && cumulative != targetAttributeValue)
+        //{
+        //    GameObject targetSegment = segments[(segments.Length / 2 - 1) + targetAttributeValue];
+        //    targetSegment.SetActive(true);  // GetComponent<Image>().color = Color.green;
+        //}
+    }
+
+    private void SetTarget(GameObject targetSegment)
+    {
+        targetSegment.GetComponent<Image>().color = Color.green;
+        targetSegment.SetActive(true);
+        targetAttributeSelector.transform.SetParent(targetSegment.transform);
+        targetAttributeSelector.transform.position = targetSegment.transform.position;
+        targetAttributeSelector.SetActive(true);
+    }
+
+    private void SetPotential(GameObject potentialSegment)
+    {
+        potentialSegment.GetComponent<Image>().color = Color.clear;
+        potentialSegment.SetActive(true);
+        potentialAttributeSelector.transform.SetParent(potentialSegment.transform);
+        potentialAttributeSelector.transform.position = potentialSegment.transform.position;
+        potentialAttributeSelector.SetActive(true);
+    }
+
+    private void SetCumulative(GameObject cumulativeSegment)
+    {
+
     }
 }
