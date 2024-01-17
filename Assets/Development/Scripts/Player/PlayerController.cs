@@ -272,7 +272,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     {
         if (SceneManager.GetActiveScene().name == Loader.Scene.CharacterSelectScene.ToString()) return;
         if (!GameManager.Instance.IsGamePlaying()) return;
-        if (!IsLocalPlayer) return;
 
         if (selectedStation)
         {
@@ -459,7 +458,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     public void GrabIngredientFromFloor(Ingredient floorIngredient, IngredientSO ingredientSO)
     {
-        
         if (IsHoldingPickup)
             return;
         if(GetNumberOfIngredients() >= GetMaxIngredients())

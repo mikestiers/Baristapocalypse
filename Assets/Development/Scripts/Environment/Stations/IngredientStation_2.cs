@@ -35,8 +35,7 @@ public class IngredientStation_2 : BaseStation, IHasProgress
 
             Ingredient.SpawnIngredient(currentIngredient, player);
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
-            interactParticle.Play();
-            
+            interactParticle.Play(); 
         }
     }
 
