@@ -525,10 +525,22 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     // Add ingredient name to UI indicator on player
     public void SetIngredientIndicator()
     {
+        SetIngredientIndicatorServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetIngredientIndicatorServerRpc()
+    {
+        SetIngredientIndicatorClientRpc();
+    }
+
+    [ClientRpc]
+    private void SetIngredientIndicatorClientRpc()
+    {
         currentIndicator = null;
         foreach (Ingredient i in ingredientsList)
         {
-            if(i != null)
+            if (i != null)
             {
                 currentIndicator += (i.name + "\n");
             }
