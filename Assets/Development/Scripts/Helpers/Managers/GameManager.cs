@@ -50,8 +50,11 @@ public class GameManager : NetworkBehaviour
     public event EventHandler OnLocalPlayerReadyChanged;
 
     [SerializeField] private CustomerManager customerManager;
+    [Header("virtualCameras")]
+    [SerializeField] private List<CinemachineVirtualCamera> playerCameras = new List<CinemachineVirtualCamera>();
 
-    [SerializeField] private CinemachineVirtualCamera Camera;
+
+
     private void Awake()
     {
         Instance = this;
@@ -233,7 +236,7 @@ public class GameManager : NetworkBehaviour
         {
             Transform playerTransform = Instantiate(player1Prefab);
             playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
-            Camera.Follow = playerTransform;
+           
         }
     }
 
