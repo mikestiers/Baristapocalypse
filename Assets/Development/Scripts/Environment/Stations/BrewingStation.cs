@@ -140,9 +140,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
                         break;
                     }
-                    
                 }
-
             }
         }
         else

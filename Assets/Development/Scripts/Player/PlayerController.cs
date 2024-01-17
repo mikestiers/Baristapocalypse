@@ -272,6 +272,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     {
         if (SceneManager.GetActiveScene().name == Loader.Scene.CharacterSelectScene.ToString()) return;
         if (!GameManager.Instance.IsGamePlaying()) return;
+        if (!IsLocalPlayer) return;
 
         if (selectedStation)
         {
@@ -287,6 +288,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     public void InteractAlt()
     {
         if (!GameManager.Instance.IsGamePlaying()) return;
+        if (!IsLocalPlayer) return;
 
         if (selectedStation)
         {
@@ -301,6 +303,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     public void OnDash()
     {
+        if (!IsLocalPlayer) return;
+
         StartCoroutine(Dash());
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
 
@@ -328,6 +332,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     public void OnThrow()
     {
+        if(!IsLocalPlayer) return;
         if (IsHoldingPickup)
         {
             ThrowPickup();
@@ -418,7 +423,19 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     public void ThrowIngredient()
     {
-        for(int i=0; i<ingredientsList.Count; i++)
+        ThrowIngredientServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ThrowIngredientServerRpc()
+    {
+        ThrowIngredientClientRpc();
+    }
+
+    [ClientRpc]
+    private void ThrowIngredientClientRpc()
+    {
+        for (int i = 0; i < ingredientsList.Count; i++)
         {
             if (ingredientsList[i] == null) continue;
 
@@ -438,7 +455,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
             ingredientIndicatorText.SetText("");
             RemoveIngredientInListAtIndex(i);
         }
-        
     }
 
     public void GrabIngredientFromFloor(Ingredient floorIngredient, IngredientSO ingredientSO)

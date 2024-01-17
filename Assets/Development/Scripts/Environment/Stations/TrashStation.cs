@@ -9,16 +9,10 @@ public class TrashStation : BaseStation
     {
         if (player.GetNumberOfIngredients() >= 1)
         {
-            for (int i = 0; i < player.ingredientHoldPoints.Length; i++)
+            foreach(Ingredient i in player.GetIngredientsList())
             {
-                Transform holdPoint = player.ingredientHoldPoints[i];
-                if (holdPoint.childCount > 0)
-                {
-                    Ingredient ingredient = holdPoint.GetComponentInChildren<Ingredient>();
-                    Ingredient.DestroyIngredient(ingredient);
-                    SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
-                    //interactParticle.Play();
-                }
+                Ingredient.DestroyIngredient(i);
+                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
             }
         }
     }
