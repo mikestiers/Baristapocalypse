@@ -54,7 +54,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] private LayerMask isMessLayer;
     [SerializeField] private MessSO spillPrefab;
     [SerializeField] private Transform spillSpawnPoint;
-
+    [SerializeField] private Spill spill;
     [Header("Pickups")]
     public Transform pickupLocation;
     public float pickupThrowForce;
@@ -314,15 +314,25 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     public void OnDash()
     {
         StartCoroutine(Dash());
-        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
+       // SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
 
+       //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
+
+         if (spillPrefab != null)
+         {
+             Spill.PlayerCreateSpill(spillPrefab, this);
+         }
+         else
+         {
+             Debug.Log("MessSO is null");
+         }
+      
         if (GetNumberOfIngredients() > 0)
         {
-            if (CheckIfHoldingLiquid() > 0)//stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
-            {
-                Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
-                ThrowIngedient();
-            }
+           if (CheckIfHoldingLiquid() > 0)//stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
+           {
+               ThrowIngedient();
+           }
         }
         else return;
     }
@@ -621,5 +631,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
             Ingredient.DestroyIngredient(GetIngredient());
         }
+    }
+
+    public Transform GetSpillTransform()
+    {
+        return spillSpawnPoint;
     }
 }
