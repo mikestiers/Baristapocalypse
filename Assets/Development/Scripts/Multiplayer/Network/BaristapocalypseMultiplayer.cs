@@ -17,7 +17,10 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     public event EventHandler OnFailToJoinGame;
     public event EventHandler OnPlayerDataNetworkListChanged;
 
+    public int test;
+
     private NetworkList<PlayerData> playerDataNetworkList;
+    public List<Color> playerColorList;
 
     private void Awake()
     {  
@@ -164,4 +167,11 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     {
         return playerDataNetworkList[playerIndex];  
     }
+
+    public Color GetPlayerColor(int colorId)
+    {
+        return playerColorList[colorId];
+    }
+
+
 }

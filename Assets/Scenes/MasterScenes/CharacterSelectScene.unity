@@ -123,6 +123,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!137 &1680244 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7273057434293670814, guid: 80e5ac4f055c8e345aede5d8e91ba9df, type: 3}
+  m_PrefabInstance: {fileID: 1249993787002949760}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &3733286
 GameObject:
   m_ObjectHideFlags: 0
@@ -861,6 +866,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 436638784}
   m_CullTransparentMesh: 1
+--- !u!137 &525628124 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 342885539235295673, guid: 80e5ac4f055c8e345aede5d8e91ba9df, type: 3}
+  m_PrefabInstance: {fileID: 1249993787002949760}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &792634731
 GameObject:
   m_ObjectHideFlags: 0
@@ -1976,6 +1986,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1249993786061297855, guid: 80e5ac4f055c8e345aede5d8e91ba9df, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3133251016354004152, guid: 80e5ac4f055c8e345aede5d8e91ba9df, type: 3}
+      propertyPath: baseMeshRenderer
+      value: 
+      objectReference: {fileID: 525628124}
+    - target: {fileID: 3133251016354004152, guid: 80e5ac4f055c8e345aede5d8e91ba9df, type: 3}
+      propertyPath: jointMeshRenderer
+      value: 
+      objectReference: {fileID: 1680244}
+    - target: {fileID: 4289136320949379886, guid: 80e5ac4f055c8e345aede5d8e91ba9df, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7238456280461869691, guid: 80e5ac4f055c8e345aede5d8e91ba9df, type: 3}
