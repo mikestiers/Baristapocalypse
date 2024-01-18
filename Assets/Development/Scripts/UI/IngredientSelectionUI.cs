@@ -13,6 +13,8 @@ public class IngredientSelectionUI : BaseStation
 
     [SerializeField] private GameObject ingredientMenu;
     private string hoverButtonName;
+    public GameObject buttonsRoot;
+    private Button[] ingredientButtons;
 
     [SerializeField] private IngredientSO[] ingredientListSO;
 
@@ -30,7 +32,7 @@ public class IngredientSelectionUI : BaseStation
         ingredientListSOIndex = 0;
         currentIngredient = ingredientListSO[ingredientListSOIndex];
 
-        //player = FindObjectOfType<PlayerController>();
+        ingredientButtons = buttonsRoot.GetComponentsInChildren<Button>();
     }
 
     private void Update()
@@ -228,11 +230,17 @@ public class IngredientSelectionUI : BaseStation
     {
         obj.SetActive(false);
     }
+    public void SetDefaultSelected(GameObject defaultSelected)
+    {
+        EventSystem.current.SetSelectedGameObject(defaultSelected);
+    }
 
     private void Show(GameObject obj)
     {
         currentStationInteraction = true;
         obj.SetActive(true);
+        EventSystem.current.firstSelectedGameObject = ingredientButtons[0].gameObject;
+        SetDefaultSelected(ingredientButtons[0].gameObject);
     }
 
     IEnumerator CloseMenu()
