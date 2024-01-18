@@ -546,26 +546,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         return pickupSo != null;
     }
 
-    public Transform GetPickupTransform()
-    {
-        return GetNextHoldPoint();
-    }
-
-    public void SetPickup(Pickup pickup)
-    {
-        this.pickup = pickup;
-    }
-
-    public void ClearPickup()
-    {
-        pickupSo = null;
-    }
-
-    public bool HasPickup()
-    {
-        return pickupSo != null;
-    }
-
     public NetworkObject GetNetworkObject()
     {
         return NetworkObject;
