@@ -8,6 +8,7 @@ using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
 using Unity.Services.Lobbies.Models;
+using Cinemachine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObjectParent
@@ -60,6 +61,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     public Transform pickupLocation;
     public float pickupThrowForce;
     [SerializeField] private Pickup pickup;
+
+    private CinemachineVirtualCamera virtualCamera;
     
 
     // Testing Spawnpoints
@@ -108,6 +111,12 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     private void Start()
     {
+        if (IsOwner && SceneManager.GetActiveScene().name == Loader.Scene.T5M3_BUILD.ToString())
+        {
+            virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
+            virtualCamera.Follow = gameObject.transform;
+        }
+
         //Get components
         rb = GetComponent<Rigidbody>();
         anim = GetComponentInChildren<Animator>();
