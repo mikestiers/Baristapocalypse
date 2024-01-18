@@ -46,7 +46,7 @@ public class UIManager : Singleton<UIManager>
     public float rPSpeed;
     public float rPArrivalThreshold;
     public float popOutRPTime;
-    private CustomerReview customerReview;
+    public float travelDistanceRP;
     private GameObject customerReviewTab;
     private Vector3 originalRPPosition;
     private Vector3 popOutRPPosition;
@@ -99,7 +99,7 @@ public class UIManager : Singleton<UIManager>
             closeAudioSettings.onClick.AddListener(CloseAudioSettings);
 
         originalRPPosition = customerReviewPanel.transform.position;
-        popOutRPPosition = new Vector3(0f, customerReviewPanel.transform.position.y, customerReviewPanel.transform.position.z);
+        popOutRPPosition = new Vector3(customerReviewPanel.transform.position.x - travelDistanceRP, customerReviewPanel.transform.position.y, customerReviewPanel.transform.position.z); ;
         //if (volSlider)
         //{
         //    volSlider.onValueChanged.AddListener((value) => OnSliderValueChanged(value));
@@ -205,8 +205,7 @@ public class UIManager : Singleton<UIManager>
                     customerReview.GenerateReview(customer);
                     customerReviewText.text = customerReview.ReviewText;
                     UpdateStarRating(customerReview.ReviewScore);
-                    StartCoroutine(MoveRP(popOutRPPosition, originalRPPosition));
-                    return;
+                    break;
                 }
                 else
                 {
@@ -214,24 +213,35 @@ public class UIManager : Singleton<UIManager>
                 }
             }
         }
+        StartCoroutine(MoveRP(popOutRPPosition, originalRPPosition));
     }
 
     private IEnumerator MoveRP(Vector3 target, Vector3 start)
     {
-        while (Vector3.Distance(customerReviewPanel.transform.position, popOutRPPosition) > rPArrivalThreshold)
+        float startTime = Time.time;
+
+        // Move towards the target
+        while (Time.time - startTime < popOutRPTime)
         {
-            Vector3 newPosition = Vector3.Lerp(start, target, rPSpeed * Time.deltaTime);
-            customerReviewPanel.transform.position = newPosition;
-            yield return null;
-        }
-        yield return new WaitForSeconds(popOutRPTime);
-        while (Vector3.Distance(customerReviewPanel.transform.position, popOutRPPosition) > rPArrivalThreshold)
-        {
-            Vector3 newPosition = Vector3.Lerp(target, start, rPSpeed * Time.deltaTime);
-            customerReviewPanel.transform.position = newPosition;
+            float t = (Time.time - startTime) / popOutRPTime*rPSpeed;
+            customerReviewPanel.transform.position = Vector3.Lerp(start, target, t);
             yield return null;
         }
 
+        // Wait at the target for specified time
+        yield return new WaitForSeconds(popOutRPTime);
+
+        startTime = Time.time;
+
+        // Move back to the initial position
+        while (Time.time - startTime < popOutRPTime)
+        {
+            float t = (Time.time - startTime) / popOutRPTime*rPSpeed;
+            customerReviewPanel.transform.position = Vector3.Lerp(target, start, t);
+            yield return null;
+        }
+
+        Debug.Log("Movement completed!");
     }
     public void RemoveCustomerUiOrder(CustomerBase customer)
     {
@@ -262,7 +272,7 @@ public class UIManager : Singleton<UIManager>
 
     public void UpdateStarRating(int reviewScore)
     {
-        Transform starRating = customerReviewTab.GetComponent<GridLayoutGroup>().gameObject.transform;
+        Transform starRating = customerReviewTab.GetComponentInChildren<GridLayoutGroup>().gameObject.transform;
 
         // Instantiate stars. 5 stars max
         for (int i = 1; i <= 5; i++)
