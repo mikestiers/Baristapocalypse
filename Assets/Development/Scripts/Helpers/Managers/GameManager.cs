@@ -50,12 +50,6 @@ public class GameManager : NetworkBehaviour
     public event EventHandler OnLocalPlayerReadyChanged;
 
     [SerializeField] private CustomerManager customerManager;
-    [Header("virtualCameras")]
-    [SerializeField] private CinemachineVirtualCamera playerCamera;
-
-    private bool isLocalPlayer;
-
-
 
     private void Awake()
     {
@@ -176,12 +170,6 @@ public class GameManager : NetworkBehaviour
             TestGamePauseState();
         }
 
-        if (isLocalPlayer && autoTestGamePausedState)
-        {
-            autoTestGamePausedState = false;
-            TestGamePauseState();
-        }
-
     }
 
     public bool IsGamePlaying()
@@ -241,33 +229,28 @@ public class GameManager : NetworkBehaviour
 
     private void SceneManager_OnLoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
     {
-        // foreach(ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
-        // {
-        //     Transform playerTransform = Instantiate(player1Prefab);
-        //     playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
-        //    
-        // }
-
-        for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsIds.Count; i++)
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
-            ulong clientId = NetworkManager.Singleton.ConnectedClientsIds[i];
-
-            // Instantiate the player prefab
             Transform playerTransform = Instantiate(player1Prefab);
-            NetworkObject networkObject = playerTransform.GetComponent<NetworkObject>();
-            networkObject.SpawnAsPlayerObject(clientId, true);
+            playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
 
-            // Assign the camera to the local player
-            if (networkObject.IsLocalPlayer)
-            {
-                isLocalPlayer = true;
-                playerCamera.Follow = playerTransform;
-            }
-            else
-            {
-                isLocalPlayer = false;
-            }
         }
+
+        //for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsIds.Count; i++)
+        //{
+        //    ulong clientId = NetworkManager.Singleton.ConnectedClientsIds[i];
+
+        //    // Instantiate the player prefab
+        //    Transform playerTransform = Instantiate(player1Prefab);
+        //    NetworkObject networkObject = playerTransform.GetComponent<NetworkObject>();
+        //    networkObject.SpawnAsPlayerObject(clientId, true);
+
+        //    // Assign the camera to the local player
+        //    if (networkObject.OwnerClientId == NetworkManager.Singleton.LocalClientId)
+        //    {
+        //        playerCamera.Follow = playerTransform;
+        //    }
+        //}
     }
 
     private void TogglePauseGame()

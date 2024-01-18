@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
+using Cinemachine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour, IIngredientParent
@@ -92,6 +93,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     [SerializeField] private TextMeshPro ingredientIndicatorText;
     private string currentIndicator;
 
+    private CinemachineVirtualCamera playerCamera;
+
     private void Awake()
     {
         if (Instance != null) { Instance = this; }
@@ -101,6 +104,12 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     private void Start()
     {
+        if (IsOwner && SceneManager.GetActiveScene().name == Loader.Scene.T5M3_BUILD.ToString())
+        {
+            playerCamera = FindObjectOfType<CinemachineVirtualCamera>();
+            playerCamera.Follow = gameObject.transform;
+        }
+
         //Get components
         rb = GetComponent<Rigidbody>();
         anim = GetComponentInChildren<Animator>();
@@ -117,6 +126,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         interactableLayerMask = isStationLayer | isIngredientLayer | isMessLayer | isMopLayer | isCustomerLayer ;
 
         RayCastOffset = new Vector3(0, 0.4f, 0);
+
     }
 
     private void OnEnable()
