@@ -9,7 +9,7 @@ using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObjectParent
+public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObjectParent,ISpill
 {
     // Player Instance
     [HideInInspector] public static PlayerController Instance { get; private set; }
@@ -523,6 +523,22 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         return pickupSo != null;
     }
 
+    public Transform GetSpillTransform()
+    {
+        return spillSpawnPoint;
+    }
+
+    public void SetSpill(Spill spill)
+    {
+        this.spill = spill;
+
+    }
+
+    public void ClearSpill()
+    {
+        spill = null;
+    }
+
     public NetworkObject GetNetworkObject()
     {
         return NetworkObject;
@@ -632,9 +648,5 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             Ingredient.DestroyIngredient(GetIngredient());
         }
     }
-
-    public Transform GetSpillTransform()
-    {
-        return spillSpawnPoint;
-    }
+    
 }

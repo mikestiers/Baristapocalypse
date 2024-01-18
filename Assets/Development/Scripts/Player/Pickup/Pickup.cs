@@ -92,10 +92,7 @@ public class Pickup : NetworkBehaviour
         pickupObject.GetCollider().enabled = false;
 
     }
-    public IPickupObjectParent GetpickupObjectParent()
-    {
-        return pickupObjectParent;
-    }
+   
 
     public PickupSO GetPickupObjectSo()
     {

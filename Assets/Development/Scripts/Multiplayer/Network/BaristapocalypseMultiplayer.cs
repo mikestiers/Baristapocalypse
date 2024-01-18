@@ -200,7 +200,7 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     {
        return pickupList.PickupListSO[pickupSoIndex];
     }
-    public  void PlayerCreateSpill(MessSO messSo, IPickupObjectParent messObjectParent )
+    public  void PlayerCreateSpill(MessSO messSo, ISpill messObjectParent )
     {
         PlayerCreateSpillServerRpc(GetMessObjectSoIndex(messSo),messObjectParent.GetNetworkObject() );
     }
@@ -215,8 +215,9 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
         Spill Mess = messGameObject.GetComponent<Spill>();
 
         spillNetworkObjectReference.TryGet(out NetworkObject messObjectParentNetworkObject);
-        IPickupObjectParent messObjectParent = messObjectParentNetworkObject.GetComponent<IPickupObjectParent>();
+        ISpill messObjectParent = messObjectParentNetworkObject.GetComponent<ISpill>();
         
+        Mess.SetSpillPosition(messObjectParent);
         
 
         // PlayerCreateSpillClientRpc(spillNetworkObjectReference);

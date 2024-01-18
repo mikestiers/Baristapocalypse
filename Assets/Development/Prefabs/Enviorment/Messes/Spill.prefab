@@ -291,6 +291,8 @@ GameObject:
   - component: {fileID: 7581459209225244816}
   - component: {fileID: 313204689}
   - component: {fileID: 3542246307510153309}
+  - component: {fileID: 8212930726616417681}
+  - component: {fileID: -1441408844138359093}
   m_Layer: 8
   m_Name: Spill
   m_TagString: Mess
@@ -581,7 +583,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   totalProgress: 4
   slipSpeed: 0.8
-  spillPrefab: {fileID: 11400000, guid: 436597cbe317b964f940835852e0f1a3, type: 2}
 --- !u!114 &3542246307510153309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -598,3 +599,27 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &8212930726616417681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1954165853586051675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33a4f08eb87a727498f9472bc1f96852, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-1441408844138359093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1954165853586051675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7200bd6b059ae9f4493e1c925284f358, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
