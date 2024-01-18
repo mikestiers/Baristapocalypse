@@ -67,6 +67,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     public Transform spawnpoint3;
     public Transform spawnpoint4;
 
+    public PlayerColorChoice playerVisual;
+
     [HideInInspector]
     public Pickup Pickup
     {
@@ -121,6 +123,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         interactableLayerMask = isStationLayer | isIngredientLayer | isMessLayer | isMopLayer | isCustomerLayer ;
 
         RayCastOffset = new Vector3(0, 0.4f, 0);
+
+        // Set color of the player based on color selection at the lobby
+        PlayerData playerData = BaristapocalypseMultiplayer.Instance.GetPlayerDataFromClientId(OwnerClientId);
+        playerVisual.SetPlayerColor(BaristapocalypseMultiplayer.Instance.GetPlayerColor(playerData.colorId));
     }
 
     private void OnEnable()
