@@ -14,7 +14,9 @@ public class TrashStation : BaseStation
         {
             foreach(Ingredient i in player.GetIngredientsList())
             {
-                Ingredient.DestroyIngredient(i);
+                Debug.Log("trashinggggg");
+                ingredient = i;
+                InteractServerRpc();
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
             }
         }
