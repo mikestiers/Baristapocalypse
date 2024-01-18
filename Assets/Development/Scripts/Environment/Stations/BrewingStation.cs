@@ -144,10 +144,10 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
                         {
                             OrderStats orderStats = orderStatsRoot.GetChild(0).GetComponent<OrderStats>();
                             
-                            orderStats.temperatureSegments.cumulativeIngredientsValue += ingredient.IngredientSO.temperature;
-                            orderStats.sweetnessSegments.cumulativeIngredientsValue += ingredient.IngredientSO.sweetness;
-                            orderStats.spicinessSegments.cumulativeIngredientsValue += ingredient.IngredientSO.spiciness;
-                            orderStats.strengthSegments.cumulativeIngredientsValue += ingredient.IngredientSO.strength;
+                            orderStats.temperatureSegments.cumulativeIngredientsValue += i.IngredientSO.temperature;
+                            orderStats.sweetnessSegments.cumulativeIngredientsValue += i.IngredientSO.sweetness;
+                            orderStats.spicinessSegments.cumulativeIngredientsValue += i.IngredientSO.spiciness;
+                            orderStats.strengthSegments.cumulativeIngredientsValue += i.IngredientSO.strength;
 
                             orderStats.temperatureSegments.potentialIngredientValue = 0;
                             orderStats.sweetnessSegments.potentialIngredientValue = 0;
