@@ -272,6 +272,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     {
         if (SceneManager.GetActiveScene().name == Loader.Scene.CharacterSelectScene.ToString()) return;
         if (!GameManager.Instance.IsGamePlaying()) return;
+        if (!IsOwner) return;
 
         if (selectedStation)
         {
@@ -395,14 +396,12 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     public void SetIngredient(Ingredient ingredient)
     {
-        Debug.Log("number of ingredients" + GetNumberOfIngredients());
         if(GetNumberOfIngredients() < GetMaxIngredients())
         {
             ingredientsList.Add(ingredient);
             GetNumberOfIngredients();
             SetIngredientIndicator();
         }
-        Debug.Log("number of ingredients" + GetNumberOfIngredients());
     }
 
     public Ingredient GetIngredient()

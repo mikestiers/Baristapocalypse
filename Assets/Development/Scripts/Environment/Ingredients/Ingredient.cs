@@ -42,11 +42,6 @@ public class Ingredient : NetworkBehaviour
             this.ingredientParent.ClearIngredient();
         }
         this.ingredientParent = ingredientParent;
-
-        if (ingredientParent.HasIngredient())
-        {
-            Debug.Log("Counter already has object");
-        }
         ingredientParent.SetIngredient(this);
 
         followTransform.SetTargetTransform(ingredientParent.GetIngredientTransform());
