@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.Audio;
 using System.Collections;
+using System.Collections.Generic;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -50,6 +51,7 @@ public class UIManager : Singleton<UIManager>
     private GameObject customerReviewTab;
     private Vector3 originalRPPosition;
     private Vector3 popOutRPPosition;
+    private List<GameObject> customerReviewTabs = new List<GameObject>();
 
     [Header("DebugConsole")]
     public GameObject debugConsole;
@@ -99,7 +101,7 @@ public class UIManager : Singleton<UIManager>
             closeAudioSettings.onClick.AddListener(CloseAudioSettings);
 
         originalRPPosition = customerReviewPanel.transform.position;
-        popOutRPPosition = new Vector3(customerReviewPanel.transform.position.x - travelDistanceRP, customerReviewPanel.transform.position.y, customerReviewPanel.transform.position.z); ;
+        popOutRPPosition = new Vector3(customerReviewPanel.transform.position.x - travelDistanceRP, customerReviewPanel.transform.position.y, customerReviewPanel.transform.position.z);
         //if (volSlider)
         //{
         //    volSlider.onValueChanged.AddListener((value) => OnSliderValueChanged(value));
@@ -187,6 +189,7 @@ public class UIManager : Singleton<UIManager>
     {
         orderStats = Instantiate(ordersUiPrefab, ordersPanel).GetComponent<OrderStats>();
         customerReviewTab = Instantiate(customerReviewPrefab, customerReviewPanel.transform);
+        customerReviewTabs.Add(customerReviewTab);
         orderStats.Initialize(customer);
     }
 
@@ -241,7 +244,8 @@ public class UIManager : Singleton<UIManager>
             customerReviewPanel.transform.position = Vector3.Lerp(target, start, t);
             yield return null;
         }
-
+        Destroy(customerReviewTabs[0]);
+        customerReviewTabs.RemoveAt(0);
         Debug.Log("Movement completed!");
     }
     public void RemoveCustomerUiOrder(CustomerBase customer)
