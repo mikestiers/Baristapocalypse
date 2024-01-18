@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.Audio;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -190,11 +191,12 @@ public class UIManager : Singleton<UIManager>
         orderStats = Instantiate(ordersUiPrefab, ordersPanel).GetComponent<OrderStats>();
         //customerReviewTab = Instantiate(customerReviewPrefab, customerReviewPanel.transform);
         //customerReviewTabs.Add(customerReviewTab);
-        ShowCustomerUiOrderClientRPC();
+        ShowCustomerUiOrderClientRpc();
         orderStats.Initialize(customer);
     }
 
-    public void ShowCustomerUiOrderClientRPC()
+    [ClientRpc]
+    public void ShowCustomerUiOrderClientRpc()
     {
         customerReviewTab = Instantiate(customerReviewPrefab, customerReviewPanel.transform);
         customerReviewTabs.Add(customerReviewTab);
