@@ -265,6 +265,7 @@ public class CustomerBase : Base
         {
             player.GetIngredient().SetIngredientParent(this);
             JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
+            player.RemoveIngredientInListByReference(player.GetIngredient());
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
             interactParticle.Play();
         }
