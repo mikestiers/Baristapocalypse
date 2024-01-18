@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1235815955711702330}
   - component: {fileID: 1235815955711702325}
+  - component: {fileID: -8407447390324086424}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: GameManager
@@ -46,14 +47,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   play: {fileID: 0}
   mainMenu: {fileID: 0}
-  gameState: 0
+  playButton: {fileID: 0}
   player1Prefab: {fileID: 533563683556402463, guid: c431519c3e5173d4fac4acc61d044123, type: 3}
   player2Prefab: {fileID: 533563683556402463, guid: 10299aa0b3626f744af6785df2434efe, type: 3}
   player3Prefab: {fileID: 533563683556402463, guid: ca105adc8d3cd4a41a723f3207edb579, type: 3}
   player4Prefab: {fileID: 533563683556402463, guid: 6829efb43ef747846a7a45cb157ce0ac, type: 3}
-  player1Active: 0
-  player2Active: 0
-  player3Active: 0
-  player4Active: 0
-  moveDir: {x: 0, y: 0, z: 0}
-  curMoveInput: {x: 0, y: 0, z: 0}
+  customerManager: {fileID: 0}
+--- !u!114 &-8407447390324086424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1235815955711702324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1

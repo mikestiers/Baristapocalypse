@@ -22,6 +22,7 @@ public class CustomerLineQueuing
         customerList.Add(customer);
         customer.Walkto(positionList[customerList.IndexOf(customer)]);
         if(customerList.IndexOf(customer) == 0) customer.frontofLine = true;
+        customer.inLine = true;
     }
 
     //Gets the customer at front of queue

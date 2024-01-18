@@ -11,6 +11,8 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     public const int MAX_PLAYERS = 4;
 
     [SerializeField] private IngredientListSO ingredientListSO;
+    [SerializeField] private PickupListSo pickupList;
+    [SerializeField] private MessListSO MessList;
     public static BaristapocalypseMultiplayer Instance { get; private set; }
 
     public event EventHandler OnTryingToJoinGame;
@@ -119,11 +121,13 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
         ingredient.SetIngredientParent(ingredientParent);
 
         ingredient.DisableIngredientCollision(ingredient);
- 
     }
 
     public int GetIngredientSOIndex(IngredientSO ingredientSO)
     {
+        Debug.Log(ingredientSO.sweetness);
+        int i = ingredientListSO.ingredientSOList.IndexOf(ingredientSO);
+        Debug.Log(ingredientListSO.ingredientSOList[i].sweetness);
         return ingredientListSO.ingredientSOList.IndexOf(ingredientSO);
     }
 
@@ -250,4 +254,68 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
         }
         return -1;
      }
+
+    public void SpawnPickupObject(PickupSO pickupSo,IPickupObjectParent pickupObjectParent )
+    {
+        SpawnPickupObjectServerRpc(GetPickupObjectSoIndex(pickupSo),pickupObjectParent.GetNetworkObject());
+        
+    }
+    [ServerRpc(RequireOwnership = false)]
+    public void SpawnPickupObjectServerRpc(int pickupSoIndex, NetworkObjectReference pickupObjectNetworkObjectReference)
+    {
+        PickupSO pickupSo = GetPickupSoFromIndex(pickupSoIndex);
+        GameObject pickupGameObject = Instantiate(pickupSo.prefab);
+
+        NetworkObject pickupObjectNetworkObject = pickupGameObject.GetComponent<NetworkObject>();
+        pickupObjectNetworkObject.Spawn(true);
+        Pickup pickup = pickupGameObject.GetComponent<Pickup>();
+
+        pickupObjectNetworkObjectReference.TryGet(out NetworkObject pickupObjectParentNetworkObject);
+        IPickupObjectParent pickupObjectParent = pickupObjectParentNetworkObject.GetComponent<IPickupObjectParent>();
+        pickup.SetpickupObjectParent(pickupObjectParent);
+        
+        pickup.DisablePickupColliders(pickup);
+    }
+
+    public int GetPickupObjectSoIndex(PickupSO pickupSo)
+    {
+        return pickupList.PickupListSO.IndexOf(pickupSo);
+    }
+
+    public PickupSO GetPickupSoFromIndex(int pickupSoIndex)
+    {
+       return pickupList.PickupListSO[pickupSoIndex];
+    }
+    public  void PlayerCreateSpill(MessSO messSo, IPickupObjectParent messObjectParent )
+    {
+        PlayerCreateSpillServerRpc(GetMessObjectSoIndex(messSo),messObjectParent.GetNetworkObject() );
+    }
+    [ServerRpc(RequireOwnership = false)]
+    private void PlayerCreateSpillServerRpc(int MessIndex, NetworkObjectReference spillNetworkObjectReference)
+    {
+        MessSO spillPrefab = GetMessSoFromIndex(MessIndex);
+        GameObject messGameObject = Instantiate(spillPrefab.prefab);
+
+        NetworkObject spillNetworkObject = messGameObject.GetComponent<NetworkObject>();
+        spillNetworkObject.Spawn(true);
+        Spill Mess = messGameObject.GetComponent<Spill>();
+
+        spillNetworkObjectReference.TryGet(out NetworkObject messObjectParentNetworkObject);
+        IPickupObjectParent messObjectParent = messObjectParentNetworkObject.GetComponent<IPickupObjectParent>();
+        
+        
+
+        // PlayerCreateSpillClientRpc(spillNetworkObjectReference);
+    }
+    
+    
+    public int GetMessObjectSoIndex(MessSO messSo)
+    {
+        return MessList.MessSoList.IndexOf(messSo);
+    }
+
+    public MessSO GetMessSoFromIndex(int MessSoIndex)
+    {
+        return MessList.MessSoList[MessSoIndex];
+    }
 }
