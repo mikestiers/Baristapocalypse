@@ -51,13 +51,13 @@ public class OrderStatsSegments : MonoBehaviour
             return;
         }
 
-        if (targetAttributeValue < 0 && cumulative != targetAttributeValue)
+        if (targetAttributeValue < 0) // && cumulative != targetAttributeValue)
         {
             GameObject targetSegment = segments[(segments.Length / 2) + targetAttributeValue];
             SetTarget(targetSegment);
         }
 
-        if (targetAttributeValue > 0 && cumulative != targetAttributeValue)
+        if (targetAttributeValue > 0) // && cumulative != targetAttributeValue)
         {
             GameObject targetSegment = segments[(segments.Length / 2 - 1) + targetAttributeValue];
             SetTarget(targetSegment);
@@ -163,7 +163,10 @@ public class OrderStatsSegments : MonoBehaviour
 
     private void SetPotential(GameObject potentialSegment)
     {
-        potentialSegment.GetComponent<Image>().color = Color.clear;
+        if (cumulativeIngredientsValue + potentialIngredientValue == targetAttributeValue)
+            potentialSegment.GetComponent<Image>().color = Color.green;
+        else if (cumulativeIngredientsValue + potentialIngredientValue != targetAttributeValue)
+            potentialSegment.GetComponent<Image>().color = Color.clear;
         potentialSegment.SetActive(true);
         potentialAttributeSelector.transform.SetParent(potentialSegment.transform);
         potentialAttributeSelector.transform.position = potentialSegment.transform.position;
