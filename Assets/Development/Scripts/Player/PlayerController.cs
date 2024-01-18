@@ -5,10 +5,11 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerController : NetworkBehaviour, IIngredientParent
+public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObjectParent
 {
     // Player Instance
     [HideInInspector] public static PlayerController Instance { get; private set; }
@@ -53,10 +54,12 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     [SerializeField] private LayerMask isMessLayer;
     [SerializeField] private MessSO spillPrefab;
     [SerializeField] private Transform spillSpawnPoint;
-
+    [SerializeField] private Spill spill;
     [Header("Pickups")]
     public Transform pickupLocation;
     public float pickupThrowForce;
+    [SerializeField] private Pickup pickup;
+    
 
     // Testing Spawnpoints
     public Transform spawnpoint1;
@@ -77,6 +80,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     // to organize
     private IngredientSO ingredienSO;
+    private PickupSO pickupSo;
     public bool HasNoIngredients => GetNumberOfIngredients() == 0;
     private Mouse mouse = Mouse.current;
     private LayerMask interactableLayerMask; // A single LayerMask for all interactable objects
@@ -162,10 +166,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
             if (hit.transform.TryGetComponent(out Pickup pickup))
             {
                 if (mouse.rightButton.wasPressedThisFrame)
-                    this.DoPickup(pickup);
+                    DoPickup(pickup);
                 else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
                 {
-                    this.DoPickup(pickup);
+                    DoPickup(pickup);
                 }
 
             }
@@ -310,15 +314,25 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     public void OnDash()
     {
         StartCoroutine(Dash());
-        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
+       // SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
 
+       //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
+
+         if (spillPrefab != null)
+         {
+             Spill.PlayerCreateSpill(spillPrefab, this);
+         }
+         else
+         {
+             Debug.Log("MessSO is null");
+         }
+      
         if (GetNumberOfIngredients() > 0)
         {
-            if (CheckIfHoldingLiquid() > 0)//stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
-            {
-                Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
-                ThrowIngedient();
-            }
+           if (CheckIfHoldingLiquid() > 0)//stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
+           {
+               ThrowIngedient();
+           }
         }
         else return;
     }
@@ -489,6 +503,26 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         //return GetNumberOfIngredients() >= maxIngredients;
     }
 
+    public Transform GetPickupTransform()
+    {
+        return GetNextHoldPoint();
+    }
+
+    public void SetPickup(Pickup pickup)
+    {
+        this.pickup = pickup;
+    }
+
+    public void ClearPickup()
+    {
+        pickupSo = null;
+    }
+
+    public bool HasPickup()
+    {
+        return pickupSo != null;
+    }
+
     public NetworkObject GetNetworkObject()
     {
         return NetworkObject;
@@ -525,20 +559,26 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     {
         if (IsHoldingPickup || !HasNoIngredients)
             return;
+       
+        // Pickup p = Instantiate(pickup, pickupLocation) as Pickup;
+        //Pickup.SpawnPickupItem(pickupSo, this);
+        PickupSO pickupSo = pickup.GetPickupObjectSo();
 
-        Pickup p = Instantiate(pickup, pickupLocation) as Pickup;
-
-        if (p.IsCustomer)
+        if (pickupSo != null)
         {
-            p.GetNavMeshAgent().enabled = false;
-            p.GetCustomer().SetCustomerStateServerRpc(CustomerBase.CustomerState.PickedUp);
+            Pickup.SpawnPickupItem(pickupSo, this);
         }
-
-        p.RemoveRigidBody();
-        p.transform.localRotation = Quaternion.Euler(p.holdingRotation);
-        p.transform.localPosition = p.holdingPosition;
-        p.GetCollider().enabled = false;
-        Destroy(pickup.gameObject);
+        // if (p.IsCustomer)
+        // {
+        //     p.GetNavMeshAgent().enabled = false;
+        //     p.GetCustomer().SetCustomerStateServerRpc(CustomerBase.CustomerState.PickedUp);
+        // }
+        //
+        // p.RemoveRigidBody();
+        // p.transform.localRotation = Quaternion.Euler(p.holdingRotation);
+        // p.transform.localPosition = p.holdingPosition;
+        // p.GetCollider().enabled = false;
+        //Destroy(pickup.gameObject);
     }
 
     public void ThrowPickup()
@@ -591,5 +631,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         {
             Ingredient.DestroyIngredient(GetIngredient());
         }
+    }
+
+    public Transform GetSpillTransform()
+    {
+        return spillSpawnPoint;
     }
 }
