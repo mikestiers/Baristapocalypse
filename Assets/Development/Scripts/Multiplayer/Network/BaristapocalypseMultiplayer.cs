@@ -11,13 +11,18 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     public const int MAX_PLAYERS = 4;
 
     [SerializeField] private IngredientListSO ingredientListSO;
+    [SerializeField] private PickupListSo pickupList;
+    [SerializeField] private MessListSO MessList;
     public static BaristapocalypseMultiplayer Instance { get; private set; }
 
     public event EventHandler OnTryingToJoinGame;
     public event EventHandler OnFailToJoinGame;
     public event EventHandler OnPlayerDataNetworkListChanged;
 
+    public int test;
+
     private NetworkList<PlayerData> playerDataNetworkList;
+    public List<Color> playerColorList;
 
     private void Awake()
     {  
@@ -59,7 +64,8 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
         playerDataNetworkList.Add(new PlayerData
         {
             clientId = clientId,
-        });
+            colorId = GetFirstUnusedColorId()
+        }); ;
     }
 
     public void StartClient()
@@ -116,10 +122,15 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
 
         Ingredient ingredient = ingredientTransform.GetComponent<Ingredient>();
         ingredient.SetIngredientParent(ingredientParent);
+
+        ingredient.DisableIngredientCollision(ingredient);
     }
 
     public int GetIngredientSOIndex(IngredientSO ingredientSO)
     {
+        Debug.Log(ingredientSO.sweetness);
+        int i = ingredientListSO.ingredientSOList.IndexOf(ingredientSO);
+        Debug.Log(ingredientListSO.ingredientSOList[i].sweetness);
         return ingredientListSO.ingredientSOList.IndexOf(ingredientSO);
     }
 
@@ -160,8 +171,154 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
         return playerIndex < playerDataNetworkList.Count;
     }
 
+    public int GetPlayerDataIndexFromClientId(ulong clientId)
+    {
+        for(int i=0; i < playerDataNetworkList.Count; i++)
+        {
+            if (playerDataNetworkList[i].clientId == clientId)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public PlayerData GetPlayerDataFromClientId(ulong clientId)
+    {
+        foreach (PlayerData playerData in playerDataNetworkList)
+        {
+            if (playerData.clientId == clientId)
+            {
+                return playerData;
+            }
+        }
+        return default;
+    }
+
+    public PlayerData GetPlayerData()
+    {
+        return GetPlayerDataFromClientId(NetworkManager.Singleton.LocalClientId);
+    }
     public PlayerData GetPlayerDataFromPlayerIndex(int playerIndex)
     {
         return playerDataNetworkList[playerIndex];  
+    }
+
+    public Color GetPlayerColor(int colorId)
+    {
+        return playerColorList[colorId];
+    }
+
+    public void ChangePlayerColor(int colorId)
+    {
+        ChangePlayerColorServerRpc(colorId);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ChangePlayerColorServerRpc(int colorId, ServerRpcParams serverRpcParams = default)
+    {
+        if (!isColorAvailable(colorId))
+        {
+            // Color not available
+            return;
+        }
+
+        int playerDataIndex = GetPlayerDataIndexFromClientId(serverRpcParams.Receive.SenderClientId);
+
+        PlayerData playerData = playerDataNetworkList[playerDataIndex];
+
+        playerData.colorId = colorId;
+
+        playerDataNetworkList[playerDataIndex] = playerData;
+    }
+
+    private bool isColorAvailable(int colorId)
+    {
+        foreach(PlayerData playerData in playerDataNetworkList)
+        {
+            if (playerData.colorId == colorId)
+            {
+                // Using Color Already
+                return false;
+            }
+        }
+        return true;
+    }
+
+     private int GetFirstUnusedColorId()
+     {
+        for (int i=0; i < playerColorList.Count; i++)
+        {
+            if (isColorAvailable(i))
+            {
+                return i;
+            }               
+        }
+        return -1;
+     }
+
+    public void SpawnPickupObject(PickupSO pickupSo,IPickupObjectParent pickupObjectParent )
+    {
+        SpawnPickupObjectServerRpc(GetPickupObjectSoIndex(pickupSo),pickupObjectParent.GetNetworkObject());
+        
+    }
+    [ServerRpc(RequireOwnership = false)]
+    public void SpawnPickupObjectServerRpc(int pickupSoIndex, NetworkObjectReference pickupObjectNetworkObjectReference)
+    {
+        PickupSO pickupSo = GetPickupSoFromIndex(pickupSoIndex);
+        GameObject pickupGameObject = Instantiate(pickupSo.prefab);
+
+        NetworkObject pickupObjectNetworkObject = pickupGameObject.GetComponent<NetworkObject>();
+        pickupObjectNetworkObject.Spawn(true);
+        Pickup pickup = pickupGameObject.GetComponent<Pickup>();
+
+        pickupObjectNetworkObjectReference.TryGet(out NetworkObject pickupObjectParentNetworkObject);
+        IPickupObjectParent pickupObjectParent = pickupObjectParentNetworkObject.GetComponent<IPickupObjectParent>();
+        pickup.SetpickupObjectParent(pickupObjectParent);
+        
+        pickup.DisablePickupColliders(pickup);
+    }
+
+    public int GetPickupObjectSoIndex(PickupSO pickupSo)
+    {
+        return pickupList.PickupListSO.IndexOf(pickupSo);
+    }
+
+    public PickupSO GetPickupSoFromIndex(int pickupSoIndex)
+    {
+       return pickupList.PickupListSO[pickupSoIndex];
+    }
+    public  void PlayerCreateSpill(MessSO messSo, IPickupObjectParent messObjectParent )
+    {
+        PlayerCreateSpillServerRpc(GetMessObjectSoIndex(messSo),messObjectParent.GetNetworkObject() );
+    }
+    [ServerRpc(RequireOwnership = false)]
+    private void PlayerCreateSpillServerRpc(int MessIndex, NetworkObjectReference spillNetworkObjectReference)
+    {
+        MessSO spillPrefab = GetMessSoFromIndex(MessIndex);
+        GameObject messGameObject = Instantiate(spillPrefab.prefab);
+
+        NetworkObject spillNetworkObject = messGameObject.GetComponent<NetworkObject>();
+        spillNetworkObject.Spawn(true);
+        Spill Mess = messGameObject.GetComponent<Spill>();
+
+        spillNetworkObjectReference.TryGet(out NetworkObject messObjectParentNetworkObject);
+        IPickupObjectParent messObjectParent = messObjectParentNetworkObject.GetComponent<IPickupObjectParent>();
+        
+        
+
+        // PlayerCreateSpillClientRpc(spillNetworkObjectReference);
+    }
+    
+    
+    public int GetMessObjectSoIndex(MessSO messSo)
+    {
+        return MessList.MessSoList.IndexOf(messSo);
+    }
+
+    public MessSO GetMessSoFromIndex(int MessSoIndex)
+    {
+        return MessList.MessSoList[MessSoIndex];
     }
 }

@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class TrashStation : BaseStation
 {
     [SerializeField] private ParticleSystem interactParticle;
+    private Ingredient ingredient;
+
     public override void Interact(PlayerController player)
     {
         if (player.GetNumberOfIngredients() >= 1)
@@ -16,5 +19,18 @@ public class TrashStation : BaseStation
             }
         }
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void InteractServerRpc()
+    {
+        InteractClientRpc();
+    }
+
+    [ClientRpc]
+    private void InteractClientRpc()
+    {
+        Ingredient.DestroyIngredient(ingredient);
+    }
+
 }
 

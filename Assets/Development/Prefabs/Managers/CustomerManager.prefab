@@ -80,13 +80,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e9fc72a6d3959b47919132207e1b69a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Difficulties:
+  - {fileID: 11400000, guid: ce19cfb68a8fece4b94a2a1daed623c3, type: 2}
+  - {fileID: 11400000, guid: 4c793529f6fc44047a837a458258252d, type: 2}
+  - {fileID: 11400000, guid: 4eebab211b1c69048894cbdef7bf4aa0, type: 2}
   Counter: {fileID: 413644687456700975}
   barEntrance: {fileID: 413644686975432530}
   exit: {fileID: 413644686587218989}
-  delay: 10
+  minDelay: 6
+  maxDelay: 10
   numberOfCustomers: 5
+  customersLeftinWave: 0
+  WavesLeft: 0
+  customersInStore: 0
   customerPrefab: {fileID: -7061893543091457018, guid: e823ec0706db6754f84bd9143161ab3e, type: 3}
   customersOutsideList: []
+  currentDifficulty: {fileID: 11400000, guid: c046f1ac6f225ac4ea155178afe460e0, type: 2}
   Chairs: []
 --- !u!114 &3974306894861598464
 MonoBehaviour:
