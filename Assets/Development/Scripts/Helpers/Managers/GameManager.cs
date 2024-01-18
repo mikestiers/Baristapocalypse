@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Unity.Netcode;
+using Cinemachine;
 
 [DefaultExecutionOrder(-1)]
 public class GameManager : NetworkBehaviour
@@ -66,6 +67,7 @@ public class GameManager : NetworkBehaviour
             InputManager.Instance.InteractEvent += InputManager_OnInteractEvent;
         }
     }
+
 
     private void InputManager_OnInteractEvent()
     {
@@ -167,6 +169,7 @@ public class GameManager : NetworkBehaviour
             autoTestGamePausedState = false;
             TestGamePauseState();
         }
+
     }
 
     public bool IsGamePlaying()
@@ -226,11 +229,28 @@ public class GameManager : NetworkBehaviour
 
     private void SceneManager_OnLoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
     {
-        foreach(ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
             Transform playerTransform = Instantiate(player1Prefab);
             playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+
         }
+
+        //for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsIds.Count; i++)
+        //{
+        //    ulong clientId = NetworkManager.Singleton.ConnectedClientsIds[i];
+
+        //    // Instantiate the player prefab
+        //    Transform playerTransform = Instantiate(player1Prefab);
+        //    NetworkObject networkObject = playerTransform.GetComponent<NetworkObject>();
+        //    networkObject.SpawnAsPlayerObject(clientId, true);
+
+        //    // Assign the camera to the local player
+        //    if (networkObject.OwnerClientId == NetworkManager.Singleton.LocalClientId)
+        //    {
+        //        playerCamera.Follow = playerTransform;
+        //    }
+        //}
     }
 
     private void TogglePauseGame()
