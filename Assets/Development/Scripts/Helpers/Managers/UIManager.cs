@@ -189,9 +189,9 @@ public class UIManager : Singleton<UIManager>
     public void ShowCustomerUiOrder(CustomerBase customer)
     {
         orderStats = Instantiate(ordersUiPrefab, ordersPanel).GetComponent<OrderStats>();
-        customerReviewTab = Instantiate(customerReviewPrefab, customerReviewPanel.transform);
-        customerReviewTabs.Add(customerReviewTab);
-        //ShowCustomerUiOrderServerRpc();
+        //customerReviewTab = Instantiate(customerReviewPrefab, customerReviewPanel.transform);
+        //customerReviewTabs.Add(customerReviewTab);
+        ShowCustomerUiOrderClientRpc();
         orderStats.Initialize(customer);
     }
 
