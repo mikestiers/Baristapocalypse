@@ -92,6 +92,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     [SerializeField] private TextMeshPro ingredientIndicatorText;
     private string currentIndicator;
 
+    // Toggles
+    public bool movementToggle = true;
+
     private void Awake()
     {
         if (Instance != null) { Instance = this; }
@@ -149,7 +152,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         // Ground Check
         IsGrounded();
         // player movement
-        Move(moveSpeed);
+        if(movementToggle)
+            Move(moveSpeed);
 
         GetNumberOfIngredients();
         SetIngredientIndicator();

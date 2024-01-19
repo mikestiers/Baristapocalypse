@@ -182,6 +182,8 @@ public class IngredientSelectionUI : BaseStation
             player = other.GetComponent<PlayerController>();
             Debug.Log("Player Collided With trigger");
 
+            player.movementToggle = false;
+
             //Display UI ingredient menu
             Show(ingredientMenu);
         }
@@ -192,6 +194,8 @@ public class IngredientSelectionUI : BaseStation
         if (other.tag == "Player")
         {
             Debug.Log("Player left trigger collider");
+
+            
 
             // Hide UI ingredient menu
             StartCoroutine(CloseMenu());
@@ -241,5 +245,6 @@ public class IngredientSelectionUI : BaseStation
         yield return new WaitForSeconds(0.5f);
         Hide(ingredientMenu);
         currentStationInteraction = false;
+        player.movementToggle = true;
     }
 }
