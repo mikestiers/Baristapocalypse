@@ -226,7 +226,7 @@ public class CustomerBase : Base
     }
 
     //Maybe dont need, can try to get rid of it later
-    [ServerRpc(RequireOwnership = false)]
+    [ServerRpc]
     public void SetCustomerStateServerRpc(CustomerState newState)
     {
         SetCustomerStateClientRpc(newState);
