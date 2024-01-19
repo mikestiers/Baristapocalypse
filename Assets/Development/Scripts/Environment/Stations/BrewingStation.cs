@@ -124,63 +124,41 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     {
         if (!HasIngredient())
         {
-            if (player.HasIngredient())
-            {
-                if (TryAddIngredient(player.GetIngredient().GetIngredientSO()))
-                {
-                    AddIngredientToListSOServerRpc(BaristapocalypseMultiplayer.Instance.GetIngredientSOIndex(player.GetIngredient().GetIngredientSO()));
-
-                    Ingredient ingredient = player.GetIngredient();
-                    Ingredient.DestroyIngredient(ingredient);
-
-                    InteractLogicPlaceObjectOnBrewingServerRpc();
-
-                    if (orderStatsRoot.childCount > 0)
-                    {
-                        OrderStats orderStats = orderStatsRoot.GetChild(0).GetComponent<OrderStats>();
-                        
-                        orderStats.temperatureSegments.cumulativeIngredientsValue += ingredient.IngredientSO.temperature;
-                        orderStats.sweetnessSegments.cumulativeIngredientsValue += ingredient.IngredientSO.sweetness;
-                        orderStats.spicinessSegments.cumulativeIngredientsValue += ingredient.IngredientSO.spiciness;
-                        orderStats.strengthSegments.cumulativeIngredientsValue += ingredient.IngredientSO.strength;
-
-                        orderStats.temperatureSegments.potentialIngredientValue = 0;
-                        orderStats.sweetnessSegments.potentialIngredientValue = 0;
-                        orderStats.spicinessSegments.potentialIngredientValue = 0;
-                        orderStats.strengthSegments.potentialIngredientValue = 0;
-                    }
-                }
-            }
-            /*if (player.GetNumberOfIngredients() >= 1)
+            if (player.GetNumberOfIngredients() >= 1)
             {
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
                 interactParticle.Play();
 
-                for (int i = 0; i < player.ingredientHoldPoints.Length; i++)
+                foreach (Ingredient i in player.GetIngredientsList())
                 {
-                    Transform holdPoint = player.ingredientHoldPoints[i];
-                    if (holdPoint.childCount > 0 )
+                    if (TryAddIngredient(i.GetIngredientSO()))
                     {
-                        Ingredient ingredient = holdPoint.GetComponentInChildren<Ingredient>();
-                        if (TryAddIngredient(ingredient.GetIngredientSO()))
-                        {
-                            ingredient.DestroyIngredient();
-                            if (ingredientSOList.Count >= numIngredientsNeeded)
-                            {
-                                brewingTimer = 0;
-                                brewing = true;
-                                ingredientsIndicatorText.SetText("");
+                        AddIngredientToListSOServerRpc(BaristapocalypseMultiplayer.Instance.GetIngredientSOIndex(player.GetIngredient().GetIngredientSO()));
 
-                                OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
-                                {
-                                    progressNormalized = 0f
-                                });
-                            }
+                        player.RemoveIngredientInListByReference(i);
+                        Ingredient.DestroyIngredient(i);
+
+                        InteractLogicPlaceObjectOnBrewingServerRpc();
+
+                        if (orderStatsRoot.childCount > 0)
+                        {
+                            OrderStats orderStats = orderStatsRoot.GetChild(0).GetComponent<OrderStats>();
+                            
+                            orderStats.temperatureSegments.cumulativeIngredientsValue += i.IngredientSO.temperature;
+                            orderStats.sweetnessSegments.cumulativeIngredientsValue += i.IngredientSO.sweetness;
+                            orderStats.spicinessSegments.cumulativeIngredientsValue += i.IngredientSO.spiciness;
+                            orderStats.strengthSegments.cumulativeIngredientsValue += i.IngredientSO.strength;
+
+                            orderStats.temperatureSegments.potentialIngredientValue = 0;
+                            orderStats.sweetnessSegments.potentialIngredientValue = 0;
+                            orderStats.spicinessSegments.potentialIngredientValue = 0;
+                            orderStats.strengthSegments.potentialIngredientValue = 0;
                         }
+
+                        break;
                     }
                 }
-
-            }*/
+            }
         }
         else
         {

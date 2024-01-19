@@ -7,6 +7,8 @@ using TMPro;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
+using Unity.Services.Lobbies.Models;
+using Cinemachine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObjectParent
@@ -17,7 +19,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [Header("Player Attributes")]
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpForce;
-    [SerializeField] private float ingredienThrowForce;
+    [SerializeField] private float ingredientThrowForce;
 
     [Header("Ground Check")]
     [SerializeField] private LayerMask isGroundLayer;
@@ -31,7 +33,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] private LayerMask isStationLayer;
     [SerializeField] private LayerMask isIngredientLayer;
     [SerializeField] private LayerMask isCustomerLayer;
-    [SerializeField] private GameObject ingredientInstanceHolder;
+    //[SerializeField] private GameObject ingredientInstanceHolder;
     private BaseStation selectedStation;
     private Base selectedCustomer;
     public float sphereCastRadius = 0.5f;
@@ -39,10 +41,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     [Header("Ingredients Data")]
     [SerializeField] public Transform[] ingredientHoldPoints; // Array to hold multiple ingredient
-    private Ingredient ingredient;
+    [SerializeField] private List<Ingredient> ingredientsList = new List<Ingredient>();
     private int currentHoldPointIndex = 0; // keep track of the current HoldPoint index
     private int numberOfIngredientsHeld = 0; // Keep track of the number of ingredients held
-    private int maxIngredients = 4; // Keep track of the maximum number of ingredients the player can have
+    private int maxIngredients = 2; // Keep track of the maximum number of ingredients the player can have
 
     [SerializeField] public Rigidbody rb { get; private set; }
     [SerializeField] public Animator anim { get; private set; }
@@ -59,6 +61,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     public Transform pickupLocation;
     public float pickupThrowForce;
     [SerializeField] private Pickup pickup;
+
+    private CinemachineVirtualCamera virtualCamera;
     
 
     // Testing Spawnpoints
@@ -66,6 +70,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     public Transform spawnpoint2;
     public Transform spawnpoint3;
     public Transform spawnpoint4;
+
+    public PlayerColorChoice playerVisual;
 
     [HideInInspector]
     public Pickup Pickup
@@ -79,7 +85,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     }
 
     // to organize
-    private IngredientSO ingredienSO;
+    private IngredientSO ingredientSO;
     private PickupSO pickupSo;
     public bool HasNoIngredients => GetNumberOfIngredients() == 0;
     private Mouse mouse = Mouse.current;
@@ -105,6 +111,12 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     private void Start()
     {
+        if (IsOwner && SceneManager.GetActiveScene().name == Loader.Scene.T5M3_BUILD.ToString())
+        {
+            virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
+            virtualCamera.Follow = gameObject.transform;
+        }
+
         //Get components
         rb = GetComponent<Rigidbody>();
         anim = GetComponentInChildren<Animator>();
@@ -114,13 +126,17 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if (jumpForce <= 0) jumpForce = 200.0f;
         if (dashForce <= 0) dashForce = 4000f;
         if (dashTime <= 0) dashTime = 0.1f;
-        if (ingredienThrowForce <= 0) ingredienThrowForce = 10f;
+        if (ingredientThrowForce <= 0) ingredientThrowForce = 10f;
         if (groundCheckRadius <= 0) groundCheckRadius = 0.05f;
 
         //Define the interactable layer mask to include station, ingredient, and mess layers.
         interactableLayerMask = isStationLayer | isIngredientLayer | isMessLayer | isMopLayer | isCustomerLayer ;
 
         RayCastOffset = new Vector3(0, 0.4f, 0);
+
+        // Set color of the player based on color selection at the lobby
+        PlayerData playerData = BaristapocalypseMultiplayer.Instance.GetPlayerDataFromClientId(OwnerClientId);
+        playerVisual.SetPlayerColor(BaristapocalypseMultiplayer.Instance.GetPlayerColor(playerData.colorId));
     }
 
     private void OnEnable()
@@ -154,9 +170,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         IsGrounded();
         // player movement
         Move(moveSpeed);
-
-        GetNumberOfIngredients();
-        SetIngredientIndicator();
 
         // Perform a single raycast to detect any interactable object.
         float interactDistance = 2.0f;
@@ -198,17 +211,17 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             // Logic for Ingredient  on floor Interaction 
             else if (hit.transform.TryGetComponent(out Ingredient ingredient))
             {
-                if (GetNumberOfIngredients() <= maxIngredients && !IsHoldingPickup)
+                if (GetNumberOfIngredients() <= GetMaxIngredients() && !IsHoldingPickup)
                 {
-                    ingredienSO = ingredient.IngredientSO;
+                    IngredientSO ingredientSORef = ingredient.GetIngredientSO();
 
                     if (mouse.leftButton.wasPressedThisFrame)
                     {
-                        GrabIngredientFromFloor(ingredient, ingredienSO);
+                        GrabIngredientFromFloor(ingredient, ingredientSORef);
                     }
                     else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
                     {
-                        GrabIngredientFromFloor(ingredient, ingredienSO);
+                        GrabIngredientFromFloor(ingredient, ingredientSORef);
                     }
                 }
             }
@@ -227,8 +240,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
             if (hitCustomer.transform.TryGetComponent(out Base customerBase))
             {
-                
-
                 visualGameObject = customerBase.transform.GetChild(0).gameObject;
                 if (customerBase != selectedCustomer)
                 {
@@ -246,10 +257,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward, Color.green);
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward * customerInteractDistance, Color.red);
-        
     }
-
-
 
     public bool IsGrounded()
     {
@@ -283,11 +291,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     {
         if (SceneManager.GetActiveScene().name == Loader.Scene.CharacterSelectScene.ToString()) return;
         if (!GameManager.Instance.IsGamePlaying()) return;
+        if (!IsOwner) return;
 
         if (selectedStation)
         {
             selectedStation.Interact(this);
-
         }
 
         if (selectedCustomer)
@@ -299,6 +307,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     public void InteractAlt()
     {
         if (!GameManager.Instance.IsGamePlaying()) return;
+        if (!IsLocalPlayer) return;
 
         if (selectedStation)
         {
@@ -313,6 +322,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public void OnDash()
     {
+        if (!IsLocalPlayer) return;
+
         StartCoroutine(Dash());
        // SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
 
@@ -331,7 +342,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
            if (CheckIfHoldingLiquid() > 0)//stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
            {
-               ThrowIngedient();
+               ThrowIngredient();
            }
         }
         else return;
@@ -350,6 +361,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public void OnThrow()
     {
+        if(!IsLocalPlayer) return;
         if (IsHoldingPickup)
         {
             ThrowPickup();
@@ -357,10 +369,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if (GetNumberOfIngredients() > 0)
         {
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.throwIngredient);
-            ThrowIngedient();
-
-            numberOfIngredientsHeld = 0;
-
+            ThrowIngredient();
         }
     }
 
@@ -377,54 +386,36 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public int GetNumberOfIngredients()
     {
-        int count = 0;
-        foreach (Transform holdPoint in ingredientHoldPoints)
-        {
-            if (holdPoint.childCount > 0)
-            {
-                Ingredient ingredient = holdPoint.GetChild(0).GetComponent<Ingredient>();
-                if (ingredient != null)
-                {
-                    count++;
-                }
-            }
-        }
-        numberOfIngredientsHeld = count;
+        UpdateNumberOfIngredients();
         return numberOfIngredientsHeld;
+    } 
+
+    public void UpdateNumberOfIngredients()
+    {
+        numberOfIngredientsHeld = ingredientsList.Count;
     }
 
     public int CheckIfHoldingLiquid()
     {
         int count = 0;
-        foreach (Transform holdPoint in ingredientHoldPoints)
+        foreach(Ingredient i in ingredientsList)
         {
-            if (holdPoint.childCount > 0)
+            if(i.GetIngredientSO().objectTag == "Milk")
             {
-                Ingredient ingredient = holdPoint.GetChild(0).GetComponent<Ingredient>();
-                
-                if (ingredient.GetIngredientSO().objectTag == "Milk")
-                {
-                    count++;
-                }
+                count++;
             }
         }
         return count;
-
     }
 
     public Transform GetNextHoldPoint()
     {
-        for (int i = 0; i < ingredientHoldPoints.Length; i++)
+        if(GetNumberOfIngredients() > GetMaxIngredients())
         {
-            currentHoldPointIndex = (currentHoldPointIndex + 1) % ingredientHoldPoints.Length;
-            if (ingredientHoldPoints[currentHoldPointIndex].childCount == 0)
-            {
-                return ingredientHoldPoints[currentHoldPointIndex];
-            }
+            return null;
         }
-
-        // If all hold points are occupied, return null
-        return null;
+        Debug.Log("getting hold points " + (numberOfIngredientsHeld-1));
+        return ingredientHoldPoints[GetNumberOfIngredients() - 1];
     }
 
     public Transform GetIngredientTransform()
@@ -434,73 +425,114 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public void SetIngredient(Ingredient ingredient)
     {
-        this.ingredient = ingredient;
+        if(GetNumberOfIngredients() < GetMaxIngredients())
+        {
+            ingredientsList.Add(ingredient);
+            GetNumberOfIngredients();
+            SetIngredientIndicator();
+        }
     }
 
     public Ingredient GetIngredient()
     {
-        return ingredient;
+        return ingredientsList[0];
     }
 
-    public void ThrowIngedient()
+    public List<Ingredient> GetIngredientsList()
     {
-        for (int i = 0; i < ingredientHoldPoints.Length; i++)
+        return ingredientsList;
+    }
+
+    public int GetMaxIngredients()
+    {
+        return maxIngredients;
+    }
+
+    public void ThrowIngredient()
+    {
+        ThrowIngredientServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ThrowIngredientServerRpc()
+    {
+        ThrowIngredientClientRpc();
+    }
+
+    [ClientRpc]
+    private void ThrowIngredientClientRpc()
+    {
+        for (int i = 0; i < ingredientsList.Count; i++)
         {
-            Transform holdPoint = ingredientHoldPoints[i];
-            if (holdPoint.childCount > 0)
+            if (ingredientsList[i] == null) continue;
+
+            //Detach child from hold point
+            ingredientsList[i].GetComponent<IngredientFollowTransform>().SetTargetTransform(ingredientsList[i].transform);
+
+            //Enable collider
+            ingredientsList[i].EnableIngredientCollision(ingredientsList[i]);
+
+            // Apply the throw force to the ingredient
+            Rigidbody ingredientRb = ingredientsList[i].GetComponent<Rigidbody>();
+            if (ingredientRb != null)
             {
-                // Detach the child (ingredient) from the hold point
-                Transform ingredientTransform = holdPoint.GetChild(0);
-                ingredientTransform.SetParent(null);
-
-                // Enable the collider for the thrown ingredient
-                Collider ingredientCollider = ingredientTransform.GetComponent<Collider>();
-                if (ingredientCollider != null)
-                {
-                    ingredientCollider.enabled = true;
-                }
-
-                // Apply the throw force to the ingredient
-                Rigidbody ingredientRb = ingredientTransform.GetComponent<Rigidbody>();
-                if (ingredientRb != null)
-                {
-                    ingredientRb.isKinematic = false;
-                    ingredientRb.AddForce(transform.forward * ingredienThrowForce, ForceMode.Impulse);
-                }
-                ingredientIndicatorText.SetText("");
+                ingredientRb.isKinematic = false;
+                ingredientRb.AddForce(transform.forward * ingredientThrowForce, ForceMode.Impulse);
             }
+            ingredientIndicatorText.SetText("");
+            RemoveIngredientInListAtIndex(i);
         }
     }
 
-    public void GrabIngredientFromFloor(Ingredient floorIngredient,IngredientSO ingredientSO )
+    public void GrabIngredientFromFloor(Ingredient floorIngredient, IngredientSO ingredientSO)
     {
         if (IsHoldingPickup)
             return;
-        floorIngredient.SetIngredientParent(this);
-        Ingredient.DestroyIngredient(floorIngredient);
+        if(GetNumberOfIngredients() >= GetMaxIngredients())
+        {
+            Debug.Log("max ingredients spawned!");
+            return; 
+        }
 
-        Transform nextHoldPoint = GetNextHoldPoint();
-        if (nextHoldPoint != null)
-        {
-            Ingredient.SpawnIngredient(ingredientSO, this);
-            GetNumberOfIngredients();
-        }
-        else
-        {
-            Debug.Log("Cannot grab more ingredients");
-        }
+        Ingredient.DestroyIngredient(floorIngredient);
+        Ingredient.SpawnIngredient(ingredientSO, this);
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
     }
 
     // Ingredient intarface Implementation
     public void ClearIngredient()
     {
-        ingredient = null;
+        //ingredientsList.Clear();
+    }
+
+    public void RemoveIngredientInListAtIndex(int index)
+    {
+        ingredientsList.RemoveAt(index);
+        if (ingredientsList.Count > 0)
+        {
+            ingredientsList.Insert(0, ingredientsList[0]);
+            ingredientsList.RemoveAt(1);
+            ingredientsList[0].followTransform.SetTargetTransform(ingredientHoldPoints[0]);
+        }
+        SetIngredientIndicator();
+    }
+
+    public void RemoveIngredientInListByReference(Ingredient ingredient)
+    {
+        ingredientsList.Remove(ingredient);
+        if (ingredientsList.Count > 0)
+        {
+            ingredientsList.Insert(0, ingredientsList[0]);
+            ingredientsList.RemoveAt(1);
+            ingredientsList[0].followTransform.SetTargetTransform(ingredientHoldPoints[0]);
+        }
+
+        SetIngredientIndicator();
     }
 
     public bool HasIngredient()
     {
-        return ingredient != null;
-        //return GetNumberOfIngredients() >= maxIngredients;
+        return GetNumberOfIngredients() > 0;
     }
 
     public Transform GetPickupTransform()
@@ -541,13 +573,24 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     // Add ingredient name to UI indicator on player
     public void SetIngredientIndicator()
     {
+        SetIngredientIndicatorServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetIngredientIndicatorServerRpc()
+    {
+        SetIngredientIndicatorClientRpc();
+    }
+
+    [ClientRpc]
+    private void SetIngredientIndicatorClientRpc()
+    {
         currentIndicator = null;
-        foreach (Transform holdPoint in ingredientHoldPoints)
+        foreach (Ingredient i in ingredientsList)
         {
-            if (holdPoint.childCount > 0)
+            if (i != null)
             {
-                Ingredient ingredient = holdPoint.GetComponentInChildren<Ingredient>();
-                currentIndicator += (ingredient.name + "\n");
+                currentIndicator += (i.name + "\n");
             }
         }
         ingredientIndicatorText.text = currentIndicator;
@@ -629,7 +672,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     {
         if(clientId == OwnerClientId && HasIngredient()) // HasIngredient 
         {
-            Ingredient.DestroyIngredient(GetIngredient());
+            for(int i=0; i<ingredientsList.Count; i++) {
+                Ingredient.DestroyIngredient(ingredientsList[i]);
+            }
         }
     }
 

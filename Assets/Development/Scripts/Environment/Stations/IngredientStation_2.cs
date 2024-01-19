@@ -26,24 +26,16 @@ public class IngredientStation_2 : BaseStation, IHasProgress
     {
         if (!HasIngredient())
         {
-            if (player.HasIngredient()) //check if player has ingredient
+            // Check if the player has already spawned maxingredients
+            if (player.GetNumberOfIngredients() >= player.GetMaxIngredients())
             {
-                if (player.GetIngredient().CompareTag("Milk")) //check if player has milk ingredient
-                {
-                    Ingredient.DestroyIngredient(player.GetIngredient()); //destroy ingredient
-                }
+                Debug.Log("Max ingredients spawned!");
+                return;
             }
-            else
-            {
-                Ingredient.SpawnIngredient(currentIngredient, player);
-                player.GetNumberOfIngredients();
-                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
-                interactParticle.Play();
-            }
-        }
-        else
-        {
 
+            Ingredient.SpawnIngredient(currentIngredient, player);
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
+            interactParticle.Play(); 
         }
     }
 
