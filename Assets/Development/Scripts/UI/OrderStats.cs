@@ -33,10 +33,9 @@ public class OrderStats : MonoBehaviour
         orderResponsibility = responsibility;
     }
 
-    public void Initialize(CustomerBase customer, PlayerController responsible)
+    public void Initialize(CustomerBase customer)
     {
         orderOwner = customer;
-        orderResponsibility = responsible;
         orderResponsibilityText.text = orderResponsibility.ToString();
         customerNumberText.text = customer.customerNumber.ToString();
         temperatureSegments.targetAttributeValue = customer.coffeeAttributes.GetTemperature();

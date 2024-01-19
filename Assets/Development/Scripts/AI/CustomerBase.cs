@@ -30,7 +30,6 @@ public class CustomerBase : Base
 
     [Header("Coffee Attributes")]
     public CoffeeAttributes coffeeAttributes;
-    private PlayerController orderResponsibility;
 
     [Header("State Related")]
     public CustomerState currentState;
@@ -254,7 +253,6 @@ public class CustomerBase : Base
         // Take customer order
         if (GetCustomerState() == CustomerState.Ordering)
         {
-            orderResponsibility = player;
             LeaveLineServerRpc();
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
             interactParticle.Play();
@@ -341,7 +339,7 @@ public class CustomerBase : Base
     {
         customerNumberCanvas.enabled = true;
         customerDialogue.SetActive(true);
-        UIManager.Instance.ShowCustomerUiOrder(this, orderResponsibility);
+        UIManager.Instance.ShowCustomerUiOrder(this);
     }
 
     // CUSTOMER ACTION METHODS
