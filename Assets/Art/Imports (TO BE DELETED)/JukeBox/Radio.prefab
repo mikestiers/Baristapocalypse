@@ -10367,6 +10367,7 @@ GameObject:
   - component: {fileID: 8246325954397199029}
   - component: {fileID: 8946261014034885091}
   - component: {fileID: 1797054837799654982}
+  - component: {fileID: 874483912}
   m_Layer: 6
   m_Name: Radio
   m_TagString: Untagged
@@ -10414,7 +10415,7 @@ AudioSource:
   m_GameObject: {fileID: 8946261014034885089}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 5330933982565519235, guid: 4ae82ebe5af4fb447bbc9a21aa66f1a4, type: 2}
   m_audioClip: {fileID: 8300000, guid: 6947e887045360c42852565100349c6f, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.164
@@ -10523,3 +10524,19 @@ MonoBehaviour:
   MainAudio: {fileID: 8946261014034885091}
   ChangeSound: {fileID: 8300000, guid: 1bd65760e3c80af47a69fef9fe9c91b5, type: 3}
   interactParticle: {fileID: 6251750190984144712}
+--- !u!114 &874483912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8946261014034885089}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1

@@ -48,7 +48,7 @@ public class UIManager : Singleton<UIManager>
 
     // Scenes
     private string activeGameScene = "T5M3_BUILD";
-    private string mainMenuScene = "LobbyScene"; // using lobby scene in the mean time, need changing to Main menu
+    private string mainMenuScene = "MainMenuScene"; // using lobby scene in the mean time, need changing to Main menu
 
     [Header("DifficultyTesting")]
     public Text customersLeft;
@@ -173,10 +173,10 @@ public class UIManager : Singleton<UIManager>
         audioSettings.SetActive(false);
     }
 
-    public void ShowCustomerUiOrder(CustomerBase customer)
+    public void ShowCustomerUiOrder(CustomerBase customer, PlayerController player)
     {
         orderStats = Instantiate(ordersUiPrefab, ordersPanel).GetComponent<OrderStats>();
-        orderStats.Initialize(customer);
+        orderStats.Initialize(customer, player);
     }
 
     public void ShowCustomerReview(CustomerBase customer)

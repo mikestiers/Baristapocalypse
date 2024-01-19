@@ -18,40 +18,25 @@ public class CoffeeGrinderStation : BaseStation, IHasProgress
         {
             if (player.HasIngredient())
             {
-                if (HasValidRecipe(player.GetIngredient().GetIngredientSO()))
+                foreach (Ingredient i in player.GetIngredientsList())
                 {
-                    Ingredient ingredient = player.GetIngredient();
-                    player.GetIngredient().SetIngredientParent(this);
-     
-                    InteractLogicPlaceObjectOnGrinderServerRpc();
-                }
-            }
-            /*if (player.GetNumberOfIngredients() >= 1)
-            {
-                foreach (Transform holdPoint in player.ingredientHoldPoints)
-                {
-                    Ingredient ingredient = holdPoint.GetComponentInChildren<Ingredient>();
-                    if (ingredient != null && HasValidRecipe(ingredient.GetIngredientSO()))
+                    if (i != null && HasValidRecipe(i.GetIngredientSO()))
                     {
                         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
                         interactParticle.Play();
-                        ingredient.SetIngredientParent(this);
-                        grindProgress = 0;
+                        i.SetIngredientParent(this);
+                        player.RemoveIngredientInListByReference(i);
+                        InteractLogicPlaceObjectOnGrinderServerRpc();
 
-                        CoffeeGrindRecipeSO coffeeGrindRecipeSO = GetCoffeeGrindRecipeSOWithInput(ingredient.GetIngredientSO());
-                        OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
-                        {
-                            progressNormalized = (float)grindProgress / coffeeGrindRecipeSO.grindMax
-                        });
                         break;
                     }
                 }
-            }*/
+            }
         }
         else
         {
-            //Grab object if player is holding nothing
-            if (!player.HasIngredient())
+            //Grab object if player can hold an object
+            if (player.GetNumberOfIngredients() < player.GetMaxIngredients())
             {
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
                 grindProgress = 0;

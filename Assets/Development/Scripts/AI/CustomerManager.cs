@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 public class CustomerManager : Singleton<CustomerManager>
 {
+    [SerializeField] public DifficultySO[] Difficulties; //In Customer Manager for now move to Game Manager
     [SerializeField] private Transform Counter;
     [SerializeField] private Transform barEntrance;
     [SerializeField] private Transform exit;
@@ -56,6 +57,7 @@ public class CustomerManager : Singleton<CustomerManager>
     public CustomerLineQueuing LineQueue;
     public CustomerBarFloor barFloor;
     public DifficultySettings difficultySettings; //will move to GameManager when gamemanager is owki, change references to GameManager aswell
+    public DifficultySO currentDifficulty;
 
     private NetworkObject newcustomer;
 
@@ -85,7 +87,7 @@ public class CustomerManager : Singleton<CustomerManager>
         //LineQueue.OnCustomerArrivedAtFrontOfQueue += WaitingQueue_OnCustomerArrivedAtFrontOfQueue; might be used for future code?
         LineQueue = new CustomerLineQueuing(waitingQueuePostionList);
         barFloor = new CustomerBarFloor(Chairs);
-        difficultySettings = new DifficultySettings(1 , numberOfPlayers); // change constructor to set difficulty when moving to GameManager, made this way just for testing
+        difficultySettings = new DifficultySettings(currentDifficulty , numberOfPlayers); // change constructor to set difficulty when moving to GameManager, made this way just for testing
 
         customersLeftinWave = difficultySettings.GetNumberofCustomersInwave();
         WavesLeft = difficultySettings.GetNumberOfWaves();
@@ -195,6 +197,8 @@ public class CustomerManager : Singleton<CustomerManager>
         Debug.Log("hiii");
         CustomerBase customer = LineQueue.GetFirstInQueue();
         barFloor.TrySendToChair(customer);
+        customer.inLine = false;
+        customer.frontofLine = false;
     }
 
     private void SpawnCustomer()
