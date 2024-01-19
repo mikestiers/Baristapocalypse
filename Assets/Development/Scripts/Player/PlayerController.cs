@@ -175,6 +175,13 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if(movementToggle)
             Move(moveSpeed);
 
+        if (!movementToggle)
+        {
+            anim.SetFloat("vertical", 0);
+            anim.SetFloat("horizontal", 0);
+            return;
+        }
+
         // Perform a single raycast to detect any interactable object.
         float interactDistance = 2.0f;
         if (Physics.Raycast(transform.position + RayCastOffset, transform.forward, out RaycastHit hit, interactDistance, interactableLayerMask))
@@ -328,7 +335,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     {
         if (!IsLocalPlayer) return;
 
-        StartCoroutine(Dash());
+        if (movementToggle)
+            StartCoroutine(Dash());
        // SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
 
        //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
