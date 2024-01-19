@@ -102,6 +102,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] private TextMeshPro ingredientIndicatorText;
     private string currentIndicator;
 
+    // Toggles
+    public bool movementToggle = true;
+
     private void Awake()
     {
         if (Instance != null) { Instance = this; }
@@ -169,7 +172,15 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         // Ground Check
         IsGrounded();
         // player movement
-        Move(moveSpeed);
+        if(movementToggle)
+            Move(moveSpeed);
+
+        if (!movementToggle)
+        {
+            anim.SetFloat("vertical", 0);
+            anim.SetFloat("horizontal", 0);
+            return;
+        }
 
         // Perform a single raycast to detect any interactable object.
         float interactDistance = 2.0f;
@@ -324,7 +335,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     {
         if (!IsLocalPlayer) return;
 
-        StartCoroutine(Dash());
+        if (movementToggle)
+            StartCoroutine(Dash());
        // SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
 
        //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);

@@ -118,6 +118,7 @@ public class IngredientSelectionUI : BaseStation
         Ingredient.SpawnIngredient(currentIngredient, player);
         player.GetNumberOfIngredients();
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
+        player.movementToggle = true;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -126,6 +127,8 @@ public class IngredientSelectionUI : BaseStation
         {
             player = other.GetComponent<PlayerController>();
             Debug.Log("Player Collided With trigger");
+
+            player.movementToggle = false;
 
             //Display UI ingredient menu
             Show(ingredientMenu);
@@ -137,6 +140,8 @@ public class IngredientSelectionUI : BaseStation
         if (other.tag == "Player")
         {
             Debug.Log("Player left trigger collider");
+
+            player.movementToggle = true;
 
             // Hide UI ingredient menu
             StartCoroutine(CloseMenu());
@@ -204,5 +209,6 @@ public class IngredientSelectionUI : BaseStation
         yield return new WaitForSeconds(0.5f);
         Hide(ingredientMenu);
         currentStationInteraction = false;
+        player.movementToggle = true;
     }
 }
