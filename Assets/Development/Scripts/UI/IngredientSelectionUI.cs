@@ -21,12 +21,6 @@ public class IngredientSelectionUI : BaseStation
     private IngredientSO currentIngredient;
     private int ingredientListSOIndex;
 
-    [Header("Drink Stat Sliders")]
-    [SerializeField] private Slider tempSlider;
-    [SerializeField] private Slider sweetSlider;
-    [SerializeField] private Slider spicySlider;
-    [SerializeField] private Slider strengthSlider;
-
     private void Start()
     {
         ingredientListSOIndex = 0;
@@ -58,104 +52,57 @@ public class IngredientSelectionUI : BaseStation
         }
 
         // Detects which button is being hovered over and sets the ingredient index accordingly
-        if (hoverButtonName == "Arabica" || hoverButtonName == "CowMilk" || hoverButtonName == "Sugar" || hoverButtonName == "PlutoniumPowder")
+        if (hoverButtonName == "Arabica" || hoverButtonName == "CowMilk" || hoverButtonName == "Sugar" || hoverButtonName == "PlutoniumPowder" ||
+            EventSystem.current.currentSelectedGameObject.name == "Arabica" || EventSystem.current.currentSelectedGameObject.name == "CowMilk" || EventSystem.current.currentSelectedGameObject.name == "Sugar" || EventSystem.current.currentSelectedGameObject.name == "PlutoniumPowder")
         {
             ingredientListSOIndex = 0;
             currentIngredient = ingredientListSO[ingredientListSOIndex];
             Debug.Log("The current IngredientListSOIndex is: " + ingredientListSOIndex);
-
-            if (orderStatsRoot != null && orderStatsRoot.childCount > 0)
-            {
-                OrderStats orderStats = orderStatsRoot.GetChild(0).GetComponent<OrderStats>();
-                orderStats.temperatureSegments.potentialIngredientValue = currentIngredient.temperature;
-                orderStats.sweetnessSegments.potentialIngredientValue = currentIngredient.sweetness;
-                orderStats.spicinessSegments.potentialIngredientValue = currentIngredient.spiciness;
-                orderStats.strengthSegments.potentialIngredientValue = currentIngredient.strength;
-                Debug.LogError(currentIngredient.temperature);
-                Debug.LogError(currentIngredient.sweetness);
-                Debug.LogError(currentIngredient.spiciness);
-                Debug.LogError(currentIngredient.strength);
-                Debug.LogError("this", ingredientListSO[ingredientListSOIndex]);
-            }
+            CalculateIngredients(currentIngredient, ingredientListSOIndex);
         }
-        else if (hoverButtonName == "CosmicCacao" || hoverButtonName == "Water" || hoverButtonName == "MoonMaple" || hoverButtonName == "ButterBugs")
+        else if (hoverButtonName == "CosmicCacao" || hoverButtonName == "Water" || hoverButtonName == "MoonMaple" || hoverButtonName == "ButterBugs" ||
+            EventSystem.current.currentSelectedGameObject.name == "CosmicCacao" || EventSystem.current.currentSelectedGameObject.name == "Water" || EventSystem.current.currentSelectedGameObject.name == "MoonMaple" || EventSystem.current.currentSelectedGameObject.name == "ButterBugs")
         {
             ingredientListSOIndex = 1;
             currentIngredient = ingredientListSO[ingredientListSOIndex];
             Debug.Log("The current IngredientListSOIndex is: " + ingredientListSOIndex);
-
-            if (orderStatsRoot != null && orderStatsRoot.childCount > 0)
-            {
-                OrderStats orderStats = orderStatsRoot.GetChild(0).GetComponent<OrderStats>();
-                orderStats.temperatureSegments.potentialIngredientValue = currentIngredient.temperature;
-                orderStats.sweetnessSegments.potentialIngredientValue = currentIngredient.sweetness;
-                orderStats.spicinessSegments.potentialIngredientValue = currentIngredient.spiciness;
-                orderStats.strengthSegments.potentialIngredientValue = currentIngredient.strength;
-            }
+            CalculateIngredients(currentIngredient, ingredientListSOIndex);
         }
-        else if (hoverButtonName == "Excelsior" || hoverButtonName == "BlueMilk" || hoverButtonName == "GalaxyGummy" || hoverButtonName == "Brains")
+        else if (hoverButtonName == "Excelsior" || hoverButtonName == "BlueMilk" || hoverButtonName == "GalaxyGummy" || hoverButtonName == "Brains" ||
+            EventSystem.current.currentSelectedGameObject.name == "Excelsior" || EventSystem.current.currentSelectedGameObject.name == "BlueMilk" || EventSystem.current.currentSelectedGameObject.name == "GalaxyGummy" || EventSystem.current.currentSelectedGameObject.name == "Brains")
         {
             ingredientListSOIndex = 2;
             currentIngredient = ingredientListSO[ingredientListSOIndex];
             Debug.Log("The current IngredientListSOIndex is: " + ingredientListSOIndex);
-
-            if (orderStatsRoot != null && orderStatsRoot.childCount > 0)
-            {
-                OrderStats orderStats = orderStatsRoot.GetChild(0).GetComponent<OrderStats>();
-                orderStats.temperatureSegments.potentialIngredientValue = currentIngredient.temperature;
-                orderStats.sweetnessSegments.potentialIngredientValue = currentIngredient.sweetness;
-                orderStats.spicinessSegments.potentialIngredientValue = currentIngredient.spiciness;
-                orderStats.strengthSegments.potentialIngredientValue = currentIngredient.strength;
-            }
+            CalculateIngredients(currentIngredient, ingredientListSOIndex);
         }
-        else if (hoverButtonName == "Robusta" || hoverButtonName == "Moonshine" || hoverButtonName == "MochaMiel" || hoverButtonName == "FunkyFungus")
+        else if (hoverButtonName == "Robusta" || hoverButtonName == "Moonshine" || hoverButtonName == "MochaMiel" || hoverButtonName == "FunkyFungus" ||
+            EventSystem.current.currentSelectedGameObject.name == "Robusta" || EventSystem.current.currentSelectedGameObject.name == "Moonshine" || EventSystem.current.currentSelectedGameObject.name == "MochaMiel" || EventSystem.current.currentSelectedGameObject.name == "FunkyFungus")
         {
             ingredientListSOIndex = 3;
             currentIngredient = ingredientListSO[ingredientListSOIndex];
             Debug.Log("The current IngredientListSOIndex is: " + ingredientListSOIndex);
-
-            if (orderStatsRoot != null && orderStatsRoot.childCount > 0)
-            {
-                OrderStats orderStats = orderStatsRoot.GetChild(0).GetComponent<OrderStats>();
-                orderStats.temperatureSegments.potentialIngredientValue = currentIngredient.temperature;
-                orderStats.sweetnessSegments.potentialIngredientValue = currentIngredient.sweetness;
-                orderStats.spicinessSegments.potentialIngredientValue = currentIngredient.spiciness;
-                orderStats.strengthSegments.potentialIngredientValue = currentIngredient.strength;
-            }
+            CalculateIngredients(currentIngredient, ingredientListSOIndex);
         }
-        else if (hoverButtonName == "KopiLuwak" || hoverButtonName == "LavaGuava" || hoverButtonName == "Molasses" || hoverButtonName == "JupiterJelly")
+        else if (hoverButtonName == "KopiLuwak" || hoverButtonName == "LavaGuava" || hoverButtonName == "Molasses" || hoverButtonName == "JupiterJelly" ||
+            EventSystem.current.currentSelectedGameObject.name == "KopiLuwak" || EventSystem.current.currentSelectedGameObject.name == "LavaGuava" || EventSystem.current.currentSelectedGameObject.name == "Molasses" || EventSystem.current.currentSelectedGameObject.name == "JupiterJelly")
         {
             ingredientListSOIndex = 4;
             currentIngredient = ingredientListSO[ingredientListSOIndex];
             Debug.Log("The current IngredientListSOIndex is: " + ingredientListSOIndex);
-
-            if (orderStatsRoot != null && orderStatsRoot.childCount > 0)
-            {
-                OrderStats orderStats = orderStatsRoot.GetChild(0).GetComponent<OrderStats>();
-                orderStats.temperatureSegments.potentialIngredientValue = currentIngredient.temperature;
-                orderStats.sweetnessSegments.potentialIngredientValue = currentIngredient.sweetness;
-                orderStats.spicinessSegments.potentialIngredientValue = currentIngredient.spiciness;
-                orderStats.strengthSegments.potentialIngredientValue = currentIngredient.strength;
-            }
+            CalculateIngredients(currentIngredient, ingredientListSOIndex);
         }
-        else if (hoverButtonName == "Undefined" || hoverButtonName == "Gobstopper" || hoverButtonName == "MeatCube")
+        else if (hoverButtonName == "SlurpJuice" || hoverButtonName == "Gobstopper" || hoverButtonName == "MeatCube" || hoverButtonName == "Undefined" ||
+            EventSystem.current.currentSelectedGameObject.name == "SlurpJuice" || EventSystem.current.currentSelectedGameObject.name == "Gobstopper" || EventSystem.current.currentSelectedGameObject.name == "MeatCube" || EventSystem.current.currentSelectedGameObject.name == "Undefined")
         {
             ingredientListSOIndex = 5;
             currentIngredient = ingredientListSO[ingredientListSOIndex];
             Debug.Log("The current IngredientListSOIndex is: " + ingredientListSOIndex);
-
-            if (orderStatsRoot != null && orderStatsRoot.childCount > 0)
-            {
-                OrderStats orderStats = orderStatsRoot.GetChild(0).GetComponent<OrderStats>();
-                orderStats.temperatureSegments.potentialIngredientValue = currentIngredient.temperature;
-                orderStats.sweetnessSegments.potentialIngredientValue = currentIngredient.sweetness;
-                orderStats.spicinessSegments.potentialIngredientValue = currentIngredient.spiciness;
-                orderStats.strengthSegments.potentialIngredientValue = currentIngredient.strength;
-            }
+            CalculateIngredients(currentIngredient, ingredientListSOIndex);
         }
         else
         {
-            if (orderStatsRoot != null && orderStatsRoot.childCount > 0)
+            if (orderStatsRoot != null && orderStatsRoot.childCount > 0 || EventSystem.current.currentSelectedGameObject == null)
             {
                 OrderStats orderStats = orderStatsRoot.GetChild(0).GetComponent<OrderStats>();
                 orderStats.temperatureSegments.potentialIngredientValue = 0;
@@ -164,10 +111,6 @@ public class IngredientSelectionUI : BaseStation
                 orderStats.strengthSegments.potentialIngredientValue = 0;
             }
         }
-
-        // TODO - On cursor hover change slider values based on the ingredient
-        //          - Take into account currently held ingredients
-        //          - Reset sliders after cursor moves off buttons
     }
 
     public void AddIngredient()
@@ -200,8 +143,6 @@ public class IngredientSelectionUI : BaseStation
         }
     }
 
-    // TODO - Add Ingredient to inventory after selection
-    // TODO - Adjust sliders to represent currently held ingredients
     public void AddBean()
     {
         string buttonName;
@@ -241,6 +182,20 @@ public class IngredientSelectionUI : BaseStation
         obj.SetActive(true);
         EventSystem.current.firstSelectedGameObject = ingredientButtons[0].gameObject;
         SetDefaultSelected(ingredientButtons[0].gameObject);
+    }
+
+    private void CalculateIngredients(IngredientSO currentIngredient, int ingredientListSOIndex)
+    {
+        if (orderStatsRoot != null && orderStatsRoot.childCount > 0)
+        {
+            OrderStats orderStats = orderStatsRoot.GetChild(0).GetComponent<OrderStats>();
+            orderStats.temperatureSegments.potentialIngredientValue = currentIngredient.temperature + orderStats.temperatureSegments.cumulativeIngredientsValue;
+            orderStats.sweetnessSegments.potentialIngredientValue = currentIngredient.sweetness + orderStats.sweetnessSegments.cumulativeIngredientsValue;
+            orderStats.spicinessSegments.potentialIngredientValue = currentIngredient.spiciness + orderStats.spicinessSegments.cumulativeIngredientsValue;
+            orderStats.strengthSegments.potentialIngredientValue = currentIngredient.strength + orderStats.strengthSegments.cumulativeIngredientsValue;
+            Debug.Log("The current IngredientListSOIndex is: " + ingredientListSOIndex);
+            Debug.LogError("this", ingredientListSO[ingredientListSOIndex]);
+        }
     }
 
     IEnumerator CloseMenu()
