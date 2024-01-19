@@ -68,7 +68,7 @@ public class IngredientSelectionUI : BaseStation
             Debug.Log("The current IngredientListSOIndex is: " + ingredientListSOIndex);
             CalculateIngredients(currentIngredient, ingredientListSOIndex);
         }
-        else if (hoverButtonName == "Excelsior" || hoverButtonName == "BlueMilk" || hoverButtonName == "GalaxyGummy" || hoverButtonName == "Brains" || 
+        else if (hoverButtonName == "Excelsior" || hoverButtonName == "BlueMilk" || hoverButtonName == "GalaxyGummy" || hoverButtonName == "Brains" ||
             EventSystem.current.currentSelectedGameObject.name == "Excelsior" || EventSystem.current.currentSelectedGameObject.name == "BlueMilk" || EventSystem.current.currentSelectedGameObject.name == "GalaxyGummy" || EventSystem.current.currentSelectedGameObject.name == "Brains")
         {
             ingredientListSOIndex = 2;
@@ -76,7 +76,7 @@ public class IngredientSelectionUI : BaseStation
             Debug.Log("The current IngredientListSOIndex is: " + ingredientListSOIndex);
             CalculateIngredients(currentIngredient, ingredientListSOIndex);
         }
-        else if (hoverButtonName == "Robusta" || hoverButtonName == "Moonshine" || hoverButtonName == "MochaMiel" || hoverButtonName == "FunkyFungus" || 
+        else if (hoverButtonName == "Robusta" || hoverButtonName == "Moonshine" || hoverButtonName == "MochaMiel" || hoverButtonName == "FunkyFungus" ||
             EventSystem.current.currentSelectedGameObject.name == "Robusta" || EventSystem.current.currentSelectedGameObject.name == "Moonshine" || EventSystem.current.currentSelectedGameObject.name == "MochaMiel" || EventSystem.current.currentSelectedGameObject.name == "FunkyFungus")
         {
             ingredientListSOIndex = 3;
@@ -84,7 +84,7 @@ public class IngredientSelectionUI : BaseStation
             Debug.Log("The current IngredientListSOIndex is: " + ingredientListSOIndex);
             CalculateIngredients(currentIngredient, ingredientListSOIndex);
         }
-        else if (hoverButtonName == "KopiLuwak" || hoverButtonName == "LavaGuava" || hoverButtonName == "Molasses" || hoverButtonName == "JupiterJelly" || 
+        else if (hoverButtonName == "KopiLuwak" || hoverButtonName == "LavaGuava" || hoverButtonName == "Molasses" || hoverButtonName == "JupiterJelly" ||
             EventSystem.current.currentSelectedGameObject.name == "KopiLuwak" || EventSystem.current.currentSelectedGameObject.name == "LavaGuava" || EventSystem.current.currentSelectedGameObject.name == "Molasses" || EventSystem.current.currentSelectedGameObject.name == "JupiterJelly")
         {
             ingredientListSOIndex = 4;
@@ -92,8 +92,8 @@ public class IngredientSelectionUI : BaseStation
             Debug.Log("The current IngredientListSOIndex is: " + ingredientListSOIndex);
             CalculateIngredients(currentIngredient, ingredientListSOIndex);
         }
-        else if (hoverButtonName == "Undefined" || hoverButtonName == "Gobstopper" || hoverButtonName == "MeatCube" ||
-            EventSystem.current.currentSelectedGameObject.name == "Undefined" || EventSystem.current.currentSelectedGameObject.name == "Gobstopper" || EventSystem.current.currentSelectedGameObject.name == "MeatCube")
+        else if (hoverButtonName == "SlurpJuice" || hoverButtonName == "Gobstopper" || hoverButtonName == "MeatCube" || hoverButtonName == "Undefined" ||
+            EventSystem.current.currentSelectedGameObject.name == "SlurpJuice" || EventSystem.current.currentSelectedGameObject.name == "Gobstopper" || EventSystem.current.currentSelectedGameObject.name == "MeatCube" || EventSystem.current.currentSelectedGameObject.name == "Undefined")
         {
             ingredientListSOIndex = 5;
             currentIngredient = ingredientListSO[ingredientListSOIndex];
@@ -111,10 +111,6 @@ public class IngredientSelectionUI : BaseStation
                 orderStats.strengthSegments.potentialIngredientValue = 0;
             }
         }
-
-        // TODO - On cursor hover change slider values based on the ingredient
-        //          - Take into account currently held ingredients
-        //          - Reset sliders after cursor moves off buttons
     }
 
     public void AddIngredient()
