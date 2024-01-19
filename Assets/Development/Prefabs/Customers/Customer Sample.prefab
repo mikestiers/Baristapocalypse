@@ -1078,7 +1078,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72a76eb3a000fa047ad6fcf8ef29a84d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  customerCanvas: {fileID: 2409413091286520164}
   happyImage: {fileID: 2971494115252828201}
   sadImage: {fileID: 7788379450133404594}
   angryImage: {fileID: 2830815787880140944}
@@ -1145,6 +1144,8 @@ MonoBehaviour:
   frontofLine: 0
   inLine: 0
   leaving: 0
+  makingAMess: 0
+  moving: 0
   distThreshold: 0
   Line: []
   LineIndex: 0
@@ -1152,7 +1153,7 @@ MonoBehaviour:
   customerNumber: 0
   coffeeAttributes: {fileID: 4092279481114173512}
   currentState: 6
-  customerLeaveTime: 60
+  customerLeaveTime: 180
   deadTimerSeconds: 15
   customerNumberCanvas: {fileID: 7644296860494902969}
   customerNumberText: {fileID: 279206825771054927}
@@ -1163,6 +1164,7 @@ MonoBehaviour:
   customerDialogue: {fileID: 2430203159097677186}
   spillPrefab: {fileID: 11400000, guid: 6b7275261fe99c245a3688777a6d3ec6, type: 2}
   spillSpawnPoint: {fileID: 4961381447448103050}
+  customerReactionIndicator: {fileID: 0}
 --- !u!136 &5640675751676341543
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1229,6 +1231,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9e940186f810c4b47902d23488bf20cc, type: 2}
   - {fileID: 11400000, guid: 7002a5406579d1547882688d970cba3a, type: 2}
   - {fileID: 11400000, guid: 79460b32951a9dc4a966e9d79d27b5d5, type: 2}
+  sweet: {fileID: 0}
+  str: {fileID: 0}
+  temp: {fileID: 0}
+  spc: {fileID: 0}
   coffeePreferences: {fileID: 0}
 --- !u!114 &4092279481114173512
 MonoBehaviour:
@@ -1287,6 +1293,8 @@ MonoBehaviour:
   collider: {fileID: 5640675751676341543}
   navMeshAgent: {fileID: 5640675751676341539}
   throwForceMultiplier: 5
+  <pickupSo>k__BackingField: {fileID: 0}
+  FollowTransform: {fileID: 0}
 --- !u!114 &-7061893543091457018
 MonoBehaviour:
   m_ObjectHideFlags: 0
