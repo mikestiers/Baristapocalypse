@@ -189,10 +189,16 @@ public class UIManager : Singleton<UIManager>
     public void ShowCustomerUiOrder(CustomerBase customer)
     {
         orderStats = Instantiate(ordersUiPrefab, ordersPanel).GetComponent<OrderStats>();
-        //customerReviewTab = Instantiate(customerReviewPrefab, customerReviewPanel.transform);
-        //customerReviewTabs.Add(customerReviewTab);
-        ShowCustomerUiOrderClientRpc();
+        customerReviewTab = Instantiate(customerReviewPrefab, customerReviewPanel.transform);
+        customerReviewTabs.Add(customerReviewTab);
+        //ShowCustomerUiOrderServerRpc();
         orderStats.Initialize(customer);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ShowCustomerUiOrderServerRpc()
+    {
+        ShowCustomerUiOrderClientRpc();
     }
 
     [ClientRpc]
@@ -213,7 +219,7 @@ public class UIManager : Singleton<UIManager>
                 if (o.GetOrderOwner() == customer)
                 {
                     CustomerReview customerReview = t.gameObject.GetComponent<CustomerReview>();
-                    Text customerReviewText = customerReviewTab.GetComponentInChildren<Text>();
+                    Text customerReviewText = customerReviewTabs[0].GetComponentInChildren<Text>();
                     customerReview.GenerateReview(customer);
                     customerReviewText.text = customerReview.ReviewText;
                     UpdateStarRating(customerReview.ReviewScore);
