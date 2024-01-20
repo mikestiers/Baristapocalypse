@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Unity.VisualScripting;
 
 public class IngredientSelectionUI : BaseStation
 {
@@ -15,6 +16,7 @@ public class IngredientSelectionUI : BaseStation
     private string hoverButtonName;
     public GameObject buttonsRoot;
     private Button[] ingredientButtons;
+    BrewingStation[] brewingStations;
 
     [SerializeField] private IngredientSO[] ingredientListSO;
 
@@ -25,8 +27,8 @@ public class IngredientSelectionUI : BaseStation
     {
         ingredientListSOIndex = 0;
         currentIngredient = ingredientListSO[ingredientListSOIndex];
-
         ingredientButtons = buttonsRoot.GetComponentsInChildren<Button>();
+        brewingStations = Object.FindObjectsOfType<BrewingStation>();
     }
 
     private void Update()
@@ -115,10 +117,24 @@ public class IngredientSelectionUI : BaseStation
 
     public void AddIngredient()
     {
-        Ingredient.SpawnIngredient(currentIngredient, player);
-        player.GetNumberOfIngredients();
+        // This was the code that spawned the ingredient into the player hands
+        //Ingredient.SpawnIngredient(currentIngredient, player);
+        //player.GetNumberOfIngredients();
+        EventSystem.current.SetSelectedGameObject(null);
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
         player.movementToggle = true;
+        brewingStations[0].ingredientSOList.Add(currentIngredient);
+        OrderStats orderStats = orderStatsRoot.GetChild(0).GetComponent<OrderStats>();
+        orderStats.temperatureSegments.cumulativeIngredientsValue = orderStats.temperatureSegments.potentialIngredientValue;
+        orderStats.sweetnessSegments.cumulativeIngredientsValue = orderStats.sweetnessSegments.potentialIngredientValue;
+        orderStats.spicinessSegments.cumulativeIngredientsValue = orderStats.spicinessSegments.potentialIngredientValue;
+        orderStats.strengthSegments.cumulativeIngredientsValue = orderStats.strengthSegments.potentialIngredientValue;
+        //Transform hudOrder = orderStats.transform.Find("HudOrder");
+        //hudOrder.transform.Find("Temperature").GetComponent<OrderStatsSegments>().UpdateSegmentColors(orderStats.temperatureSegments.cumulativeIngredientsValue);
+        //hudOrder.transform.Find("Sweetness").GetComponent<OrderStatsSegments>().UpdateSegmentColors(orderStats.sweetnessSegments.cumulativeIngredientsValue);
+        //hudOrder.transform.Find("Spiciness").GetComponent<OrderStatsSegments>().UpdateSegmentColors(orderStats.spicinessSegments.cumulativeIngredientsValue);
+        //hudOrder.transform.Find("Strength").GetComponent<OrderStatsSegments>().UpdateSegmentColors(orderStats.strengthSegments.cumulativeIngredientsValue);
+        StartCoroutine(CloseMenu());
     }
 
     private void OnTriggerEnter(Collider other)
@@ -128,7 +144,7 @@ public class IngredientSelectionUI : BaseStation
             player = other.GetComponent<PlayerController>();
             Debug.Log("Player Collided With trigger");
 
-            player.movementToggle = false;
+            //player.movementToggle = false;
 
             //Display UI ingredient menu
             Show(ingredientMenu);
@@ -144,32 +160,9 @@ public class IngredientSelectionUI : BaseStation
             player.movementToggle = true;
 
             // Hide UI ingredient menu
+            EventSystem.current.SetSelectedGameObject(null);
             StartCoroutine(CloseMenu());
         }
-    }
-
-    public void AddBean()
-    {
-        string buttonName;
-        buttonName = EventSystem.current.currentSelectedGameObject.name;
-    }
-
-    public void AddSweetener()
-    {
-        string buttonName;
-        buttonName = EventSystem.current.currentSelectedGameObject.name;
-    }
-
-    public void AddLiquid()
-    {
-        string buttonName;
-        buttonName = EventSystem.current.currentSelectedGameObject.name;
-    }
-
-    public void AddBiomatter()
-    {
-        string buttonName;
-        buttonName = EventSystem.current.currentSelectedGameObject.name;
     }
 
     private void Hide(GameObject obj)
@@ -198,6 +191,11 @@ public class IngredientSelectionUI : BaseStation
             orderStats.sweetnessSegments.potentialIngredientValue = currentIngredient.sweetness + orderStats.sweetnessSegments.cumulativeIngredientsValue;
             orderStats.spicinessSegments.potentialIngredientValue = currentIngredient.spiciness + orderStats.spicinessSegments.cumulativeIngredientsValue;
             orderStats.strengthSegments.potentialIngredientValue = currentIngredient.strength + orderStats.strengthSegments.cumulativeIngredientsValue;
+            //Transform hudOrder = orderStats.transform.Find("HudOrder");
+            //hudOrder.transform.Find("Temperature").GetComponent<OrderStatsSegments>().UpdateSegmentColors(orderStats.temperatureSegments.potentialIngredientValue);
+            //hudOrder.transform.Find("Sweetness").GetComponent<OrderStatsSegments>().UpdateSegmentColors(orderStats.sweetnessSegments.potentialIngredientValue);
+            //hudOrder.transform.Find("Spiciness").GetComponent<OrderStatsSegments>().UpdateSegmentColors(orderStats.spicinessSegments.potentialIngredientValue);
+            //hudOrder.transform.Find("Strength").GetComponent<OrderStatsSegments>().UpdateSegmentColors(orderStats.strengthSegments.potentialIngredientValue);
             Debug.Log("The current IngredientListSOIndex is: " + ingredientListSOIndex);
             Debug.LogError("this", ingredientListSO[ingredientListSOIndex]);
         }
@@ -208,6 +206,11 @@ public class IngredientSelectionUI : BaseStation
         ingredientMenu.GetComponent<Animator>().Play("Ingredient_UI_Shrink");
         yield return new WaitForSeconds(0.5f);
         Hide(ingredientMenu);
+        OrderStats orderStats = orderStatsRoot.GetChild(0).GetComponent<OrderStats>();
+        orderStats.temperatureSegments.potentialIngredientValue = 0;
+        orderStats.sweetnessSegments.potentialIngredientValue = 0;
+        orderStats.spicinessSegments.potentialIngredientValue = 0;
+        orderStats.strengthSegments.potentialIngredientValue = 0;
         currentStationInteraction = false;
         player.movementToggle = true;
     }

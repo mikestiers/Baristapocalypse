@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class OrderStats : MonoBehaviour
 {
     [Header("Customer Order")]
-    [SerializeField] private Text customerNumberText;
-    [SerializeField] private Text orderResponsibilityText;
+    [SerializeField] public Text customerNumberText;
+    [SerializeField] public Text orderResponsibilityText;
     [SerializeField] public OrderStatsSegments temperatureSegments;
     [SerializeField] public OrderStatsSegments sweetnessSegments;
     [SerializeField] public OrderStatsSegments spicinessSegments;

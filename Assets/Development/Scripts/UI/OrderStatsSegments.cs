@@ -1,13 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.Rendering.HableCurve;
 
 public class OrderStatsSegments : MonoBehaviour
 {
-    public GameObject[] segments; // Assign your segment objects in the inspector
+    public GameObject[] segments; // Change to dynamically find them
     public int cumulativeIngredientsValue;
     public int potentialIngredientValue;
     public int targetAttributeValue;
@@ -17,21 +13,22 @@ public class OrderStatsSegments : MonoBehaviour
 
     private void Start()
     {
-        // Reset all segments to inactive
+        // Ensure all segments to inactive
         foreach (var segment in segments)
         {
             segment.SetActive(false);
         }
+        cumulativeIngredientsValue = 0;
     }
 
     private void Update()
     {
-        UpdateSegmentColors(cumulativeIngredientsValue); // remove this later
+        UpdateSegmentColors(cumulativeIngredientsValue); // remove this later so it doesn't run every frame
     }
 
     public void UpdateSegmentColors(int cumulative)
     {
-        // Reset all segments to the default color (e.g., white)
+        // Reset all segments every tick for now just to make sure things are updating during testing
         foreach (var segment in segments)
         {
             segment.GetComponent<Image>().color = Color.green;
@@ -40,24 +37,19 @@ public class OrderStatsSegments : MonoBehaviour
             segment.SetActive(false);
         }
 
-        //if (cumulative == 0)
-        //{
-
-        //}
-
         if (cumulative >= segments.Length / 2)
         {
             Debug.LogError("Value is greater than the number of segments.");
             return;
         }
 
-        if (targetAttributeValue < 0) // && cumulative != targetAttributeValue)
+        if (targetAttributeValue < 0)
         {
             GameObject targetSegment = segments[(segments.Length / 2) + targetAttributeValue];
             SetTarget(targetSegment);
         }
 
-        if (targetAttributeValue > 0) // && cumulative != targetAttributeValue)
+        if (targetAttributeValue > 0)
         {
             GameObject targetSegment = segments[(segments.Length / 2 - 1) + targetAttributeValue];
             SetTarget(targetSegment);
@@ -76,80 +68,8 @@ public class OrderStatsSegments : MonoBehaviour
             int endIndex = startIndex + cumulative;
             SetPotential(segments[endIndex + potentialIngredientValue]);
         }
-
         if (potentialIngredientValue == 0)
-        {
-            potentialAttributeSelector.SetActive(false);
-        }
-
-        //if (cumulative < 0)
-        //{
-        //    int startIndex = segments.Length / 2 - 1;
-        //    int endIndex = startIndex + cumulative;
-        //    for (int i = startIndex; i > endIndex; i--)
-        //    {
-        //        segments[i].GetComponent<Image>().color = Color.blue;
-        //    }
-
-        //    if (potentialIngredientValue < 0)
-        //    {
-        //        for (int i = endIndex; i > endIndex + potentialIngredientValue; i--)
-        //        {
-        //            segments[i].GetComponent<Image>().color = Color.red;
-        //        }
-        //    }
-
-        //    if (potentialIngredientValue > 0)
-        //    {
-        //        for (int i = endIndex; i < endIndex + potentialIngredientValue; i++)
-        //        {
-        //            segments[i].GetComponent<Image>().color = Color.red;
-        //        }
-        //    }
-
-        //}
-        //if (cumulative > 0)
-        //{
-        //    int startIndex = segments.Length / 2 - 1;
-        //    int endIndex = startIndex + cumulative;
-        //    segments[endIndex].GetComponent<Image>().color = Color.blue;
-        //    segments[endIndex].SetActive(true);
-        //    //for (int i = startIndex; i < endIndex; i++)
-        //    //{
-        //    //    segments[i].GetComponent<Image>().color = Color.blue;
-        //    //}
-
-        //    //if (potentialIngredientValue < 0)
-        //    //{
-        //    //    Debug.Log(endIndex);
-        //    //    for (int i = endIndex; i > endIndex + potentialIngredientValue; i--)
-        //    //    {
-        //    //        Debug.Log(i + ": " + segments[i]);
-        //    //        segments[i - 2].GetComponent<Image>().color = Color.red;
-        //    //    }
-        //    //}
-
-        //    //if (potentialIngredientValue > 0)
-        //    //{
-        //    //    for (int i = endIndex; i < endIndex + potentialIngredientValue; i++)
-        //    //    {
-        //    //        segments[i].GetComponent<Image>().color = Color.red;
-        //    //    }
-        //    //}
-        //}
-
-        //if (targetAttributeValue < 0 && cumulative != targetAttributeValue)
-        //{
-        //    GameObject targetSegment = segments[(segments.Length / 2) + targetAttributeValue];
-        //    targetSegment.SetActive(true);  // GetComponent<Image>().color = Color.green;
-        //                                    //targetAttributeSelector.pare
-        //}
-
-        //if (targetAttributeValue > 0 && cumulative != targetAttributeValue)
-        //{
-        //    GameObject targetSegment = segments[(segments.Length / 2 - 1) + targetAttributeValue];
-        //    targetSegment.SetActive(true);  // GetComponent<Image>().color = Color.green;
-        //}
+            return; // add logic for zero value. need to update ui object to accept 0
     }
 
     private void SetTarget(GameObject targetSegment)
@@ -171,10 +91,5 @@ public class OrderStatsSegments : MonoBehaviour
         potentialAttributeSelector.transform.SetParent(potentialSegment.transform);
         potentialAttributeSelector.transform.position = potentialSegment.transform.position;
         potentialAttributeSelector.SetActive(true);
-    }
-
-    private void SetCumulative(GameObject cumulativeSegment)
-    {
-
     }
 }

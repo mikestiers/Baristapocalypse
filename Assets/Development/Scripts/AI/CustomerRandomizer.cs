@@ -32,32 +32,29 @@ public class CustomerRandomizer : NetworkBehaviour
 
         race = Races[customerIndex];
 
+        IngredientSO temperatureIngredient = temperature[Random.Range(0, temperature.Count)];
+        IngredientSO sweetnessIngredient = sweetness[Random.Range(0, sweetness.Count)];
+        IngredientSO strenthIngredient = strength[Random.Range(0, strength.Count)];
+        IngredientSO spicinessIngredient = spiciness[Random.Range(0, spiciness.Count)];
 
-            IngredientSO temperatureIngredient = temperature[Random.Range(0, temperature.Count)];
-            IngredientSO sweetnessIngredient = sweetness[Random.Range(0, sweetness.Count)];
-            IngredientSO strenthIngredient = strength[Random.Range(0, strength.Count)];
-            IngredientSO spicinessIngredient = spiciness[Random.Range(0, spiciness.Count)];
+        // DELETE AFTER TESTING //
+        sweet = sweetnessIngredient;
+        str = strenthIngredient;
+        temp = temperatureIngredient;
+        spc = spicinessIngredient;
+        // -----------------------  //
 
-            // DELETE AFTER TESTING //
-            sweet = sweetnessIngredient;
-            str = strenthIngredient;
-            temp = temperatureIngredient;
-            spc = spicinessIngredient;
-            // -----------------------  //
-
-            int accumulatedTemperature = temperatureIngredient.temperature + sweetnessIngredient.temperature + strenthIngredient.temperature + spicinessIngredient.temperature;
-            int accumulatedSweetness = temperatureIngredient.sweetness + sweetnessIngredient.sweetness + strenthIngredient.sweetness + spicinessIngredient.sweetness;
-            int accumulatedStrength = temperatureIngredient.strength + sweetnessIngredient.strength + strenthIngredient.strength + spicinessIngredient.strength;
-            int accumulatedSpiciness = temperatureIngredient.spiciness + sweetnessIngredient.spiciness + strenthIngredient.spiciness + spicinessIngredient.spiciness;
-
+        int accumulatedTemperature = temperatureIngredient.temperature + sweetnessIngredient.temperature + strenthIngredient.temperature + spicinessIngredient.temperature;
+        int accumulatedSweetness = temperatureIngredient.sweetness + sweetnessIngredient.sweetness + strenthIngredient.sweetness + spicinessIngredient.sweetness;
+        int accumulatedStrength = temperatureIngredient.strength + sweetnessIngredient.strength + strenthIngredient.strength + spicinessIngredient.strength;
+        int accumulatedSpiciness = temperatureIngredient.spiciness + sweetnessIngredient.spiciness + strenthIngredient.spiciness + spicinessIngredient.spiciness;
 
 
-            int headIndex = Random.Range(0, heads.Count);
-            int bodyIndex = Random.Range(0, bodies.Count);
 
-            StartClientRpc(headIndex, bodyIndex, accumulatedSpiciness, accumulatedStrength, accumulatedSweetness, accumulatedTemperature);
+        int headIndex = Random.Range(0, heads.Count);
+        int bodyIndex = Random.Range(0, bodies.Count);
 
-
+        StartClientRpc(headIndex, bodyIndex, accumulatedSpiciness, accumulatedStrength, accumulatedSweetness, accumulatedTemperature);
     }
 
     [ClientRpc]

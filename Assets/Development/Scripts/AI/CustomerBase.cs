@@ -253,6 +253,16 @@ public class CustomerBase : Base
         // Take customer order
         if (GetCustomerState() == CustomerState.Ordering)
         {
+            BrewingStation[] brewingStations = UnityEngine.Object.FindObjectsOfType<BrewingStation>();
+
+            foreach (BrewingStation brewingStation in brewingStations)
+            {
+                if (!brewingStation.orderAssigned)
+                    brewingStation.SetOrder(this);
+                else
+                    Debug.Log("Brewing station is busy"); // this should add an element to the order queue ui that is not done yet
+            }
+
             LeaveLineServerRpc();
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
             interactParticle.Play();
@@ -339,7 +349,7 @@ public class CustomerBase : Base
     {
         customerNumberCanvas.enabled = true;
         customerDialogue.SetActive(true);
-        UIManager.Instance.ShowCustomerUiOrder(this);
+        //UIManager.Instance.ShowCustomerUiOrder(this);
     }
 
     // CUSTOMER ACTION METHODS
