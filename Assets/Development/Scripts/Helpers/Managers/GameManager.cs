@@ -77,7 +77,6 @@ public class GameManager : NetworkBehaviour
             OnLocalPlayerReadyChanged?.Invoke(this, EventArgs.Empty);
 
             SetPlayerReadyServerRpc();
-
         }
     }
 
