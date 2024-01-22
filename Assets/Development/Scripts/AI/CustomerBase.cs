@@ -26,6 +26,7 @@ public class CustomerBase : Base
     [Header("Identifiers")]
     public string customerName;
     public int customerNumber;
+    private bool orderBeingServed;
 
     [Header("Coffee Attributes")]
     public CoffeeAttributes coffeeAttributes;
@@ -34,7 +35,7 @@ public class CustomerBase : Base
     public CustomerState currentState;
     public float? orderTimer = null;
     public float? messTime = null;
-    public float customerLeaveTime = 60f;
+    public float customerLeaveTime;
     public float deadTimerSeconds = 5.0f;
 
     [Header("Visuals")]
@@ -59,6 +60,8 @@ public class CustomerBase : Base
     {
         SetCustomerStateServerRpc(CustomerState.Init);
         SetCustomerVisualIdentifiers();
+
+        customerLeaveTime = Random.Range(CustomerManager.Instance.difficultySettings.GetMinWaitTime(), CustomerManager.Instance.difficultySettings.GetMaxWaitTime());
 
         agent = GetComponent<NavMeshAgent>();
         exit = CustomerManager.Instance.GetExit();
@@ -167,6 +170,9 @@ public class CustomerBase : Base
     private void UpdateInsit()
     {
         customerDialogue.SetActive(false);
+        if (!orderBeingServed)
+            DisplayCustomerVisualIdentifiers();
+        orderBeingServed = true;
         if (orderTimer >= customerLeaveTime)
             CustomerLeave();
     }
@@ -249,6 +255,16 @@ public class CustomerBase : Base
         // Take customer order
         if (GetCustomerState() == CustomerState.Ordering)
         {
+            BrewingStation[] brewingStations = UnityEngine.Object.FindObjectsOfType<BrewingStation>();
+
+            foreach (BrewingStation brewingStation in brewingStations)
+            {
+                if (!brewingStation.orderAssigned)
+                    brewingStation.SetOrder(this);
+                else
+                    Debug.Log("Brewing station is busy"); // this should add an element to the order queue ui that is not done yet
+            }
+
             LeaveLineServerRpc();
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
             interactParticle.Play();
@@ -259,6 +275,7 @@ public class CustomerBase : Base
         {
             player.GetIngredient().SetIngredientParent(this);
             JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
+            player.RemoveIngredientInListByReference(player.GetIngredient());
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
             interactParticle.Play();
         }
@@ -301,7 +318,7 @@ public class CustomerBase : Base
     }
 
     //Maybe dont need, can try to get rid of it later
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void SetCustomerStateServerRpc(CustomerState newState)
     {
         SetCustomerStateClientRpc(newState);
@@ -334,7 +351,7 @@ public class CustomerBase : Base
     {
         customerNumberCanvas.enabled = true;
         customerDialogue.SetActive(true);
-        UIManager.Instance.ShowCustomerUiOrder(this);
+        //UIManager.Instance.ShowCustomerUiOrder(this);
     }
 
     // CUSTOMER ACTION METHODS
@@ -343,7 +360,7 @@ public class CustomerBase : Base
     public virtual void Order()
     {
         StartOrderTimer();
-        DisplayCustomerVisualIdentifiers();
+        // DisplayCustomerVisualIdentifiers();
         // which state sends it to find a seat?
     }
 
