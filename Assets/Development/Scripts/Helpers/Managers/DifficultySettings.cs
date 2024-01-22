@@ -25,8 +25,8 @@ public class DifficultySettings
 
         currentDifficulty = chosenDifficulty;
 
-        minDelay = chosenDifficulty.minCustomerSpawnDelay;
-        maxDelay = chosenDifficulty.maxCustomerSpawnDelay;
+        minDelay = chosenDifficulty.minCustomerSpawnDelay -Mathf.FloorToInt(InitplayerCount *6);
+        maxDelay = chosenDifficulty.maxCustomerSpawnDelay - Mathf.FloorToInt(InitplayerCount * 6);
 
         timeBetweenWaves += chosenDifficulty.timeBetweenWaves;
 
