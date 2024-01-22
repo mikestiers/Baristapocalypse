@@ -1,15 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Spill : NetworkBehaviour
+public class Spill : MonoBehaviour
 {
     private int cleaningProgress = 0; // start clenaing progress for spill
     [SerializeField] private int totalProgress = 4; // amount of timer required to clean spill (temporary)
     [SerializeField] private float slipSpeed = 0.8f;
-    [SerializeField] private MessSO spillPrefab;
+
     public void Interact(PlayerController player)
     {
         if (player.IsHoldingPickup)
@@ -29,14 +28,6 @@ public class Spill : NetworkBehaviour
         }
     }
 
-    public static void PlayerCreateSpill(MessSO Mess, IPickupObjectParent messObjectParent)
-    {
-        BaristapocalypseMultiplayer.Instance.PlayerCreateSpill(Mess, messObjectParent);
-    }
-    
-    
-    
-    
     private void OnTriggerStay(Collider other)
     {
         if (other.GetComponent<PlayerController>()) 
@@ -45,17 +36,9 @@ public class Spill : NetworkBehaviour
              Rigidbody rb = stateMachine.rb;
              Vector3 movedirection = rb.transform.forward;
              rb.AddForce(movedirection * slipSpeed , ForceMode.VelocityChange);
-            stateMachine.ThrowIngredient();
+            stateMachine.ThrowIngedient();
         }
     }
-
-    public MessSO GetSpillSO()
-    {
-        return spillPrefab;
-    }
-    
-  
-    
 }
           
         

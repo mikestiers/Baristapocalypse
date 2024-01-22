@@ -60,7 +60,7 @@ public class UIManager : Singleton<UIManager>
 
     // Scenes
     private string activeGameScene = "T5M3_BUILD";
-    private string mainMenuScene = "MainMenuScene"; // using lobby scene in the mean time, need changing to Main menu
+    private string mainMenuScene = "LobbyScene"; // using lobby scene in the mean time, need changing to Main menu
 
     [Header("DifficultyTesting")]
     public Text customersLeft;
