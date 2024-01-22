@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class OrderStats : MonoBehaviour
 {
     [Header("Customer Order")]
-    [SerializeField] public Text customerNumberText;
+    [SerializeField] private Text customerNumberText;
     [SerializeField] public OrderStatsSegments temperatureSegments;
     [SerializeField] public OrderStatsSegments sweetnessSegments;
     [SerializeField] public OrderStatsSegments spicinessSegments;
@@ -14,7 +14,8 @@ public class OrderStats : MonoBehaviour
     
     [Header("Customer Review")]
     [SerializeField] private GameObject customerReview;
-    [SerializeField] private CustomerBase orderOwner;
+
+    private CustomerBase orderOwner;
 
     public CustomerBase GetOrderOwner()
     {
@@ -29,45 +30,5 @@ public class OrderStats : MonoBehaviour
         sweetnessSegments.targetAttributeValue = customer.coffeeAttributes.GetSweetness();
         spicinessSegments.targetAttributeValue = customer.coffeeAttributes.GetSpiciness();
         strengthSegments.targetAttributeValue = customer.coffeeAttributes.GetStrength();
-    }
-
-    public void SetTemperature()
-    {
-        temperatureSegments.UpdateSegmentColors(temperatureSegments.cumulativeIngredientsValue);
-    }
-
-    public void SetSweetness()
-    {
-        sweetnessSegments.UpdateSegmentColors(sweetnessSegments.cumulativeIngredientsValue);
-    }
-
-    public void SetSpiciness()
-    {
-        spicinessSegments.UpdateSegmentColors(spicinessSegments.cumulativeIngredientsValue);
-    }
-
-    public void SetStrength()
-    {
-        strengthSegments.UpdateSegmentColors(strengthSegments.cumulativeIngredientsValue);
-    }
-
-    public void SetPotentialTemperature()
-    {
-        temperatureSegments.UpdateSegmentColors(temperatureSegments.potentialIngredientValue);
-    }
-
-    public void SetPotentialSweetness()
-    {
-        sweetnessSegments.UpdateSegmentColors(sweetnessSegments.potentialIngredientValue);
-    }
-
-    public void SetPotentialSpiciness()
-    {
-        spicinessSegments.UpdateSegmentColors(spicinessSegments.potentialIngredientValue);
-    }
-
-    public void SetPotentialStrength()
-    {
-        strengthSegments.UpdateSegmentColors(strengthSegments.potentialIngredientValue);
     }
 }

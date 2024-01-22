@@ -64,7 +64,7 @@ public class DebugConsole : MonoBehaviour
                         customer.StartOrderTimer();
                         customer.SetCustomerStateServerRpc(CustomerState.Ordering);
                         customer.customerNumberCanvas.enabled = true;
-                        //UIManager.Instance.ShowCustomerUiOrder(customer);
+                        UIManager.Instance.ShowCustomerUiOrder(customer);
                         CustomerManager.Instance.barFloor.TrySendToChair(customer);
                     }
                 }

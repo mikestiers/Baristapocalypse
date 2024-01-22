@@ -10,17 +10,29 @@ public class TrashStation : BaseStation
 
     public override void Interact(PlayerController player)
     {
-        if (player.GetNumberOfIngredients() >= 1)
+        // Temporary thile hold points are fixed
+        if (player.HasIngredient())
         {
-            foreach(Ingredient i in player.GetIngredientsList())
-            {
-                Debug.Log("trashinggggg");
-                player.RemoveIngredientInListByReference(i);
-                ingredient = i;
-                InteractServerRpc();
-                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
-            }
+            Debug.Log("trashinggggg");
+            ingredient = player.GetIngredient();
+            InteractServerRpc();
         }
+
+        //if (player.GetNumberOfIngredients() >= 1)
+        //{
+        //    for (int i = 0; i < player.ingredientHoldPoints.Length; i++)
+        //    {
+        //        Transform holdPoint = player.ingredientHoldPoints[i];
+        //        if (holdPoint.childCount > 0)
+        //        {
+        //            ingredient = holdPoint.GetComponentInChildren<Ingredient>();
+        //            InteractServerRpc();
+        //            //Ingredient.DestroyIngredient(ingredient);
+        //            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
+        //            //interactParticle.Play();
+        //        }
+        //    }
+        //}
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -33,7 +45,6 @@ public class TrashStation : BaseStation
     private void InteractClientRpc()
     {
         Ingredient.DestroyIngredient(ingredient);
-
     }
 
 }
