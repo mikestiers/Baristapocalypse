@@ -16,6 +16,9 @@ public class OrderStatsSegments : MonoBehaviour
         // Ensure all segments to inactive
         foreach (var segment in segments)
         {
+            segment.GetComponent<Image>().color = Color.green;
+            Color segmentColor = segment.GetComponent<Image>().color;
+            segmentColor.a = 1.0f;
             segment.SetActive(false);
         }
         cumulativeIngredientsValue = 0;
@@ -23,12 +26,23 @@ public class OrderStatsSegments : MonoBehaviour
 
     private void Update()
     {
-        UpdateSegmentColors(cumulativeIngredientsValue); // remove this later so it doesn't run every frame
+        //UpdateSegmentColors(cumulativeIngredientsValue); // remove this later so it doesn't run every frame
+        if (targetAttributeValue < 0)
+        {
+            GameObject targetSegment = segments[(segments.Length / 2) + targetAttributeValue];
+            SetTarget(targetSegment);
+        }
+
+        if (targetAttributeValue > 0)
+        {
+            GameObject targetSegment = segments[(segments.Length / 2 - 1) + targetAttributeValue];
+            SetTarget(targetSegment);
+        }
     }
 
     public void UpdateSegmentColors(int cumulative)
     {
-        // Reset all segments every tick for now just to make sure things are updating during testing
+        // Reset all segments every time the segments are updated to clear any invalid colors
         foreach (var segment in segments)
         {
             segment.GetComponent<Image>().color = Color.green;
@@ -43,33 +57,26 @@ public class OrderStatsSegments : MonoBehaviour
             return;
         }
 
-        if (targetAttributeValue < 0)
-        {
-            GameObject targetSegment = segments[(segments.Length / 2) + targetAttributeValue];
-            SetTarget(targetSegment);
-        }
-
-        if (targetAttributeValue > 0)
-        {
-            GameObject targetSegment = segments[(segments.Length / 2 - 1) + targetAttributeValue];
-            SetTarget(targetSegment);
-        }
-
         if (potentialIngredientValue < 0)
         {
             int startIndex = segments.Length / 2;
             int endIndex = startIndex + cumulative;
-            SetPotential(segments[endIndex + potentialIngredientValue]);
+            //SetPotential(segments[endIndex + potentialIngredientValue]);
+            SetPotential(segments[endIndex]);
         }
 
         if (potentialIngredientValue > 0)
         {
             int startIndex = segments.Length / 2 - 1;
             int endIndex = startIndex + cumulative;
-            SetPotential(segments[endIndex + potentialIngredientValue]);
+            //SetPotential(segments[endIndex + potentialIngredientValue]);
+            SetPotential(segments[endIndex]);
         }
+
+        // add logic for zero value. need to update ui object to accept 0
         if (potentialIngredientValue == 0)
-            return; // add logic for zero value. need to update ui object to accept 0
+            potentialAttributeSelector.SetActive(false);
+            //return; 
     }
 
     private void SetTarget(GameObject targetSegment)

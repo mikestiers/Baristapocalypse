@@ -177,6 +177,10 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             }
         }
 
+        // Start brewing for ingredients in the machine.  This is for adding directly from stations instead of player hands
+        if (ingredientSOList.Count >= numIngredientsNeeded)
+            InteractLogicPlaceObjectOnBrewingServerRpc();
+
         if (minigameTiming)
         {
             //Debug.Log("Minigame timing: " + minigameTimer / maxMinigameTimer);

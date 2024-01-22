@@ -30,4 +30,44 @@ public class OrderStats : MonoBehaviour
         spicinessSegments.targetAttributeValue = customer.coffeeAttributes.GetSpiciness();
         strengthSegments.targetAttributeValue = customer.coffeeAttributes.GetStrength();
     }
+
+    public void SetTemperature()
+    {
+        temperatureSegments.UpdateSegmentColors(temperatureSegments.cumulativeIngredientsValue);
+    }
+
+    public void SetSweetness()
+    {
+        sweetnessSegments.UpdateSegmentColors(sweetnessSegments.cumulativeIngredientsValue);
+    }
+
+    public void SetSpiciness()
+    {
+        spicinessSegments.UpdateSegmentColors(spicinessSegments.cumulativeIngredientsValue);
+    }
+
+    public void SetStrength()
+    {
+        strengthSegments.UpdateSegmentColors(strengthSegments.cumulativeIngredientsValue);
+    }
+
+    public void SetPotentialTemperature()
+    {
+        temperatureSegments.UpdateSegmentColors(temperatureSegments.potentialIngredientValue);
+    }
+
+    public void SetPotentialSweetness()
+    {
+        sweetnessSegments.UpdateSegmentColors(sweetnessSegments.potentialIngredientValue);
+    }
+
+    public void SetPotentialSpiciness()
+    {
+        spicinessSegments.UpdateSegmentColors(spicinessSegments.potentialIngredientValue);
+    }
+
+    public void SetPotentialStrength()
+    {
+        strengthSegments.UpdateSegmentColors(strengthSegments.potentialIngredientValue);
+    }
 }
