@@ -178,7 +178,7 @@ public class UiCameraManager : MonoBehaviour
     void PlayScene() 
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
-        SceneManager.LoadScene("TestScene");
+        SceneManager.LoadScene("LobbyScene");
         gameObject.SetActive(false);
     }
     void closeGame() 
