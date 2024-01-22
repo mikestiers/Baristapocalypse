@@ -11,7 +11,7 @@ using Unity.Services.Lobbies.Models;
 using Cinemachine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObjectParent
+public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObjectParent,ISpill
 {
     // Player Instance
     [HideInInspector] public static PlayerController Instance { get; private set; }
@@ -341,20 +341,20 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
        //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
 
-         if (spillPrefab != null)
-         {
-             Spill.PlayerCreateSpill(spillPrefab, this);
-         }
-         else
-         {
-             Debug.Log("MessSO is null");
-         }
       
         if (GetNumberOfIngredients() > 0)
         {
            if (CheckIfHoldingLiquid() > 0)//stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
            {
-               ThrowIngredient();
+               if (spillPrefab != null)
+               {
+                 Spill.PlayerCreateSpill(spillPrefab, this);
+               }
+               else
+               {
+                   Debug.Log("MessSO is null");
+               }
+               ThrowIngedient();
            }
         }
         else return;
@@ -567,6 +567,22 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         return pickupSo != null;
     }
 
+    public Transform GetSpillTransform()
+    {
+        return spillSpawnPoint;
+    }
+
+    public void SetSpill(Spill spill)
+    {
+        this.spill = spill;
+
+    }
+
+    public void ClearSpill()
+    {
+        spill = null;
+    }
+
     public NetworkObject GetNetworkObject()
     {
         return NetworkObject;
@@ -689,9 +705,5 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             }
         }
     }
-
-    public Transform GetSpillTransform()
-    {
-        return spillSpawnPoint;
-    }
+    
 }
