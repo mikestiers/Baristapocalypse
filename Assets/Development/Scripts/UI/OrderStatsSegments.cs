@@ -1,5 +1,7 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.HableCurve;
 
 public class OrderStatsSegments : MonoBehaviour
 {
@@ -9,24 +11,29 @@ public class OrderStatsSegments : MonoBehaviour
     public int targetAttributeValue;
     public GameObject targetAttributeSelector;
     public GameObject potentialAttributeSelector;
-    private int previousCumulativeIngredientsValue;
 
     private void Start()
     {
-        // Ensure all segments to inactive
+        Reset();
+    }
+
+    public void Reset()
+    {
         foreach (var segment in segments)
         {
             segment.GetComponent<Image>().color = Color.green;
             Color segmentColor = segment.GetComponent<Image>().color;
             segmentColor.a = 1.0f;
+            segment.GetComponent<Image>().color = segmentColor;
             segment.SetActive(false);
         }
-        cumulativeIngredientsValue = 0;
+        //targetAttributeValue = 0;
+        //cumulativeIngredientsValue = 0;
     }
 
     private void Update()
     {
-        //UpdateSegmentColors(cumulativeIngredientsValue); // remove this later so it doesn't run every frame
+        // Make thhis not be required every frame
         if (targetAttributeValue < 0)
         {
             GameObject targetSegment = segments[(segments.Length / 2) + targetAttributeValue];
@@ -37,6 +44,13 @@ public class OrderStatsSegments : MonoBehaviour
         {
             GameObject targetSegment = segments[(segments.Length / 2 - 1) + targetAttributeValue];
             SetTarget(targetSegment);
+        }
+
+        if (targetAttributeValue == 0)
+        {
+            targetAttributeSelector.transform.SetParent(gameObject.transform);
+            targetAttributeSelector.transform.position = gameObject.transform.position;
+            targetAttributeSelector.SetActive(false);
         }
     }
 
@@ -61,7 +75,6 @@ public class OrderStatsSegments : MonoBehaviour
         {
             int startIndex = segments.Length / 2;
             int endIndex = startIndex + cumulative;
-            //SetPotential(segments[endIndex + potentialIngredientValue]);
             SetPotential(segments[endIndex]);
         }
 
@@ -69,14 +82,12 @@ public class OrderStatsSegments : MonoBehaviour
         {
             int startIndex = segments.Length / 2 - 1;
             int endIndex = startIndex + cumulative;
-            //SetPotential(segments[endIndex + potentialIngredientValue]);
             SetPotential(segments[endIndex]);
         }
 
         // add logic for zero value. need to update ui object to accept 0
         if (potentialIngredientValue == 0)
             potentialAttributeSelector.SetActive(false);
-            //return; 
     }
 
     private void SetTarget(GameObject targetSegment)
@@ -90,10 +101,17 @@ public class OrderStatsSegments : MonoBehaviour
 
     private void SetPotential(GameObject potentialSegment)
     {
+
         if (cumulativeIngredientsValue + potentialIngredientValue == targetAttributeValue)
+        {
             potentialSegment.GetComponent<Image>().color = Color.green;
+        }
+
         else if (cumulativeIngredientsValue + potentialIngredientValue != targetAttributeValue)
-            potentialSegment.GetComponent<Image>().color = Color.clear;
+        {
+            Reset();
+            potentialSegment.GetComponent<Image>().color = Color.blue;
+        }
         potentialSegment.SetActive(true);
         potentialAttributeSelector.transform.SetParent(potentialSegment.transform);
         potentialAttributeSelector.transform.position = potentialSegment.transform.position;

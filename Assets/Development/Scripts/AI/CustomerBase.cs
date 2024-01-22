@@ -258,7 +258,10 @@ public class CustomerBase : Base
             foreach (BrewingStation brewingStation in brewingStations)
             {
                 if (!brewingStation.orderAssigned)
+                {
                     brewingStation.SetOrder(this);
+                    break;
+                }
                 else
                     Debug.Log("Brewing station is busy"); // this should add an element to the order queue ui that is not done yet
             }

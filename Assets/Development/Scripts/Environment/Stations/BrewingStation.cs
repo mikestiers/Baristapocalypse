@@ -92,15 +92,53 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
                 sweetSpotPosition = sweetSpotPosition
             });
         }
+
+        if (orderAssigned)
+        {
+            orderStats.SetInactive(false);
+            orderStats.orderTimer.value = (customer.customerLeaveTime - customer.orderTimer.Value) / customer.customerLeaveTime;
+        }
+
+        if (orderAssigned && orderStats.orderTimer.value <= 0 || !orderAssigned)
+        {
+            orderStats.SetInactive(true);
+            orderStats.customerInfoRoot.SetActive(false);
+            orderStats.temperatureSegments.targetAttributeValue = 0;
+            orderStats.sweetnessSegments.targetAttributeValue = 0;
+            orderStats.spicinessSegments.targetAttributeValue = 0;
+            orderStats.strengthSegments.targetAttributeValue = 0;
+            orderStats.temperatureSegments.cumulativeIngredientsValue = 0;
+            orderStats.sweetnessSegments.cumulativeIngredientsValue = 0;
+            orderStats.spicinessSegments.cumulativeIngredientsValue = 0;
+            orderStats.strengthSegments.cumulativeIngredientsValue = 0;
+            orderStats.temperatureSegments.Reset();
+            orderStats.sweetnessSegments.Reset();
+            orderStats.spicinessSegments.Reset();
+            orderStats.strengthSegments.Reset();
+            orderAssigned = false;
+        }
     }
 
-    public void SetOrder(CustomerBase customer)
+    public void SetOrder(CustomerBase customerOrder)
     {
-        orderStats.customerNumberText.text = customer.customerNumber.ToString();
-        orderStats.temperatureSegments.targetAttributeValue = customer.coffeeAttributes.GetTemperature();
-        orderStats.sweetnessSegments.targetAttributeValue = customer.coffeeAttributes.GetSweetness();
-        orderStats.spicinessSegments.targetAttributeValue = customer.coffeeAttributes.GetSpiciness();
-        orderStats.strengthSegments.targetAttributeValue = customer.coffeeAttributes.GetStrength();
+        customer = customerOrder;
+        orderStats.customerInfoRoot.SetActive(true);
+        orderStats.customerNumberText.text = customerOrder.customerNumber.ToString();
+        orderStats.customerNameText.text = customerOrder.customerName;
+        orderStats.brewingStationText.text = this.name;
+        orderStats.orderTimer.value = customerOrder.orderTimer.Value;
+        orderStats.temperatureSegments.targetAttributeValue = customerOrder.coffeeAttributes.GetTemperature();
+        orderStats.sweetnessSegments.targetAttributeValue = customerOrder.coffeeAttributes.GetSweetness();
+        orderStats.spicinessSegments.targetAttributeValue = customerOrder.coffeeAttributes.GetSpiciness();
+        orderStats.strengthSegments.targetAttributeValue = customerOrder.coffeeAttributes.GetStrength();
+        orderStats.temperatureSegments.potentialIngredientValue = 0;
+        orderStats.sweetnessSegments.potentialIngredientValue = 0;
+        orderStats.spicinessSegments.potentialIngredientValue = 0;
+        orderStats.strengthSegments.potentialIngredientValue = 0;
+        orderStats.SetPotentialSweetness();
+        orderStats.SetPotentialTemperature();
+        orderStats.SetPotentialSpiciness();
+        orderStats.SetPotentialStrength();
         orderAssigned = true;
     }
 
@@ -214,9 +252,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         if (minigameTimer >= maxMinigameTimer)
         {
             minigameTiming = false;
-            Debug.Log("Too late");
         }
-        Debug.Log("ingredientSOList.Count :" + ingredientSOList.Count);
         PrintHeldIngredientList();
     }
 
@@ -270,7 +306,6 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
                 return false;
             }
         }
-        Debug.Log("We got an ingredient added bro");
         return true;
     }
 
