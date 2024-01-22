@@ -17,7 +17,7 @@ public class Spill : NetworkBehaviour
     private void Awake()
     {
         _spillSpawnPoint = GetComponent<SpillSpawnPoint>();
-        _followTransform = GetComponent<IngredientFollowTransform>();
+        
     }
 
     public void Interact(PlayerController player)

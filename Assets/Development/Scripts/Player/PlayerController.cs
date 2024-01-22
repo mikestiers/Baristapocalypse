@@ -318,20 +318,20 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
        //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
 
-         if (spillPrefab != null)
-         {
-             Spill.PlayerCreateSpill(spillPrefab, this);
-         }
-         else
-         {
-             Debug.Log("MessSO is null");
-         }
       
         if (GetNumberOfIngredients() > 0)
         {
            if (CheckIfHoldingLiquid() > 0)//stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
            {
-               ThrowIngedient();
+                 if (spillPrefab != null)
+                 {
+                   Spill.PlayerCreateSpill(spillPrefab, this);
+                 }
+                 else
+                 {
+                     Debug.Log("MessSO is null");
+                 }
+                 ThrowIngedient();
            }
         }
         else return;
