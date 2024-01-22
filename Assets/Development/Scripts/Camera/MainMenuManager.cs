@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 
-public class UiCameraManager : MonoBehaviour
+public class MainMenuManager : MonoBehaviour
 {
     [Header("Cameras")]
     public CinemachineVirtualCamera MainmenuCamera;
@@ -23,7 +23,8 @@ public class UiCameraManager : MonoBehaviour
     [SerializeField] private Button ExitGame;
     [SerializeField] private Button MainMenuFromQuit;
     // Player Selection Buttons
-    [SerializeField] private Button Play;
+    [SerializeField] private Button singlePlayerButton;
+    [SerializeField] private Button multiplayerButton;
     [SerializeField] private Button MainMenuFromSelection;
     // Settings Menu Buttons
     [SerializeField] private Button MainMenuFromSettings;
@@ -79,8 +80,11 @@ public class UiCameraManager : MonoBehaviour
         if (ExitGame)
             ExitGame.onClick.AddListener(closeGame);
 
-        if (Play)
-            Play.onClick.AddListener(PlayScene);
+        if (singlePlayerButton)
+            singlePlayerButton.onClick.AddListener(PlayScene_SinglePlayer);
+
+        if (multiplayerButton)
+            multiplayerButton.onClick.AddListener(LobbyScene);
 
         if (StartGame)
             StartGame.onClick.AddListener(PlayerSelect);
@@ -175,12 +179,24 @@ public class UiCameraManager : MonoBehaviour
         }
     }
 
-    void PlayScene() 
+    void LobbyScene() 
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+        BaristapocalypseMultiplayer.playMultiplayer = true;
         SceneManager.LoadScene("LobbyScene");
+        //Loader.Load(Loader.Scene.LobbyScene);
         gameObject.SetActive(false);
     }
+
+    void PlayScene_SinglePlayer()
+    {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+        BaristapocalypseMultiplayer.playMultiplayer = false;
+        SceneManager.LoadScene("LobbyScene");
+        //Loader.Load(Loader.Scene.T5M3_BUILD);
+        gameObject.SetActive(false);
+    }
+
     void closeGame() 
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);

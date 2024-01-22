@@ -122,7 +122,6 @@ public class GameManager : NetworkBehaviour
         {
             gameState.Value = GameState.CountdownToStart;
         }
-
     }
 
     private void Update()
