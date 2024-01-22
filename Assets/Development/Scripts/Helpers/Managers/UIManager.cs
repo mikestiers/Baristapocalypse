@@ -218,6 +218,7 @@ public class UIManager : Singleton<UIManager>
             {
                 if (o.GetOrderOwner() == customer)
                 {
+                    Debug.Log("Customer Number:"+ customer.customerNumber);
                     CustomerReview customerReview = t.gameObject.GetComponent<CustomerReview>();
                     Text customerReviewText = customerReviewTabs[0].GetComponentInChildren<Text>();
                     customerReview.GenerateReview(customer);
@@ -292,7 +293,7 @@ public class UIManager : Singleton<UIManager>
 
     public void UpdateStarRating(int reviewScore)
     {
-        Transform starRating = customerReviewTab.GetComponentInChildren<GridLayoutGroup>().gameObject.transform;
+        Transform starRating = customerReviewTabs[0].GetComponentInChildren<GridLayoutGroup>().gameObject.transform;
 
         // Instantiate stars. 5 stars max
         for (int i = 1; i <= 5; i++)
