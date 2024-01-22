@@ -173,11 +173,11 @@ public class UIManager : Singleton<UIManager>
         audioSettings.SetActive(false);
     }
 
-    public void ShowCustomerUiOrder(CustomerBase customer, PlayerController player)
-    {
-        orderStats = Instantiate(ordersUiPrefab, ordersPanel).GetComponent<OrderStats>();
-        orderStats.Initialize(customer, player);
-    }
+    //public void ShowCustomerUiOrder(CustomerBase customer)
+    //{
+    //    orderStats = Instantiate(ordersUiPrefab, ordersPanel).GetComponent<OrderStats>();
+    //    orderStats.Initialize(customer);
+    //}
 
     public void ShowCustomerReview(CustomerBase customer)
     {
