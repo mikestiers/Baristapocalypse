@@ -35,7 +35,7 @@ public class CustomerBase : Base
     public CustomerState currentState;
     public float? orderTimer = null;
     public float? messTime = null;
-    public float customerLeaveTime = 60f;
+    public float customerLeaveTime;
     public float deadTimerSeconds = 5.0f;
 
     [Header("Visuals")]
@@ -60,6 +60,8 @@ public class CustomerBase : Base
     {
         SetCustomerStateServerRpc(CustomerState.Init);
         SetCustomerVisualIdentifiers();
+
+        customerLeaveTime = Random.Range(CustomerManager.Instance.difficultySettings.GetMinWaitTime(), CustomerManager.Instance.difficultySettings.GetMaxWaitTime());
 
         agent = GetComponent<NavMeshAgent>();
         exit = CustomerManager.Instance.GetExit();

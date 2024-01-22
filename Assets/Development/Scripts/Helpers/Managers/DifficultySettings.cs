@@ -18,7 +18,9 @@ public class DifficultySettings
     private int MaxShift = 5; //do determine end of game
     private float chanceToMess;
     private float loiterMessEverySec;
-    private float chanceToLoiter; 
+    private float chanceToLoiter;
+    private float minWaitTime;
+    private float maxWaitTime;
 
     public DifficultySettings(DifficultySO chosenDifficulty, int InitplayerCount)
     {
@@ -40,6 +42,10 @@ public class DifficultySettings
         loiterMessEverySec = chosenDifficulty.loiterMessEverySec;
 
         chanceToLoiter = chosenDifficulty.chanceToLoiter;
+
+        minWaitTime = chosenDifficulty.minWaitTime;
+        maxWaitTime = chosenDifficulty.maxWaitTime;
+
 
         /*
         switch (currentDifficulty.difficultyString)
@@ -179,5 +185,15 @@ public class DifficultySettings
     public float GetChanceToLoiter()
     {
         return chanceToLoiter;
+    }
+
+    public float GetMinWaitTime()
+    {
+        return minWaitTime;
+    }
+
+    public float GetMaxWaitTime() 
+    {
+        return maxWaitTime;
     }
 }
