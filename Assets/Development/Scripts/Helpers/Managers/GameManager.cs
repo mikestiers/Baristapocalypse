@@ -77,7 +77,6 @@ public class GameManager : NetworkBehaviour
             OnLocalPlayerReadyChanged?.Invoke(this, EventArgs.Empty);
 
             SetPlayerReadyServerRpc();
-
         }
     }
 
@@ -122,7 +121,6 @@ public class GameManager : NetworkBehaviour
         {
             gameState.Value = GameState.CountdownToStart;
         }
-
     }
 
     private void Update()
