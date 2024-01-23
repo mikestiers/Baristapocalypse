@@ -36,7 +36,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     //[SerializeField] private GameObject ingredientInstanceHolder;
     private BaseStation selectedStation;
     private Base selectedCustomer;
-    public float sphereCastRadius = 0.5f;
+    public float sphereCastRadius = 1f;
     //private Collider ingredientCollider;
 
     [Header("Ingredients Data")]
@@ -183,8 +183,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
 
         // Perform a single raycast to detect any interactable object.
-        float interactDistance = 2.0f;
-        if (Physics.Raycast(transform.position + RayCastOffset, transform.forward, out RaycastHit hit, interactDistance, interactableLayerMask))
+        float interactDistance = 2.5f;
+        if (Physics.SphereCast(transform.position + RayCastOffset, sphereCastRadius, transform.forward, out RaycastHit hit, interactDistance, interactableLayerMask))
         {
             // Logic for PickUp Interaction
             if (hit.transform.TryGetComponent(out Pickup pickup))
