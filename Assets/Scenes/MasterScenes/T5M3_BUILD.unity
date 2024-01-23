@@ -3076,11 +3076,27 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1275299530468239517, guid: 9dfce7459a8c91a4a929ae46eeb43461, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 33
+      value: 18.27916
       objectReference: {fileID: 0}
     - target: {fileID: 1275299530468239517, guid: 9dfce7459a8c91a4a929ae46eeb43461, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 62.33
+      value: 34.435883
+      objectReference: {fileID: 0}
+    - target: {fileID: 1275299530694989962, guid: 9dfce7459a8c91a4a929ae46eeb43461, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 45.27916
+      objectReference: {fileID: 0}
+    - target: {fileID: 1275299530694989962, guid: 9dfce7459a8c91a4a929ae46eeb43461, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 36.435883
+      objectReference: {fileID: 0}
+    - target: {fileID: 1275299531680660206, guid: 9dfce7459a8c91a4a929ae46eeb43461, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 39.27916
+      objectReference: {fileID: 0}
+    - target: {fileID: 1275299531680660206, guid: 9dfce7459a8c91a4a929ae46eeb43461, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 33.435883
       objectReference: {fileID: 0}
     - target: {fileID: 1275299531865920960, guid: 9dfce7459a8c91a4a929ae46eeb43461, type: 3}
       propertyPath: m_Name
@@ -3135,11 +3151,39 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1275299532242154607, guid: 9dfce7459a8c91a4a929ae46eeb43461, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 9.27916
+      objectReference: {fileID: 0}
+    - target: {fileID: 1275299532242154607, guid: 9dfce7459a8c91a4a929ae46eeb43461, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -39.39872
+      objectReference: {fileID: 0}
+    - target: {fileID: 1275299532242154607, guid: 9dfce7459a8c91a4a929ae46eeb43461, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 29.27
+      value: 38.435883
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9dfce7459a8c91a4a929ae46eeb43461, type: 3}
+--- !u!4 &511910633 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1275299530694989962, guid: 9dfce7459a8c91a4a929ae46eeb43461, type: 3}
+  m_PrefabInstance: {fileID: 511910632}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &511910634 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1275299531680660206, guid: 9dfce7459a8c91a4a929ae46eeb43461, type: 3}
+  m_PrefabInstance: {fileID: 511910632}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &511910635 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1275299530468239517, guid: 9dfce7459a8c91a4a929ae46eeb43461, type: 3}
+  m_PrefabInstance: {fileID: 511910632}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &511910636 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1275299532242154607, guid: 9dfce7459a8c91a4a929ae46eeb43461, type: 3}
+  m_PrefabInstance: {fileID: 511910632}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &559523156
 GameObject:
   m_ObjectHideFlags: 0
@@ -11525,9 +11569,11 @@ MonoBehaviour:
   playButton: {fileID: 0}
   gamePlayingTimerMax: 360
   player1Prefab: {fileID: 533563683556402451, guid: c431519c3e5173d4fac4acc61d044123, type: 3}
-  player2Prefab: {fileID: 533563683556402463, guid: c431519c3e5173d4fac4acc61d044123, type: 3}
-  player3Prefab: {fileID: 533563683556402463, guid: c431519c3e5173d4fac4acc61d044123, type: 3}
-  player4Prefab: {fileID: 533563683556402463, guid: c431519c3e5173d4fac4acc61d044123, type: 3}
+  playerSpawnPoints:
+  - {fileID: 511910636}
+  - {fileID: 511910635}
+  - {fileID: 511910634}
+  - {fileID: 511910633}
   customerManager: {fileID: 413644686672339531, guid: 1925542a5a04bd1479636add0536451d, type: 3}
 --- !u!4 &1121951786
 Transform:

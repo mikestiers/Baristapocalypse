@@ -67,12 +67,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] private Pickup pickup;
 
     private CinemachineVirtualCamera virtualCamera;
-    
-    // Testing Spawnpoints
-    public Transform spawnpoint1;
-    public Transform spawnpoint2;
-    public Transform spawnpoint3;
-    public Transform spawnpoint4;
 
     public PlayerColorChoice playerVisual;
 

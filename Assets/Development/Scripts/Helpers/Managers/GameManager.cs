@@ -25,9 +25,7 @@ public class GameManager : NetworkBehaviour
     private bool isLocalPlayerReady;
 
     [SerializeField] private Transform player1Prefab;
-    public GameObject player2Prefab;
-    public GameObject player3Prefab;
-    public GameObject player4Prefab;
+    [SerializeField] public Transform[] playerSpawnPoints;
 
     // Pause Vars
     private bool isLocalGamePaused = false;
@@ -226,7 +224,7 @@ public class GameManager : NetworkBehaviour
     {
         foreach(ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
-            Transform playerTransform = Instantiate(player1Prefab);
+            Transform playerTransform = Instantiate(player1Prefab, playerSpawnPoints[(int)clientId]);
             playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
         }
     }
