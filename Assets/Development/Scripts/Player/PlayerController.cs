@@ -36,7 +36,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     //[SerializeField] private GameObject ingredientInstanceHolder;
     private BaseStation selectedStation;
     private Base selectedCustomer;
-    public float sphereCastRadius = 0.5f;
+    public float sphereCastRadius = 1f;
     //private Collider ingredientCollider;
 
     [Header("Ingredients Data")]
