@@ -25,9 +25,7 @@ public class GameManager : NetworkBehaviour
     private bool isLocalPlayerReady;
 
     [SerializeField] private Transform player1Prefab;
-    public GameObject player2Prefab;
-    public GameObject player3Prefab;
-    public GameObject player4Prefab;
+    [SerializeField] public Transform[] playerSpawnPoints;
 
     // Pause Vars
     private bool isLocalGamePaused = false;

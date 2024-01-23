@@ -66,13 +66,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] private Pickup pickup;
 
     private CinemachineVirtualCamera virtualCamera;
-    
-
-    // Testing Spawnpoints
-    public Transform spawnpoint1;
-    public Transform spawnpoint2;
-    public Transform spawnpoint3;
-    public Transform spawnpoint4;
 
     public PlayerColorChoice playerVisual;
 
@@ -144,6 +137,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         // Set color of the player based on color selection at the lobby
         PlayerData playerData = BaristapocalypseMultiplayer.Instance.GetPlayerDataFromClientId(OwnerClientId);
         playerVisual.SetPlayerColor(BaristapocalypseMultiplayer.Instance.GetPlayerColor(playerData.colorId));
+        if(GameManager.Instance != null) transform.position = GameManager.Instance.playerSpawnPoints[playerData.playerId].position;
+
     }
 
     private void OnEnable()
