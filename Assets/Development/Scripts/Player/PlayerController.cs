@@ -27,6 +27,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float dashForce;
     [SerializeField] private float dashTime;
+    [SerializeField] private float dashCooldownTime;
+    private bool isDashing = false;
+
     private bool isGrounded;
 
     [Header("Interactables")]
@@ -129,6 +132,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if (jumpForce <= 0) jumpForce = 200.0f;
         if (dashForce <= 0) dashForce = 4000f;
         if (dashTime <= 0) dashTime = 0.1f;
+        if (dashCooldownTime <= 0) dashCooldownTime = 1.0f;
         if (ingredientThrowForce <= 0) ingredientThrowForce = 10f;
         if (groundCheckRadius <= 0) groundCheckRadius = 0.05f;
 
@@ -334,14 +338,13 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     public void OnDash()
     {
         if (!IsLocalPlayer) return;
+        if (isDashing) return;
 
         if (movementToggle)
             StartCoroutine(Dash());
        // SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
-
        //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
 
-      
         if (GetNumberOfIngredients() > 0)
         {
            if (CheckIfHoldingLiquid() > 0)//stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
@@ -354,7 +357,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                {
                    Debug.Log("MessSO is null");
                }
-                ThrowIngredient();
+               ThrowIngredient();
            }
         }
         else return;
@@ -362,6 +365,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     IEnumerator Dash()
     {
+        isDashing = true;
         float startTime = Time.time;
 
         while (Time.time < startTime + dashTime)
@@ -369,6 +373,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             rb.AddForce(inputManager.moveDir * dashForce * Time.deltaTime, ForceMode.Acceleration);
             yield return null;
         }
+
+        yield return new WaitForSeconds(dashCooldownTime);
+        isDashing = false;
+
     }
 
     public void OnThrow()
