@@ -9,7 +9,6 @@ using UnityEngine.UI;
 
 public class CustomerManager : Singleton<CustomerManager>
 {
-    [SerializeField] public DifficultySO[] Difficulties; //In Customer Manager for now move to Game Manager
     [SerializeField] private Transform Counter;
     [SerializeField] private Transform barEntrance;
     [SerializeField] private Transform exit;
@@ -56,7 +55,6 @@ public class CustomerManager : Singleton<CustomerManager>
 
     public CustomerLineQueuing LineQueue;
     public CustomerBarFloor barFloor;
-    public DifficultySettings difficultySettings; //will move to GameManager when gamemanager is owki, change references to GameManager aswell
     public DifficultySO currentDifficulty;
 
     private NetworkObject newcustomer;
@@ -68,9 +66,6 @@ public class CustomerManager : Singleton<CustomerManager>
     // Start is called before the first frame update
     private void Start()
     {
-        //this is to check the amount of players
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        int numberOfPlayers = (players.Length - Mathf.FloorToInt(players.Length * 0.5f));
 
         List<Vector3> waitingQueuePostionList = new List<Vector3>();
         if (Chairs.Length <= 0) Chairs = GameObject.FindGameObjectsWithTag("Waypoint");
@@ -87,20 +82,18 @@ public class CustomerManager : Singleton<CustomerManager>
         //LineQueue.OnCustomerArrivedAtFrontOfQueue += WaitingQueue_OnCustomerArrivedAtFrontOfQueue; might be used for future code?
         LineQueue = new CustomerLineQueuing(waitingQueuePostionList);
         barFloor = new CustomerBarFloor(Chairs);
-        difficultySettings = new DifficultySettings(currentDifficulty , numberOfPlayers); // change constructor to set difficulty when moving to GameManager, made this way just for testing
 
-        customersLeftinWave = difficultySettings.GetNumberofCustomersInwave();
-        WavesLeft = difficultySettings.GetNumberOfWaves();
+        customersLeftinWave = GameManager.Instance.difficultySettings.GetNumberofCustomersInwave();
+        WavesLeft = GameManager.Instance.difficultySettings.GetNumberOfWaves();
 
         UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
         UIManager.Instance.spawnMode.text = "Serving Customers";
-        UIManager.Instance.shift.text = ("Shift " + difficultySettings.GetShift().ToString());
+        UIManager.Instance.shift.text = ("Shift " + GameManager.Instance.difficultySettings.GetShift().ToString());
         UIManager.Instance.wavesleft.text = ("Waves Left: " + WavesLeft.ToString());
 
-        minDelay = difficultySettings.GetMinDelay();
-        maxDelay = difficultySettings.GetMaxDelay();
-        difficultySettings.SetAmountOfPlayers(numberOfPlayers); // setdifficulty based on amount of players
-
+        minDelay = GameManager.Instance.difficultySettings.GetMinDelay();
+        maxDelay = GameManager.Instance.difficultySettings.GetMaxDelay();
+        
         float delay = UnityEngine.Random.Range(minDelay, maxDelay);
 
         StartCoroutine(NewCustomer(delay));
@@ -139,18 +132,18 @@ public class CustomerManager : Singleton<CustomerManager>
         WavesLeft--;
         if (WavesLeft <= 0) 
         {
-            difficultySettings.NextShift();
-            WavesLeft = difficultySettings.GetNumberOfWaves();
-            UIManager.Instance.shift.text = ("Shift " + difficultySettings.GetShift().ToString());
+            GameManager.Instance.difficultySettings.NextShift();
+            WavesLeft = GameManager.Instance.difficultySettings.GetNumberOfWaves();
+            UIManager.Instance.shift.text = ("Shift " + GameManager.Instance.difficultySettings.GetShift().ToString());
         }
         
-        customersLeftinWave = difficultySettings.GetNumberofCustomersInwave();
+        customersLeftinWave = GameManager.Instance.difficultySettings.GetNumberofCustomersInwave();
         UIManager.Instance.wavesleft.text = ("Waves Left: " + WavesLeft.ToString());
 
         //Trigger UI
         UIManager.Instance.spawnMode.text = "Resting";
 
-        StartCoroutine(RestPeriod(difficultySettings.GetTimeBetweenWaves()));
+        StartCoroutine(RestPeriod(GameManager.Instance.difficultySettings.GetTimeBetweenWaves()));
 
     }
 

@@ -54,6 +54,13 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject ExitMenuTab;
     [SerializeField] private GameObject PlayMenuTab;
 
+    [Header("Difficulty Modes")]
+    [SerializeField] private Button EasyButton;
+    [SerializeField] private Button MediumButton;
+    [SerializeField] private Button HardButton;
+
+
+
     // Start is called before the first frame update
     public void Start()
     {
@@ -109,6 +116,16 @@ public class MainMenuManager : MonoBehaviour
 
         if (WindowModeButton)
             WindowModeButton.onClick.AddListener(SetWindowMode);
+
+        if (EasyButton)
+            EasyButton.onClick.AddListener(() => SetDifficulty("Easy"));
+
+        if (MediumButton)
+            MediumButton.onClick.AddListener(() => SetDifficulty("Medium"));
+
+        if (HardButton)
+            HardButton.onClick.AddListener(() => SetDifficulty("Hard"));
+
     }
 
     void ReturnFromSettings() 
@@ -226,5 +243,10 @@ public class MainMenuManager : MonoBehaviour
     {
         Resolution resolution = resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+    }
+
+    public void SetDifficulty(string Difficulty)
+    {
+        GameManager.Instance.SetCurrentDifficultyTo(Difficulty);
     }
 }
