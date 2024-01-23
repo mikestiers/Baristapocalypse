@@ -75,9 +75,8 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
         playerDataNetworkList.Add(new PlayerData
         {
             clientId = clientId,
-            colorId = GetFirstUnusedColorId(),
-            playerId = (int)clientId
-        });; ;
+            colorId = GetFirstUnusedColorId()
+        }); ;
     }
 
     public void StartClient()
