@@ -78,6 +78,7 @@ public class OrderStatsSegments : MonoBehaviour
         else if (cumulativeIngredientsValue + potentialIngredientValue != targetAttributeValue)
         {
             Reset();
+            potentialSegment.GetComponent<Image>().color = Color.white;
             potentialSegment.GetComponent<Image>().color = Color.clear;
         }
         potentialSegment.SetActive(true);
