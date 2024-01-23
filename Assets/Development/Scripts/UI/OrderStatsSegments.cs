@@ -27,31 +27,14 @@ public class OrderStatsSegments : MonoBehaviour
             segment.GetComponent<Image>().color = segmentColor;
             segment.SetActive(false);
         }
-        //targetAttributeValue = 0;
-        //cumulativeIngredientsValue = 0;
     }
 
     private void Update()
     {
-        // Make thhis not be required every frame
-        if (targetAttributeValue < 0)
-        {
-            GameObject targetSegment = segments[(segments.Length / 2) + targetAttributeValue];
-            SetTarget(targetSegment);
-        }
-
-        if (targetAttributeValue > 0)
-        {
-            GameObject targetSegment = segments[(segments.Length / 2 - 1) + targetAttributeValue];
-            SetTarget(targetSegment);
-        }
-
-        if (targetAttributeValue == 0)
-        {
-            targetAttributeSelector.transform.SetParent(gameObject.transform);
-            targetAttributeSelector.transform.position = gameObject.transform.position;
-            targetAttributeSelector.SetActive(false);
-        }
+        // Make this not be required every frame
+        int targetValue = MapValue(targetAttributeValue);
+        GameObject targetSegment = segments[targetValue];
+        SetTarget(targetSegment);
     }
 
     public void UpdateSegmentColors(int cumulative)
@@ -65,29 +48,15 @@ public class OrderStatsSegments : MonoBehaviour
             segment.SetActive(false);
         }
 
-        if (cumulative >= segments.Length / 2)
-        {
-            Debug.LogError("Value is greater than the number of segments.");
-            return;
-        }
+        int potentialValue = MapValue(potentialIngredientValue);
+        SetPotential(segments[potentialValue]);
+    }
 
-        if (potentialIngredientValue < 0)
-        {
-            int startIndex = segments.Length / 2;
-            int endIndex = startIndex + cumulative;
-            SetPotential(segments[endIndex]);
-        }
-
-        if (potentialIngredientValue > 0)
-        {
-            int startIndex = segments.Length / 2 - 1;
-            int endIndex = startIndex + cumulative;
-            SetPotential(segments[endIndex]);
-        }
-
-        // add logic for zero value. need to update ui object to accept 0
-        if (potentialIngredientValue == 0)
-            potentialAttributeSelector.SetActive(false);
+    // Mapping -7 to +7 to 0 to 14
+    public int MapValue(int originalValue)
+    {
+        // Assuming originalValue is in the range of -7 to +7
+        return originalValue + 7;
     }
 
     private void SetTarget(GameObject targetSegment)
@@ -101,7 +70,6 @@ public class OrderStatsSegments : MonoBehaviour
 
     private void SetPotential(GameObject potentialSegment)
     {
-
         if (cumulativeIngredientsValue + potentialIngredientValue == targetAttributeValue)
         {
             potentialSegment.GetComponent<Image>().color = Color.green;
@@ -110,7 +78,7 @@ public class OrderStatsSegments : MonoBehaviour
         else if (cumulativeIngredientsValue + potentialIngredientValue != targetAttributeValue)
         {
             Reset();
-            potentialSegment.GetComponent<Image>().color = Color.blue;
+            potentialSegment.GetComponent<Image>().color = Color.clear;
         }
         potentialSegment.SetActive(true);
         potentialAttributeSelector.transform.SetParent(potentialSegment.transform);
