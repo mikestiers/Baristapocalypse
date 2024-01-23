@@ -154,6 +154,8 @@ public class GameManager : NetworkBehaviour
                     int numberOfPlayers = (players.Length - Mathf.FloorToInt(players.Length * 0.5f));
 
 
+                    SetCurrentDifficultyTo(GameValueHolder.Instance.DifficultyString);
+
                     difficultySettings = new DifficultySettings(currentDifficulty, numberOfPlayers);
 
                     difficultySettings.SetAmountOfPlayers(numberOfPlayers); // setdifficulty based on amount of players

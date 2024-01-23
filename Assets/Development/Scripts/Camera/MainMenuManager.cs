@@ -247,6 +247,6 @@ public class MainMenuManager : MonoBehaviour
 
     public void SetDifficulty(string Difficulty)
     {
-        GameManager.Instance.SetCurrentDifficultyTo(Difficulty);
+        GameValueHolder.Instance.DifficultyString = Difficulty;
     }
 }
