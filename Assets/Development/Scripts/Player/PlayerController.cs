@@ -724,10 +724,12 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if (Gamepad.current.allControls.Any(control => control.IsPressed() && control != Gamepad.current.leftStick))
         {
             Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
         }
         else if (mouseDelta.magnitude > mouseMoveThreshold)
         {
             Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
         }
     }
 }
