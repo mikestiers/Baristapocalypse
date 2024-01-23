@@ -183,8 +183,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
 
         // Perform a single raycast to detect any interactable object.
-        float interactDistance = 2.0f;
-        if (Physics.Raycast(transform.position + RayCastOffset, transform.forward, out RaycastHit hit, interactDistance, interactableLayerMask))
+        float interactDistance = 2.5f;
+        if (Physics.SphereCast(transform.position + RayCastOffset, sphereCastRadius, transform.forward, out RaycastHit hit, interactDistance, interactableLayerMask))
         {
             // Logic for PickUp Interaction
             if (hit.transform.TryGetComponent(out Pickup pickup))
