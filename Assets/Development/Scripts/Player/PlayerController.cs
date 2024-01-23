@@ -167,6 +167,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             return;
         }
 
+        if (SceneManager.GetActiveScene().name != Loader.Scene.T5M3_BUILD.ToString()) { return; }
+
         // Ground Check
         IsGrounded();
         // player movement
@@ -709,7 +711,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             }
         }
     }
-
 
     private void HandleCursorVisibility()
     {
