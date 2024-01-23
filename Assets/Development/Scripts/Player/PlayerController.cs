@@ -354,7 +354,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                {
                    Debug.Log("MessSO is null");
                }
-               ThrowIngedient();
+                ThrowIngredient();
            }
         }
         else return;
