@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using Unity.VisualScripting;
 
 public class IngredientSelectionUI : BaseStation
 {
@@ -13,7 +12,6 @@ public class IngredientSelectionUI : BaseStation
     private bool currentStationInteraction;
 
     [SerializeField] private GameObject ingredientMenu;
-    private string hoverButtonName;
     public GameObject buttonsRoot;
     [SerializeField] private Button[] ingredientButtons;
     BrewingStation[] brewingStations;
@@ -36,7 +34,6 @@ public class IngredientSelectionUI : BaseStation
         if (!currentStationInteraction)
             return;
 
-        Debug.Log(name);
         // Detect the name of the button that the cursor is hovering over
         PointerEventData pointerEventData = new PointerEventData(EventSystem.current);
         pointerEventData.position = Input.mousePosition;
@@ -51,7 +48,6 @@ public class IngredientSelectionUI : BaseStation
             {
                 if (selectedObj == ingredientButtons[i].gameObject)
                 {
-                    Debug.Log("Button " + (i + 1) + " is selected");
                     ingredientListSOIndex = i;
                     currentIngredient = ingredientListSO[ingredientListSOIndex];
                     CalculateIngredients(currentIngredient, ingredientListSOIndex);
@@ -59,83 +55,10 @@ public class IngredientSelectionUI : BaseStation
                 }
             }
         }
-
-        //for (int i = 0; i < raycastResultList.Count; i++)
-        //{
-        //    if (raycastResultList[i].gameObject.tag == "Ingredient_UI_Button")
-        //    {
-        //        hoverButtonName = raycastResultList[i].gameObject.name;
-        //        Debug.Log("The cursor is currently over: " + hoverButtonName);
-        //    }
-        //}
-
-        //// Detects which button is being hovered over and sets the ingredient index accordingly
-        //if (hoverButtonName == "Arabica" || hoverButtonName == "CowMilk" || hoverButtonName == "Sugar" || hoverButtonName == "PlutoniumPowder" ||
-        //    EventSystem.current.currentSelectedGameObject.name == "Arabica" || EventSystem.current.currentSelectedGameObject.name == "CowMilk" || EventSystem.current.currentSelectedGameObject.name == "Sugar" || EventSystem.current.currentSelectedGameObject.name == "PlutoniumPowder")
-        //{
-        //    ingredientListSOIndex = 0;
-        //    currentIngredient = ingredientListSO[ingredientListSOIndex];
-        //    Debug.Log("The current IngredientListSOIndex is: " + ingredientListSOIndex);
-        //    CalculateIngredients(currentIngredient, ingredientListSOIndex);
-        //}
-        //else if (hoverButtonName == "CosmicCacao" || hoverButtonName == "Water" || hoverButtonName == "MoonMaple" || hoverButtonName == "ButterBugs" ||
-        //    EventSystem.current.currentSelectedGameObject.name == "CosmicCacao" || EventSystem.current.currentSelectedGameObject.name == "Water" || EventSystem.current.currentSelectedGameObject.name == "MoonMaple" || EventSystem.current.currentSelectedGameObject.name == "ButterBugs")
-        //{
-        //    ingredientListSOIndex = 1;
-        //    currentIngredient = ingredientListSO[ingredientListSOIndex];
-        //    Debug.Log("The current IngredientListSOIndex is: " + ingredientListSOIndex);
-        //    CalculateIngredients(currentIngredient, ingredientListSOIndex);
-        //}
-        //else if (hoverButtonName == "Excelsior" || hoverButtonName == "BlueMilk" || hoverButtonName == "GalaxyGummy" || hoverButtonName == "Brains" ||
-        //    EventSystem.current.currentSelectedGameObject.name == "Excelsior" || EventSystem.current.currentSelectedGameObject.name == "BlueMilk" || EventSystem.current.currentSelectedGameObject.name == "GalaxyGummy" || EventSystem.current.currentSelectedGameObject.name == "Brains")
-        //{
-        //    ingredientListSOIndex = 2;
-        //    currentIngredient = ingredientListSO[ingredientListSOIndex];
-        //    Debug.Log("The current IngredientListSOIndex is: " + ingredientListSOIndex);
-        //    CalculateIngredients(currentIngredient, ingredientListSOIndex);
-        //}
-        //else if (hoverButtonName == "Robusta" || hoverButtonName == "Moonshine" || hoverButtonName == "MochaMiel" || hoverButtonName == "FunkyFungus" ||
-        //    EventSystem.current.currentSelectedGameObject.name == "Robusta" || EventSystem.current.currentSelectedGameObject.name == "Moonshine" || EventSystem.current.currentSelectedGameObject.name == "MochaMiel" || EventSystem.current.currentSelectedGameObject.name == "FunkyFungus")
-        //{
-        //    ingredientListSOIndex = 3;
-        //    currentIngredient = ingredientListSO[ingredientListSOIndex];
-        //    Debug.Log("The current IngredientListSOIndex is: " + ingredientListSOIndex);
-        //    CalculateIngredients(currentIngredient, ingredientListSOIndex);
-        //}
-        //else if (hoverButtonName == "KopiLuwak" || hoverButtonName == "LavaGuava" || hoverButtonName == "Molasses" || hoverButtonName == "JupiterJelly" ||
-        //    EventSystem.current.currentSelectedGameObject.name == "KopiLuwak" || EventSystem.current.currentSelectedGameObject.name == "LavaGuava" || EventSystem.current.currentSelectedGameObject.name == "Molasses" || EventSystem.current.currentSelectedGameObject.name == "JupiterJelly")
-        //{
-        //    ingredientListSOIndex = 4;
-        //    currentIngredient = ingredientListSO[ingredientListSOIndex];
-        //    Debug.Log("The current IngredientListSOIndex is: " + ingredientListSOIndex);
-        //    CalculateIngredients(currentIngredient, ingredientListSOIndex);
-        //}
-        //else if (hoverButtonName == "SlurpJuice" || hoverButtonName == "Gobstopper" || hoverButtonName == "MeatCube" || hoverButtonName == "Undefined" ||
-        //    EventSystem.current.currentSelectedGameObject.name == "SlurpJuice" || EventSystem.current.currentSelectedGameObject.name == "Gobstopper" || EventSystem.current.currentSelectedGameObject.name == "MeatCube" || EventSystem.current.currentSelectedGameObject.name == "Undefined")
-        //{
-        //    ingredientListSOIndex = 5;
-        //    currentIngredient = ingredientListSO[ingredientListSOIndex];
-        //    Debug.Log("The current IngredientListSOIndex is: " + ingredientListSOIndex);
-        //    CalculateIngredients(currentIngredient, ingredientListSOIndex);
-        //}
-        //else
-        //{
-        //    if (orderStatsRoot != null && orderStatsRoot.childCount > 0 || EventSystem.current.currentSelectedGameObject == null)
-        //    {
-        //        OrderStats orderStats = orderStatsRoot.GetChild(0).GetComponent<OrderStats>();
-        //        orderStats.temperatureSegments.potentialIngredientValue = 0;
-        //        orderStats.sweetnessSegments.potentialIngredientValue = 0;
-        //        orderStats.spicinessSegments.potentialIngredientValue = 0;
-        //        orderStats.strengthSegments.potentialIngredientValue = 0;
-        //    }
-        //}
     }
 
     public void AddIngredient()
     {
-        // This was the code that spawned the ingredient into the player hands
-        //Ingredient.SpawnIngredient(currentIngredient, player);
-        //player.GetNumberOfIngredients();
         EventSystem.current.SetSelectedGameObject(null);
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
         player.movementToggle = true;
@@ -157,9 +80,7 @@ public class IngredientSelectionUI : BaseStation
         if (other.tag == "Player")
         {
             player = other.GetComponent<PlayerController>();
-            Debug.Log("Player Collided With trigger");
-
-            player.movementToggle = false;
+            //player.movementToggle = false;
 
             //Display UI ingredient menu
             Show(ingredientMenu);
@@ -170,8 +91,6 @@ public class IngredientSelectionUI : BaseStation
     {
         if (other.tag == "Player")
         {
-            Debug.Log("Player left trigger collider");
-
             player.movementToggle = true;
 
             // Hide UI ingredient menu
@@ -206,7 +125,6 @@ public class IngredientSelectionUI : BaseStation
             orderStats.sweetnessSegments.potentialIngredientValue = currentIngredient.sweetness + orderStats.sweetnessSegments.cumulativeIngredientsValue;
             orderStats.spicinessSegments.potentialIngredientValue = currentIngredient.spiciness + orderStats.spicinessSegments.cumulativeIngredientsValue;
             orderStats.strengthSegments.potentialIngredientValue = currentIngredient.strength + orderStats.strengthSegments.cumulativeIngredientsValue;
-            Debug.Log("The current IngredientListSOIndex is: " + ingredientListSOIndex);
             orderStats.SetPotentialSweetness();
             orderStats.SetPotentialTemperature();
             orderStats.SetPotentialSpiciness();

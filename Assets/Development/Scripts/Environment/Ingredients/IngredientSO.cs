@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [CreateAssetMenu()]
 public class IngredientSO : ScriptableObject
@@ -12,4 +11,5 @@ public class IngredientSO : ScriptableObject
     public int sweetness;
     public int spiciness;
     public int strength;
+    //public Image icon;
 }

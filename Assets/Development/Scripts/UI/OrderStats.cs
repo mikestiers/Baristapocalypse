@@ -1,17 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class OrderStats : MonoBehaviour
 {
     [Header("Customer Order")]
+    [SerializeField] public GameObject customerInfoRoot;
     [SerializeField] public Text customerNumberText;
+    [SerializeField] public Text customerNameText;
+    [SerializeField] public Text brewingStationText;
+    [SerializeField] public Slider orderTimer;
     [SerializeField] public OrderStatsSegments temperatureSegments;
     [SerializeField] public OrderStatsSegments sweetnessSegments;
     [SerializeField] public OrderStatsSegments spicinessSegments;
     [SerializeField] public OrderStatsSegments strengthSegments;
-    
+
     [Header("Customer Review")]
     [SerializeField] private GameObject customerReview;
     [SerializeField] private CustomerBase orderOwner;
@@ -29,6 +31,23 @@ public class OrderStats : MonoBehaviour
         sweetnessSegments.targetAttributeValue = customer.coffeeAttributes.GetSweetness();
         spicinessSegments.targetAttributeValue = customer.coffeeAttributes.GetSpiciness();
         strengthSegments.targetAttributeValue = customer.coffeeAttributes.GetStrength();
+    }
+
+    // Fade of unfade the order stats
+    public void SetInactive(bool isInactive)
+    {
+        Image[] images = GetComponentsInChildren<Image>(true); // The 'true' parameter includes inactive GameObjects
+        foreach (Image image in images)
+        {
+            Color imageColor = image.GetComponent<Image>().color;
+            if (isInactive)
+            {
+                imageColor.a = 0.2f;
+            }
+            else
+                imageColor.a = 1.0f;
+            image.color = imageColor;
+        }
     }
 
     public void SetTemperature()

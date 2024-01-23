@@ -2,13 +2,16 @@ using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CustomerRandomizer : NetworkBehaviour
 {
     [SerializeField] public CustomerRaceSO[] Races;
     public List<GameObject> heads = new List<GameObject>();
     public List<GameObject> bodies = new List<GameObject>();
+    public GridLayoutGroup cheatIconsLayoutGroup;
 
     public List<IngredientSO> temperature = new List<IngredientSO>();
     public List<IngredientSO> sweetness = new List<IngredientSO>();
@@ -36,6 +39,16 @@ public class CustomerRandomizer : NetworkBehaviour
         IngredientSO sweetnessIngredient = sweetness[Random.Range(0, sweetness.Count)];
         IngredientSO strenthIngredient = strength[Random.Range(0, strength.Count)];
         IngredientSO spicinessIngredient = spiciness[Random.Range(0, spiciness.Count)];
+
+        //temperatureIngredient.icon.transform.SetParent(cheatIconsLayoutGroup.transform);
+        //sweetnessIngredient.icon.transform.SetParent(cheatIconsLayoutGroup.transform);
+        //strenthIngredient.icon.transform.SetParent(cheatIconsLayoutGroup.transform);
+        //spicinessIngredient.icon.transform.SetParent(cheatIconsLayoutGroup.transform);
+        
+        Debug.Log("ISO Temperature: " + temperatureIngredient.name);
+        Debug.Log("ISO Sweetness: " + sweetnessIngredient.name);
+        Debug.Log("ISO Strength: " + strenthIngredient.name);
+        Debug.Log("ISO Spiciness: " + spicinessIngredient.name);
 
         // DELETE AFTER TESTING //
         sweet = sweetnessIngredient;

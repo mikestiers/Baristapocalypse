@@ -1,5 +1,7 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.HableCurve;
 
 public class OrderStatsSegments : MonoBehaviour
 {
@@ -9,35 +11,30 @@ public class OrderStatsSegments : MonoBehaviour
     public int targetAttributeValue;
     public GameObject targetAttributeSelector;
     public GameObject potentialAttributeSelector;
-    private int previousCumulativeIngredientsValue;
 
     private void Start()
     {
-        // Ensure all segments to inactive
+        Reset();
+    }
+
+    public void Reset()
+    {
         foreach (var segment in segments)
         {
             segment.GetComponent<Image>().color = Color.green;
             Color segmentColor = segment.GetComponent<Image>().color;
             segmentColor.a = 1.0f;
+            segment.GetComponent<Image>().color = segmentColor;
             segment.SetActive(false);
         }
-        cumulativeIngredientsValue = 0;
     }
 
     private void Update()
     {
-        //UpdateSegmentColors(cumulativeIngredientsValue); // remove this later so it doesn't run every frame
-        if (targetAttributeValue < 0)
-        {
-            GameObject targetSegment = segments[(segments.Length / 2) + targetAttributeValue];
-            SetTarget(targetSegment);
-        }
-
-        if (targetAttributeValue > 0)
-        {
-            GameObject targetSegment = segments[(segments.Length / 2 - 1) + targetAttributeValue];
-            SetTarget(targetSegment);
-        }
+        // Make this not be required every frame
+        int targetValue = MapValue(targetAttributeValue);
+        GameObject targetSegment = segments[targetValue];
+        SetTarget(targetSegment);
     }
 
     public void UpdateSegmentColors(int cumulative)
@@ -51,32 +48,15 @@ public class OrderStatsSegments : MonoBehaviour
             segment.SetActive(false);
         }
 
-        if (cumulative >= segments.Length / 2)
-        {
-            Debug.LogError("Value is greater than the number of segments.");
-            return;
-        }
+        int potentialValue = MapValue(potentialIngredientValue);
+        SetPotential(segments[potentialValue]);
+    }
 
-        if (potentialIngredientValue < 0)
-        {
-            int startIndex = segments.Length / 2;
-            int endIndex = startIndex + cumulative;
-            //SetPotential(segments[endIndex + potentialIngredientValue]);
-            SetPotential(segments[endIndex]);
-        }
-
-        if (potentialIngredientValue > 0)
-        {
-            int startIndex = segments.Length / 2 - 1;
-            int endIndex = startIndex + cumulative;
-            //SetPotential(segments[endIndex + potentialIngredientValue]);
-            SetPotential(segments[endIndex]);
-        }
-
-        // add logic for zero value. need to update ui object to accept 0
-        if (potentialIngredientValue == 0)
-            potentialAttributeSelector.SetActive(false);
-            //return; 
+    // Mapping -7 to +7 to 0 to 14
+    public int MapValue(int originalValue)
+    {
+        // Assuming originalValue is in the range of -7 to +7
+        return originalValue + 7;
     }
 
     private void SetTarget(GameObject targetSegment)
@@ -90,10 +70,20 @@ public class OrderStatsSegments : MonoBehaviour
 
     private void SetPotential(GameObject potentialSegment)
     {
-        if (cumulativeIngredientsValue + potentialIngredientValue == targetAttributeValue)
+        int cumulativeValue = MapValue(cumulativeIngredientsValue);
+        int potentialValue = MapValue(potentialIngredientValue);
+        int targetValue = MapValue(targetAttributeValue);
+        if (cumulativeValue + potentialValue == targetValue)
+        {
             potentialSegment.GetComponent<Image>().color = Color.green;
-        else if (cumulativeIngredientsValue + potentialIngredientValue != targetAttributeValue)
+        }
+
+        else if (cumulativeValue + potentialValue != targetValue)
+        {
+            Reset();
+            potentialSegment.GetComponent<Image>().color = Color.white;
             potentialSegment.GetComponent<Image>().color = Color.clear;
+        }
         potentialSegment.SetActive(true);
         potentialAttributeSelector.transform.SetParent(potentialSegment.transform);
         potentialAttributeSelector.transform.position = potentialSegment.transform.position;

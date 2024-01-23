@@ -521,7 +521,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2305830337154933689, guid: a1a86f6dec8a4f547be4f92cb7a6b2c3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.65
+      value: -0.281
       objectReference: {fileID: 0}
     - target: {fileID: 2305830337154933689, guid: a1a86f6dec8a4f547be4f92cb7a6b2c3, type: 3}
       propertyPath: m_LocalPosition.z
@@ -565,7 +565,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8083973324504194466, guid: a1a86f6dec8a4f547be4f92cb7a6b2c3, type: 3}
       propertyPath: m_Name
-      value: BrewingStation
+      value: BrewingStation 1
       objectReference: {fileID: 0}
     - target: {fileID: 8280110119343447755, guid: a1a86f6dec8a4f547be4f92cb7a6b2c3, type: 3}
       propertyPath: m_Enabled
@@ -596,12 +596,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stationTopPoint: {fileID: 5328838951665215557}
-  orderStatsRoot: {fileID: 0}
-  ingredientSOList: []
   interactParticle: {fileID: 3823761264207694108}
-  ingredientsIndicatorText: {fileID: 220367961}
+  orderStatsRoot: {fileID: 0}
+  orderStatsPrefab: {fileID: 5308759679528095304, guid: 5de1edabd0f69164db14f8d4539228bf, type: 3}
   orderStats: {fileID: 6946990445526301406, guid: 5de1edabd0f69164db14f8d4539228bf, type: 3}
+  customer: {fileID: 0}
+  ingredientSOList: []
+  ingredientsIndicatorText: {fileID: 220367961}
+  currentIngredientSOList: 
+  validIngredientTagList: []
+  numIngredientsNeeded: 4
   brewingRecipeSO: {fileID: 11400000, guid: 51673626c59b856478165b70a83edda2, type: 2}
+  orderAssigned: 0
 --- !u!198 &3823761264207694108 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 6545181316283945739, guid: a1a86f6dec8a4f547be4f92cb7a6b2c3, type: 3}
