@@ -70,12 +70,15 @@ public class OrderStatsSegments : MonoBehaviour
 
     private void SetPotential(GameObject potentialSegment)
     {
-        if (cumulativeIngredientsValue + potentialIngredientValue == targetAttributeValue)
+        int cumulativeValue = MapValue(cumulativeIngredientsValue);
+        int potentialValue = MapValue(potentialIngredientValue);
+        int targetValue = MapValue(targetAttributeValue);
+        if (cumulativeValue + potentialValue == targetValue)
         {
             potentialSegment.GetComponent<Image>().color = Color.green;
         }
 
-        else if (cumulativeIngredientsValue + potentialIngredientValue != targetAttributeValue)
+        else if (cumulativeValue + potentialValue != targetValue)
         {
             Reset();
             potentialSegment.GetComponent<Image>().color = Color.white;
