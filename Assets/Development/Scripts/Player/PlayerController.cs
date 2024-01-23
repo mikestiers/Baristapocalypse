@@ -9,6 +9,7 @@ using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
 using Unity.Services.Lobbies.Models;
 using Cinemachine;
+using System.Linq;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObjectParent,ISpill
@@ -67,7 +68,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     private CinemachineVirtualCamera virtualCamera;
     
-
     // Testing Spawnpoints
     public Transform spawnpoint1;
     public Transform spawnpoint2;
@@ -186,7 +186,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             return;
         }
 
-        // Perform a single raycast to detect any interactable object.
+        // Perform a single SphereCast to detect any interactable object.
         float interactDistance = 2.5f;
         if (Physics.SphereCast(transform.position + RayCastOffset, sphereCastRadius, transform.forward, out RaycastHit hit, interactDistance, interactableLayerMask))
         {
@@ -223,7 +223,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                 }
             }
 
-            // Logic for Ingredient  on floor Interaction 
+            // Logic for Ingredient on floor Interaction 
             else if (hit.transform.TryGetComponent(out Ingredient ingredient))
             {
                 if (GetNumberOfIngredients() <= GetMaxIngredients() && !IsHoldingPickup)
@@ -269,6 +269,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             SetSelectedCustomer(null);
             //Hide(visualGameObject);
         }
+
+        HandleCursorVisibility();
 
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward, Color.green);
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward * customerInteractDistance, Color.red);
@@ -713,5 +715,25 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             }
         }
     }
-    
+
+
+    private void HandleCursorVisibility()
+    {
+        // Check if a controller is being used
+        bool usingController = Gamepad.current != null;
+        if (!usingController) { return; }
+
+        float mouseMoveThreshold = 0.1f;
+        Vector2 mouseDelta = Mouse.current.delta.ReadValue();
+
+        // Check if any button on the controller is pressed or the stick is moved
+        if (Gamepad.current.allControls.Any(control => control.IsPressed() && control != Gamepad.current.leftStick))
+        {
+            Cursor.visible = false;
+        }
+        else if (mouseDelta.magnitude > mouseMoveThreshold)
+        {
+            Cursor.visible = true;
+        }
+    }
 }
