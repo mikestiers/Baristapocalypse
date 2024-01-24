@@ -7,7 +7,8 @@ public class CharacterSelectPlayer : MonoBehaviour
 {
     [SerializeField] private int playerIndex;
     [SerializeField] private GameObject readyText;
-
+    [SerializeField] private PlayerColorChoice playerVisual;
+    
     private void Start()
     {
         BaristapocalypseMultiplayer.Instance.OnPlayerDataNetworkListChanged += BaristapocalypseMultiplayer_OnPlayerDataNetworkListChanged;
@@ -34,6 +35,8 @@ public class CharacterSelectPlayer : MonoBehaviour
 
             PlayerData playerData = BaristapocalypseMultiplayer.Instance.GetPlayerDataFromPlayerIndex(playerIndex);
             readyText.SetActive(CharacterSelectReady.Instance.IsPlayerReady(playerData.clientId));
+
+            playerVisual.SetPlayerColor(BaristapocalypseMultiplayer.Instance.GetPlayerColor(playerData.colorId));
         }
         else
         {

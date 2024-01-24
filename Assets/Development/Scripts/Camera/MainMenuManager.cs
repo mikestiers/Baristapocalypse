@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 
-public class UiCameraManager : MonoBehaviour
+public class MainMenuManager : MonoBehaviour
 {
     [Header("Cameras")]
     public CinemachineVirtualCamera MainmenuCamera;
@@ -23,7 +23,8 @@ public class UiCameraManager : MonoBehaviour
     [SerializeField] private Button ExitGame;
     [SerializeField] private Button MainMenuFromQuit;
     // Player Selection Buttons
-    [SerializeField] private Button Play;
+    [SerializeField] private Button singlePlayerButton;
+    [SerializeField] private Button multiplayerButton;
     [SerializeField] private Button MainMenuFromSelection;
     // Settings Menu Buttons
     [SerializeField] private Button MainMenuFromSettings;
@@ -53,6 +54,13 @@ public class UiCameraManager : MonoBehaviour
     [SerializeField] private GameObject ExitMenuTab;
     [SerializeField] private GameObject PlayMenuTab;
 
+    [Header("Difficulty Modes")]
+    [SerializeField] private Button EasyButton;
+    [SerializeField] private Button MediumButton;
+    [SerializeField] private Button HardButton;
+
+
+
     // Start is called before the first frame update
     public void Start()
     {
@@ -79,8 +87,11 @@ public class UiCameraManager : MonoBehaviour
         if (ExitGame)
             ExitGame.onClick.AddListener(closeGame);
 
-        if (Play)
-            Play.onClick.AddListener(PlayScene);
+        if (singlePlayerButton)
+            singlePlayerButton.onClick.AddListener(PlayScene_SinglePlayer);
+
+        if (multiplayerButton)
+            multiplayerButton.onClick.AddListener(LobbyScene);
 
         if (StartGame)
             StartGame.onClick.AddListener(PlayerSelect);
@@ -105,6 +116,16 @@ public class UiCameraManager : MonoBehaviour
 
         if (WindowModeButton)
             WindowModeButton.onClick.AddListener(SetWindowMode);
+
+        if (EasyButton)
+            EasyButton.onClick.AddListener(() => SetDifficulty("Easy"));
+
+        if (MediumButton)
+            MediumButton.onClick.AddListener(() => SetDifficulty("Medium"));
+
+        if (HardButton)
+            HardButton.onClick.AddListener(() => SetDifficulty("Hard"));
+
     }
 
     void ReturnFromSettings() 
@@ -175,12 +196,24 @@ public class UiCameraManager : MonoBehaviour
         }
     }
 
-    void PlayScene() 
+    void LobbyScene() 
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
-        SceneManager.LoadScene("TestScene");
+        BaristapocalypseMultiplayer.playMultiplayer = true;
+        SceneManager.LoadScene("LobbyScene");
+        //Loader.Load(Loader.Scene.LobbyScene);
         gameObject.SetActive(false);
     }
+
+    void PlayScene_SinglePlayer()
+    {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+        BaristapocalypseMultiplayer.playMultiplayer = false;
+        SceneManager.LoadScene("LobbyScene");
+        //Loader.Load(Loader.Scene.T5M3_BUILD);
+        gameObject.SetActive(false);
+    }
+
     void closeGame() 
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
@@ -210,5 +243,10 @@ public class UiCameraManager : MonoBehaviour
     {
         Resolution resolution = resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+    }
+
+    public void SetDifficulty(string Difficulty)
+    {
+        GameValueHolder.Instance.DifficultyString = Difficulty;
     }
 }

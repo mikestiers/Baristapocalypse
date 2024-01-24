@@ -26,7 +26,8 @@ public class CustomerBase : Base
     [Header("State Related")]
     public CustomerState currentState;
     public float? orderTimer = null;
-    public float customerLeaveTime = 60f;
+    public float? messTime = null;
+    public float customerLeaveTime;
     public float deadTimerSeconds = 5.0f;
 
     [Header("Visuals")]
@@ -48,6 +49,8 @@ public class CustomerBase : Base
     {
         SetCustomerStateServerRpc(CustomerState.Init);
         SetCustomerVisualIdentifiers();
+
+        customerLeaveTime = Random.Range(GameManager.Instance.difficultySettings.GetMinWaitTime(), GameManager.Instance.difficultySettings.GetMaxWaitTime());
 
         agent = GetComponent<NavMeshAgent>();
         exit = CustomerManager.Instance.GetExit();
@@ -107,6 +110,9 @@ public class CustomerBase : Base
     private void UpdateWaiting()
     {
         // To be implmented or removed
+        if (makingAMess == true) SetCustomerStateServerRpc(CustomerState.Loitering);
+
+
     }
 
     private void UpdateOrdering()
@@ -159,6 +165,41 @@ public class CustomerBase : Base
     private void UpdateLoitering()
     {
         // To be implmented or removed
+        if(messTime >= GameManager.Instance.difficultySettings.GetLoiterMessEverySec())
+        {
+            CreateMess();
+            RestartMessTimer();
+        }
+
+        StartCoroutine(TryGoToRandomPoint(5f));
+    }
+
+    public IEnumerator TryGoToRandomPoint(float delay)
+    {
+        if (leaving == true || moving == true) yield break;
+
+        moving = true;
+
+        yield return new WaitForSeconds(delay);
+
+        float _radius = 5f;
+
+        Vector3 randomPoint = Random.insideUnitSphere * _radius;
+        randomPoint += transform.position;
+
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(randomPoint, out hit, _radius, NavMesh.AllAreas))
+        {
+            // 'hit.position' contains the valid random point on the NavMesh
+            Debug.Log("Random point: " + hit.position);
+
+            Walkto(hit.position);
+        }
+        else
+        {
+            // No valid point found within the specified radius
+            Debug.LogWarning("Could not find a valid random point on the NavMesh.");
+        }
     }
 
     private void UpdatePickedUp()
@@ -187,6 +228,19 @@ public class CustomerBase : Base
         // Take customer order
         if (GetCustomerState() == CustomerState.Ordering)
         {
+            BrewingStation[] brewingStations = UnityEngine.Object.FindObjectsOfType<BrewingStation>();
+
+            foreach (BrewingStation brewingStation in brewingStations)
+            {
+                if (!brewingStation.orderAssigned)
+                {
+                    brewingStation.SetOrder(this);
+                    break;
+                }
+                else
+                    Debug.Log("Brewing station is busy"); // this should add an element to the order queue ui that is not done yet
+            }
+
             LeaveLineServerRpc();
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
             interactParticle.Play();
@@ -280,9 +334,18 @@ public class CustomerBase : Base
 
     public virtual void CustomerLeave()
     {
-        SetCustomerStateServerRpc(CustomerState.Leaving);
-        
-        agent.SetDestination(exit.position);
+        if (Random.Range(0, 100) <= GameManager.Instance.difficultySettings.GetChanceToMess()) CreateMess();
+        if (Random.Range(0, 100) <= GameManager.Instance.difficultySettings.GetChanceToLoiter())
+        {
+            SetCustomerStateServerRpc(CustomerState.Loitering);
+            messTime = 0f;
+            makingAMess = true;
+            moving = false;
+        }
+        else
+        {
+            SetCustomerStateServerRpc(CustomerState.Leaving);
+            agent.SetDestination(exit.position);
 
 
         CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough

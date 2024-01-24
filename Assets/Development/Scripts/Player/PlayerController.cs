@@ -6,9 +6,12 @@ using UnityEngine.InputSystem;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
+using Unity.Services.Lobbies.Models;
+using Cinemachine;
+using System.Linq;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerController : NetworkBehaviour, IIngredientParent
+public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObjectParent,ISpill
 {
     // Player Instance
     [HideInInspector] public static PlayerController Instance { get; private set; }
@@ -24,6 +27,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float dashForce;
     [SerializeField] private float dashTime;
+    [SerializeField] private float dashCooldownTime;
+    private bool isDashing = false;
+
     private bool isGrounded;
 
     [Header("Interactables")]
@@ -33,8 +39,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     [SerializeField] private GameObject ingredientInstanceHolder;
     private BaseStation selectedStation;
     private Base selectedCustomer;
-    public float sphereCastRadius = 0.5f;
+    public float sphereCastRadius = 1f;
     //private Collider ingredientCollider;
+    public int currentBrewingStation { get; set; } = 0;
 
     [Header("Ingredients Data")]
     [SerializeField] public Transform[] ingredientHoldPoints; // Array to hold multiple ingredient
@@ -57,12 +64,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
     [Header("Pickups")]
     public Transform pickupLocation;
     public float pickupThrowForce;
+    [SerializeField] private Pickup pickup;
 
-    // Testing Spawnpoints
-    public Transform spawnpoint1;
-    public Transform spawnpoint2;
-    public Transform spawnpoint3;
-    public Transform spawnpoint4;
+    private CinemachineVirtualCamera virtualCamera;
+
+    public PlayerColorChoice playerVisual;
 
     [HideInInspector]
     public Pickup Pickup
@@ -110,7 +116,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         if (jumpForce <= 0) jumpForce = 200.0f;
         if (dashForce <= 0) dashForce = 4000f;
         if (dashTime <= 0) dashTime = 0.1f;
-        if (ingredienThrowForce <= 0) ingredienThrowForce = 10f;
+        if (dashCooldownTime <= 0) dashCooldownTime = 1.0f;
+        if (ingredientThrowForce <= 0) ingredientThrowForce = 10f;
         if (groundCheckRadius <= 0) groundCheckRadius = 0.05f;
 
         //Define the interactable layer mask to include station, ingredient, and mess layers.
@@ -127,6 +134,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         inputManager.InteractEvent += Interact ;
         inputManager.InteractAltEvent += InteractAlt;
         inputManager.DebugConsoleEvent += ShowDebugConsole;
+        inputManager.BrewingStationSelectEvent += OnChangeBrewingStationSelect;
     }
 
     private void OnDisable()
@@ -137,6 +145,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         inputManager.InteractEvent -= Interact;
         inputManager.InteractAltEvent -= InteractAlt;
         inputManager.DebugConsoleEvent -= ShowDebugConsole;
+        inputManager.BrewingStationSelectEvent -= OnChangeBrewingStationSelect;
     }
 
     private void Update()
@@ -146,17 +155,23 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
             return;
         }
 
+        if (SceneManager.GetActiveScene().name != Loader.Scene.T5M3_BUILD.ToString()) { return; }
+
         // Ground Check
         IsGrounded();
         // player movement
         Move(moveSpeed);
 
-        GetNumberOfIngredients();
-        SetIngredientIndicator();
+        if (!movementToggle)
+        {
+            anim.SetFloat("vertical", 0);
+            anim.SetFloat("horizontal", 0);
+            return;
+        }
 
-        // Perform a single raycast to detect any interactable object.
-        float interactDistance = 2.0f;
-        if (Physics.Raycast(transform.position + RayCastOffset, transform.forward, out RaycastHit hit, interactDistance, interactableLayerMask))
+        // Perform a single SphereCast to detect any interactable object.
+        float interactDistance = 2.5f;
+        if (Physics.SphereCast(transform.position + RayCastOffset, sphereCastRadius, transform.forward, out RaycastHit hit, interactDistance, interactableLayerMask))
         {
             // Logic for PickUp Interaction
             if (hit.transform.TryGetComponent(out Pickup pickup))
@@ -191,7 +206,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
                 }
             }
 
-            // Logic for Ingredient  on floor Interaction 
+            // Logic for Ingredient on floor Interaction 
             else if (hit.transform.TryGetComponent(out Ingredient ingredient))
             {
                 if (GetNumberOfIngredients() <= maxIngredients && !IsHoldingPickup)
@@ -239,6 +254,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
             SetSelectedCustomer(null);
             //Hide(visualGameObject);
         }
+
+        HandleCursorVisibility();
 
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward, Color.green);
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward * customerInteractDistance, Color.red);
@@ -309,22 +326,35 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
 
     public void OnDash()
     {
-        StartCoroutine(Dash());
-        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
+        if (!IsLocalPlayer) return;
+        if (isDashing) return;
+
+        if (movementToggle)
+            StartCoroutine(Dash());
+       // SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
+       //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
 
         if (GetNumberOfIngredients() > 0)
         {
-            if (CheckIfHoldingLiquid() > 0)//stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
-            {
-                Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
-                ThrowIngedient();
-            }
+           if (CheckIfHoldingLiquid() > 0)//stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
+           {
+               if (spillPrefab != null)
+               {
+                 Spill.PlayerCreateSpill(spillPrefab, this);
+               }
+               else
+               {
+                   Debug.Log("MessSO is null");
+               }
+               ThrowIngredient();
+           }
         }
         else return;
     }
 
     IEnumerator Dash()
     {
+        isDashing = true;
         float startTime = Time.time;
 
         while (Time.time < startTime + dashTime)
@@ -332,6 +362,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
             rb.AddForce(inputManager.moveDir * dashForce * Time.deltaTime, ForceMode.Acceleration);
             yield return null;
         }
+
+        yield return new WaitForSeconds(dashCooldownTime);
+        isDashing = false;
+
     }
 
     public void OnThrow()
@@ -489,6 +523,38 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         //return GetNumberOfIngredients() >= maxIngredients;
     }
 
+    public Transform GetSpillTransform()
+    {
+        return spillSpawnPoint;
+    }
+
+    public void SetSpill(Spill spill)
+    {
+        this.spill = spill;
+
+    }
+
+    public void ClearSpill()
+    {
+        spill = null;
+    }
+
+    public Transform GetSpillTransform()
+    {
+        return spillSpawnPoint;
+    }
+
+    public void SetSpill(Spill spill)
+    {
+        this.spill = spill;
+
+    }
+
+    public void ClearSpill()
+    {
+        spill = null;
+    }
+
     public NetworkObject GetNetworkObject()
     {
         return NetworkObject;
@@ -572,6 +638,26 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         UIManager.Instance.debugConsoleActive = !UIManager.Instance.debugConsoleActive;
     }
 
+    public void OnChangeBrewingStationSelect()
+    {
+        BrewingStation[] brewingStations = UnityEngine.Object.FindObjectsOfType<BrewingStation>();
+
+        // Check if there are any brewing stations
+        if (brewingStations.Length > 0)
+        {
+            // Increment the currentBrewingStation index, wrapping around using modulo
+            int previousBrewingStation = currentBrewingStation;
+            currentBrewingStation = (currentBrewingStation + 1) % brewingStations.Length;
+            OrderStats[] orderStats = UnityEngine.Object.FindObjectsOfType<OrderStats>();
+            orderStats[previousBrewingStation].selectedByPlayerImage.SetActive(true);
+            orderStats[currentBrewingStation].selectedByPlayerImage.SetActive(false);
+        }
+        else
+        {
+            Debug.Log("No brewing stations found");
+        }
+    }
+
     public override void OnNetworkSpawn()
     {
         if (IsOwner)
@@ -590,6 +676,28 @@ public class PlayerController : NetworkBehaviour, IIngredientParent
         if(clientId == OwnerClientId && HasIngredient()) // HasIngredient 
         {
             Ingredient.DestroyIngredient(GetIngredient());
+        }
+    }
+
+    private void HandleCursorVisibility()
+    {
+        // Check if a controller is being used
+        bool usingController = Gamepad.current != null;
+        if (!usingController) { return; }
+
+        float mouseMoveThreshold = 0.1f;
+        Vector2 mouseDelta = Mouse.current.delta.ReadValue();
+
+        // Check if any button on the controller is pressed or the stick is moved
+        if (Gamepad.current.allControls.Any(control => control.IsPressed() && control != Gamepad.current.leftStick))
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        else if (mouseDelta.magnitude > mouseMoveThreshold)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
         }
     }
 }

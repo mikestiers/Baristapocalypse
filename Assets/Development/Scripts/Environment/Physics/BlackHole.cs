@@ -25,7 +25,6 @@ public class BlackHole : MonoBehaviour
 
     private void ApplyBlackHoleEffect(Rigidbody targetRigidbody)
     {
-        Debug.Log("In the blackhole");
         targetRigidbody.useGravity = false;
         Vector3 directionToCenter = transform.position - targetRigidbody.position;
         float distance = Vector3.Distance(transform.position, targetRigidbody.position);

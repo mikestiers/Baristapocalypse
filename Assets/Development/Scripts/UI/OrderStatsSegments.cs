@@ -1,149 +1,92 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.Rendering.HableCurve;
 
 public class OrderStatsSegments : MonoBehaviour
 {
-    public GameObject[] segments; // Assign your segment objects in the inspector
+    public GameObject[] segments; // Change to dynamically find them
     public int cumulativeIngredientsValue;
     public int potentialIngredientValue;
     public int targetAttributeValue;
-    private int previousCumulativeIngredientsValue;
+    public GameObject targetAttributeSelector;
+    public GameObject potentialAttributeSelector;
 
     private void Start()
     {
-        // Reset all segments to the default color (e.g., white)
+        Reset();
+    }
+
+    public void Reset()
+    {
         foreach (var segment in segments)
         {
-            segment.GetComponent<Image>().color = Color.white;
+            segment.GetComponent<Image>().color = Color.green;
+            Color segmentColor = segment.GetComponent<Image>().color;
+            segmentColor.a = 1.0f;
+            segment.GetComponent<Image>().color = segmentColor;
+            segment.SetActive(false);
         }
     }
 
     private void Update()
     {
-        // run updatesegmentcolors when cumulativeIngredientsValue changes
-        
-        //if (cumulativeIngredientsValue != previousCumulativeIngredientsValue)
-        //{
-        //    UpdateSegmentColors(cumulativeIngredientsValue);
-        //    previousCumulativeIngredientsValue = cumulativeIngredientsValue;
-        //}
-
-        UpdateSegmentColors(cumulativeIngredientsValue); // remove this later
+        // Make this not be required every frame
+        int targetValue = MapValue(targetAttributeValue);
+        GameObject targetSegment = segments[targetValue];
+        SetTarget(targetSegment);
     }
 
     public void UpdateSegmentColors(int cumulative)
     {
-        // Reset all segments to the default color (e.g., white)
+        // Reset all segments every time the segments are updated to clear any invalid colors
         foreach (var segment in segments)
         {
-            segment.GetComponent<Image>().color = Color.white;
+            segment.GetComponent<Image>().color = Color.green;
+            Color segmentColor = segment.GetComponent<Image>().color;
+            segmentColor.a = 1.0f;
+            segment.SetActive(false);
         }
 
-        // Color the segments blue up to the value
-        if (cumulative == 0)
+        int potentialValue = MapValue(potentialIngredientValue);
+        SetPotential(segments[potentialValue]);
+    }
+
+    // Mapping -7 to +7 to 0 to 14
+    public int MapValue(int originalValue)
+    {
+        // Assuming originalValue is in the range of -7 to +7
+        return originalValue + 7;
+    }
+
+    private void SetTarget(GameObject targetSegment)
+    {
+        targetSegment.GetComponent<Image>().color = Color.green;
+        targetSegment.SetActive(true);
+        targetAttributeSelector.transform.SetParent(targetSegment.transform);
+        targetAttributeSelector.transform.position = targetSegment.transform.position;
+        targetAttributeSelector.SetActive(true);
+    }
+
+    private void SetPotential(GameObject potentialSegment)
+    {
+        int cumulativeValue = MapValue(cumulativeIngredientsValue);
+        int potentialValue = MapValue(potentialIngredientValue);
+        int targetValue = MapValue(targetAttributeValue);
+        if (cumulativeValue + potentialValue == targetValue)
         {
-            if (targetAttributeValue < 0 && cumulative != targetAttributeValue)
-                segments[(segments.Length / 2) + targetAttributeValue].GetComponent<Image>().color = Color.green;
-            if (targetAttributeValue > 0 && cumulative != targetAttributeValue)
-                segments[(segments.Length / 2 - 1) + targetAttributeValue].GetComponent<Image>().color = Color.green;
-            if (potentialIngredientValue < 0)
-            {
-                int startIndex = segments.Length / 2 - 1;
-                int endIndex = startIndex + cumulative;
-                for (int i = endIndex; i > endIndex + potentialIngredientValue; i--)
-                {
-                    segments[i].GetComponent<Image>().color = Color.red;
-                }
-            }
-
-            if (potentialIngredientValue > 0)
-            {
-                int startIndex = segments.Length / 2;
-                int endIndex = startIndex + cumulative;
-                for (int i = endIndex; i < endIndex + potentialIngredientValue; i++)
-                {
-                    segments[i].GetComponent<Image>().color = Color.red;
-                }
-            }
-
-            if (potentialIngredientValue == 0)
-            {
-                for (int i = 0; i < segments.Length; i++)
-                {
-                    if (segments[i].GetComponent<Image>().color == Color.red)
-                        segments[i].GetComponent<Image>().color = Color.white;
-                }   
-            }
-            //return;
+            potentialSegment.GetComponent<Image>().color = Color.green;
         }
 
-        if (cumulative >= segments.Length / 2)
+        else if (cumulativeValue + potentialValue != targetValue)
         {
-            Debug.LogError("Value is greater than the number of segments.");
-            return;
+            Reset();
+            potentialSegment.GetComponent<Image>().color = Color.white;
+            potentialSegment.GetComponent<Image>().color = Color.clear;
         }
-
-        if (cumulative < 0)
-        {
-            int startIndex = segments.Length / 2 - 1;
-            int endIndex = startIndex + cumulative;
-            for (int i = startIndex; i > endIndex; i--)
-            {
-                segments[i].GetComponent<Image>().color = Color.blue;
-            }
-
-            if (potentialIngredientValue < 0)
-            {
-                for (int i = endIndex; i > endIndex + potentialIngredientValue; i--)
-                {
-                    segments[i].GetComponent<Image>().color = Color.red;
-                }
-            }
-
-            if (potentialIngredientValue > 0)
-            {
-                for (int i = endIndex; i < endIndex + potentialIngredientValue; i++)
-                {
-                    segments[i].GetComponent<Image>().color = Color.red;
-                }
-            }
-
-        }
-        if (cumulative > 0)
-        {
-            int startIndex = segments.Length / 2;
-            int endIndex = startIndex + cumulative;
-            for (int i = startIndex; i < endIndex; i++)
-            {
-                segments[i].GetComponent<Image>().color = Color.blue;
-            }
-
-            if (potentialIngredientValue < 0)
-            {
-                Debug.Log(endIndex);
-                for (int i = endIndex; i > endIndex + potentialIngredientValue; i--)
-                {
-                    Debug.Log(i + ": " + segments[i]);
-                    segments[i - 2].GetComponent<Image>().color = Color.red;
-                }
-            }
-
-            if (potentialIngredientValue > 0)
-            {
-                for (int i = endIndex; i < endIndex + potentialIngredientValue; i++)
-                {
-                    segments[i].GetComponent<Image>().color = Color.red;
-                }
-            }
-        }
-
-        if (targetAttributeValue < 0 && cumulative != targetAttributeValue)
-            segments[(segments.Length / 2) + targetAttributeValue].GetComponent<Image>().color = Color.green;
-        if (targetAttributeValue > 0 && cumulative != targetAttributeValue)
-            segments[(segments.Length / 2 -1) + targetAttributeValue].GetComponent<Image>().color = Color.green;
+        potentialSegment.SetActive(true);
+        potentialAttributeSelector.transform.SetParent(potentialSegment.transform);
+        potentialAttributeSelector.transform.position = potentialSegment.transform.position;
+        potentialAttributeSelector.SetActive(true);
     }
 }
