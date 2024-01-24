@@ -1,9 +1,12 @@
 using System;
 using System.Collections;
 using Unity.Netcode;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class CustomerBase : Base
@@ -11,6 +14,10 @@ public class CustomerBase : Base
     [Header("Navigation")]
     public NavMeshAgent agent;
     public bool frontofLine;
+    public bool inLine;
+    public bool leaving = false;
+    public bool makingAMess = false;
+    public bool moving;
     public float distThreshold;
     public GameObject[] Line;
     public int LineIndex;
@@ -19,6 +26,7 @@ public class CustomerBase : Base
     [Header("Identifiers")]
     public string customerName;
     public int customerNumber;
+    private bool orderBeingServed;
 
     [Header("Coffee Attributes")]
     public CoffeeAttributes coffeeAttributes;
@@ -38,8 +46,11 @@ public class CustomerBase : Base
     [SerializeField] private DetachedHead detachedHead;
     [SerializeField] private ScoreTimerManager scoreTimerManager;
     [SerializeField] public GameObject customerDialogue;
+    [SerializeField] private MessSO spillPrefab;
+    [SerializeField] private Transform spillSpawnPoint;
 
-    
+    //for reactions
+    public CustomerReactionIndicator customerReactionIndicator;
     public enum CustomerState
     {
         Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead
@@ -55,14 +66,15 @@ public class CustomerBase : Base
         agent = GetComponent<NavMeshAgent>();
         exit = CustomerManager.Instance.GetExit();
         if (distThreshold <= 0) distThreshold = 0.5f;
-
-        
     }
 
     public virtual void Update()
     {
         if (orderTimer != null)
             orderTimer += Time.deltaTime;
+
+        if (messTime != null)
+            messTime += Time.deltaTime;
 
         switch (currentState)
         {
@@ -137,11 +149,15 @@ public class CustomerBase : Base
             {
                 SetCustomerStateServerRpc(CustomerState.Waiting);
             }
+
+            moving = false;
         }
     }
 
     private void UpdateLeaving()
     {
+        messTime = null;
+        leaving = true;
         if (agent.remainingDistance < distThreshold)
         {
             Destroy(gameObject);
@@ -153,6 +169,9 @@ public class CustomerBase : Base
     private void UpdateInsit()
     {
         customerDialogue.SetActive(false);
+        if (!orderBeingServed)
+            DisplayCustomerVisualIdentifiers();
+        orderBeingServed = true;
         if (orderTimer >= customerLeaveTime)
             CustomerLeave();
     }
@@ -164,8 +183,15 @@ public class CustomerBase : Base
 
     private void UpdateLoitering()
     {
+        if (leaving == true)
+        {
+            SetCustomerStateServerRpc(CustomerState.Leaving);
+            agent.SetDestination(exit.position);
+        }
+
+
         // To be implmented or removed
-        if(messTime >= GameManager.Instance.difficultySettings.GetLoiterMessEverySec())
+        if (messTime >= GameManager.Instance.difficultySettings.GetLoiterMessEverySec())
         {
             CreateMess();
             RestartMessTimer();
@@ -251,9 +277,23 @@ public class CustomerBase : Base
         {
             player.GetIngredient().SetIngredientParent(this);
             JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
+            player.RemoveIngredientInListByReference(player.GetIngredient());
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
             interactParticle.Play();
         }
+
+        if (makingAMess == true)
+        {
+            SetCustomerStateServerRpc(CustomerState.Leaving);
+            agent.SetDestination(exit.position);
+            makingAMess = false;
+            leaving = true;
+
+            CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
+            UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
+            if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
+        }
+
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -268,7 +308,7 @@ public class CustomerBase : Base
     {
         Debug.Log("customer leaving");
         CustomerManager.Instance.Leaveline();
-       
+
     }
 
     // CUSTOMER STATE METHODS
@@ -280,7 +320,7 @@ public class CustomerBase : Base
     }
 
     //Maybe dont need, can try to get rid of it later
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void SetCustomerStateServerRpc(CustomerState newState)
     {
         SetCustomerStateClientRpc(newState);
@@ -295,7 +335,7 @@ public class CustomerBase : Base
     // CUSTOMER IDENTIFICATION METHODS
     // These methods are for setting or displaying visual identifiers
     // such as customer names, reviews, dialogue, numbers, etc...
-     public void SetCustomerName(String newName)
+    public void SetCustomerName(String newName)
     {
         customerName = newName;
     }
@@ -306,14 +346,14 @@ public class CustomerBase : Base
         customerNameText.text = customerName;
         customerDialogue.SetActive(false);
         customerNumberCanvas.enabled = false;
-       
+
     }
 
     public void DisplayCustomerVisualIdentifiers()
     {
         customerNumberCanvas.enabled = true;
         customerDialogue.SetActive(true);
-        UIManager.Instance.ShowCustomerUiOrder(this);
+        //UIManager.Instance.ShowCustomerUiOrder(this);
     }
 
     // CUSTOMER ACTION METHODS
@@ -322,7 +362,7 @@ public class CustomerBase : Base
     public virtual void Order()
     {
         StartOrderTimer();
-        DisplayCustomerVisualIdentifiers();
+        // DisplayCustomerVisualIdentifiers();
         // which state sends it to find a seat?
     }
 
@@ -348,9 +388,10 @@ public class CustomerBase : Base
             agent.SetDestination(exit.position);
 
 
-        CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
-        UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
-        if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
+            CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
+            UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
+            if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
+        }
     }
 
     public void Walkto(Vector3 Spot)
@@ -358,6 +399,7 @@ public class CustomerBase : Base
         if (agent.isStopped) agent.isStopped = false;
         agent.SetDestination(Spot);
         SetCustomerStateServerRpc(CustomerState.Moving);
+        moving = true;
     }
 
     public void JustGotHandedCoffee(CoffeeAttributes coffee)
@@ -408,13 +450,13 @@ public class CustomerBase : Base
         int minigameResult = coffeeAttributes.GetIsMinigamePerfect() ? 1 : 0;
         //ScoreTimerManager.Instance.score += result * (minigameResult + 1);
         Debug.Log($"Result for {customerNumber}: {result}");
-        
+
         switch (result)
         {
             case 5:
                 Perfect();
-               // ScoreTimerManager.Instance.IncrementStreak();
-               // ScoreTimerManager.Instance.score += result * ScoreTimerManager.Instance.StreakCount;
+                // ScoreTimerManager.Instance.IncrementStreak();
+                // ScoreTimerManager.Instance.score += result * ScoreTimerManager.Instance.StreakCount;
                 CustomerLeave();
                 break;
 
@@ -439,7 +481,7 @@ public class CustomerBase : Base
             case -5:
 
                 Angry();
-               // ScoreTimerManager.Instance.score += result;
+                // ScoreTimerManager.Instance.score += result;
                 CustomerLeave();
                 break;
         }
@@ -449,20 +491,21 @@ public class CustomerBase : Base
     {
         Debug.Log("the customer is not happy with the serving");
 
-     
+        //customerReactionIndicator.CustomerAngry();
     }
 
     private void Perfect()
     {
         Debug.Log("you did great!");
 
-       
+        //customerReactionIndicator.CustomerHappy();
     }
 
     private void Reorder()
     {
         Debug.Log("customer is not happy with the serving and wants you to try again");
 
+        //customerReactionIndicator.CustomerSad();
     }
 
     public void StartOrderTimer()
@@ -473,5 +516,32 @@ public class CustomerBase : Base
     public void StopOrderTimer()
     {
         orderTimer = null;
+    }
+
+    public void RestartMessTimer()
+    {
+        messTime = 0f;
+    }
+
+    public void StopMessTimer()
+    {
+        messTime = null;
+    }
+    public void CreateMess()
+    {
+        SpawnMessServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SpawnMessServerRpc()
+    {
+        SpawnMessClientRpc();
+    }
+
+    [ClientRpc]
+    public void SpawnMessClientRpc()
+    {
+        Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
+        messTime = 0f;
     }
 }
