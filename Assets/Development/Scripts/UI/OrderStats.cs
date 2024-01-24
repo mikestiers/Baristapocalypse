@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.Rendering;
@@ -39,23 +40,32 @@ public class OrderStats : MonoBehaviour
     }
 
     // Fade of unfade the order stats
-    public void SetInactive(bool isInactive)
+    public void OrderInProgress(bool isInProgress)
     {
-        Image[] images = GetComponentsInChildren<Image>(true); // The 'true' parameter includes inactive GameObjects
+        Image[] images = GetComponentsInChildren<Image>(); // The 'true' parameter includes inactive GameObjects
         foreach (Image image in images)
         {
             Color imageColor = image.GetComponent<Image>().color;
-            if (isInactive)
+            if (!isInProgress)
             {
                 imageColor.a = 0.2f;
                 selectedByPlayerImage.SetActive(false);
             }
-            else
+            else if (isInProgress)
             {
                 imageColor.a = 1.0f;
-                //selectedByPlayerImage.SetActive(true);
             }
             image.color = imageColor;
+
+            if (image.gameObject.name.Contains("Panel"))
+            {
+                Color tempcolor = image.GetComponentInParent<Image>().color;
+                tempcolor.a = 0.0f;
+                image.GetComponentInParent<Image>().color = tempcolor;
+
+                image.color = tempcolor;
+            }
+
         }
     }
 

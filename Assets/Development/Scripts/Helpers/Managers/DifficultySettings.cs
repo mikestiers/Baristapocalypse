@@ -21,6 +21,7 @@ public class DifficultySettings
     private float chanceToLoiter;
     private float minWaitTime;
     private float maxWaitTime;
+    private float drinkThreshold;
 
     public DifficultySettings(DifficultySO chosenDifficulty, int InitplayerCount)
     {
@@ -46,6 +47,7 @@ public class DifficultySettings
         minWaitTime = chosenDifficulty.minWaitTime;
         maxWaitTime = chosenDifficulty.maxWaitTime;
 
+        drinkThreshold = chosenDifficulty.drinkThreshold;
 
         /*
         switch (currentDifficulty.difficultyString)
@@ -195,5 +197,10 @@ public class DifficultySettings
     public float GetMaxWaitTime() 
     {
         return maxWaitTime;
+    }
+
+    public float GetDrinkThreshold()
+    {
+        return drinkThreshold;
     }
 }
