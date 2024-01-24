@@ -95,27 +95,26 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
         if (orderAssigned)
         {
-            orderStats.SetInactive(false);
+            orderStats.OrderInProgress(true);
             orderStats.orderTimer.value = (customer.customerLeaveTime - customer.orderTimer.Value) / customer.customerLeaveTime;
         }
 
         if (orderAssigned && orderStats.orderTimer.value <= 0 || !orderAssigned)
         {
-            orderStats.SetInactive(true);
-            orderStats.customerInfoRoot.SetActive(false);
-            orderStats.temperatureSegments.targetAttributeValue = 0;
-            orderStats.sweetnessSegments.targetAttributeValue = 0;
-            orderStats.spicinessSegments.targetAttributeValue = 0;
-            orderStats.strengthSegments.targetAttributeValue = 0;
-            orderStats.temperatureSegments.cumulativeIngredientsValue = 0;
-            orderStats.sweetnessSegments.cumulativeIngredientsValue = 0;
-            orderStats.spicinessSegments.cumulativeIngredientsValue = 0;
-            orderStats.strengthSegments.cumulativeIngredientsValue = 0;
-            orderStats.temperatureSegments.Reset();
-            orderStats.sweetnessSegments.Reset();
-            orderStats.spicinessSegments.Reset();
-            orderStats.strengthSegments.Reset();
-            orderAssigned = false;
+            if (orderStats.isActiveAndEnabled)
+            {
+                orderStats.OrderInProgress(false);
+                orderStats.customerInfoRoot.SetActive(false);
+                orderStats.temperatureSegments.targetAttributeValue = 0;
+                orderStats.sweetnessSegments.targetAttributeValue = 0;
+                orderStats.spicinessSegments.targetAttributeValue = 0;
+                orderStats.strengthSegments.targetAttributeValue = 0;
+                orderStats.temperatureSegments.cumulativeIngredientsValue = 0;
+                orderStats.sweetnessSegments.cumulativeIngredientsValue = 0;
+                orderStats.spicinessSegments.cumulativeIngredientsValue = 0;
+                orderStats.strengthSegments.cumulativeIngredientsValue = 0;
+                orderAssigned = false;
+            }
         }
     }
 
