@@ -224,7 +224,7 @@ public class UIManager : Singleton<UIManager>
                     customerReview.GenerateReview(customer);
                     customerReviewText.text = customerReview.ReviewText;
                     UpdateStarRating(customerReview.ReviewScore);
-                    customerReviewTab.gameObject.SetActive(true);
+                    customerReviewTabs[0].gameObject.SetActive(true);
                     break;
                 }
                 else
