@@ -36,9 +36,9 @@ public class Pickup : NetworkBehaviour
 
     public static void SpawnPickupItem(PickupSO pickupSo, IPickupObjectParent pickupObjectParent)
     {
-        BaristapocalypseMultiplayer.Instance.SpawnPickupObject(pickupSo, pickupObjectParent);
+        BaristapocalypseMultiplayer.Instance.SpawnPickupObject(pickupSo,pickupObjectParent);
     }
-
+    
     public void SetpickupObjectParent(IPickupObjectParent pickupObjectParent)
     {
         SetPickupObjectServerRpc(pickupObjectParent.GetNetworkObject());
@@ -58,14 +58,14 @@ public class Pickup : NetworkBehaviour
         {
             this.pickupObjectParent.ClearPickup();
         }
-
+    
         this.pickupObjectParent = pickupObjectParent;
-
+    
         if (pickupObjectParent.HasPickup())
         {
             Debug.Log("Player already has pickup");
         }
-
+        
         pickupObjectParent.SetPickup(this);
 
         FollowTransform.SetTargetTransform(pickupObjectParent.GetPickupTransform());
@@ -75,24 +75,24 @@ public class Pickup : NetworkBehaviour
     {
         DisablePickupObjectCollidersServerRpc(pickup.GetNetworkObject());
     }
-
+    
     [ServerRpc(RequireOwnership = false)]
     private void DisablePickupObjectCollidersServerRpc(NetworkObjectReference pickupNetworkObjectReference)
     {
         DisablePickupObjectCollidersClientRpc(pickupNetworkObjectReference);
     }
-
+    
     [ClientRpc]
     private void DisablePickupObjectCollidersClientRpc(NetworkObjectReference pickupNetworkObjectReference)
     {
         pickupNetworkObjectReference.TryGet(out NetworkObject pickupNetworkObject);
         Pickup pickupObject = pickupNetworkObject.GetComponent<Pickup>();
-
+        
         pickupObject.RemoveRigidBody();
         pickupObject.GetCollider().enabled = false;
 
     }
-
+   
 
     public PickupSO GetPickupObjectSo()
     {

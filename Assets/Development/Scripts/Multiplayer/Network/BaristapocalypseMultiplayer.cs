@@ -11,6 +11,8 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     public const int MAX_PLAYERS = 4;
 
     [SerializeField] private IngredientListSO ingredientListSO;
+    [SerializeField] private PickupListSo pickupList;
+    [SerializeField] private MessListSO MessList;
     public static BaristapocalypseMultiplayer Instance { get; private set; }
 
     public static bool playMultiplayer;
@@ -19,7 +21,10 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     public event EventHandler OnFailToJoinGame;
     public event EventHandler OnPlayerDataNetworkListChanged;
 
+    public int test;
+
     private NetworkList<PlayerData> playerDataNetworkList;
+    public List<Color> playerColorList;
 
     private void Awake()
     {  
@@ -70,7 +75,8 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
         playerDataNetworkList.Add(new PlayerData
         {
             clientId = clientId,
-        });
+            colorId = GetFirstUnusedColorId()
+        }); ;
     }
 
     public void StartClient()
@@ -114,19 +120,21 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void SpawnIngredientServerRpc(int ingredientSOIndex, NetworkObjectReference ingredientParentNetworkObjectReference)
     {
+        Debug.Log("Spawning ingredient");
         IngredientSO ingredientSO = GetIngredientSOFromIndex(ingredientSOIndex);
-        GameObject ingredientPrefab = Instantiate(ingredientSO.prefab);
-
-        NetworkObject ingredientNetworkObject = ingredientPrefab.GetComponent<NetworkObject>();
-        ingredientNetworkObject.Spawn(true);
-        Ingredient ingredient = ingredientPrefab.GetComponent<Ingredient>();
 
         ingredientParentNetworkObjectReference.TryGet(out NetworkObject ingredientParentNetworkObject);
         IIngredientParent ingredientParent = ingredientParentNetworkObject.GetComponent<IIngredientParent>();
+
+        Transform ingredientTransform = Instantiate(ingredientSO.prefab.transform);
+
+        NetworkObject ingredientNetworkObject = ingredientTransform.GetComponent<NetworkObject>();
+        ingredientNetworkObject.Spawn(true);
+
+        Ingredient ingredient = ingredientTransform.GetComponent<Ingredient>();
         ingredient.SetIngredientParent(ingredientParent);
 
         ingredient.DisableIngredientCollision(ingredient);
- 
     }
 
     public int GetIngredientSOIndex(IngredientSO ingredientSO)
@@ -174,6 +182,35 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
         return playerIndex < playerDataNetworkList.Count;
     }
 
+    public int GetPlayerDataIndexFromClientId(ulong clientId)
+    {
+        for(int i=0; i < playerDataNetworkList.Count; i++)
+        {
+            if (playerDataNetworkList[i].clientId == clientId)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public PlayerData GetPlayerDataFromClientId(ulong clientId)
+    {
+        foreach (PlayerData playerData in playerDataNetworkList)
+        {
+            if (playerData.clientId == clientId)
+            {
+                return playerData;
+            }
+        }
+        return default;
+    }
+
+    public PlayerData GetPlayerData()
+    {
+        return GetPlayerDataFromClientId(NetworkManager.Singleton.LocalClientId);
+    }
     public PlayerData GetPlayerDataFromPlayerIndex(int playerIndex)
     {
         return playerDataNetworkList[playerIndex];  

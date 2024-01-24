@@ -15,7 +15,6 @@ public class CustomerReview : MonoBehaviour
     private int reviewScore = 0;
     private string reviewText;
     private CustomerBase orderOwner;
-    public CustomerReactionIndicator customerReactionIndicator;
     public int ReviewScore
     {
         get { return reviewScore; }
@@ -109,26 +108,23 @@ public class CustomerReview : MonoBehaviour
         switch (reviewScore)
         {
             case 0:
-                cafeDescription = customerReactionIndicator.CustomerAngry();  
+                cafeDescription = "is terrible";
                 break;
             case 1:
-                cafeDescription = customerReactionIndicator.CustomerAngry();
+                cafeDescription = "kind of sucks";
                 break;
             case 2:
-                cafeDescription = customerReactionIndicator.CustomerSad();
+                cafeDescription = "is pretty mid bro";
                 break;
             case 3:
-                cafeDescription = customerReactionIndicator.CustomerSad();
+                cafeDescription = "has potential";
                 break;
             case 4:
-                cafeDescription = customerReactionIndicator.CustomerHappy(); 
+                cafeDescription = "made my day";
                 break;
             default:
-                if (reviewScore >= 5) 
-                {
-                    cafeDescription = customerReactionIndicator.CustomerHappy();
-                    
-                }
+                if (reviewScore >= 5)
+                    cafeDescription = "is amazing";
                 else
                 {
                     Debug.Log($"Invalid review score {reviewScore}");
@@ -137,7 +133,7 @@ public class CustomerReview : MonoBehaviour
                 break;
         }
 
-        string reviewText = $"{cafeDescription}";
+        string reviewText = $"This place {cafeDescription}";
         return reviewText;
     }
 

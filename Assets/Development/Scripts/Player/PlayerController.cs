@@ -12,7 +12,7 @@ using Cinemachine;
 using System.Linq;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObjectParent, ISpill
+public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObjectParent,ISpill
 {
     // Player Instance
     [HideInInspector] public static PlayerController Instance { get; private set; }
@@ -132,7 +132,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if (groundCheckRadius <= 0) groundCheckRadius = 0.05f;
 
         //Define the interactable layer mask to include station, ingredient, and mess layers.
-        interactableLayerMask = isStationLayer | isIngredientLayer | isMessLayer | isMopLayer | isCustomerLayer;
+        interactableLayerMask = isStationLayer | isIngredientLayer | isMessLayer | isMopLayer | isCustomerLayer ;
 
         RayCastOffset = new Vector3(0, 0.4f, 0);
 
@@ -146,7 +146,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         //inputManager.JumpEvent += OnJump;
         inputManager.DashEvent += OnDash;
         inputManager.ThrowEvent += OnThrow;
-        inputManager.InteractEvent += Interact;
+        inputManager.InteractEvent += Interact ;
         inputManager.InteractAltEvent += InteractAlt;
         inputManager.DebugConsoleEvent += ShowDebugConsole;
         inputManager.BrewingStationSelectEvent += OnChangeBrewingStationSelect;
@@ -175,7 +175,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         // Ground Check
         IsGrounded();
         // player movement
-        if (movementToggle)
+        if(movementToggle)
             Move(moveSpeed);
 
         if (!movementToggle)
@@ -289,7 +289,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             anim.SetFloat("horizontal", 0);
             return;
         }
-
+        
         curMoveInput = inputManager.moveDir * moveSpeed * Time.deltaTime;
         transform.forward = inputManager.moveDir;
 
@@ -331,10 +331,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
     }
 
-    //public void OnJump()
-    //{
-    //    // Jump logic if we want jumping
-    //}
+   //public void OnJump()
+   //{
+   //    // Jump logic if we want jumping
+   //}
 
     public void OnDash()
     {
@@ -343,23 +343,23 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         if (movementToggle)
             StartCoroutine(Dash());
-        // SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
-        //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
+       // SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
+       //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
 
         if (GetNumberOfIngredients() > 0)
         {
-            if (CheckIfHoldingLiquid() > 0)//stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
-            {
-                if (spillPrefab != null)
-                {
-                    Spill.PlayerCreateSpill(spillPrefab, this);
-                }
-                else
-                {
-                    Debug.Log("MessSO is null");
-                }
-                ThrowIngredient();
-            }
+           if (CheckIfHoldingLiquid() > 0)//stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
+           {
+               if (spillPrefab != null)
+               {
+                 Spill.PlayerCreateSpill(spillPrefab, this);
+               }
+               else
+               {
+                   Debug.Log("MessSO is null");
+               }
+               ThrowIngredient();
+           }
         }
         else return;
     }
@@ -382,7 +382,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public void OnThrow()
     {
-        if (!IsLocalPlayer) return;
+        if(!IsLocalPlayer) return;
         if (IsHoldingPickup)
         {
             ThrowPickup();
@@ -409,7 +409,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     {
         UpdateNumberOfIngredients();
         return numberOfIngredientsHeld;
-    }
+    } 
 
     public void UpdateNumberOfIngredients()
     {
@@ -419,9 +419,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     public int CheckIfHoldingLiquid()
     {
         int count = 0;
-        foreach (Ingredient i in ingredientsList)
+        foreach(Ingredient i in ingredientsList)
         {
-            if (i.GetIngredientSO().objectTag == "Milk")
+            if(i.GetIngredientSO().objectTag == "Milk")
             {
                 count++;
             }
@@ -431,11 +431,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public Transform GetNextHoldPoint()
     {
-        if (GetNumberOfIngredients() > GetMaxIngredients())
+        if(GetNumberOfIngredients() > GetMaxIngredients())
         {
             return null;
         }
-        Debug.Log("getting hold points " + (numberOfIngredientsHeld - 1));
+        Debug.Log("getting hold points " + (numberOfIngredientsHeld-1));
         return ingredientHoldPoints[GetNumberOfIngredients() - 1];
     }
 
@@ -446,7 +446,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public void SetIngredient(Ingredient ingredient)
     {
-        if (GetNumberOfIngredients() < GetMaxIngredients())
+        if(GetNumberOfIngredients() < GetMaxIngredients())
         {
             ingredientsList.Add(ingredient);
             GetNumberOfIngredients();
@@ -509,10 +509,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     {
         if (IsHoldingPickup)
             return;
-        if (GetNumberOfIngredients() >= GetMaxIngredients())
+        if(GetNumberOfIngredients() >= GetMaxIngredients())
         {
             Debug.Log("max ingredients spawned!");
-            return;
+            return; 
         }
 
         Ingredient.DestroyIngredient(floorIngredient);
@@ -639,7 +639,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     {
         if (IsHoldingPickup || !HasNoIngredients)
             return;
-
+       
         // Pickup p = Instantiate(pickup, pickupLocation) as Pickup;
         //Pickup.SpawnPickupItem(pickupSo, this);
         PickupSO pickupSo = pickup.GetPickupObjectSo();
@@ -727,10 +727,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
     {
-        if (clientId == OwnerClientId && HasIngredient()) // HasIngredient 
+        if(clientId == OwnerClientId && HasIngredient()) // HasIngredient 
         {
-            for (int i = 0; i < ingredientsList.Count; i++)
-            {
+            for(int i=0; i<ingredientsList.Count; i++) {
                 Ingredient.DestroyIngredient(ingredientsList[i]);
             }
         }
