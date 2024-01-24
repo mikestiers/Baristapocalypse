@@ -18,6 +18,7 @@ public class CustomerManager : Singleton<CustomerManager>
     [SerializeField] private int customersLeftinWave;
     [SerializeField] private int WavesLeft;
     [SerializeField] private int customersInStore = 0;
+    [SerializeField] private float initCustomerSpawnDelay;
     private int customerNumber = 0;
     List<string> customerNames = new List<string>
         {
@@ -96,7 +97,10 @@ public class CustomerManager : Singleton<CustomerManager>
         
         float delay = UnityEngine.Random.Range(minDelay, maxDelay);
 
-        StartCoroutine(NewCustomer(delay));
+        if(initCustomerSpawnDelay < 8f) initCustomerSpawnDelay = 8f;
+
+
+        StartCoroutine(NewCustomer(initCustomerSpawnDelay)); // change this to intial delay
 
     }
 
