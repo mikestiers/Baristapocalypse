@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +16,8 @@ public class OrderStats : MonoBehaviour
     [SerializeField] public OrderStatsSegments sweetnessSegments;
     [SerializeField] public OrderStatsSegments spicinessSegments;
     [SerializeField] public OrderStatsSegments strengthSegments;
+    [SerializeField] public GameObject selectedByPlayerImage;
+    [SerializeField] public List<PlayerController> currentPlayers;
 
     [Header("Customer Review")]
     [SerializeField] private GameObject customerReview;
@@ -43,10 +48,37 @@ public class OrderStats : MonoBehaviour
             if (isInactive)
             {
                 imageColor.a = 0.2f;
+                selectedByPlayerImage.SetActive(false);
             }
             else
+            {
                 imageColor.a = 1.0f;
+                //selectedByPlayerImage.SetActive(true);
+            }
             image.color = imageColor;
+        }
+    }
+
+    public List<PlayerController> GetActivePlayers()
+    {
+        return currentPlayers;
+    }
+
+    public void SetActivePlayer(PlayerController player)
+    {
+        if (currentPlayers.Count > 0)
+        {
+            currentPlayers.Add(player);
+            selectedByPlayerImage.SetActive(true);
+        }
+    }
+
+    public void RemoveActivePlayer(PlayerController player)
+    {
+        currentPlayers.Remove(player);
+        if (currentPlayers.Count == 0)
+        {
+            selectedByPlayerImage.SetActive(false);
         }
     }
 

@@ -42,6 +42,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     private Base selectedCustomer;
     public float sphereCastRadius = 1f;
     //private Collider ingredientCollider;
+    public int currentBrewingStation { get; set; } = 0;
 
     [Header("Ingredients Data")]
     [SerializeField] public Transform[] ingredientHoldPoints; // Array to hold multiple ingredient
@@ -148,6 +149,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.InteractEvent += Interact ;
         inputManager.InteractAltEvent += InteractAlt;
         inputManager.DebugConsoleEvent += ShowDebugConsole;
+        inputManager.BrewingStationSelectEvent += OnChangeBrewingStationSelect;
     }
 
     private void OnDisable()
@@ -158,6 +160,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.InteractEvent -= Interact;
         inputManager.InteractAltEvent -= InteractAlt;
         inputManager.DebugConsoleEvent -= ShowDebugConsole;
+        inputManager.BrewingStationSelectEvent -= OnChangeBrewingStationSelect;
     }
 
     private void Update()
@@ -687,6 +690,26 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     {
         UIManager.Instance.debugConsole.SetActive(!UIManager.Instance.debugConsoleActive);
         UIManager.Instance.debugConsoleActive = !UIManager.Instance.debugConsoleActive;
+    }
+
+    public void OnChangeBrewingStationSelect()
+    {
+        BrewingStation[] brewingStations = UnityEngine.Object.FindObjectsOfType<BrewingStation>();
+
+        // Check if there are any brewing stations
+        if (brewingStations.Length > 0)
+        {
+            // Increment the currentBrewingStation index, wrapping around using modulo
+            int previousBrewingStation = currentBrewingStation;
+            currentBrewingStation = (currentBrewingStation + 1) % brewingStations.Length;
+            OrderStats[] orderStats = UnityEngine.Object.FindObjectsOfType<OrderStats>();
+            orderStats[previousBrewingStation].selectedByPlayerImage.SetActive(true);
+            orderStats[currentBrewingStation].selectedByPlayerImage.SetActive(false);
+        }
+        else
+        {
+            Debug.Log("No brewing stations found");
+        }
     }
 
     public override void OnNetworkSpawn()
