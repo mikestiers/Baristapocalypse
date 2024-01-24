@@ -74,7 +74,7 @@ public class CustomerBase : Base
             orderTimer += Time.deltaTime;
 
         if (messTime != null)
-            messTime += Time.deltaTime; 
+            messTime += Time.deltaTime;
 
         switch (currentState)
         {
@@ -188,10 +188,10 @@ public class CustomerBase : Base
             SetCustomerStateServerRpc(CustomerState.Leaving);
             agent.SetDestination(exit.position);
         }
-    
+
 
         // To be implmented or removed
-        if(messTime >= GameManager.Instance.difficultySettings.GetLoiterMessEverySec())
+        if (messTime >= GameManager.Instance.difficultySettings.GetLoiterMessEverySec())
         {
             CreateMess();
             RestartMessTimer();
@@ -282,7 +282,7 @@ public class CustomerBase : Base
             interactParticle.Play();
         }
 
-        if(makingAMess == true)
+        if (makingAMess == true)
         {
             SetCustomerStateServerRpc(CustomerState.Leaving);
             agent.SetDestination(exit.position);
@@ -293,7 +293,7 @@ public class CustomerBase : Base
             UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
             if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
         }
-        
+
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -308,7 +308,7 @@ public class CustomerBase : Base
     {
         Debug.Log("customer leaving");
         CustomerManager.Instance.Leaveline();
-       
+
     }
 
     // CUSTOMER STATE METHODS
@@ -335,7 +335,7 @@ public class CustomerBase : Base
     // CUSTOMER IDENTIFICATION METHODS
     // These methods are for setting or displaying visual identifiers
     // such as customer names, reviews, dialogue, numbers, etc...
-     public void SetCustomerName(String newName)
+    public void SetCustomerName(String newName)
     {
         customerName = newName;
     }
@@ -346,7 +346,7 @@ public class CustomerBase : Base
         customerNameText.text = customerName;
         customerDialogue.SetActive(false);
         customerNumberCanvas.enabled = false;
-       
+
     }
 
     public void DisplayCustomerVisualIdentifiers()
@@ -450,13 +450,13 @@ public class CustomerBase : Base
         int minigameResult = coffeeAttributes.GetIsMinigamePerfect() ? 1 : 0;
         //ScoreTimerManager.Instance.score += result * (minigameResult + 1);
         Debug.Log($"Result for {customerNumber}: {result}");
-        
+
         switch (result)
         {
             case 5:
                 Perfect();
-               // ScoreTimerManager.Instance.IncrementStreak();
-               // ScoreTimerManager.Instance.score += result * ScoreTimerManager.Instance.StreakCount;
+                // ScoreTimerManager.Instance.IncrementStreak();
+                // ScoreTimerManager.Instance.score += result * ScoreTimerManager.Instance.StreakCount;
                 CustomerLeave();
                 break;
 
@@ -481,7 +481,7 @@ public class CustomerBase : Base
             case -5:
 
                 Angry();
-               // ScoreTimerManager.Instance.score += result;
+                // ScoreTimerManager.Instance.score += result;
                 CustomerLeave();
                 break;
         }
@@ -491,21 +491,21 @@ public class CustomerBase : Base
     {
         Debug.Log("the customer is not happy with the serving");
 
-       //customerReactionIndicator.CustomerAngry();
+        //customerReactionIndicator.CustomerAngry();
     }
 
     private void Perfect()
     {
         Debug.Log("you did great!");
 
-       //customerReactionIndicator.CustomerHappy();
+        //customerReactionIndicator.CustomerHappy();
     }
 
     private void Reorder()
     {
         Debug.Log("customer is not happy with the serving and wants you to try again");
 
-       //customerReactionIndicator.CustomerSad();
+        //customerReactionIndicator.CustomerSad();
     }
 
     public void StartOrderTimer()
@@ -520,7 +520,7 @@ public class CustomerBase : Base
 
     public void RestartMessTimer()
     {
-        messTime = 0f;  
+        messTime = 0f;
     }
 
     public void StopMessTimer()

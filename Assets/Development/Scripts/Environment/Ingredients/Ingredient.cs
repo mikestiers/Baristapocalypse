@@ -4,11 +4,12 @@ using UnityEngine;
 using Unity.Netcode;
 
 public class Ingredient : NetworkBehaviour
-{ 
+{
+    
     [field: SerializeField] public IngredientSO IngredientSO { get; private set; }
 
     private IIngredientParent ingredientParent;
-    public IngredientFollowTransform followTransform;
+    private IngredientFollowTransform followTransform;
 
     protected virtual void Awake()
     {
@@ -42,10 +43,14 @@ public class Ingredient : NetworkBehaviour
             this.ingredientParent.ClearIngredient();
         }
         this.ingredientParent = ingredientParent;
+
+        if (ingredientParent.HasIngredient())
+        {
+            Debug.Log("Counter already has object");
+        }
         ingredientParent.SetIngredient(this);
 
         followTransform.SetTargetTransform(ingredientParent.GetIngredientTransform());
-        DisableIngredientCollision(this);
     }
 
     public void DisableIngredientCollision(Ingredient ingredient)
@@ -69,30 +74,6 @@ public class Ingredient : NetworkBehaviour
         if (ingredientCollider != null)
         {
             ingredientCollider.enabled = false;
-        }
-    }
-
-    public void EnableIngredientCollision(Ingredient ingredient)
-    {
-        EnableIngredientCollisionServerRpc(ingredient.GetNetworkObject());
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void EnableIngredientCollisionServerRpc(NetworkObjectReference ingredientNetworkObjectReference)
-    {
-        EnableIngredientCollisionClientRpc(ingredientNetworkObjectReference);
-    }
-
-    [ClientRpc]
-    private void EnableIngredientCollisionClientRpc(NetworkObjectReference ingredientNetworkObjectReference)
-    {
-        ingredientNetworkObjectReference.TryGet(out NetworkObject ingredientNetworkObject);
-        Ingredient ingredient = ingredientNetworkObject.GetComponent<Ingredient>();
-        // Disable the collider immediately after instantiation
-        Collider ingredientCollider = ingredient.GetComponent<Collider>();
-        if (ingredientCollider != null)
-        {
-            ingredientCollider.enabled = true;
         }
     }
 

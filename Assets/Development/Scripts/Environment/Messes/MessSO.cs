@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu (fileName ="MessScriptableObjects", menuName ="ScriptableObjects/Mess")]
+[CreateAssetMenu()]
 public class MessSO : ScriptableObject
 {
     public GameObject prefab;
