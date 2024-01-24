@@ -21,7 +21,8 @@ public class OrderStats : MonoBehaviour
 
     [Header("Customer Review")]
     [SerializeField] private GameObject customerReview;
-    [SerializeField] private CustomerBase orderOwner;
+
+    private CustomerBase orderOwner;
 
     public CustomerBase GetOrderOwner()
     {
