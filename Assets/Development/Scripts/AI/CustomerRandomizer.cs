@@ -45,10 +45,10 @@ public class CustomerRandomizer : NetworkBehaviour
         //strenthIngredient.icon.transform.SetParent(cheatIconsLayoutGroup.transform);
         //spicinessIngredient.icon.transform.SetParent(cheatIconsLayoutGroup.transform);
         
-        Debug.Log("ISO Temperature: " + temperatureIngredient.name);
-        Debug.Log("ISO Sweetness: " + sweetnessIngredient.name);
-        Debug.Log("ISO Strength: " + strenthIngredient.name);
-        Debug.Log("ISO Spiciness: " + spicinessIngredient.name);
+        Debug.Log($"ISO Temperature {this.name}: {temperatureIngredient.name}");
+        Debug.Log($"ISO Sweetness {this.name}: {sweetnessIngredient.name}");
+        Debug.Log($"ISO Strength {this.name}: {strenthIngredient.name}");
+        Debug.Log($"ISO Spiciness {this.name}: {spicinessIngredient.name}");
 
         // DELETE AFTER TESTING //
         sweet = sweetnessIngredient;

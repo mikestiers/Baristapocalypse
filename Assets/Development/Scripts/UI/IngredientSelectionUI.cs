@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
+using System.Linq;
 
 public class IngredientSelectionUI : BaseStation
 {
@@ -19,14 +21,16 @@ public class IngredientSelectionUI : BaseStation
     [SerializeField] private IngredientSO[] ingredientListSO;
 
     private IngredientSO currentIngredient;
+    private int currentOrderStats;
     private int ingredientListSOIndex;
 
     private void Start()
     {
         ingredientListSOIndex = 0;
+        //currentOrderStats = player.currentBrewingStation;
         currentIngredient = ingredientListSO[ingredientListSOIndex];
         ingredientButtons = buttonsRoot.GetComponentsInChildren<Button>();
-        brewingStations = Object.FindObjectsOfType<BrewingStation>();
+        brewingStations = UnityEngine.Object.FindObjectsOfType<BrewingStation>();
     }
 
     private void Update()
@@ -62,8 +66,8 @@ public class IngredientSelectionUI : BaseStation
         EventSystem.current.SetSelectedGameObject(null);
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
         player.movementToggle = true;
-        brewingStations[0].ingredientSOList.Add(currentIngredient);
-        OrderStats orderStats = orderStatsRoot.GetChild(0).GetComponent<OrderStats>();
+        brewingStations[player.currentBrewingStation].ingredientSOList.Add(currentIngredient);
+        OrderStats orderStats = orderStatsRoot.GetChild(player.currentBrewingStation).GetComponent<OrderStats>();
         orderStats.temperatureSegments.cumulativeIngredientsValue = orderStats.temperatureSegments.potentialIngredientValue;
         orderStats.sweetnessSegments.cumulativeIngredientsValue = orderStats.sweetnessSegments.potentialIngredientValue;
         orderStats.spicinessSegments.cumulativeIngredientsValue = orderStats.spicinessSegments.potentialIngredientValue;
@@ -120,7 +124,7 @@ public class IngredientSelectionUI : BaseStation
     {
         if (orderStatsRoot != null && orderStatsRoot.childCount > 0)
         {
-            OrderStats orderStats = orderStatsRoot.GetChild(0).GetComponent<OrderStats>();
+            OrderStats orderStats = orderStatsRoot.GetChild(player.currentBrewingStation).GetComponent<OrderStats>();
             orderStats.temperatureSegments.potentialIngredientValue = currentIngredient.temperature + orderStats.temperatureSegments.cumulativeIngredientsValue;
             orderStats.sweetnessSegments.potentialIngredientValue = currentIngredient.sweetness + orderStats.sweetnessSegments.cumulativeIngredientsValue;
             orderStats.spicinessSegments.potentialIngredientValue = currentIngredient.spiciness + orderStats.spicinessSegments.cumulativeIngredientsValue;
@@ -137,7 +141,7 @@ public class IngredientSelectionUI : BaseStation
         ingredientMenu.GetComponent<Animator>().Play("Ingredient_UI_Shrink");
         yield return new WaitForSeconds(0.5f);
         Hide(ingredientMenu);
-        OrderStats orderStats = orderStatsRoot.GetChild(0).GetComponent<OrderStats>();
+        OrderStats orderStats = orderStatsRoot.GetChild(player.currentBrewingStation).GetComponent<OrderStats>();
         orderStats.temperatureSegments.potentialIngredientValue = 0;
         orderStats.sweetnessSegments.potentialIngredientValue = 0;
         orderStats.spicinessSegments.potentialIngredientValue = 0;
