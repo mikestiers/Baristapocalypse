@@ -122,10 +122,9 @@ public class CustomerBase : Base
     private void UpdateWaiting()
     {
         // To be implmented or removed
-        if (inLine == true) return;
+        if (makingAMess == true) SetCustomerStateServerRpc(CustomerState.Loitering);
 
-        SetCustomerStateServerRpc(CustomerState.Loitering);
-        
+
     }
 
     private void UpdateOrdering()
