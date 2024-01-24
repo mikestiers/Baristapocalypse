@@ -377,7 +377,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if (GetNumberOfIngredients() > 0)
         {
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.throwIngredient);
-            ThrowIngedient();
+            ThrowIngredient();
 
             numberOfIngredientsHeld = 0;
 
@@ -462,7 +462,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         return ingredient;
     }
 
-    public void ThrowIngedient()
+    public void ThrowIngredient()
     {
         for (int i = 0; i < ingredientHoldPoints.Length; i++)
         {
