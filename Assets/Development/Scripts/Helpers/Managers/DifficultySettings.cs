@@ -22,6 +22,10 @@ public class DifficultySettings
     private float minWaitTime;
     private float maxWaitTime;
     private float drinkThreshold;
+    public IngredientListSO temperatureIngredientList { get; }
+    public IngredientListSO sweetnessIngredientList { get; }
+    public IngredientListSO strengthIngredientList { get; }
+    public IngredientListSO spicinessIngredientList { get; }
 
     public DifficultySettings(DifficultySO chosenDifficulty, int InitplayerCount)
     {
@@ -48,6 +52,11 @@ public class DifficultySettings
         maxWaitTime = chosenDifficulty.maxWaitTime;
 
         drinkThreshold = chosenDifficulty.drinkThreshold;
+
+        temperatureIngredientList = chosenDifficulty.temperatureIngredientList;
+        sweetnessIngredientList = chosenDifficulty.sweetnessIngredientList;
+        strengthIngredientList = chosenDifficulty.strengthIngredientList;
+        spicinessIngredientList = chosenDifficulty.spicinessIngredientList;
 
         /*
         switch (currentDifficulty.difficultyString)

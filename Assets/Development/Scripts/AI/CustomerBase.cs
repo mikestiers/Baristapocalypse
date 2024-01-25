@@ -162,7 +162,7 @@ public class CustomerBase : Base
         {
             Destroy(gameObject);
             Debug.Log("this is our disappearing customer issue"); // if you see this, the customer probably disappeared and the review didn't show.  something about being close to the entrance causes the player to destroy on leaving
-            UIManager.Instance.RemoveCustomerUiOrder(this);
+            //UIManager.Instance.RemoveCustomerUiOrder(this);
         }
     }
 
@@ -405,7 +405,7 @@ public class CustomerBase : Base
     public void JustGotHandedCoffee(CoffeeAttributes coffee)
     {
         CustomerReaction(coffee, coffeeAttributes);
-        UIManager.Instance.ShowCustomerReview(this);
+        //UIManager.Instance.ShowCustomerReview(this);
     }
 
     void HeadDetach()
