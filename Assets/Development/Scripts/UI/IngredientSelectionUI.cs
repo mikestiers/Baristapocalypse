@@ -19,16 +19,24 @@ public class IngredientSelectionUI : BaseStation
     BrewingStation[] brewingStations;
 
     [SerializeField] private IngredientSO[] ingredientListSO;
-
+    //[SerializeField] private IngredientListSO temperatureIngredientList;
+    //[SerializeField] private IngredientListSO sweetnessIngredientList;
+    //[SerializeField] private IngredientListSO strengthIngredientList;
+    //[SerializeField] private IngredientListSO spicinessIngredientList;
+    public IngredientListSO ingredientList;
+    private int ingredientListIndex;
     private IngredientSO currentIngredient;
-    private int currentOrderStats;
-    private int ingredientListSOIndex;
 
     private void Start()
     {
-        ingredientListSOIndex = 0;
-        //currentOrderStats = player.currentBrewingStation;
-        currentIngredient = ingredientListSO[ingredientListSOIndex];
+        //temperatureIngredientList = GameManager.Instance.difficultySettings.temperatureIngredientList;
+        //sweetnessIngredientList = GameManager.Instance.difficultySettings.sweetnessIngredientList;
+        //strengthIngredientList = GameManager.Instance.difficultySettings.strengthIngredientList;
+        //spicinessIngredientList = GameManager.Instance.difficultySettings.spicinessIngredientList;
+        //Debug.Log(GameManager.Instance.difficultySettings.GetNumberofCustomersInwave());
+
+        ingredientListIndex = 0;
+        currentIngredient = ingredientList.ingredientSOList[ingredientListIndex];
         ingredientButtons = buttonsRoot.GetComponentsInChildren<Button>();
         brewingStations = UnityEngine.Object.FindObjectsOfType<BrewingStation>();
     }
@@ -52,9 +60,9 @@ public class IngredientSelectionUI : BaseStation
             {
                 if (selectedObj == ingredientButtons[i].gameObject)
                 {
-                    ingredientListSOIndex = i;
-                    currentIngredient = ingredientListSO[ingredientListSOIndex];
-                    CalculateIngredients(currentIngredient, ingredientListSOIndex);
+                    ingredientListIndex = i;
+                    currentIngredient = ingredientList.ingredientSOList[ingredientListIndex];
+                    CalculateIngredients(currentIngredient);
                     break;
                 }
             }
@@ -120,7 +128,7 @@ public class IngredientSelectionUI : BaseStation
         SetDefaultSelected(ingredientButtons[0].gameObject);
     }
 
-    private void CalculateIngredients(IngredientSO currentIngredient, int ingredientListSOIndex)
+    private void CalculateIngredients(IngredientSO currentIngredient)
     {
         if (orderStatsRoot != null && orderStatsRoot.childCount > 0)
         {

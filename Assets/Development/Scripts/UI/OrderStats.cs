@@ -19,6 +19,7 @@ public class OrderStats : MonoBehaviour
     [SerializeField] public OrderStatsSegments strengthSegments;
     [SerializeField] public GameObject selectedByPlayerImage;
     [SerializeField] public List<PlayerController> currentPlayers;
+    //[SerializeField] public bool orderInProgress { get; set; }
 
     [Header("Customer Review")]
     [SerializeField] private GameObject customerReview;
@@ -29,20 +30,25 @@ public class OrderStats : MonoBehaviour
         return orderOwner;
     }
 
-    public void Initialize(CustomerBase customer)
+    public void SetOrderOwner(CustomerBase customer)
     {
         orderOwner = customer;
-        customerNumberText.text = customer.customerNumber.ToString();
-        temperatureSegments.targetAttributeValue = customer.coffeeAttributes.GetTemperature();
-        sweetnessSegments.targetAttributeValue = customer.coffeeAttributes.GetSweetness();
-        spicinessSegments.targetAttributeValue = customer.coffeeAttributes.GetSpiciness();
-        strengthSegments.targetAttributeValue = customer.coffeeAttributes.GetStrength();
     }
+
+    //public void Initialize(CustomerBase customer)
+    //{
+    //    orderOwner = customer;
+    //    customerNumberText.text = customer.customerNumber.ToString();
+    //    temperatureSegments.targetAttributeValue = customer.coffeeAttributes.GetTemperature();
+    //    sweetnessSegments.targetAttributeValue = customer.coffeeAttributes.GetSweetness();
+    //    spicinessSegments.targetAttributeValue = customer.coffeeAttributes.GetSpiciness();
+    //    strengthSegments.targetAttributeValue = customer.coffeeAttributes.GetStrength();
+    //}
 
     // Fade of unfade the order stats
     public void OrderInProgress(bool isInProgress)
     {
-        Image[] images = GetComponentsInChildren<Image>(); // The 'true' parameter includes inactive GameObjects
+        Image[] images = GetComponentsInChildren<Image>(); // not including 'true' parameter because it includes inactive objects and the segments are not active by default
         foreach (Image image in images)
         {
             Color imageColor = image.GetComponent<Image>().color;
@@ -50,6 +56,20 @@ public class OrderStats : MonoBehaviour
             {
                 imageColor.a = 0.2f;
                 selectedByPlayerImage.SetActive(false);
+
+
+                //customerInfoRoot.SetActive(false);
+                //temperatureSegments.targetAttributeValue = 0;
+                //sweetnessSegments.targetAttributeValue = 0;
+                //spicinessSegments.targetAttributeValue = 0;
+                //strengthSegments.targetAttributeValue = 0;
+                //temperatureSegments.cumulativeIngredientsValue = 0;
+                //sweetnessSegments.cumulativeIngredientsValue = 0;
+                //spicinessSegments.cumulativeIngredientsValue = 0;
+                //strengthSegments.cumulativeIngredientsValue = 0;
+                //orderOwner = null;
+
+
             }
             else if (isInProgress)
             {
@@ -67,6 +87,8 @@ public class OrderStats : MonoBehaviour
             }
 
         }
+
+        //orderInProgress = isInProgress;
     }
 
     public List<PlayerController> GetActivePlayers()
@@ -94,41 +116,41 @@ public class OrderStats : MonoBehaviour
 
     public void SetTemperature()
     {
-        temperatureSegments.UpdateSegmentColors(temperatureSegments.cumulativeIngredientsValue);
+        temperatureSegments.UpdateSegments(temperatureSegments.cumulativeIngredientsValue);
     }
 
     public void SetSweetness()
     {
-        sweetnessSegments.UpdateSegmentColors(sweetnessSegments.cumulativeIngredientsValue);
+        sweetnessSegments.UpdateSegments(sweetnessSegments.cumulativeIngredientsValue);
     }
 
     public void SetSpiciness()
     {
-        spicinessSegments.UpdateSegmentColors(spicinessSegments.cumulativeIngredientsValue);
+        spicinessSegments.UpdateSegments(spicinessSegments.cumulativeIngredientsValue);
     }
 
     public void SetStrength()
     {
-        strengthSegments.UpdateSegmentColors(strengthSegments.cumulativeIngredientsValue);
+        strengthSegments.UpdateSegments(strengthSegments.cumulativeIngredientsValue);
     }
 
     public void SetPotentialTemperature()
     {
-        temperatureSegments.UpdateSegmentColors(temperatureSegments.potentialIngredientValue);
+        temperatureSegments.UpdateSegments(temperatureSegments.potentialIngredientValue);
     }
 
     public void SetPotentialSweetness()
     {
-        sweetnessSegments.UpdateSegmentColors(sweetnessSegments.potentialIngredientValue);
+        sweetnessSegments.UpdateSegments(sweetnessSegments.potentialIngredientValue);
     }
 
     public void SetPotentialSpiciness()
     {
-        spicinessSegments.UpdateSegmentColors(spicinessSegments.potentialIngredientValue);
+        spicinessSegments.UpdateSegments(spicinessSegments.potentialIngredientValue);
     }
 
     public void SetPotentialStrength()
     {
-        strengthSegments.UpdateSegmentColors(strengthSegments.potentialIngredientValue);
+        strengthSegments.UpdateSegments(strengthSegments.potentialIngredientValue);
     }
 }

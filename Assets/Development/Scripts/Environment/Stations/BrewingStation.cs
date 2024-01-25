@@ -98,6 +98,10 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             orderStats.OrderInProgress(true);
             orderStats.orderTimer.value = (customer.customerLeaveTime - customer.orderTimer.Value) / customer.customerLeaveTime;
         }
+        //else
+        //{
+        //     orderAssigned = false;
+        //}
 
         if (orderAssigned && orderStats.orderTimer.value <= 0 || !orderAssigned)
         {
@@ -121,6 +125,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     public void SetOrder(CustomerBase customerOrder)
     {
         customer = customerOrder;
+        //orderStats.SetOrderOwner(customerOrder);  //<--- TURN THIS ON AND FIX / REMOVE WHAT BREAKS.  reveals lots of dead code
         orderStats.customerInfoRoot.SetActive(true);
         orderStats.customerNumberText.text = customerOrder.customerNumber.ToString();
         orderStats.customerNameText.text = customerOrder.customerName;

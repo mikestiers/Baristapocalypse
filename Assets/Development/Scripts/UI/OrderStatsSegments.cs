@@ -1,7 +1,5 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.Rendering.HableCurve;
 
 public class OrderStatsSegments : MonoBehaviour
 {
@@ -11,23 +9,23 @@ public class OrderStatsSegments : MonoBehaviour
     public int targetAttributeValue;
     public GameObject targetAttributeSelector;
     public GameObject potentialAttributeSelector;
+    private OrderStats orderStats;
 
     private void Start()
     {
         ResetSegments();
+        orderStats = GetComponentInParent<OrderStats>();
     }
 
     public void ResetSegments()
     {
         foreach (var segment in segments)
         {
-            //segment.GetComponent<Image>().color = Color.green;
             Color segmentColor = segment.GetComponent<Image>().color;
             segmentColor.a = 0.0f;
             segment.GetComponent<Image>().color = segmentColor;
             segment.SetActive(false);
         }
-        Debug.Log("Resetting segments - how often is this happening");
     }
 
     private void Update()
@@ -35,15 +33,15 @@ public class OrderStatsSegments : MonoBehaviour
         // Make this not be required every frame
         int targetValue = MapValue(targetAttributeValue);
         GameObject targetSegment = segments[targetValue];
-        SetTarget(targetSegment);
+        //if (orderStats.orderInProgress)
+            SetTarget(targetSegment);
     }
 
-    public void UpdateSegmentColors(int cumulative)
+    public void UpdateSegments(int cumulative)
     {
         // Reset all segments every time the segments are updated to clear any invalid colors
         foreach (var segment in segments)
         {
-            //segment.GetComponent<Image>().color = Color.green;
             Color segmentColor = segment.GetComponent<Image>().color;
             segmentColor.a = 0.0f;
             segment.SetActive(false);
@@ -73,23 +71,18 @@ public class OrderStatsSegments : MonoBehaviour
         // difficulty range
         Color targetSegmentRangeColor = Color.green;
         targetSegmentColor.a = 1.0f;
-        //if (CustomerManager.Instance.difficultySettings.GetDrinkThreshold() == 3)
+
+        //if (GameManager.Instance.difficultySettings.GetDrinkThreshold() == 3)
         //{
-        if (3 == 3)
-        {
-            segments[MapValue(targetAttributeValue) - 1].GetComponent<Image>().color = targetSegmentRangeColor;
-            segments[MapValue(targetAttributeValue) + 1].GetComponent<Image>().color = targetSegmentRangeColor;
-            segments[MapValue(targetAttributeValue) - 1].SetActive(true);
-            segments[MapValue(targetAttributeValue) + 1].SetActive(true);
-        }
+        //    segments[MapValue(targetAttributeValue) - 1].GetComponent<Image>().color = targetSegmentRangeColor;
+        //    segments[MapValue(targetAttributeValue) + 1].GetComponent<Image>().color = targetSegmentRangeColor;
+        //    segments[MapValue(targetAttributeValue) - 1].SetActive(true);
+        //    segments[MapValue(targetAttributeValue) + 1].SetActive(true);
         //}
     }
 
     private void SetPotential(GameObject potentialSegment)
     {
-        int cumulativeValue = MapValue(cumulativeIngredientsValue);
-        int potentialValue = MapValue(potentialIngredientValue);
-        int targetValue = MapValue(targetAttributeValue);
         potentialSegment.SetActive(true);
         potentialAttributeSelector.transform.SetParent(potentialSegment.transform);
         potentialAttributeSelector.transform.position = potentialSegment.transform.position;
