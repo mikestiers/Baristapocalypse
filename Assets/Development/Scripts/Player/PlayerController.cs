@@ -86,7 +86,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     private IngredientSO ingredientSO;
     private PickupSO pickupSo;
     public bool HasNoIngredients => GetNumberOfIngredients() == 0;
-    private Mouse mouse = Mouse.current;
+    public Mouse mouse = Mouse.current;
     private LayerMask interactableLayerMask; // A single LayerMask for all interactable objects
     private Vector3 RayCastOffset; // Temp for raising Raycast poin of origin
 

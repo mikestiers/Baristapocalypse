@@ -8,9 +8,16 @@ public class IngredientStation : BaseStation
 {
     [SerializeField] private IngredientSO ingredientSO;
     [SerializeField] private ParticleSystem interactParticle;
+    public IngredientSelectionUI ingredientSelection;
 
+    public void Start()
+    {
+        ingredientSelection = GetComponentInChildren<IngredientSelectionUI>();
+
+    }
     public override void Interact(PlayerController player)
     {
+        ingredientSelection.Show();
         if (player.IsHoldingPickup)
             return;
 

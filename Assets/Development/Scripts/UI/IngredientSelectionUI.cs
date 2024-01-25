@@ -5,11 +5,11 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 using System.Linq;
+using UnityEngine.InputSystem;
 
 public class IngredientSelectionUI : BaseStation
 {
     private PlayerController player;
-
     public Transform orderStatsRoot;
     private bool currentStationInteraction;
 
@@ -26,6 +26,7 @@ public class IngredientSelectionUI : BaseStation
 
     private void Start()
     {
+        
         ingredientListSOIndex = 0;
         //currentOrderStats = player.currentBrewingStation;
         currentIngredient = ingredientListSO[ingredientListSOIndex];
@@ -79,29 +80,6 @@ public class IngredientSelectionUI : BaseStation
         StartCoroutine(CloseMenu());
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == "Player")
-        {
-            player = other.GetComponent<PlayerController>();
-            //player.movementToggle = false;
-
-            //Display UI ingredient menu
-            Show(ingredientMenu);
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.tag == "Player")
-        {
-            player.movementToggle = true;
-
-            // Hide UI ingredient menu
-            EventSystem.current.SetSelectedGameObject(null);
-            StartCoroutine(CloseMenu());
-        }
-    }
 
     private void Hide(GameObject obj)
     {
@@ -112,10 +90,10 @@ public class IngredientSelectionUI : BaseStation
         EventSystem.current.SetSelectedGameObject(defaultSelected);
     }
 
-    private void Show(GameObject obj)
+    public void Show()
     {
         currentStationInteraction = true;
-        obj.SetActive(true);
+        ingredientMenu.SetActive(true);
         EventSystem.current.firstSelectedGameObject = ingredientButtons[0].gameObject;
         SetDefaultSelected(ingredientButtons[0].gameObject);
     }
