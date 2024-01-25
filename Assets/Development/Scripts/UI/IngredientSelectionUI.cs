@@ -17,32 +17,43 @@ public class IngredientSelectionUI : BaseStation
     public GameObject buttonsRoot;
     [SerializeField] private Button[] ingredientButtons;
     BrewingStation[] brewingStations;
-
-    [SerializeField] private IngredientSO[] ingredientListSO;
-    //[SerializeField] private IngredientListSO temperatureIngredientList;
-    //[SerializeField] private IngredientListSO sweetnessIngredientList;
-    //[SerializeField] private IngredientListSO strengthIngredientList;
-    //[SerializeField] private IngredientListSO spicinessIngredientList;
+    public IngredientStationType ingredientStationType;
     public IngredientListSO ingredientList;
     private int ingredientListIndex;
     private IngredientSO currentIngredient;
 
     private void Start()
     {
-        //temperatureIngredientList = GameManager.Instance.difficultySettings.temperatureIngredientList;
-        //sweetnessIngredientList = GameManager.Instance.difficultySettings.sweetnessIngredientList;
-        //strengthIngredientList = GameManager.Instance.difficultySettings.strengthIngredientList;
-        //spicinessIngredientList = GameManager.Instance.difficultySettings.spicinessIngredientList;
-        //Debug.Log(GameManager.Instance.difficultySettings.GetNumberofCustomersInwave());
-
         ingredientListIndex = 0;
-        currentIngredient = ingredientList.ingredientSOList[ingredientListIndex];
+        
         ingredientButtons = buttonsRoot.GetComponentsInChildren<Button>();
         brewingStations = UnityEngine.Object.FindObjectsOfType<BrewingStation>();
     }
 
     private void Update()
     {
+        if (GameManager.Instance.difficultySettings == null)
+            return;
+
+        switch (ingredientStationType)
+        {
+            case IngredientStationType.Temperature:
+                ingredientList = GameManager.Instance.difficultySettings.temperatureIngredientList;
+                break;
+            case IngredientStationType.Sweetness:
+                ingredientList = GameManager.Instance.difficultySettings.sweetnessIngredientList;
+                break;
+            case IngredientStationType.Strength:
+                ingredientList = GameManager.Instance.difficultySettings.strengthIngredientList;
+                break;
+            case IngredientStationType.Spiciness:
+                ingredientList = GameManager.Instance.difficultySettings.spicinessIngredientList;
+                break;
+            default:
+                Debug.LogError("Ingredient Station Type not set");
+                break;
+        }
+
         if (!currentStationInteraction)
             return;
 
@@ -157,4 +168,12 @@ public class IngredientSelectionUI : BaseStation
         currentStationInteraction = false;
         player.movementToggle = true;
     }
+}
+
+public enum IngredientStationType
+{
+    Temperature,
+    Sweetness,
+    Spiciness,
+    Strength
 }

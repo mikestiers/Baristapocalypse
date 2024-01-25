@@ -19,11 +19,31 @@ public class OrderStats : MonoBehaviour
     [SerializeField] public OrderStatsSegments strengthSegments;
     [SerializeField] public GameObject selectedByPlayerImage;
     [SerializeField] public List<PlayerController> currentPlayers;
-    //[SerializeField] public bool orderInProgress { get; set; }
+    [SerializeField] public bool orderInProgress { get; set; }
 
     [Header("Customer Review")]
     [SerializeField] private GameObject customerReview;
     [SerializeField] private CustomerBase orderOwner;
+
+    //[SerializeField] private IngredientListSO temperatureIngredientList;
+    //[SerializeField] private IngredientListSO sweetnessIngredientList;
+    //[SerializeField] private IngredientListSO strengthIngredientList;
+    //[SerializeField] private IngredientListSO spicinessIngredientList;
+
+    //private void Start()
+    //{
+    //    temperatureIngredientList = GameManager.Instance.difficultySettings.temperatureIngredientList;
+    //    sweetnessIngredientList = GameManager.Instance.difficultySettings.sweetnessIngredientList;
+    //    strengthIngredientList = GameManager.Instance.difficultySettings.strengthIngredientList;
+    //    spicinessIngredientList = GameManager.Instance.difficultySettings.spicinessIngredientList;
+    //}
+    private void Update()
+    {
+        if (orderInProgress)
+        {
+            UpdateTimer();
+        }
+    }
 
     public CustomerBase GetOrderOwner()
     {
@@ -35,17 +55,7 @@ public class OrderStats : MonoBehaviour
         orderOwner = customer;
     }
 
-    //public void Initialize(CustomerBase customer)
-    //{
-    //    orderOwner = customer;
-    //    customerNumberText.text = customer.customerNumber.ToString();
-    //    temperatureSegments.targetAttributeValue = customer.coffeeAttributes.GetTemperature();
-    //    sweetnessSegments.targetAttributeValue = customer.coffeeAttributes.GetSweetness();
-    //    spicinessSegments.targetAttributeValue = customer.coffeeAttributes.GetSpiciness();
-    //    strengthSegments.targetAttributeValue = customer.coffeeAttributes.GetStrength();
-    //}
-
-    // Fade of unfade the order stats
+    // Fade or unfade the order stats
     public void OrderInProgress(bool isInProgress)
     {
         Image[] images = GetComponentsInChildren<Image>(); // not including 'true' parameter because it includes inactive objects and the segments are not active by default
@@ -58,16 +68,16 @@ public class OrderStats : MonoBehaviour
                 selectedByPlayerImage.SetActive(false);
 
 
-                //customerInfoRoot.SetActive(false);
-                //temperatureSegments.targetAttributeValue = 0;
-                //sweetnessSegments.targetAttributeValue = 0;
-                //spicinessSegments.targetAttributeValue = 0;
-                //strengthSegments.targetAttributeValue = 0;
-                //temperatureSegments.cumulativeIngredientsValue = 0;
-                //sweetnessSegments.cumulativeIngredientsValue = 0;
-                //spicinessSegments.cumulativeIngredientsValue = 0;
-                //strengthSegments.cumulativeIngredientsValue = 0;
-                //orderOwner = null;
+                customerInfoRoot.SetActive(false);
+                temperatureSegments.targetAttributeValue = 0;
+                sweetnessSegments.targetAttributeValue = 0;
+                spicinessSegments.targetAttributeValue = 0;
+                strengthSegments.targetAttributeValue = 0;
+                temperatureSegments.cumulativeIngredientsValue = 0;
+                sweetnessSegments.cumulativeIngredientsValue = 0;
+                spicinessSegments.cumulativeIngredientsValue = 0;
+                strengthSegments.cumulativeIngredientsValue = 0;
+                orderOwner = null;
 
 
             }
@@ -88,7 +98,12 @@ public class OrderStats : MonoBehaviour
 
         }
 
-        //orderInProgress = isInProgress;
+        orderInProgress = isInProgress;
+    }
+
+    private void UpdateTimer()
+    {
+        orderTimer.value = (orderOwner.customerLeaveTime - orderOwner.orderTimer.Value) / orderOwner.customerLeaveTime;
     }
 
     public List<PlayerController> GetActivePlayers()

@@ -33,7 +33,7 @@ public class OrderStatsSegments : MonoBehaviour
         // Make this not be required every frame
         int targetValue = MapValue(targetAttributeValue);
         GameObject targetSegment = segments[targetValue];
-        //if (orderStats.orderInProgress)
+        if (orderStats.orderInProgress)
             SetTarget(targetSegment);
     }
 
@@ -72,13 +72,13 @@ public class OrderStatsSegments : MonoBehaviour
         Color targetSegmentRangeColor = Color.green;
         targetSegmentColor.a = 1.0f;
 
-        //if (GameManager.Instance.difficultySettings.GetDrinkThreshold() == 3)
-        //{
-        //    segments[MapValue(targetAttributeValue) - 1].GetComponent<Image>().color = targetSegmentRangeColor;
-        //    segments[MapValue(targetAttributeValue) + 1].GetComponent<Image>().color = targetSegmentRangeColor;
-        //    segments[MapValue(targetAttributeValue) - 1].SetActive(true);
-        //    segments[MapValue(targetAttributeValue) + 1].SetActive(true);
-        //}
+        if (GameManager.Instance.difficultySettings.GetDrinkThreshold() == 3)
+        {
+            segments[MapValue(targetAttributeValue) - 1].GetComponent<Image>().color = targetSegmentRangeColor;
+            segments[MapValue(targetAttributeValue) + 1].GetComponent<Image>().color = targetSegmentRangeColor;
+            segments[MapValue(targetAttributeValue) - 1].SetActive(true);
+            segments[MapValue(targetAttributeValue) + 1].SetActive(true);
+        }
     }
 
     private void SetPotential(GameObject potentialSegment)
