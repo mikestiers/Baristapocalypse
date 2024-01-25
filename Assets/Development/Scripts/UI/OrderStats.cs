@@ -19,6 +19,8 @@ public class OrderStats : MonoBehaviour
     [SerializeField] public OrderStatsSegments strengthSegments;
     [SerializeField] public GameObject selectedByPlayerImage;
     [SerializeField] public List<PlayerController> currentPlayers;
+    [SerializeField] public Image resetMachineImage;
+
     [SerializeField] public bool orderInProgress { get; set; }
 
     [Header("Customer Review")]

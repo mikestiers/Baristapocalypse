@@ -69,6 +69,9 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     private void Update()
     {
+
+        PrintHeldIngredientList(); // putting this here until we have a way to show activity in the station
+
         if (!IsServer)
         {
             return;
@@ -322,6 +325,11 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             currentIngredientSOList += ingredient.name + "\n";
         }
         ingredientsIndicatorText.text = currentIngredientSOList;
+    }
+
+    public void Empty()
+    {
+        ingredientSOList.Clear();
     }
 }
 

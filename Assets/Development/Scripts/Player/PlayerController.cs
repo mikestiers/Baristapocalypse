@@ -150,6 +150,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.InteractAltEvent += InteractAlt;
         inputManager.DebugConsoleEvent += ShowDebugConsole;
         inputManager.BrewingStationSelectEvent += OnChangeBrewingStationSelect;
+        inputManager.BrewingStationEmptyEvent += OnBrewingStationEmpty;
     }
 
     private void OnDisable()
@@ -161,6 +162,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.InteractAltEvent -= InteractAlt;
         inputManager.DebugConsoleEvent -= ShowDebugConsole;
         inputManager.BrewingStationSelectEvent -= OnChangeBrewingStationSelect;
+        inputManager.BrewingStationEmptyEvent -= OnBrewingStationEmpty;
     }
 
     private void Update()
@@ -705,6 +707,36 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             OrderStats[] orderStats = UnityEngine.Object.FindObjectsOfType<OrderStats>();
             orderStats[previousBrewingStation].selectedByPlayerImage.SetActive(true);
             orderStats[currentBrewingStation].selectedByPlayerImage.SetActive(false);
+        }
+        else
+        {
+            Debug.Log("No brewing stations found");
+        }
+    }
+
+    public void OnBrewingStationEmpty()
+    {
+        BrewingStation[] brewingStations = UnityEngine.Object.FindObjectsOfType<BrewingStation>();
+        Debug.Log($"Emptying {currentBrewingStation}");
+        // Check if there are any brewing stations
+        if (brewingStations.Length > 0)
+        {
+            brewingStations[currentBrewingStation].Empty();
+            OrderStats[] orderStats = UnityEngine.Object.FindObjectsOfType<OrderStats>();
+            Debug.Log($"Resetting {currentBrewingStation}");
+            currentBrewingStation = (currentBrewingStation + 1) % brewingStations.Length;
+            orderStats[currentBrewingStation].temperatureSegments.cumulativeIngredientsValue = 0;
+            orderStats[currentBrewingStation].sweetnessSegments.cumulativeIngredientsValue = 0;
+            orderStats[currentBrewingStation].spicinessSegments.cumulativeIngredientsValue = 0;
+            orderStats[currentBrewingStation].strengthSegments.cumulativeIngredientsValue = 0;
+            orderStats[currentBrewingStation].strengthSegments.UpdateSegments(0);
+            orderStats[currentBrewingStation].spicinessSegments.UpdateSegments(0);
+            orderStats[currentBrewingStation].sweetnessSegments.UpdateSegments(0);
+            orderStats[currentBrewingStation].temperatureSegments.UpdateSegments(0);
+            orderStats[currentBrewingStation].temperatureSegments.ResetSegments();
+            orderStats[currentBrewingStation].sweetnessSegments.ResetSegments();
+            orderStats[currentBrewingStation].spicinessSegments.ResetSegments();
+            orderStats[currentBrewingStation].strengthSegments.ResetSegments();
         }
         else
         {
