@@ -37,4 +37,10 @@ public abstract class Singleton<T> : NetworkBehaviour where T : Component
 
         Destroy(gameObject);
     }
+
+    public void ResetSingleton()
+    {
+        // Destroy the singleton instances when game restarted
+        Destroy(gameObject);
+    }
 }
