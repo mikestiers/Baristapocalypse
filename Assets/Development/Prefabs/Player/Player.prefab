@@ -418,7 +418,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 0
   jumpForce: 0
-  ingredienThrowForce: 0
+  ingredientThrowForce: 0
   isGroundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -426,6 +426,7 @@ MonoBehaviour:
   groundCheck: {fileID: 533563682798100843}
   dashForce: 0
   dashTime: 0
+  dashCooldownTime: 0
   isStationLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -435,11 +436,11 @@ MonoBehaviour:
   isCustomerLayer:
     serializedVersion: 2
     m_Bits: 1024
-  ingredientInstanceHolder: {fileID: 533563681979775763}
-  sphereCastRadius: 0.5
+  sphereCastRadius: 0
   ingredientHoldPoints:
   - {fileID: 2069000730}
   - {fileID: 1344855492}
+  ingredientsList: []
   isMopLayer:
     serializedVersion: 2
     m_Bits: 512
@@ -452,13 +453,10 @@ MonoBehaviour:
   pickupLocation: {fileID: 6136085202976597964}
   pickupThrowForce: 400
   pickup: {fileID: 1125012182506645654, guid: 195145ab21f13ff43bfcc03c972dc30b, type: 3}
-  spawnpoint1: {fileID: 90408708711633211}
-  spawnpoint2: {fileID: 8959161890278580684}
-  spawnpoint3: {fileID: 8033754657533920876}
-  spawnpoint4: {fileID: 6741578891044996774}
   playerVisual: {fileID: 1688089145265230259}
   inputManager: {fileID: -859235823650325503}
   ingredientIndicatorText: {fileID: 1310037080}
+  movementToggle: 1
 --- !u!114 &7263414053255238152
 MonoBehaviour:
   m_ObjectHideFlags: 0
