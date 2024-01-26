@@ -192,7 +192,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
 
         // Perform a single SphereCast to detect any interactable object.
-        float interactDistance = 2.5f;
+        float interactDistance = 1.5f;
         if (Physics.SphereCast(transform.position + RayCastOffset, stationsSphereCastRadius, transform.forward, out RaycastHit hit, interactDistance, interactableLayerMask))
         {
             // Logic for PickUp Interaction
