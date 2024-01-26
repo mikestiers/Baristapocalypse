@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.Audio;
+using System.Collections.Generic;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -41,6 +42,7 @@ public class UIManager : Singleton<UIManager>
     [Header("Customer Review")]
     private CustomerReview customerReview;
     public GameObject starPrefab;
+    private List<GameObject> customerReviews;
 
     [Header("DebugConsole")]
     public GameObject debugConsole;
@@ -179,7 +181,7 @@ public class UIManager : Singleton<UIManager>
     //    orderStats.Initialize(customer);
     //}
 
-    public void ShowCustomerReview(CustomerBase customer)
+    /*public void ShowCustomerReview(CustomerBase customer)
     {
         // This can be better by moving customer review script to the customer object
         foreach (Transform t in ordersPanel)
@@ -204,7 +206,7 @@ public class UIManager : Singleton<UIManager>
                 }
             }
         }
-    }
+    }*/
 
     public void RemoveCustomerUiOrder(CustomerBase customer)
     {
