@@ -8,6 +8,7 @@ public class CustomerReviewManager : Singleton<CustomerReviewManager>
 {
     public Transform reviewsPanel;
     public Transform popOutReviewsPanel;
+    public GameObject customerReviewPrefab;
     public GameObject starPrefab;
     [HideInInspector] public List<GameObject> reviewsList = new List<GameObject>();
     public float rPSpeed;
@@ -25,6 +26,9 @@ public class CustomerReviewManager : Singleton<CustomerReviewManager>
 
     public void ShowCustomerReview(CustomerBase customer)
     {
+        customerReviewPrefab = Instantiate(customerReviewPrefab);
+        customerReviewPrefab.transform.SetParent(reviewsPanel.transform);
+        reviewsList.Add(customerReviewPrefab);
         if (reviewInProgress == false)
         {
             TextMeshProUGUI customerReviewText = reviewsList[0].GetComponentInChildren<TextMeshProUGUI>();

@@ -25,22 +25,8 @@ public class OrderStats : MonoBehaviour
 
     [SerializeField] public bool orderInProgress { get; set; }
 
-    [Header("Customer Review")]
-    [SerializeField] private GameObject customerReview;
     [SerializeField] private CustomerBase orderOwner;
 
-    //[SerializeField] private IngredientListSO temperatureIngredientList;
-    //[SerializeField] private IngredientListSO sweetnessIngredientList;
-    //[SerializeField] private IngredientListSO strengthIngredientList;
-    //[SerializeField] private IngredientListSO spicinessIngredientList;
-
-    //private void Start()
-    //{
-    //    temperatureIngredientList = GameManager.Instance.difficultySettings.temperatureIngredientList;
-    //    sweetnessIngredientList = GameManager.Instance.difficultySettings.sweetnessIngredientList;
-    //    strengthIngredientList = GameManager.Instance.difficultySettings.strengthIngredientList;
-    //    spicinessIngredientList = GameManager.Instance.difficultySettings.spicinessIngredientList;
-    //}
     private void Update()
     {
         if (orderInProgress)
@@ -70,8 +56,6 @@ public class OrderStats : MonoBehaviour
             {
                 imageColor.a = 0.2f;
                 selectedByPlayerImage.SetActive(false);
-
-
                 customerInfoRoot.SetActive(false);
                 temperatureSegments.targetAttributeValue = 0;
                 sweetnessSegments.targetAttributeValue = 0;
@@ -82,8 +66,6 @@ public class OrderStats : MonoBehaviour
                 spicinessSegments.cumulativeIngredientsValue = 0;
                 strengthSegments.cumulativeIngredientsValue = 0;
                 orderOwner = null;
-
-
             }
             else if (isInProgress)
             {
@@ -96,12 +78,9 @@ public class OrderStats : MonoBehaviour
                 Color tempcolor = image.GetComponentInParent<Image>().color;
                 tempcolor.a = 0.0f;
                 image.GetComponentInParent<Image>().color = tempcolor;
-
                 image.color = tempcolor;
             }
-
         }
-
         orderInProgress = isInProgress;
     }
 
