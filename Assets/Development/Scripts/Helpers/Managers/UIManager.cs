@@ -143,13 +143,13 @@ public class UIManager : Singleton<UIManager>
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         SceneManager.LoadScene(mainMenuScene); 
-        //ScoreTimerManager.Instance.ResetTimerScore();
         timer.enabled = false;
         score.enabled = false;
         ordersMenu.SetActive(false);
         pauseMenu.SetActive(false);
         gameOverMenu.SetActive(false);
         Time.timeScale = 1f;
+        SceneHelper.Instance.ResetGame();
     }
 
     private void QuitGame()
