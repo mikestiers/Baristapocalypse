@@ -60,7 +60,7 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
 
     private void NetworkManager_Server_OnClientDisconnectCallback(ulong clientId)
     {
-        for(int i=0; i<playerDataNetworkList.Count; i++)
+        for(int i = 0; i < playerDataNetworkList.Count; i++)
         {
             PlayerData playerData = playerDataNetworkList[i];
             if(playerData.clientId == clientId)
@@ -184,6 +184,7 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
 
     public int GetPlayerDataIndexFromClientId(ulong clientId)
     {
+
         for(int i=0; i < playerDataNetworkList.Count; i++)
         {
             if (playerDataNetworkList[i].clientId == clientId)

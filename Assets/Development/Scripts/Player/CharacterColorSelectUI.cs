@@ -41,4 +41,9 @@ public class CharacterColorSelectUI : MonoBehaviour
             selectedGameobject.SetActive(false);
         }
     }
+
+    private void OnDestroy()
+    {
+        BaristapocalypseMultiplayer.Instance.OnPlayerDataNetworkListChanged -= BaristapocalypseMultiplayer_OnPlayerDataNetworkListChanged;
+    }
 }
