@@ -699,14 +699,16 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         BrewingStation[] brewingStations = UnityEngine.Object.FindObjectsOfType<BrewingStation>();
 
         // Check if there are any brewing stations
-        if (brewingStations.Length > 0)
+        if (brewingStations.Length > 1)
         {
             // Increment the currentBrewingStation index, wrapping around using modulo
-            int previousBrewingStation = currentBrewingStation;
-            currentBrewingStation = (currentBrewingStation + 1) % brewingStations.Length;
+            //int nextBrewingStation = currentBrewingStation;
+            // int nextBrewingStation;
+            int nextBrewingStation = (currentBrewingStation + 1) % brewingStations.Length;
             OrderStats[] orderStats = UnityEngine.Object.FindObjectsOfType<OrderStats>();
-            orderStats[previousBrewingStation].selectedByPlayerImage.SetActive(true);
-            orderStats[currentBrewingStation].selectedByPlayerImage.SetActive(false);
+            orderStats[currentBrewingStation].selectedByPlayerImage.SetActive(true);
+            orderStats[nextBrewingStation].selectedByPlayerImage.SetActive(false);
+            currentBrewingStation = nextBrewingStation;
         }
         else
         {
@@ -719,24 +721,24 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         BrewingStation[] brewingStations = UnityEngine.Object.FindObjectsOfType<BrewingStation>();
         Debug.Log($"Emptying {currentBrewingStation}");
         // Check if there are any brewing stations
-        if (brewingStations.Length > 0)
+        if (brewingStations.Length > 1)
         {
-            brewingStations[currentBrewingStation].Empty();
+            //currentBrewingStation = (currentBrewingStation + 1) % brewingStations.Length;
+            brewingStations[(currentBrewingStation + 1) % brewingStations.Length].Empty();
             OrderStats[] orderStats = UnityEngine.Object.FindObjectsOfType<OrderStats>();
             Debug.Log($"Resetting {currentBrewingStation}");
-            currentBrewingStation = (currentBrewingStation + 1) % brewingStations.Length;
-            orderStats[currentBrewingStation].temperatureSegments.cumulativeIngredientsValue = 0;
-            orderStats[currentBrewingStation].sweetnessSegments.cumulativeIngredientsValue = 0;
-            orderStats[currentBrewingStation].spicinessSegments.cumulativeIngredientsValue = 0;
-            orderStats[currentBrewingStation].strengthSegments.cumulativeIngredientsValue = 0;
-            orderStats[currentBrewingStation].strengthSegments.UpdateSegments(0);
-            orderStats[currentBrewingStation].spicinessSegments.UpdateSegments(0);
-            orderStats[currentBrewingStation].sweetnessSegments.UpdateSegments(0);
-            orderStats[currentBrewingStation].temperatureSegments.UpdateSegments(0);
-            orderStats[currentBrewingStation].temperatureSegments.ResetSegments();
-            orderStats[currentBrewingStation].sweetnessSegments.ResetSegments();
-            orderStats[currentBrewingStation].spicinessSegments.ResetSegments();
-            orderStats[currentBrewingStation].strengthSegments.ResetSegments();
+            orderStats[(currentBrewingStation + 1) % brewingStations.Length].temperatureSegments.cumulativeIngredientsValue = 0;
+            orderStats[(currentBrewingStation + 1) % brewingStations.Length].sweetnessSegments.cumulativeIngredientsValue = 0;
+            orderStats[(currentBrewingStation + 1) % brewingStations.Length].spicinessSegments.cumulativeIngredientsValue = 0;
+            orderStats[(currentBrewingStation + 1) % brewingStations.Length].strengthSegments.cumulativeIngredientsValue = 0;
+            orderStats[(currentBrewingStation + 1) % brewingStations.Length].strengthSegments.UpdateSegments(0);
+            orderStats[(currentBrewingStation + 1) % brewingStations.Length].spicinessSegments.UpdateSegments(0);
+            orderStats[(currentBrewingStation + 1) % brewingStations.Length].sweetnessSegments.UpdateSegments(0);
+            orderStats[(currentBrewingStation + 1) % brewingStations.Length].temperatureSegments.UpdateSegments(0);
+            orderStats[(currentBrewingStation + 1) % brewingStations.Length].temperatureSegments.ResetSegments();
+            orderStats[(currentBrewingStation + 1) % brewingStations.Length].sweetnessSegments.ResetSegments();
+            orderStats[(currentBrewingStation + 1) % brewingStations.Length].spicinessSegments.ResetSegments();
+            orderStats[(currentBrewingStation + 1) % brewingStations.Length].strengthSegments.ResetSegments();
         }
         else
         {
