@@ -35,7 +35,8 @@ public class SceneHelper : MonoBehaviour
         "ScoreTimerManager",
         "LobbyManager",
         "PlayerConfigurationManager",
-        "BaristapocalypseMultiplayer"
+        "BaristapocalypseMultiplayer",
+        "CustomerReviewManager",
     };
 
     protected virtual void Awake()
@@ -56,6 +57,7 @@ public class SceneHelper : MonoBehaviour
         FindObjectOfType<CustomerManager>()?.ResetSingleton();
         FindObjectOfType<GameValueHolder>()?.ResetSingleton();
         FindObjectOfType<ScoreTimerManager>()?.ResetSingleton();
+        FindObjectOfType<CustomerReviewManager>()?.ResetSingleton();
         DestroyIfExists<LobbyManager>();
         DestroyIfExists<PlayerConfigurationManager>();
         DestroyIfExists<BaristapocalypseMultiplayer>();
@@ -71,6 +73,7 @@ public class SceneHelper : MonoBehaviour
                 networkManager.Shutdown();
 
             Destroy(component);
+            Destroy(component.gameObject);
         }
     }
 
@@ -80,6 +83,7 @@ public class SceneHelper : MonoBehaviour
         if (component != null)
         {
             Destroy(component);
+            Destroy(component.gameObject);
         }
     }
 }
