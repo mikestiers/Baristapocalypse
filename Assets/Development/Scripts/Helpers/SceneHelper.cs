@@ -27,18 +27,6 @@ public class SceneHelper : MonoBehaviour
         }
     }
 
-    private List<string> componentsToDestroy = new List<string>
-    {
-        "NetworkManager",
-        "CustomerManager",
-        "GameValueHolder",
-        "ScoreTimerManager",
-        "LobbyManager",
-        "PlayerConfigurationManager",
-        "BaristapocalypseMultiplayer",
-        "CustomerReviewManager",
-    };
-
     protected virtual void Awake()
     {
         if (!_instance)
@@ -50,6 +38,19 @@ public class SceneHelper : MonoBehaviour
 
         Destroy(gameObject);
     }
+
+    // Not used for the moment
+    private List<string> componentsToDestroy = new List<string>
+    {
+        "NetworkManager",
+        "CustomerManager",
+        "GameValueHolder",
+        "ScoreTimerManager",
+        "LobbyManager",
+        "PlayerConfigurationManager",
+        "BaristapocalypseMultiplayer",
+        "CustomerReviewManager",
+    };
 
     public void ResetGame()
     {
