@@ -18,6 +18,8 @@ public class OrderStats : MonoBehaviour
     [SerializeField] public OrderStatsSegments spicinessSegments;
     [SerializeField] public OrderStatsSegments strengthSegments;
     [SerializeField] public GameObject selectedByPlayerImage;
+    [SerializeField] public GameObject NextBrewingStation;
+    [SerializeField] public GameObject PreviousBrewingStation;
     [SerializeField] public List<PlayerController> currentPlayers;
     [SerializeField] public Image resetMachineImage;
 
