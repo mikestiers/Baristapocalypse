@@ -39,6 +39,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] private LayerMask isCustomerLayer;
     [SerializeField] private float stationsSphereCastRadius;
     [SerializeField] private float customersSphereCastRadius;
+    [SerializeField] private float stationInteractDistance;
+    [SerializeField] private float customerInteractDistance;
 
     //[SerializeField] private GameObject ingredientInstanceHolder;
     private BaseStation selectedStation;
@@ -132,8 +134,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if (dashCooldownTime <= 0) dashCooldownTime = 1.0f;
         if (ingredientThrowForce <= 0) ingredientThrowForce = 10f;
         if (groundCheckRadius <= 0) groundCheckRadius = 0.05f;
-        if (stationsSphereCastRadius <= 0) stationsSphereCastRadius = 0.8F;
-        if (customersSphereCastRadius <= 0) customersSphereCastRadius = 2.5F;
+        if (stationsSphereCastRadius <= 0) stationsSphereCastRadius = 0.5F;
+        if (customersSphereCastRadius <= 0) customersSphereCastRadius = 1.0F;
+        if (stationInteractDistance <= 0) stationInteractDistance = 1.5F;
+        if (customerInteractDistance <= 0) customerInteractDistance = 5.0F;
 
         //Define the interactable layer mask to include station, ingredient, and mess layers.
         interactableLayerMask = isStationLayer | isIngredientLayer | isMessLayer | isMopLayer | isCustomerLayer ;
@@ -192,8 +196,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
 
         // Perform a single SphereCast to detect any interactable object.
-        float interactDistance = 1.5f;
-        if (Physics.SphereCast(transform.position + RayCastOffset, stationsSphereCastRadius, transform.forward, out RaycastHit hit, interactDistance, interactableLayerMask))
+        if (Physics.SphereCast(transform.position + RayCastOffset, stationsSphereCastRadius, transform.forward, out RaycastHit hit, stationInteractDistance, interactableLayerMask))
         {
             // Logic for PickUp Interaction
             if (hit.transform.TryGetComponent(out Pickup pickup))
@@ -254,7 +257,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
 
         // Customer Interaction Logic
-        float customerInteractDistance = 5.0f;
         //if (Physics.Raycast(transform.position + RayCastOffset, transform.forward, out RaycastHit hitCustomer, customerInteractDistance, interactableLayerMask))
         if (Physics.SphereCast(transform.position + RayCastOffset, customersSphereCastRadius, transform.forward, out RaycastHit hitCustomer, customerInteractDistance, interactableLayerMask))
         {
