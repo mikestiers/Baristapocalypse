@@ -55,12 +55,12 @@ public class Particle : NetworkBehaviour
 
     public static void DestroyParticle(Particle particle)
     {
-        //BaristapocalypseMultiplayer.Instance.DestroyParticle(particle);
+        BaristapocalypseMultiplayer.Instance.DestroyParticle(particle);
     }
 
     public static void SpawnParticle(ParticleSO particleSO, IParticleParent particleParent)
     {
-        //BaristapocalypseMultiplayer.Instance.SpawnParticle(particleSO, particleParent);
+        BaristapocalypseMultiplayer.Instance.SpawnParticle(particleSO, particleParent);
     }
 
     public NetworkObject GetNetworkObject()

@@ -13,7 +13,7 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     [SerializeField] private IngredientListSO ingredientListSO;
     [SerializeField] private PickupListSo pickupList;
     [SerializeField] private MessListSO MessList;
-    [SerializeField] private ParticleListSO particleList;
+    [SerializeField] private ParticleListSO particleListSO;
     public static BaristapocalypseMultiplayer Instance { get; private set; }
 
     public static bool playMultiplayer;
@@ -334,5 +334,68 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     public MessSO GetMessSoFromIndex(int MessSoIndex)
     {
         return MessList.MessSoList[MessSoIndex];
+    }
+
+    // Particle Networking Implementation
+
+
+    public void SpawnParticle(ParticleSO particleSO, IParticleParent particleParent)
+    {
+        SpawnParticleServerRpc(GetParticleSOIndex(particleSO), particleParent.GetNetworkObject());
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SpawnParticleServerRpc(int particleSOIndex, NetworkObjectReference particleParentNetworkObjectReference)
+    {
+        ParticleSO particleSO = GetParticleSOFromIndex(particleSOIndex);
+
+        particleParentNetworkObjectReference.TryGet(out NetworkObject particleParentNetworkObject);
+        IParticleParent particleParent = particleParentNetworkObject.GetComponent<IParticleParent>();
+
+        Transform particleTransform = Instantiate(particleSO.particlePrefab.transform);
+
+        NetworkObject particleNetworkObject = particleTransform.GetComponent<NetworkObject>();
+        particleNetworkObject.Spawn(true);
+
+        Particle particle = particleTransform.GetComponent<Particle>();
+        particle.SetParticleParent(particleParent);
+
+    }
+
+    public void DestroyParticle(Particle particle)
+    {
+        DestroyParticleServerRpc(particle.NetworkObject);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DestroyParticleServerRpc(NetworkObjectReference particleNetworkObjectReference)
+    {
+        particleNetworkObjectReference.TryGet(out NetworkObject particleNetworkObject);
+        if (particleNetworkObject == null)
+        {
+            return;
+        }
+        Particle particle = particleNetworkObject.GetComponent<Particle>();
+        ClearParticleOnParentClientRpc(particleNetworkObjectReference);
+        particle.DestroySelf();
+    }
+
+    [ClientRpc]
+    private void ClearParticleOnParentClientRpc(NetworkObjectReference particleNetworkObjectReference)
+    {
+        particleNetworkObjectReference.TryGet(out NetworkObject particleNetworkObject);
+        Particle particle = particleNetworkObject.GetComponent<Particle>();
+
+        particle.ClearParticleOnParent();
+    }
+
+    public int GetParticleSOIndex(ParticleSO particleSO)
+    {
+        return particleListSO.particleSOList.IndexOf(particleSO);
+    }
+
+    public ParticleSO GetParticleSOFromIndex(int particleSOIndex)
+    {
+        return particleListSO.particleSOList[particleSOIndex];
     }
 }
