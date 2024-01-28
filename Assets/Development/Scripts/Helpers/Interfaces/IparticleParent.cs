@@ -4,10 +4,9 @@ using UnityEngine;
 public interface IParticleParent
 {
     public Transform GetParticleTransform();
-    public void SetParticle(Ingredient ingredient);
-    public Ingredient GetParticle();
+    public void SetParticle(Particle particle);
+    public Particle GetParticle();
     public void ClearParticle();
-    public bool HasParticle();
     public NetworkObject GetNetworkObject();
 }
 
