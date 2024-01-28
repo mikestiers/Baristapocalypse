@@ -13,6 +13,7 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     [SerializeField] private IngredientListSO ingredientListSO;
     [SerializeField] private PickupListSo pickupList;
     [SerializeField] private MessListSO MessList;
+    [SerializeField] private ParticleListSO particleList;
     public static BaristapocalypseMultiplayer Instance { get; private set; }
 
     public static bool playMultiplayer;
