@@ -5,5 +5,5 @@ using UnityEngine;
 [CreateAssetMenu()]
 public class ParticleListSO : ScriptableObject
 {
-    public List<IngredientSO> particleSOList;
+    public List<ParticleSO> particleSOList;
 }
