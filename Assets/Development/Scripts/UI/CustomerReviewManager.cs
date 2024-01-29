@@ -26,9 +26,6 @@ public class CustomerReviewManager : Singleton<CustomerReviewManager>
 
     public void ShowCustomerReview(CustomerBase customer)
     {
-        customerReviewPrefab = Instantiate(customerReviewPrefab);
-        customerReviewPrefab.transform.SetParent(reviewsPanel.transform);
-        reviewsList.Add(customerReviewPrefab);
         if (reviewInProgress == false)
         {
             TextMeshProUGUI customerReviewText = reviewsList[0].GetComponentInChildren<TextMeshProUGUI>();

@@ -49,6 +49,10 @@ public class CustomerBase : Base
     [SerializeField] private MessSO spillPrefab;
     [SerializeField] private Transform spillSpawnPoint;
 
+    [Header("Customer Review")]
+    public GameObject customerReviewPrefab;
+    private GameObject customerReviewPanel;
+
     public enum CustomerState
     {
         Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead
@@ -64,6 +68,8 @@ public class CustomerBase : Base
         agent = GetComponent<NavMeshAgent>();
         exit = CustomerManager.Instance.GetExit();
         if (distThreshold <= 0) distThreshold = 0.5f;
+        
+        customerReviewPanel = GameObject.FindGameObjectWithTag("CustomerReviewPanel");
     }
 
     public virtual void Update()
@@ -402,8 +408,12 @@ public class CustomerBase : Base
 
     public void JustGotHandedCoffee(CoffeeAttributes coffee)
     {
+        GameObject customerReviewUI = Instantiate(customerReviewPrefab);
+        CustomerReviewManager.Instance.reviewsList.Add(customerReviewUI);
+        customerReviewUI.transform.SetParent(customerReviewPanel.transform);
         CustomerReviewManager.Instance.ShowCustomerReview(this);
-        SetCustomerStateServerRpc(CustomerState.Leaving);
+        StopOrderTimer();
+        CustomerLeave();
     }
 
     void HeadDetach()
