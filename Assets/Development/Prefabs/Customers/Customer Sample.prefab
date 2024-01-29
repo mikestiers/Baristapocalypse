@@ -1075,6 +1075,7 @@ GameObject:
   - component: {fileID: 8530179824857224679}
   - component: {fileID: -7061893543091457018}
   - component: {fileID: 8762735782742317909}
+  - component: {fileID: -9081818368347717811}
   m_Layer: 10
   m_Name: Customer Sample
   m_TagString: Customer
@@ -1142,7 +1143,6 @@ MonoBehaviour:
   customerDialogue: {fileID: 2430203159097677186}
   spillPrefab: {fileID: 11400000, guid: 6b7275261fe99c245a3688777a6d3ec6, type: 2}
   spillSpawnPoint: {fileID: 4961381447448103050}
-  customerReviewPrefab: {fileID: 2146867326294763205, guid: 823308a6e2d6c834182e765c8fcf1dd2, type: 3}
 --- !u!136 &5640675751676341543
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1250,7 +1250,7 @@ MonoBehaviour:
   navMeshAgent: {fileID: 5640675751676341539}
   throwForceMultiplier: 5
   <pickupSo>k__BackingField: {fileID: 0}
-  FollowTransform: {fileID: 0}
+  followTransform: {fileID: 0}
 --- !u!114 &-7061893543091457018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1293,6 +1293,18 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
+--- !u!114 &-9081818368347717811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5640675751676341541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7200bd6b059ae9f4493e1c925284f358, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5820072840089264309
 GameObject:
   m_ObjectHideFlags: 0

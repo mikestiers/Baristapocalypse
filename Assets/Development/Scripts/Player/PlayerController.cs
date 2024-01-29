@@ -646,25 +646,23 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if (HasPickup() || !HasNoIngredients)
             return;
 
-        // Pickup p = Instantiate(pickup, pickupLocation) as Pickup;
-        //Pickup.SpawnPickupItem(pickupSo, this);
         PickupSO pickupSo = pickup.GetPickupObjectSo();
 
         if (pickupSo != null)
         {
             Pickup.SpawnPickupItem(pickupSo, this);
         }
-        // if (p.IsCustomer)
-        // {
-        //     p.GetNavMeshAgent().enabled = false;
-        //     p.GetCustomer().SetCustomerStateServerRpc(CustomerBase.CustomerState.PickedUp);
-        // }
-        //
-        // p.RemoveRigidBody();
-        // p.transform.localRotation = Quaternion.Euler(p.holdingRotation);
-        // p.transform.localPosition = p.holdingPosition;
-        // p.GetCollider().enabled = false;
-        //Destroy(pickup.gameObject);
+
+        if (pickup.IsCustomer)
+        {
+            Debug.Log("hello im a customer and im trying to be picked up");
+            pickup.GetNavMeshAgent().enabled = false;
+            pickup.GetCustomer().SetCustomerStateServerRpc(CustomerBase.CustomerState.PickedUp);
+
+            pickup.SetPickupObjectParent(this);
+
+            pickup.DisablePickupColliders(pickup);
+        }
     }
 
     public void ThrowPickup()
@@ -674,6 +672,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         if (pickup.IsCustomer)
         {
+            Debug.Log("Customer deadge");
             pickup.GetCustomer().Dead();
         }
 
