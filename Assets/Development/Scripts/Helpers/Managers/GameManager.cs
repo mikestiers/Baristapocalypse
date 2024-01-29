@@ -91,10 +91,11 @@ public class GameManager : NetworkBehaviour
     {
         gameState.OnValueChanged += GameState_OnValueChanged;
         isGamePaused.OnValueChanged += isGamePaused_OnValueChanged;
+
         if (IsServer)
         {
-            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
             NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
         }
     }
 
@@ -174,14 +175,17 @@ public class GameManager : NetworkBehaviour
             case GameState.GameOver:
                 break; 
         }
+
+        //Debug.Log("autoTestGamePausedState" + autoTestGamePausedState);
     }
 
     private void LateUpdate()
     {
-        if (autoTestGamePausedState) 
-        { 
-            autoTestGamePausedState = false;
+        if (autoTestGamePausedState)
+        {
+            //Debug.Log("autoTestGamePausedState" + autoTestGamePausedState);
             TestGamePauseState();
+            autoTestGamePausedState = false;
         }
     }
 

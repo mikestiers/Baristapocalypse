@@ -48,9 +48,12 @@ public class CustomerBase : Base
     [SerializeField] public GameObject customerDialogue;
     [SerializeField] private MessSO spillPrefab;
     [SerializeField] private Transform spillSpawnPoint;
+    [SerializeField] private PickupSO pickupSO;
 
-    //for reactions
-    public CustomerReactionIndicator customerReactionIndicator;
+    [Header("Customer Review")]
+    public GameObject customerReviewPrefab;
+    private GameObject customerReviewPanel;
+
     public enum CustomerState
     {
         Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead
@@ -66,6 +69,8 @@ public class CustomerBase : Base
         agent = GetComponent<NavMeshAgent>();
         exit = CustomerManager.Instance.GetExit();
         if (distThreshold <= 0) distThreshold = 0.5f;
+        
+        customerReviewPanel = GameObject.FindGameObjectWithTag("CustomerReviewPanel");
     }
 
     public virtual void Update()
@@ -162,7 +167,7 @@ public class CustomerBase : Base
         {
             Destroy(gameObject);
             Debug.Log("this is our disappearing customer issue"); // if you see this, the customer probably disappeared and the review didn't show.  something about being close to the entrance causes the player to destroy on leaving
-            UIManager.Instance.RemoveCustomerUiOrder(this);
+            //UIManager.Instance.RemoveCustomerUiOrder(this);
         }
     }
 
@@ -244,7 +249,7 @@ public class CustomerBase : Base
     public override void Interact(PlayerController player)
     {
         // Customer is going to be thrown or assaulted with a weapon
-        if (player.IsHoldingPickup && player.Pickup.attributes.Contains(Pickup.PickupAttribute.KillsCustomer))
+        if (player.HasPickup() && player.Pickup.attributes.Contains(Pickup.PickupAttribute.KillsCustomer))
         {
             HeadDetach();
             agent.speed = 0;
@@ -404,8 +409,12 @@ public class CustomerBase : Base
 
     public void JustGotHandedCoffee(CoffeeAttributes coffee)
     {
-        CustomerReaction(coffee, coffeeAttributes);
-        UIManager.Instance.ShowCustomerReview(this);
+        GameObject customerReviewUI = Instantiate(customerReviewPrefab);
+        CustomerReviewManager.Instance.reviewsList.Add(customerReviewUI);
+        customerReviewUI.transform.SetParent(customerReviewPanel.transform);
+        CustomerReviewManager.Instance.ShowCustomerReview(this);
+        StopOrderTimer();
+        CustomerLeave();
     }
 
     void HeadDetach()
@@ -435,71 +444,6 @@ public class CustomerBase : Base
         return customerNumber;
     }
 
-    // CUSTOMER REACTION METHODS
-    // This section is used for anything related to custome reactions
-    // which are typically based off the quality of the drink or other environmental
-    // factors, such as order wait time, wifi, radio, pat on the back, etc...
-    private void CustomerReaction(CoffeeAttributes coffeeAttributes, CoffeeAttributes customerAttributes)
-    {
-        int result = 0;
-        result += (Mathf.Abs(coffeeAttributes.GetTemperature() - customerAttributes.GetTemperature()) <= 5) ? 1 : -1;
-        result += (Mathf.Abs(coffeeAttributes.GetSweetness() - customerAttributes.GetSweetness()) <= 5) ? 1 : -1;
-        result += (Mathf.Abs(coffeeAttributes.GetSpiciness() - customerAttributes.GetSpiciness()) <= 5) ? 1 : -1;
-        result += (Mathf.Abs(coffeeAttributes.GetStrength() - customerAttributes.GetStrength()) <= 5) ? 1 : -1;
-
-        int minigameResult = coffeeAttributes.GetIsMinigamePerfect() ? 1 : 0;
-        //ScoreTimerManager.Instance.score += result * (minigameResult + 1);
-        Debug.Log($"Result for {customerNumber}: {result}");
-        
-        switch (result)
-        {
-            case 5:
-                Perfect();
-               // ScoreTimerManager.Instance.IncrementStreak();
-               // ScoreTimerManager.Instance.score += result * ScoreTimerManager.Instance.StreakCount;
-                CustomerLeave();
-                break;
-
-            case 4:
-            case 3:
-            case 2:
-            case 1:
-                //ScoreTimerManager.Instance.ResetStreak();
-                CustomerLeave();
-                break;
-
-            case -1:
-            case -2:
-
-                Reorder();
-                CancelInvoke("CustomerLeave");
-                Order();
-                break;
-
-            case -3:
-            case -4:
-            case -5:
-
-                Angry();
-               // ScoreTimerManager.Instance.score += result;
-                CustomerLeave();
-                break;
-        }
-    }
-
-    private void Angry()
-    {
-        Debug.Log("the customer is not happy with the serving");
-
-       //customerReactionIndicator.CustomerAngry();
-    }
-
-    private void Perfect()
-    {
-        Debug.Log("you did great!");
-
-       //customerReactionIndicator.CustomerHappy();
-    }
 
     private void Reorder()
     {
@@ -541,7 +485,8 @@ public class CustomerBase : Base
     [ClientRpc]
     public void SpawnMessClientRpc()
     {
-        Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
+        Pickup.SpawnPickupItem(pickupSO, this);
+        //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
         messTime = 0f;
     }
 }

@@ -22,7 +22,7 @@ public class Spill : NetworkBehaviour
 
     public void Interact(PlayerController player)
     {
-        if (player.IsHoldingPickup)
+        if (player.HasPickup())
         {
             if (player.Pickup.attributes.Contains(Pickup.PickupAttribute.CleansUpSpills))
             {

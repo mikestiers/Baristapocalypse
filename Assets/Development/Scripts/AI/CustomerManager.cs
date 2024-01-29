@@ -107,6 +107,10 @@ public class CustomerManager : Singleton<CustomerManager>
     //maybe randomize time of spawning of customers
     public IEnumerator NewCustomer(float delayS)
     {
+
+        yield return new WaitForSeconds(delayS);
+
+
         while (true)
         {
             float delay = UnityEngine.Random.Range(minDelay, maxDelay);
