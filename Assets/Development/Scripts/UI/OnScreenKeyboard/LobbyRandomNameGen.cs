@@ -21,7 +21,7 @@ public class LobbyRandomNameGen : MonoBehaviour
 
         string randomName = $"Room:{roomNumber}";
 
-        resultText.text = randomName;
+        lobbyName.text = randomName;
     }
     
 }

@@ -18,6 +18,7 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private Button createPublicLobbyButton;
     [SerializeField] private Button backButton;
 
+    [SerializeField] private TMP_Dropdown _dropdown;
     [Header("Input Field")] [SerializeField]
     private TMP_InputField lobbyNameInputField;
 
@@ -30,6 +31,7 @@ public class LobbyUI : MonoBehaviour
 
     private void Awake()
     {
+        int selectedMaxPlayers = int.Parse(_dropdown.options[_dropdown.value].text);
         if (hostLobbyButton)
         {
             hostLobbyButton.onClick.AddListener(() =>
@@ -56,8 +58,7 @@ public class LobbyUI : MonoBehaviour
         {
             createPrivateLobbyButton.onClick.AddListener(() =>
             {
-                LobbyManager.Instance.CreateLobby(lobbyNameInputField.text, true,
-                    int.Parse(maxPlayersInputField.text));
+                LobbyManager.Instance.CreateLobby(lobbyNameInputField.text, true,selectedMaxPlayers);
             });
         }
 
@@ -65,8 +66,7 @@ public class LobbyUI : MonoBehaviour
         {
             createPublicLobbyButton.onClick.AddListener(() =>
             {
-                LobbyManager.Instance.CreateLobby(lobbyNameInputField.text, false,
-                    int.Parse(maxPlayersInputField.text));
+                LobbyManager.Instance.CreateLobby(lobbyNameInputField.text, false,selectedMaxPlayers);
             });
         }
 
