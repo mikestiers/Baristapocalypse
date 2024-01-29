@@ -23,7 +23,7 @@ public class Pickup : NetworkBehaviour
     public bool IsCustomer => customer != null;
     private IPickupObjectParent pickupObjectParent;
     [field: SerializeField] private PickupSO pickupSo { get; set; }
-    [SerializeField] private IngredientFollowTransform FollowTransform;
+    [SerializeField] private IngredientFollowTransform followTransform;
 
     public PickupSO Getpickup()
     {
@@ -31,7 +31,7 @@ public class Pickup : NetworkBehaviour
     }
     private void Awake()
     {
-        FollowTransform = GetComponent<IngredientFollowTransform>();
+        followTransform = GetComponent<IngredientFollowTransform>();
     }
 
     public static void SpawnPickupItem(PickupSO pickupSo, IPickupObjectParent pickupObjectParent)
@@ -39,7 +39,7 @@ public class Pickup : NetworkBehaviour
         BaristapocalypseMultiplayer.Instance.SpawnPickupObject(pickupSo,pickupObjectParent);
     }
     
-    public void SetpickupObjectParent(IPickupObjectParent pickupObjectParent)
+    public void SetPickupObjectParent(IPickupObjectParent pickupObjectParent)
     {
         SetPickupObjectServerRpc(pickupObjectParent.GetNetworkObject());
     }
@@ -68,7 +68,7 @@ public class Pickup : NetworkBehaviour
         
         pickupObjectParent.SetPickup(this);
 
-        FollowTransform.SetTargetTransform(pickupObjectParent.GetPickupTransform());
+        followTransform.SetTargetTransform(pickupObjectParent.GetPickupTransform());
     }
 
     public void DisablePickupColliders(Pickup pickup)
@@ -92,7 +92,31 @@ public class Pickup : NetworkBehaviour
         pickupObject.GetCollider().enabled = false;
 
     }
-   
+
+    public void EnablePickupColliders(Pickup pickup)
+    {
+        EnablePickupObjectCollisionServerRpc(pickup.GetNetworkObject());
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void EnablePickupObjectCollisionServerRpc(NetworkObjectReference pickupNetworkObjectReference)
+    {
+        EnablePickupObjectCollidersClientRpc(pickupNetworkObjectReference);
+    }
+
+    [ClientRpc]
+    private void EnablePickupObjectCollidersClientRpc(NetworkObjectReference pickupNetworkObjectReference)
+    {
+        pickupNetworkObjectReference.TryGet(out NetworkObject pickupNetworkObject);
+        Pickup pickup = pickupNetworkObject.GetComponent<Pickup>();
+        // Disable the collider immediately after instantiation
+        Collider pickupCollider = pickup.GetComponent<Collider>();
+        if (pickupCollider != null)
+        {
+            pickupCollider.enabled = true;
+        }
+    }
+
 
     public PickupSO GetPickupObjectSo()
     {
@@ -129,6 +153,21 @@ public class Pickup : NetworkBehaviour
     public CustomerBase GetCustomer()
     {
         return customer;
+    }
+
+    public static void DestroyPickup(Pickup pickup)
+    {
+        BaristapocalypseMultiplayer.Instance.DestroyPickup(pickup);
+    }
+
+    public void DestroySelf()
+    {
+        Destroy(gameObject);
+    }
+
+    public void ClearPickupOnParent()
+    {
+        pickupObjectParent.ClearPickup();
     }
 
     public NetworkObject GetNetworkObject()

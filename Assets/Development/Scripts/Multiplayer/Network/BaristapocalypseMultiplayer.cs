@@ -178,6 +178,33 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
         ingredient.ClearIngredientOnParent();
     }
 
+    public void DestroyPickup(Pickup pickup)
+    {
+        DestroyPickupServerRpc(pickup.NetworkObject);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DestroyPickupServerRpc(NetworkObjectReference pickupNetworkObjectReference)
+    {
+        pickupNetworkObjectReference.TryGet(out NetworkObject pickupNetworkObject);
+        if (pickupNetworkObject == null)
+        {
+            return;
+        }
+        Pickup pickup = pickupNetworkObject.GetComponent<Pickup>();
+        ClearPickupOnParentClientRpc(pickupNetworkObjectReference);
+        pickup.DestroySelf();
+    }
+
+    [ClientRpc]
+    private void ClearPickupOnParentClientRpc(NetworkObjectReference pickupNetworkObjectReference)
+    {
+        pickupNetworkObjectReference.TryGet(out NetworkObject pickupNetworkObject);
+        Pickup pickup = pickupNetworkObject.GetComponent<Pickup>();
+
+        pickup.ClearPickupOnParent();
+    }
+
     public bool IsPlayerIndexConnected(int playerIndex)
     {
         return playerIndex < playerDataNetworkList.Count;
@@ -280,15 +307,16 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     public void SpawnPickupObjectServerRpc(int pickupSoIndex, NetworkObjectReference pickupObjectNetworkObjectReference)
     {
         PickupSO pickupSo = GetPickupSoFromIndex(pickupSoIndex);
-        GameObject pickupGameObject = Instantiate(pickupSo.prefab);
-
-        NetworkObject pickupObjectNetworkObject = pickupGameObject.GetComponent<NetworkObject>();
-        pickupObjectNetworkObject.Spawn(true);
-        Pickup pickup = pickupGameObject.GetComponent<Pickup>();
-
         pickupObjectNetworkObjectReference.TryGet(out NetworkObject pickupObjectParentNetworkObject);
         IPickupObjectParent pickupObjectParent = pickupObjectParentNetworkObject.GetComponent<IPickupObjectParent>();
-        pickup.SetpickupObjectParent(pickupObjectParent);
+
+        Transform pickupObjectTransform = Instantiate(pickupSo.prefab.transform);
+
+        NetworkObject pickupObjectNetworkObject = pickupObjectTransform.GetComponent<NetworkObject>();
+        pickupObjectNetworkObject.Spawn(true);
+
+        Pickup pickup = pickupObjectTransform.GetComponent<Pickup>();
+        pickup.SetPickupObjectParent(pickupObjectParent);
         
         pickup.DisablePickupColliders(pickup);
     }

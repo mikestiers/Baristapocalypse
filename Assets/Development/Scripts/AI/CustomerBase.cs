@@ -242,7 +242,7 @@ public class CustomerBase : Base
     public override void Interact(PlayerController player)
     {
         // Customer is going to be thrown or assaulted with a weapon
-        if (player.IsHoldingPickup && player.Pickup.attributes.Contains(Pickup.PickupAttribute.KillsCustomer))
+        if (player.HasPickup() && player.Pickup.attributes.Contains(Pickup.PickupAttribute.KillsCustomer))
         {
             HeadDetach();
             agent.speed = 0;
