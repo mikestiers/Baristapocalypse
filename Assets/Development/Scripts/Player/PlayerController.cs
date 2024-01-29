@@ -671,6 +671,16 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             pickup.SetPickupObjectParent(this);
 
             pickup.DisablePickupColliders(pickup);
+
+            if(pickup.GetCustomer().inLine == true)
+            {
+                int _CustomerPos = pickup.GetCustomer().currentPosInLine;
+                CustomerManager.Instance.LineQueue.RemoveCustomerInPos(_CustomerPos);
+            }
+
+            CustomerManager.Instance.ReduceCustomerInStore();
+            UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
+            if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
         }
     }
 

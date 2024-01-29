@@ -283,4 +283,5 @@ public class CustomerManager : Singleton<CustomerManager>
     {
         customersInStore--;
     }
+
 }
