@@ -12,7 +12,7 @@ using Cinemachine;
 using System.Linq;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObjectParent,ISpill
+public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObjectParent, ISpill
 {
     // Player Instance
     [HideInInspector] public static PlayerController Instance { get; private set; }
@@ -63,11 +63,12 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [Header("Mess Data")]
     [SerializeField] private LayerMask isMopLayer;
     [SerializeField] private LayerMask isMessLayer;
+    [SerializeField] private LayerMask isGravityAffectedLayer;
     [SerializeField] private MessSO spillPrefab;
     [SerializeField] private Transform spillSpawnPoint;
     [SerializeField] private Spill spill;
     [Header("Pickups")]
-    public Transform pickupLocation;
+    [SerializeField] public Transform pickupLocation;
     public float pickupThrowForce;
     [SerializeField] private Pickup pickup;
 
@@ -80,7 +81,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     {
         get
         {
-            if (IsHoldingPickup)
+            if (HasPickup())    
                 return pickupLocation.GetChild(0).GetComponent<Pickup>();
             return null;
         }
@@ -140,7 +141,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if (customerInteractDistance <= 0) customerInteractDistance = 5.0F;
 
         //Define the interactable layer mask to include station, ingredient, and mess layers.
-        interactableLayerMask = isStationLayer | isIngredientLayer | isMessLayer | isMopLayer | isCustomerLayer ;
+        interactableLayerMask = isStationLayer | isIngredientLayer | isMessLayer | isMopLayer | isCustomerLayer | isGravityAffectedLayer;
 
         RayCastOffset = new Vector3(0, 0.4f, 0);
 
@@ -202,7 +203,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             if (hit.transform.TryGetComponent(out Pickup pickup))
             {
                 if (mouse.rightButton.wasPressedThisFrame)
+                {
                     DoPickup(pickup);
+                }
                 else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
                 {
                     DoPickup(pickup);
@@ -234,7 +237,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             // Logic for Ingredient on floor Interaction 
             else if (hit.transform.TryGetComponent(out Ingredient ingredient))
             {
-                if (GetNumberOfIngredients() <= GetMaxIngredients() && !IsHoldingPickup)
+                if (GetNumberOfIngredients() <= GetMaxIngredients() && !HasPickup())
                 {
                     IngredientSO ingredientSORef = ingredient.GetIngredientSO();
 
@@ -391,7 +394,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     public void OnThrow()
     {
         if(!IsLocalPlayer) return;
-        if (IsHoldingPickup)
+        if (HasPickup())
         {
             ThrowPickup();
         }
@@ -515,7 +518,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public void GrabIngredientFromFloor(Ingredient floorIngredient, IngredientSO ingredientSO)
     {
-        if (IsHoldingPickup)
+        if (HasPickup())
             return;
         if(GetNumberOfIngredients() >= GetMaxIngredients())
         {
@@ -566,7 +569,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public Transform GetPickupTransform()
     {
-        return GetNextHoldPoint();
+        return pickupLocation;
     }
 
     public void SetPickup(Pickup pickup)
@@ -574,14 +577,20 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         this.pickup = pickup;
     }
 
+    public Pickup GetPickup()
+    {
+        return pickup;
+    }
+
     public void ClearPickup()
     {
+        this.pickup = null;
         pickupSo = null;
     }
 
     public bool HasPickup()
     {
-        return pickupSo != null;
+        return this.pickup != null;
     }
 
     public Transform GetSpillTransform()
@@ -640,51 +649,50 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
         ingredientIndicatorText.text = currentIndicator;
     }
-
-    // Mess Interface implementation
-    public bool IsHoldingPickup => pickupLocation.childCount > 0;
     public void DoPickup(Pickup pickup)
     {
-        if (IsHoldingPickup || !HasNoIngredients)
+        if (HasPickup() || !HasNoIngredients)
             return;
-       
-        // Pickup p = Instantiate(pickup, pickupLocation) as Pickup;
-        //Pickup.SpawnPickupItem(pickupSo, this);
+
         PickupSO pickupSo = pickup.GetPickupObjectSo();
 
         if (pickupSo != null)
         {
-            Pickup.SpawnPickupItem(pickupSo, this);
+            pickup.SetPickupObjectParent(this);
+            pickup.DisablePickupColliders(pickup);
         }
-        // if (p.IsCustomer)
-        // {
-        //     p.GetNavMeshAgent().enabled = false;
-        //     p.GetCustomer().SetCustomerStateServerRpc(CustomerBase.CustomerState.PickedUp);
-        // }
-        //
-        // p.RemoveRigidBody();
-        // p.transform.localRotation = Quaternion.Euler(p.holdingRotation);
-        // p.transform.localPosition = p.holdingPosition;
-        // p.GetCollider().enabled = false;
-        //Destroy(pickup.gameObject);
+
+        if (pickup.IsCustomer)
+        {
+            Debug.Log("hello im a customer and im trying to be picked up");
+            pickup.GetNavMeshAgent().enabled = false;
+            pickup.GetCustomer().SetCustomerStateServerRpc(CustomerBase.CustomerState.PickedUp);
+
+            pickup.SetPickupObjectParent(this);
+
+            pickup.DisablePickupColliders(pickup);
+        }
     }
 
     public void ThrowPickup()
     {
-        if (pickupLocation.childCount == 0)
+        if (!HasPickup())
             return;
 
-        Pickup p = pickupLocation.GetChild(0).GetComponent<Pickup>();
-
-        if (p.IsCustomer)
+        if (pickup.IsCustomer)
         {
-            p.GetCustomer().Dead();
+            Debug.Log("Customer deadge");
+            pickup.GetCustomer().Dead();
         }
 
-        p.transform.SetParent(null);
-        p.GetCollider().enabled = true;
-        p.AddRigidbody();
-        p.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * p.GetThrowForceMultiplier()));
+        pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
+        pickup.EnablePickupColliders(pickup);
+        pickup.GetCollider().enabled = true;
+        pickup.AddRigidbody();
+        pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
+
+        pickup.ClearPickupOnParent();
+        //Pickup.DestroyPickup(pickup);
     }
 
     // temp for debugging 

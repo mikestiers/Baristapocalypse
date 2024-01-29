@@ -176,14 +176,14 @@ public class GameManager : NetworkBehaviour
                 break; 
         }
 
-        Debug.Log("autoTestGamePausedState" + autoTestGamePausedState);
+        //Debug.Log("autoTestGamePausedState" + autoTestGamePausedState);
     }
 
     private void LateUpdate()
     {
         if (autoTestGamePausedState)
         {
-            Debug.Log("autoTestGamePausedState" + autoTestGamePausedState);
+            //Debug.Log("autoTestGamePausedState" + autoTestGamePausedState);
             TestGamePauseState();
             autoTestGamePausedState = false;
         }
