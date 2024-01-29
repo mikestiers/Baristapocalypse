@@ -652,7 +652,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         if (pickupSo != null)
         {
-            Pickup.DestroyPickup(pickup);
             Pickup.SpawnPickupItem(pickupSo, this);
         }
         // if (p.IsCustomer)
@@ -684,7 +683,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         pickup.AddRigidbody();
         pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
 
-        pickup.ClearPickupOnParent();
+        Pickup.DestroyPickup(pickup);
     }
 
     // temp for debugging 

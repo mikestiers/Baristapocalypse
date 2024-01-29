@@ -35430,6 +35430,7 @@ GameObject:
   - component: {fileID: 1614449417460669487}
   - component: {fileID: 3246963731520391723}
   - component: {fileID: 5807552410373365763}
+  - component: {fileID: -7067559025576878401}
   m_Layer: 11
   m_Name: messCup
   m_TagString: Mess
@@ -35482,8 +35483,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.07136804, y: 0.672961, z: 0.10761831}
-  m_Center: {x: 0.00821663, y: 0.3288832, z: 0.027345376}
+  m_Size: {x: 0.13438156, y: 0.8108641, z: 0.17783317}
+  m_Center: {x: 0.0397234, y: 0.25993165, z: 0.01413494}
 --- !u!114 &5807552410373365763
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35500,6 +35501,27 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &-7067559025576878401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7498007070164729142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75bb163e3ea79f54eb344463980b00e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attributes: 
+  holdingPosition: {x: 0, y: 0, z: 0}
+  holdingRotation: {x: 0, y: 0, z: 0}
+  customer: {fileID: 0}
+  collider: {fileID: 3246963731520391723}
+  navMeshAgent: {fileID: 0}
+  throwForceMultiplier: 1
+  <pickupSo>k__BackingField: {fileID: 0}
+  followTransform: {fileID: 0}
 --- !u!1 &8017479028610069241
 GameObject:
   m_ObjectHideFlags: 0
