@@ -63,6 +63,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [Header("Mess Data")]
     [SerializeField] private LayerMask isMopLayer;
     [SerializeField] private LayerMask isMessLayer;
+    [SerializeField] private LayerMask isGravityAffectedLayer;
     [SerializeField] private MessSO spillPrefab;
     [SerializeField] private Transform spillSpawnPoint;
     [SerializeField] private Spill spill;
@@ -140,7 +141,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if (customerInteractDistance <= 0) customerInteractDistance = 5.0F;
 
         //Define the interactable layer mask to include station, ingredient, and mess layers.
-        interactableLayerMask = isStationLayer | isIngredientLayer | isMessLayer | isMopLayer | isCustomerLayer ;
+        interactableLayerMask = isStationLayer | isIngredientLayer | isMessLayer | isMopLayer | isCustomerLayer | isGravityAffectedLayer;
 
         RayCastOffset = new Vector3(0, 0.4f, 0);
 
@@ -202,7 +203,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             if (hit.transform.TryGetComponent(out Pickup pickup))
             {
                 if (mouse.rightButton.wasPressedThisFrame)
+                {
                     DoPickup(pickup);
+                }
                 else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
                 {
                     DoPickup(pickup);
@@ -650,7 +653,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         if (pickupSo != null)
         {
-            Pickup.SpawnPickupItem(pickupSo, this);
+            pickup.SetPickupObjectParent(this);
+            pickup.DisablePickupColliders(pickup);
         }
 
         if (pickup.IsCustomer)
@@ -682,7 +686,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         pickup.AddRigidbody();
         pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
 
-        Pickup.DestroyPickup(pickup);
+        pickup.ClearPickupOnParent();
+        //Pickup.DestroyPickup(pickup);
     }
 
     // temp for debugging 
