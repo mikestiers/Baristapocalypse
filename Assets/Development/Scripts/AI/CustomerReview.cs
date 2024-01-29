@@ -132,7 +132,6 @@ public class CustomerReview : MonoBehaviour
         cafeCrowdedness = GetCafeCrowd();
         timeToServe = GetTimeToServe();
         reviewScore = CalculateReviewScore(cafeCleanliness, cafeCrowdedness, timeToServe, drinkScore);
-        customer.StopOrderTimer();
     }
 
     //Calculates cafe cleanliness and assigns a score (Max 20)

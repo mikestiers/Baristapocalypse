@@ -86,7 +86,8 @@ public class OrderStats : MonoBehaviour
 
     private void UpdateTimer()
     {
-        orderTimer.value = (orderOwner.customerLeaveTime - orderOwner.orderTimer.Value) / orderOwner.customerLeaveTime;
+        if (orderOwner.GetCustomerState() != CustomerBase.CustomerState.Leaving)
+            orderTimer.value = (orderOwner.customerLeaveTime - orderOwner.orderTimer.Value) / orderOwner.customerLeaveTime;
     }
 
     public List<PlayerController> GetActivePlayers()
