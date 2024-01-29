@@ -298,7 +298,7 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
         return -1;
      }
 
-    public void SpawnPickupObject(PickupSO pickupSo,IPickupObjectParent pickupObjectParent )
+    public void SpawnPickupObject(PickupSO pickupSo, Base pickupObjectParent)
     {
         SpawnPickupObjectServerRpc(GetPickupObjectSoIndex(pickupSo),pickupObjectParent.GetNetworkObject());
         
@@ -308,17 +308,13 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     {
         PickupSO pickupSo = GetPickupSoFromIndex(pickupSoIndex);
         pickupObjectNetworkObjectReference.TryGet(out NetworkObject pickupObjectParentNetworkObject);
-        IPickupObjectParent pickupObjectParent = pickupObjectParentNetworkObject.GetComponent<IPickupObjectParent>();
+        Base pickupObjectParent = pickupObjectParentNetworkObject.GetComponent<Base>();
 
         Transform pickupObjectTransform = Instantiate(pickupSo.prefab.transform);
 
         NetworkObject pickupObjectNetworkObject = pickupObjectTransform.GetComponent<NetworkObject>();
         pickupObjectNetworkObject.Spawn(true);
-
-        Pickup pickup = pickupObjectTransform.GetComponent<Pickup>();
-        pickup.SetPickupObjectParent(pickupObjectParent);
-        
-        pickup.DisablePickupColliders(pickup);
+        pickupObjectNetworkObject.transform.position = pickupObjectParent.transform.position;
     }
 
     public int GetPickupObjectSoIndex(PickupSO pickupSo)
