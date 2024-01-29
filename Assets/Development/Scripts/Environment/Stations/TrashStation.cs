@@ -7,6 +7,7 @@ public class TrashStation : BaseStation
 {
     [SerializeField] private ParticleSystem interactParticle;
     private Ingredient ingredient;
+    private Pickup pickup;
 
     public override void Interact(PlayerController player)
     {
@@ -21,6 +22,16 @@ public class TrashStation : BaseStation
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
             }
         }
+
+        if (player.HasPickup())
+        {
+            Debug.Log("Destroying garbage cup");
+            pickup = player.GetPickup();
+            pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
+            pickup.ClearPickupOnParent();
+
+            TrashPickupServerRpc();
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -33,7 +44,18 @@ public class TrashStation : BaseStation
     private void InteractClientRpc()
     {
         Ingredient.DestroyIngredient(ingredient);
+    }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void TrashPickupServerRpc()
+    {
+        TrashPickupClientRpc();
+    }
+
+    [ClientRpc]
+    private void TrashPickupClientRpc()
+    {
+        Pickup.DestroyPickup(pickup);
     }
 
 }

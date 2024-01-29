@@ -577,6 +577,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         this.pickup = pickup;
     }
 
+    public Pickup GetPickup()
+    {
+        return pickup;
+    }
+
     public void ClearPickup()
     {
         this.pickup = null;
