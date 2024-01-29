@@ -34,9 +34,9 @@ public class Pickup : NetworkBehaviour
         followTransform = GetComponent<IngredientFollowTransform>();
     }
 
-    public static void SpawnPickupItem(PickupSO pickupSo, IPickupObjectParent pickupObjectParent)
+    public static void SpawnPickupItem(PickupSO pickupSO, Base pickupObjectParent)
     {
-        BaristapocalypseMultiplayer.Instance.SpawnPickupObject(pickupSo,pickupObjectParent);
+        BaristapocalypseMultiplayer.Instance.SpawnPickupObject(pickupSO, pickupObjectParent);
     }
     
     public void SetPickupObjectParent(IPickupObjectParent pickupObjectParent)

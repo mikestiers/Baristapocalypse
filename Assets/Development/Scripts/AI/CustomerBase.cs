@@ -48,6 +48,7 @@ public class CustomerBase : Base
     [SerializeField] public GameObject customerDialogue;
     [SerializeField] private MessSO spillPrefab;
     [SerializeField] private Transform spillSpawnPoint;
+    [SerializeField] private PickupSO pickupSO;
 
     [Header("Customer Review")]
     public GameObject customerReviewPrefab;
@@ -484,7 +485,8 @@ public class CustomerBase : Base
     [ClientRpc]
     public void SpawnMessClientRpc()
     {
-        Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
+        Pickup.SpawnPickupItem(pickupSO, this);
+        //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
         messTime = 0f;
     }
 }
