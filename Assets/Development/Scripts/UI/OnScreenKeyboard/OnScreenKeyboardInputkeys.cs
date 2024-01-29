@@ -2,9 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
+
 public class OnScreenKeyboardInputkeys : MonoBehaviour
 {
   [SerializeField] private string Inputletter;
@@ -12,35 +13,53 @@ public class OnScreenKeyboardInputkeys : MonoBehaviour
   [SerializeField] private GameObject LowerCaseKeys;
   [SerializeField] private GameObject UpperCaseKeys;
 
-   public void Update()
+  [SerializeField] private GameObject Targetbutton; // force the selected button to a key on the keyboard
+   // everything is in scene called by each button on keyboard
+  public void InputKey(string key)
+  {
+     if (currentInputField != null)
+     {
+        currentInputField.text += key;
+     }
+     Debug.LogError(key);
+   }
+  public void RemoveInputkey(string key)
+  {
+     if (currentInputField != null)
+     {
+        if (currentInputField.text.Length > 0)
+        {
+           currentInputField.text = currentInputField.text.Substring(0, currentInputField.text.Length - 1);
+        }
+     }
+  }
+  
+   public void ActivateCapsOnShiftPressed()
    {
-      if (EventSystem.current.currentSelectedGameObject != null &&
-          EventSystem.current.currentSelectedGameObject.GetComponent<InputField>() != null)
-      {
-         // Update the currentInputField reference
-            currentInputField = EventSystem.current.currentSelectedGameObject.GetComponent<InputField>(); 
-      }
+      // Toggle between lowercase and uppercase keyboard
+         if (LowerCaseKeys.activeSelf)
+         {
+            LowerCaseKeys.SetActive(false);
+            UpperCaseKeys.SetActive(true);
+         }
+         else if (UpperCaseKeys.activeSelf)
+         {
+            LowerCaseKeys.SetActive(true);
+            UpperCaseKeys.SetActive(false);
+         }
    }
 
-   public void InputKey(string key)
+   public void DeactiveOnScreenKeyboard()
    {
-      Inputletter = key;
-      
-      Debug.LogError(key);
+      LowerCaseKeys.SetActive(false);
+      UpperCaseKeys.SetActive(false);
+      EventSystem.current.SetSelectedGameObject(EventSystem.current.firstSelectedGameObject);
    }
-
-   public void ActvateCapsOnShiftPressed()
+   public void SetCurrentInputField(TMP_InputField newInputField)
    {
-      if (LowerCaseKeys.active)
-      {
-         LowerCaseKeys.SetActive(false);
-         UpperCaseKeys.SetActive(true);
-      }
-      else if(UpperCaseKeys.active)
-      {
-         LowerCaseKeys.SetActive(true);
-         UpperCaseKeys.SetActive(false);
-      }
+      // Set the current input field
+      currentInputField = newInputField;
+      LowerCaseKeys.SetActive(true);
+       EventSystem.current.SetSelectedGameObject(Targetbutton);
    }
- 
 }

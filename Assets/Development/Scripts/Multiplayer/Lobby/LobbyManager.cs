@@ -26,7 +26,6 @@ public class LobbyManager : MonoBehaviour
     private string playerName;
 
     public static LobbyManager Instance { get; private set; }
-
     public EventHandler<OnLobbyListChangedEventArgs> OnLobbyListChanged;
     public class OnLobbyListChangedEventArgs : EventArgs
     {
