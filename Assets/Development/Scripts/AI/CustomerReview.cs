@@ -330,6 +330,7 @@ public class CustomerReview : MonoBehaviour
         }
         numReviews++;
         averageReviewScore += reviewScore;
+        //add gain money
         return reviewScore;
     }
 

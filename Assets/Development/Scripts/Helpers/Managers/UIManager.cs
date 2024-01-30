@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.Audio;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using System.Collections;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -40,10 +41,15 @@ public class UIManager : Singleton<UIManager>
     public TextMeshProUGUI streakText;
     public TextMeshProUGUI gameMessage;
 
+    [Header("GameMessageHolder")]
+    public GameObject gameMessageContainer;
+
     [Header("TimerHolders")]
     public GameObject smallTimer;
     public GameObject bigTimer;
 
+    [Header("Bar")]
+    public Slider moneyBar;
 
     [Header("Order Stats")]
     public Transform ordersPanel;
@@ -317,11 +323,20 @@ public class UIManager : Singleton<UIManager>
         else smallTimer.SetActive(false);
     }
 
-    public void AnimateGameMessage(string GameMessage)
+    public void SayGameMessage(string GameMessage)
     {
         gameMessage.text = GameMessage;
 
+        gameMessageContainer.SetActive(true);
 
+        StartCoroutine(DeactivateGameMessage());
     }
 
+    public IEnumerator DeactivateGameMessage() 
+    {
+        yield return new WaitForSeconds(4f);
+
+        gameMessageContainer.SetActive(false);
+
+    }
 }

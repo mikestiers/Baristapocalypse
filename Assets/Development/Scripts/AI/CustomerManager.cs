@@ -74,7 +74,6 @@ public class CustomerManager : Singleton<CustomerManager>
     public GameObject[] Chairs;
     //private int chairNumber = 0;
 
-    // Start is called before the first frame update
     private void Start()
     {
 
@@ -120,16 +119,6 @@ public class CustomerManager : Singleton<CustomerManager>
         switch (currentServingState)
         {
             case ServingState.CurrentlyServing:
-
-                if (customersLeftinWave == 0)
-                {
-                    //trigger warning;
-                }
-
-                if(customersInStore == 0 && customersLeftinWave == 0)
-                {
-                    //start breaktime Message
-                }
 
                 break;
 
@@ -189,7 +178,11 @@ public class CustomerManager : Singleton<CustomerManager>
                 UIManager.Instance.customersInStore.text = ("Customers in Store: ") + customersInStore.ToString();
                 UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
 
-                if (customersLeftinWave <= 0) yield break;
+                if (customersLeftinWave <= 0)
+                {
+                    UIManager.Instance.SayGameMessage("Last Customer!"); // UI Warning
+                    yield break;
+                }
             }
         }
     }
@@ -197,6 +190,8 @@ public class CustomerManager : Singleton<CustomerManager>
     // Trigger Time Between waves
     public void NextWave()
     {
+        UIManager.Instance.SayGameMessage("Break Time!");
+
         timer = GameManager.Instance.difficultySettings.GetTimeBetweenWaves();
         currentServingState = ServingState.BreakTime;
         WavesLeft--;
