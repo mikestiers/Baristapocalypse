@@ -8,20 +8,20 @@ using UnityEngine.UI;
 
 public class LobbyUI : MonoBehaviour
 {
-    [Header ("Panels")]
-    [SerializeField] private GameObject multiplayerPanel;
+    [Header("Panels")] [SerializeField] private GameObject multiplayerPanel;
     [SerializeField] private GameObject hostSettingsPanel;
 
-    [Header ("Buttons")]
-    [SerializeField] private Button hostLobbyButton;
+    [Header("Buttons")] [SerializeField] private Button hostLobbyButton;
     [SerializeField] private Button quickJoinLobbyButton;
     [SerializeField] private Button joinLobbyByCodeButton;
     [SerializeField] private Button createPrivateLobbyButton;
     [SerializeField] private Button createPublicLobbyButton;
     [SerializeField] private Button backButton;
 
-    [Header("Input Field")]
-    [SerializeField] private TMP_InputField lobbyNameInputField;
+    [SerializeField] private TMP_Dropdown _dropdown;
+    [Header("Input Field")] [SerializeField]
+    private TMP_InputField lobbyNameInputField;
+
     [SerializeField] private TMP_InputField maxPlayersInputField;
     [SerializeField] private TMP_InputField lobbyCodeInputField;
 
@@ -31,6 +31,7 @@ public class LobbyUI : MonoBehaviour
 
     private void Awake()
     {
+        int selectedMaxPlayers = int.Parse(_dropdown.options[_dropdown.value].text);
         if (hostLobbyButton)
         {
             hostLobbyButton.onClick.AddListener(() =>
@@ -39,16 +40,13 @@ public class LobbyUI : MonoBehaviour
                 hostSettingsPanel.SetActive(true);
             });
         }
-            
+
         if (quickJoinLobbyButton)
         {
-            quickJoinLobbyButton.onClick.AddListener(() =>
-            {
-                LobbyManager.Instance.QuickJoinLobby();
-            });
+            quickJoinLobbyButton.onClick.AddListener(() => { LobbyManager.Instance.QuickJoinLobby(); });
         }
 
-        if(joinLobbyByCodeButton)
+        if (joinLobbyByCodeButton)
         {
             joinLobbyByCodeButton.onClick.AddListener(() =>
             {
@@ -60,7 +58,7 @@ public class LobbyUI : MonoBehaviour
         {
             createPrivateLobbyButton.onClick.AddListener(() =>
             {
-                LobbyManager.Instance.CreateLobby(lobbyNameInputField.text, true, int.Parse(maxPlayersInputField.text));
+                LobbyManager.Instance.CreateLobby(lobbyNameInputField.text, true,selectedMaxPlayers);
             });
         }
 
@@ -68,7 +66,7 @@ public class LobbyUI : MonoBehaviour
         {
             createPublicLobbyButton.onClick.AddListener(() =>
             {
-                LobbyManager.Instance.CreateLobby(lobbyNameInputField.text, false, int.Parse(maxPlayersInputField.text));
+                LobbyManager.Instance.CreateLobby(lobbyNameInputField.text, false,selectedMaxPlayers);
             });
         }
 
@@ -88,13 +86,13 @@ public class LobbyUI : MonoBehaviour
 
     private void UpdateLobbyList(List<Lobby> lobbyList)
     {
-        foreach(Transform child in lobbyContainer)
+        foreach (Transform child in lobbyContainer)
         {
             if (child == lobbyTemplate) continue;
             Destroy(child.gameObject);
         }
 
-        foreach(Lobby lobby in lobbyList)
+        foreach (Lobby lobby in lobbyList)
         {
             Transform lobbyTransform = Instantiate(lobbyTemplate, lobbyContainer);
             lobbyTransform.gameObject.SetActive(true);
@@ -106,4 +104,7 @@ public class LobbyUI : MonoBehaviour
     {
         LobbyManager.Instance.OnLobbyListChanged -= LobbyManager_OnLobbyListChanged;
     }
+
+    
+
 }
