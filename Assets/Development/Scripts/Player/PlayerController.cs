@@ -300,13 +300,18 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             anim.SetFloat("horizontal", 0);
             return;
         }
-        
-        curMoveInput = inputManager.moveDir * moveSpeed * Time.deltaTime;
+
+        //curMoveInput = inputManager.moveDir * moveSpeed * Time.deltaTime; // movement does not take camera position into calculation so the map has to be rotated in a certain way
+        curMoveInput = Camera.main.transform.forward * inputManager.moveDir.z * moveSpeed * Time.deltaTime;
+        curMoveInput += Camera.main.transform.right * inputManager.moveDir.x * moveSpeed * Time.deltaTime;
+
         transform.forward = inputManager.moveDir;
 
         // Check movement direction
         float forwardDot = Vector3.Dot(inputManager.moveDir, transform.right);
         float rightDot = Vector3.Dot(inputManager.moveDir, transform.forward);
+        //float forwardDot = Vector3.Dot(inputManager.moveDir, Camera.main.transform.forward);
+        //float rightDot = Vector3.Dot(inputManager.moveDir, Camera.main.transform.right);
         anim.SetFloat("vertical", forwardDot);
         anim.SetFloat("horizontal", rightDot);
 

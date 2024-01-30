@@ -9,6 +9,8 @@ using UnityEngine.UI;
 
 public class CustomerManager : Singleton<CustomerManager>
 {
+    //[SerializeField] public GameObject cashRegister; // where customers line up
+    //[SerializeField] public GameObject door;
     [SerializeField] private Transform Counter;
     [SerializeField] private Transform barEntrance;
     [SerializeField] private Transform exit;
@@ -67,6 +69,16 @@ public class CustomerManager : Singleton<CustomerManager>
     // Start is called before the first frame update
     private void Start()
     {
+        //if (cashRegister)
+        //    Counter.transform.position = cashRegister.transform.position;
+
+        //if (door)
+        //{
+        //    exit.transform.position += new Vector3(0, 0, -10.0f);
+        //    exit.transform.position = door.transform.position;
+        //    barEntrance.transform.position += new Vector3(0, 0, -10.0f);
+        //    barEntrance.transform.position = door.transform.position;
+        //}
 
         List<Vector3> waitingQueuePostionList = new List<Vector3>();
         if (Chairs.Length <= 0) Chairs = GameObject.FindGameObjectsWithTag("Waypoint");
