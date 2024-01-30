@@ -85,17 +85,24 @@ public class IngredientSelectionUI : BaseStation
         EventSystem.current.SetSelectedGameObject(null);
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
         player.movementToggle = true;
-        brewingStations[player.currentBrewingStation].ingredientSOList.Add(currentIngredient);
-        OrderStats orderStats = orderStatsRoot.GetChild(player.currentBrewingStation).GetComponent<OrderStats>();
-        orderStats.temperatureSegments.cumulativeIngredientsValue = orderStats.temperatureSegments.potentialIngredientValue;
-        orderStats.sweetnessSegments.cumulativeIngredientsValue = orderStats.sweetnessSegments.potentialIngredientValue;
-        orderStats.spicinessSegments.cumulativeIngredientsValue = orderStats.spicinessSegments.potentialIngredientValue;
-        orderStats.strengthSegments.cumulativeIngredientsValue = orderStats.strengthSegments.potentialIngredientValue;
-        orderStats.SetSweetness();
-        orderStats.SetTemperature();
-        orderStats.SetSpiciness();
-        orderStats.SetStrength();
+        //brewingStations[player.currentBrewingStation].ingredientSOList.Add(currentIngredient);
+        if (brewingStations[player.currentBrewingStation].TryAddIngredient(currentIngredient))
+        {
+            brewingStations[player.currentBrewingStation].AddIngredientToListSO(BaristapocalypseMultiplayer.Instance.GetIngredientSOIndex(currentIngredient));
+            //brewingStations[player.currentBrewingStation].InteractLogicPlaceObjectOnBrewing();
+
+            OrderStats orderStats = orderStatsRoot.GetChild(player.currentBrewingStation).GetComponent<OrderStats>();
+            orderStats.temperatureSegments.cumulativeIngredientsValue = orderStats.temperatureSegments.potentialIngredientValue;
+            orderStats.sweetnessSegments.cumulativeIngredientsValue = orderStats.sweetnessSegments.potentialIngredientValue;
+            orderStats.spicinessSegments.cumulativeIngredientsValue = orderStats.spicinessSegments.potentialIngredientValue;
+            orderStats.strengthSegments.cumulativeIngredientsValue = orderStats.strengthSegments.potentialIngredientValue;
+            orderStats.SetSweetness();
+            orderStats.SetTemperature();
+            orderStats.SetSpiciness();
+            orderStats.SetStrength();
+        }
         StartCoroutine(CloseMenu());
+
     }
 
     private void OnTriggerEnter(Collider other)
