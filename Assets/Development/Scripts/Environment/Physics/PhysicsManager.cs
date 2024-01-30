@@ -1,17 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class PhysicsManager : MonoBehaviour
+public class PhysicsManager : NetworkBehaviour, IRandomEvent
 {
     [SerializeField] private float floatForce = 10f;
     [SerializeField] private LayerMask gravityLayer;
     [SerializeField] private float maxFloatDistance = 1f;
     [SerializeField] Vector3 startingLocation;
     [SerializeField] List<GameObject> stations;
-    bool isFloating;
+    private  bool isFloating;
+
 
     private void Start()
     {
@@ -55,5 +57,25 @@ public class PhysicsManager : MonoBehaviour
                 rb.AddForce(Vector3.up * (floatForce * Random.Range(0.95f, 1.05f)), ForceMode.Force);
             }
         }
+    }
+
+    public void SetEvent(RandomEvent randomEvent)
+    {
+        
+    }
+
+    public bool IsRandomEven(bool trueOrFalse)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public NetworkObject GetNetworkObject()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    private void TurnOnAndOff()
+    {
+        gameObject.SetActive(true);
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class RandomEvent : NetworkBehaviour
 {
-    [field: SerializeField] public RandomEventSO EventSO { get; private set; }
+    [field: SerializeField] public RandomEventSO RandomEventSO { get; private set; }
 
 
 }

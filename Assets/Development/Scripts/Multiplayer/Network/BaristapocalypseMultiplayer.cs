@@ -14,6 +14,7 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     [SerializeField] private PickupListSo pickupList;
     [SerializeField] private MessListSO MessList;
     [SerializeField] private ParticleListSO particleListSO;
+    [SerializeField] private 
     public static BaristapocalypseMultiplayer Instance { get; private set; }
 
     public static bool playMultiplayer;
@@ -361,8 +362,6 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     }
 
     // Particle Networking Implementation
-
-
     public void SpawnParticle(ParticleSO particleSO, IParticleParent particleParent)
     {
         SpawnParticleServerRpc(GetParticleSOIndex(particleSO), particleParent.GetNetworkObject());
@@ -422,4 +421,7 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     {
         return particleListSO.particleSOList[particleSOIndex];
     }
+
+    // Quick Time Event Randomizer
+
 }
