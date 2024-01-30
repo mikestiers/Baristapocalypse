@@ -69,6 +69,9 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     private void Update()
     {
+
+        PrintHeldIngredientList(); // putting this here until we have a way to show activity in the station
+
         if (!IsServer)
         {
             return;
@@ -93,35 +96,19 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             });
         }
 
-        if (orderAssigned)
+        if (orderStats.GetOrderOwner() != null)
         {
-            orderStats.SetInactive(false);
-            orderStats.orderTimer.value = (customer.customerLeaveTime - customer.orderTimer.Value) / customer.customerLeaveTime;
+            orderStats.OrderInProgress(true);
         }
-
-        if (orderAssigned && orderStats.orderTimer.value <= 0 || !orderAssigned)
+        else if (orderStats.GetOrderOwner() == null)
         {
-            orderStats.SetInactive(true);
-            orderStats.customerInfoRoot.SetActive(false);
-            orderStats.temperatureSegments.targetAttributeValue = 0;
-            orderStats.sweetnessSegments.targetAttributeValue = 0;
-            orderStats.spicinessSegments.targetAttributeValue = 0;
-            orderStats.strengthSegments.targetAttributeValue = 0;
-            orderStats.temperatureSegments.cumulativeIngredientsValue = 0;
-            orderStats.sweetnessSegments.cumulativeIngredientsValue = 0;
-            orderStats.spicinessSegments.cumulativeIngredientsValue = 0;
-            orderStats.strengthSegments.cumulativeIngredientsValue = 0;
-            orderStats.temperatureSegments.Reset();
-            orderStats.sweetnessSegments.Reset();
-            orderStats.spicinessSegments.Reset();
-            orderStats.strengthSegments.Reset();
-            orderAssigned = false;
+            orderStats.OrderInProgress(false);
         }
     }
 
     public void SetOrder(CustomerBase customerOrder)
     {
-        customer = customerOrder;
+        orderStats.SetOrderOwner(customerOrder);  //<--- TURN THIS ON AND FIX / REMOVE WHAT BREAKS.  reveals lots of dead code
         orderStats.customerInfoRoot.SetActive(true);
         orderStats.customerNumberText.text = customerOrder.customerNumber.ToString();
         orderStats.customerNameText.text = customerOrder.customerName;
@@ -338,6 +325,11 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             currentIngredientSOList += ingredient.name + "\n";
         }
         ingredientsIndicatorText.text = currentIngredientSOList;
+    }
+
+    public void Empty()
+    {
+        ingredientSOList.Clear();
     }
 }
 

@@ -107,6 +107,24 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""BrewingStationSelect"",
+                    ""type"": ""Button"",
+                    ""id"": ""175210a5-27eb-417d-8da4-cc71303a0303"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""BrewingStationEmpty"",
+                    ""type"": ""Button"",
+                    ""id"": ""296d0239-84cd-4b18-9fb3-71abceb39c02"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -338,6 +356,72 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
                     ""action"": ""DebugConsole"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5b406e72-da16-4004-b4d5-df270e901ab8"",
+                    ""path"": ""<XInputController>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""BrewingStationSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""831de6c7-8887-4874-9ed4-b1323c64808a"",
+                    ""path"": ""<XInputController>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""BrewingStationSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dee886d5-a323-4257-a796-ed79a7335554"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""BrewingStationSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cfb19027-1ed0-4e0d-871d-7d7c0d54b106"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""BrewingStationSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""464ed1bc-a262-49ff-b752-49d50b9c49de"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BrewingStationEmpty"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""15e405db-5c78-4816-b590-35793fbb58c5"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BrewingStationEmpty"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -901,6 +985,9 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
         m_Player_Grab = m_Player.FindAction("Grab", throwIfNotFound: true);
         m_Player_Throw = m_Player.FindAction("Throw", throwIfNotFound: true);
         m_Player_DebugConsole = m_Player.FindAction("DebugConsole", throwIfNotFound: true);
+        m_Player_BrewingStationSelect = m_Player.FindAction("BrewingStationSelect", throwIfNotFound: true);
+        m_Player_BrewingStationEmpty = m_Player.FindAction("BrewingStationEmpty", throwIfNotFound: true);
+        
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -981,6 +1068,8 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Grab;
     private readonly InputAction m_Player_Throw;
     private readonly InputAction m_Player_DebugConsole;
+    private readonly InputAction m_Player_BrewingStationSelect;
+    private readonly InputAction m_Player_BrewingStationEmpty;
     public struct PlayerActions
     {
         private @ControllerInputs m_Wrapper;
@@ -994,6 +1083,8 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
         public InputAction @Grab => m_Wrapper.m_Player_Grab;
         public InputAction @Throw => m_Wrapper.m_Player_Throw;
         public InputAction @DebugConsole => m_Wrapper.m_Player_DebugConsole;
+        public InputAction @BrewingStationSelect => m_Wrapper.m_Player_BrewingStationSelect;
+        public InputAction @BrewingStationEmpty => m_Wrapper.m_Player_BrewingStationEmpty;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1030,6 +1121,12 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                 @DebugConsole.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugConsole;
                 @DebugConsole.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugConsole;
                 @DebugConsole.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugConsole;
+                @BrewingStationSelect.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBrewingStationSelect;
+                @BrewingStationSelect.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBrewingStationSelect;
+                @BrewingStationSelect.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBrewingStationSelect;
+                @BrewingStationEmpty.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBrewingStationEmpty;
+                @BrewingStationEmpty.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBrewingStationEmpty;
+                @BrewingStationEmpty.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBrewingStationEmpty;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -1061,6 +1158,12 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                 @DebugConsole.started += instance.OnDebugConsole;
                 @DebugConsole.performed += instance.OnDebugConsole;
                 @DebugConsole.canceled += instance.OnDebugConsole;
+                @BrewingStationSelect.started += instance.OnBrewingStationSelect;
+                @BrewingStationSelect.performed += instance.OnBrewingStationSelect;
+                @BrewingStationSelect.canceled += instance.OnBrewingStationSelect;
+                @BrewingStationEmpty.started += instance.OnBrewingStationEmpty;
+                @BrewingStationEmpty.performed += instance.OnBrewingStationEmpty;
+                @BrewingStationEmpty.canceled += instance.OnBrewingStationEmpty;
             }
         }
     }
@@ -1199,6 +1302,8 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
         void OnGrab(InputAction.CallbackContext context);
         void OnThrow(InputAction.CallbackContext context);
         void OnDebugConsole(InputAction.CallbackContext context);
+        void OnBrewingStationSelect(InputAction.CallbackContext context);
+        void OnBrewingStationEmpty(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

@@ -20,6 +20,8 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
     public event Action GrabEvent;
     public event Action ThrowEvent;
     public event EventHandler PauseEvent;
+    public event Action BrewingStationSelectEvent;
+    public event Action BrewingStationEmptyEvent;
 
     public event Action DebugConsoleEvent;
 
@@ -171,6 +173,18 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
     {
         if (context.performed)
             ThrowEvent?.Invoke();
+    }
+
+    public void OnBrewingStationSelect(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            BrewingStationSelectEvent?.Invoke();
+    }
+
+    public void OnBrewingStationEmpty(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            BrewingStationEmptyEvent?.Invoke();
     }
 
     public void OnDebugConsole(InputAction.CallbackContext context)

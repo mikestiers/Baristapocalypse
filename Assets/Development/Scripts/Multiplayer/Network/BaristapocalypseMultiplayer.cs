@@ -13,6 +13,7 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     [SerializeField] private IngredientListSO ingredientListSO;
     [SerializeField] private PickupListSo pickupList;
     [SerializeField] private MessListSO MessList;
+    [SerializeField] private ParticleListSO particleListSO;
     public static BaristapocalypseMultiplayer Instance { get; private set; }
 
     public static bool playMultiplayer;
@@ -60,7 +61,7 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
 
     private void NetworkManager_Server_OnClientDisconnectCallback(ulong clientId)
     {
-        for(int i=0; i<playerDataNetworkList.Count; i++)
+        for(int i = 0; i < playerDataNetworkList.Count; i++)
         {
             PlayerData playerData = playerDataNetworkList[i];
             if(playerData.clientId == clientId)
@@ -177,6 +178,33 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
         ingredient.ClearIngredientOnParent();
     }
 
+    public void DestroyPickup(Pickup pickup)
+    {
+        DestroyPickupServerRpc(pickup.NetworkObject);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DestroyPickupServerRpc(NetworkObjectReference pickupNetworkObjectReference)
+    {
+        pickupNetworkObjectReference.TryGet(out NetworkObject pickupNetworkObject);
+        if (pickupNetworkObject == null)
+        {
+            return;
+        }
+        Pickup pickup = pickupNetworkObject.GetComponent<Pickup>();
+        ClearPickupOnParentClientRpc(pickupNetworkObjectReference);
+        pickup.DestroySelf();
+    }
+
+    [ClientRpc]
+    private void ClearPickupOnParentClientRpc(NetworkObjectReference pickupNetworkObjectReference)
+    {
+        pickupNetworkObjectReference.TryGet(out NetworkObject pickupNetworkObject);
+        Pickup pickup = pickupNetworkObject.GetComponent<Pickup>();
+
+        pickup.ClearPickupOnParent();
+    }
+
     public bool IsPlayerIndexConnected(int playerIndex)
     {
         return playerIndex < playerDataNetworkList.Count;
@@ -184,6 +212,7 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
 
     public int GetPlayerDataIndexFromClientId(ulong clientId)
     {
+
         for(int i=0; i < playerDataNetworkList.Count; i++)
         {
             if (playerDataNetworkList[i].clientId == clientId)
@@ -269,7 +298,7 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
         return -1;
      }
 
-    public void SpawnPickupObject(PickupSO pickupSo,IPickupObjectParent pickupObjectParent )
+    public void SpawnPickupObject(PickupSO pickupSo, Base pickupObjectParent)
     {
         SpawnPickupObjectServerRpc(GetPickupObjectSoIndex(pickupSo),pickupObjectParent.GetNetworkObject());
         
@@ -278,17 +307,14 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     public void SpawnPickupObjectServerRpc(int pickupSoIndex, NetworkObjectReference pickupObjectNetworkObjectReference)
     {
         PickupSO pickupSo = GetPickupSoFromIndex(pickupSoIndex);
-        GameObject pickupGameObject = Instantiate(pickupSo.prefab);
-
-        NetworkObject pickupObjectNetworkObject = pickupGameObject.GetComponent<NetworkObject>();
-        pickupObjectNetworkObject.Spawn(true);
-        Pickup pickup = pickupGameObject.GetComponent<Pickup>();
-
         pickupObjectNetworkObjectReference.TryGet(out NetworkObject pickupObjectParentNetworkObject);
-        IPickupObjectParent pickupObjectParent = pickupObjectParentNetworkObject.GetComponent<IPickupObjectParent>();
-        pickup.SetpickupObjectParent(pickupObjectParent);
-        
-        pickup.DisablePickupColliders(pickup);
+        Base pickupObjectParent = pickupObjectParentNetworkObject.GetComponent<Base>();
+
+        Transform pickupObjectTransform = Instantiate(pickupSo.prefab.transform);
+
+        NetworkObject pickupObjectNetworkObject = pickupObjectTransform.GetComponent<NetworkObject>();
+        pickupObjectNetworkObject.Spawn(true);
+        pickupObjectNetworkObject.transform.position = pickupObjectParent.transform.position;
     }
 
     public int GetPickupObjectSoIndex(PickupSO pickupSo)
@@ -332,5 +358,68 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     public MessSO GetMessSoFromIndex(int MessSoIndex)
     {
         return MessList.MessSoList[MessSoIndex];
+    }
+
+    // Particle Networking Implementation
+
+
+    public void SpawnParticle(ParticleSO particleSO, IParticleParent particleParent)
+    {
+        SpawnParticleServerRpc(GetParticleSOIndex(particleSO), particleParent.GetNetworkObject());
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SpawnParticleServerRpc(int particleSOIndex, NetworkObjectReference particleParentNetworkObjectReference)
+    {
+        ParticleSO particleSO = GetParticleSOFromIndex(particleSOIndex);
+
+        particleParentNetworkObjectReference.TryGet(out NetworkObject particleParentNetworkObject);
+        IParticleParent particleParent = particleParentNetworkObject.GetComponent<IParticleParent>();
+
+        Transform particleTransform = Instantiate(particleSO.particlePrefab.transform);
+
+        NetworkObject particleNetworkObject = particleTransform.GetComponent<NetworkObject>();
+        particleNetworkObject.Spawn(true);
+
+        Particle particle = particleTransform.GetComponent<Particle>();
+        particle.SetParticleParent(particleParent);
+
+    }
+
+    public void DestroyParticle(Particle particle)
+    {
+        DestroyParticleServerRpc(particle.NetworkObject);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DestroyParticleServerRpc(NetworkObjectReference particleNetworkObjectReference)
+    {
+        particleNetworkObjectReference.TryGet(out NetworkObject particleNetworkObject);
+        if (particleNetworkObject == null)
+        {
+            return;
+        }
+        Particle particle = particleNetworkObject.GetComponent<Particle>();
+        ClearParticleOnParentClientRpc(particleNetworkObjectReference);
+        particle.DestroySelf();
+    }
+
+    [ClientRpc]
+    private void ClearParticleOnParentClientRpc(NetworkObjectReference particleNetworkObjectReference)
+    {
+        particleNetworkObjectReference.TryGet(out NetworkObject particleNetworkObject);
+        Particle particle = particleNetworkObject.GetComponent<Particle>();
+
+        particle.ClearParticleOnParent();
+    }
+
+    public int GetParticleSOIndex(ParticleSO particleSO)
+    {
+        return particleListSO.particleSOList.IndexOf(particleSO);
+    }
+
+    public ParticleSO GetParticleSOFromIndex(int particleSOIndex)
+    {
+        return particleListSO.particleSOList[particleSOIndex];
     }
 }

@@ -30,5 +30,12 @@ public class DifficultySO : ScriptableObject
     public float minWaitTime;
     public float maxWaitTime;
 
+    [Header("Customer Preferences")]
+    public int drinkThreshold;
 
+    [Header("Ingredient List")]
+    public IngredientListSO temperatureIngredientList;
+    public IngredientListSO sweetnessIngredientList;
+    public IngredientListSO strengthIngredientList;
+    public IngredientListSO spicinessIngredientList;
 }

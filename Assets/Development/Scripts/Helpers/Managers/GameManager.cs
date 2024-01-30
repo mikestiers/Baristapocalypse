@@ -25,9 +25,7 @@ public class GameManager : NetworkBehaviour
     private bool isLocalPlayerReady;
 
     [SerializeField] private Transform player1Prefab;
-    public GameObject player2Prefab;
-    public GameObject player3Prefab;
-    public GameObject player4Prefab;
+    [SerializeField] public Transform[] playerSpawnPoints;
 
     // Pause Vars
     private bool isLocalGamePaused = false;
@@ -50,6 +48,13 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] private CustomerManager customerManager;
 
+    // Difficulty Settings
+
+    [SerializeField] public DifficultySO[] Difficulties; //In Customer Manager for now move to Game Manager
+
+    public DifficultySettings difficultySettings; //will move to GameManager when gamemanager is owki, change references to GameManager aswell
+
+    public DifficultySO currentDifficulty;
     private void Awake()
     {
         Instance = this;
@@ -65,6 +70,8 @@ public class GameManager : NetworkBehaviour
             InputManager.Instance.PauseEvent += InputManager_PauseEvent;
             InputManager.Instance.InteractEvent += InputManager_OnInteractEvent;
         }
+
+
     }
 
     private void InputManager_OnInteractEvent()
@@ -84,10 +91,11 @@ public class GameManager : NetworkBehaviour
     {
         gameState.OnValueChanged += GameState_OnValueChanged;
         isGamePaused.OnValueChanged += isGamePaused_OnValueChanged;
+
         if (IsServer)
         {
-            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
             NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
         }
     }
 
@@ -141,6 +149,17 @@ public class GameManager : NetworkBehaviour
                     CustomerManager test = Instantiate(customerManager);
                     test.GetComponent<NetworkObject>().Spawn(true);
 
+                    GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+                    int numberOfPlayers = (players.Length - Mathf.FloorToInt(players.Length * 0.5f));
+
+
+                    SetCurrentDifficultyTo(GameValueHolder.Instance.DifficultyString);
+
+                    difficultySettings = new DifficultySettings(currentDifficulty, numberOfPlayers);
+
+                    difficultySettings.SetAmountOfPlayers(numberOfPlayers); // setdifficulty based on amount of players
+
+
                 }
                 break;
 
@@ -156,14 +175,17 @@ public class GameManager : NetworkBehaviour
             case GameState.GameOver:
                 break; 
         }
+
+        //Debug.Log("autoTestGamePausedState" + autoTestGamePausedState);
     }
 
     private void LateUpdate()
     {
-        if (autoTestGamePausedState) 
-        { 
-            autoTestGamePausedState = false;
+        if (autoTestGamePausedState)
+        {
+            //Debug.Log("autoTestGamePausedState" + autoTestGamePausedState);
             TestGamePauseState();
+            autoTestGamePausedState = false;
         }
     }
 
@@ -226,7 +248,7 @@ public class GameManager : NetworkBehaviour
     {
         foreach(ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
-            Transform playerTransform = Instantiate(player1Prefab);
+            Transform playerTransform = Instantiate(player1Prefab, playerSpawnPoints[(int)clientId]);
             playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
         }
     }
@@ -280,6 +302,26 @@ public class GameManager : NetworkBehaviour
         isGamePaused.Value = false;
 
     }
+    public void SetCurrentDifficultyTo(string difficulty)
+    {
+        switch (difficulty)
+        {
+            case "Easy":
+                currentDifficulty = Difficulties[0];
+                break;
+
+            case "Medium":
+                currentDifficulty = Difficulties[1];
+                break;
+
+            case "Hard":
+                currentDifficulty = Difficulties[2];
+                break;
+
+        }
+
+    }
+
 
 }
 
@@ -290,3 +332,5 @@ public enum GameState
     GamePlaying,
     GameOver,
 }
+
+

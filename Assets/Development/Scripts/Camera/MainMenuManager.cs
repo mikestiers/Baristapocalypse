@@ -54,27 +54,19 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject ExitMenuTab;
     [SerializeField] private GameObject PlayMenuTab;
 
+    [Header("Difficulty Modes")]
+    [SerializeField] private Button EasyButton;
+    [SerializeField] private Button MediumButton;
+    [SerializeField] private Button HardButton;
+
+
+
     // Start is called before the first frame update
     public void Start()
     {
         MainmenuCamera.Priority = 1;
         // this is for screen resolutions
-        resolutions = Screen.resolutions;
-        resoultionDropDown.ClearOptions();
-        List<string> options = new List<string>();
-        int currentResolutionIndex = 0;
-        for (int i = 0; i < resolutions.Length; i++)
-        {
-            string option = resolutions[i].width + " x " + resolutions[i].height +" : " + resolutions[i].refreshRate;
-            options.Add(option);
-            if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height) 
-            {
-                currentResolutionIndex = i;
-            }
-        }
-        resoultionDropDown.AddOptions(options);
-        resoultionDropDown.value = currentResolutionIndex;
-        resoultionDropDown.RefreshShownValue();
+       
 
 
         if (ExitGame)
@@ -92,12 +84,6 @@ public class MainMenuManager : MonoBehaviour
         if (Settings)
             Settings.onClick.AddListener(SettingsScreen);
 
-        if (QuitGame)
-            QuitGame.onClick.AddListener(QuitGameSceen);
-
-        if (MainMenuFromQuit)
-            MainMenuFromQuit.onClick.AddListener(ReturnToMenuFromQuit);
-
         if (MainMenuFromSelection)
             MainMenuFromSelection.onClick.AddListener(ReturnFromSelection);
 
@@ -109,6 +95,16 @@ public class MainMenuManager : MonoBehaviour
 
         if (WindowModeButton)
             WindowModeButton.onClick.AddListener(SetWindowMode);
+
+        if (EasyButton)
+            EasyButton.onClick.AddListener(() => SetDifficulty("Easy"));
+
+        if (MediumButton)
+            MediumButton.onClick.AddListener(() => SetDifficulty("Medium"));
+
+        if (HardButton)
+            HardButton.onClick.AddListener(() => SetDifficulty("Hard"));
+
     }
 
     void ReturnFromSettings() 
@@ -134,28 +130,8 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
-    void ReturnToMenuFromQuit() 
-    { 
-        if(QuitGameCamera.Priority ==1) 
-        {
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
-            QuitGameCamera.Priority= 0;
-            MainmenuCamera.Priority= 1;
-            MainMenuTab.SetActive(true);
-            ExitMenuTab.SetActive(false);
-        }
-    }
-    void QuitGameSceen() 
-    { 
-        if(MainmenuCamera.Priority ==1) 
-        {
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
-            MainmenuCamera.Priority = 0;
-            QuitGameCamera.Priority = 1;
-            ExitMenuTab.SetActive(true);
-            MainMenuTab.SetActive(false);
-        }
-    }
+   
+ 
     void SettingsScreen() 
     { 
         if (MainmenuCamera.Priority == 1)
@@ -226,5 +202,10 @@ public class MainMenuManager : MonoBehaviour
     {
         Resolution resolution = resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+    }
+
+    public void SetDifficulty(string Difficulty)
+    {
+        GameValueHolder.Instance.DifficultyString = Difficulty;
     }
 }

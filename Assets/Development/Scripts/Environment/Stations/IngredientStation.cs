@@ -11,7 +11,7 @@ public class IngredientStation : BaseStation
 
     public override void Interact(PlayerController player)
     {
-        if (player.IsHoldingPickup)
+        if (player.HasPickup())
             return;
 
         if (!HasIngredient())
