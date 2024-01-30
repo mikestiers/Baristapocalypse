@@ -409,9 +409,6 @@ public class CustomerBase : Base
 
     public void JustGotHandedCoffee(CoffeeAttributes coffee)
     {
-        GameObject customerReviewUI = Instantiate(customerReviewPrefab);
-        CustomerReviewManager.Instance.reviewsList.Add(customerReviewUI);
-        customerReviewUI.transform.SetParent(customerReviewPanel.transform);
         CustomerReviewManager.Instance.ShowCustomerReview(this);
         StopOrderTimer();
         CustomerLeave();

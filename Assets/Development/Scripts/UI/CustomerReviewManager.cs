@@ -9,8 +9,10 @@ public class CustomerReviewManager : Singleton<CustomerReviewManager>
     public Transform reviewsPanel;
     public Transform popOutReviewsPanel;
     public GameObject customerReviewPrefab;
-    public GameObject starPrefab;
-    [HideInInspector] public List<GameObject> reviewsList = new List<GameObject>();
+    public List<GameObject> starPrefabs;
+    public List<GameObject> starPrefabs2;
+    public GameObject customerReview;
+    public GameObject customerReview2;
     public float rPSpeed;
     public float rPArrivalThreshold;
     public float popOutReviewTime;
@@ -28,28 +30,26 @@ public class CustomerReviewManager : Singleton<CustomerReviewManager>
     {
         if (reviewInProgress == false)
         {
-            TextMeshProUGUI customerReviewText = reviewsList[0].GetComponentInChildren<TextMeshProUGUI>();
-            CustomerReview customerReview = reviewsList[0].gameObject.GetComponent<CustomerReview>();
-            customerReview.GenerateReview(customer);
-            customerReviewText.text = customerReview.ReviewText;
-            UpdateStarRating(customerReview.ReviewScore);
-            reviewsList[0].SetActive(true);
+            TextMeshProUGUI customerReviewText = customerReview.GetComponentInChildren<TextMeshProUGUI>();
+            customerReview.GetComponent<CustomerReview>().GenerateReview(customer);
+            customerReviewText.text = customerReview.GetComponent<CustomerReview>().ReviewText;
+            UpdateStarRating(customerReview.GetComponent<CustomerReview>().ReviewScore, starPrefabs);
             StartCoroutine(MoveRP(popOutReviewPosition, originalReviewPosition));
         }
         else
         {
-            TextMeshProUGUI customerReviewText = reviewsList[1].GetComponentInChildren<TextMeshProUGUI>();
-            CustomerReview customerReview = reviewsList[1].gameObject.GetComponent<CustomerReview>();
-            customerReview.GenerateReview(customer);
-            customerReviewText.text = customerReview.ReviewText;
-            UpdateStarRating(customerReview.ReviewScore);
-            StartCoroutine(WaitingForLastReview());
+            TextMeshProUGUI customerReviewText = customerReview2.GetComponentInChildren<TextMeshProUGUI>();
+            customerReview2.GetComponent<CustomerReview>().GenerateReview(customer);
+            customerReviewText.text = customerReview2.GetComponent<CustomerReview>().ReviewText;
+            UpdateStarRating(customerReview2.GetComponent<CustomerReview>().ReviewScore, starPrefabs2);
+            StartCoroutine(WaitingForLastReview(popOutReviewPosition, originalReviewPosition));
         }
     }
 
     private IEnumerator MoveRP(Vector3 target, Vector3 start)
     {
         reviewInProgress = true;
+        customerReview2.SetActive(false);
         float startTime = Time.time;
 
         // Move towards the target
@@ -72,17 +72,16 @@ public class CustomerReviewManager : Singleton<CustomerReviewManager>
             reviewsPanel.transform.position = Vector3.Lerp(target, start, t);
             yield return null;
         }
-        Destroy(reviewsList[0]);
-        reviewsList.RemoveAt(0);
         reviewInProgress = false;
+        customerReview2.SetActive(true);
     }
 
-    private IEnumerator WaitingForLastReview()
+    private IEnumerator WaitingForLastReview(Vector3 target, Vector3 start)
     {
         Debug.Log("WaitingForLastReview started");
 
         // Wait until the boolean is true
-        while (!reviewInProgress)
+        while (reviewInProgress)
         {
             // Add a small delay to avoid unnecessary CPU usage
             yield return new WaitForSeconds(0.5f);
@@ -90,26 +89,39 @@ public class CustomerReviewManager : Singleton<CustomerReviewManager>
 
         // The boolean has flipped, perform your desired action here
         Debug.Log("Review Finished, starting the next...");
-        reviewsList[0].SetActive(true);
-        StartCoroutine(MoveRP(popOutReviewPosition, originalReviewPosition));
-    }
-    public void UpdateStarRating(int reviewScore)
-    {
-        Transform starRating = reviewsList[0].GetComponentInChildren<GridLayoutGroup>().gameObject.transform;
+        customerReview.SetActive(false);
+        float startTime = Time.time;
 
-        // Instantiate stars. 5 stars max
-        for (int i = 1; i <= 5; i++)
+        // Move towards the target
+        while (Time.time - startTime < popOutReviewTime)
         {
-            if (i <= reviewScore)
+            float t = (Time.time - startTime) / popOutReviewTime * rPSpeed;
+            reviewsPanel.transform.position = Vector3.Lerp(start, target, t);
+            yield return null;
+        }
+
+        // Wait at the target for specified time
+        yield return new WaitForSeconds(popOutReviewTime);
+
+        startTime = Time.time;
+
+        // Move back to the initial position
+        while (Time.time - startTime < popOutReviewTime)
+        {
+            float t = (Time.time - startTime) / popOutReviewTime * rPSpeed;
+            reviewsPanel.transform.position = Vector3.Lerp(target, start, t);
+            yield return null;
+        }
+        customerReview.SetActive(true);
+    }
+    public void UpdateStarRating(int reviewScore, List<GameObject> starPrefabs)
+    {
+        // change stars color based on review (5 stars max)
+        for (int i = 0; i < starPrefabs.Count; i++)
+        {
+            if (i >= reviewScore)
             {
-                GameObject star = Instantiate(starPrefab, starRating);
-                Image starImage = star.GetComponent<Image>();
-            }
-            else
-            {
-                GameObject star = Instantiate(starPrefab, starRating);
-                Image starImage = star.GetComponent<Image>();
-                starImage.color = Color.red;
+                starPrefabs[i].GetComponent<Image>().color = Color.black;
             }
         }
     }
