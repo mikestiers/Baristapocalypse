@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.Audio;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -33,6 +34,15 @@ public class UIManager : Singleton<UIManager>
     public TextMeshProUGUI gameOverText;
     public TextMeshProUGUI finalScore;
     public Text volSliderText;
+    public TextMeshProUGUI gameTimerText;
+    public TextMeshProUGUI countdownText;
+    public TextMeshProUGUI currencyText;
+    public TextMeshProUGUI streakText;
+
+    [Header("TimerHolders")]
+    public GameObject smallTimer;
+    public GameObject bigTimer;
+
 
     [Header("Order Stats")]
     public Transform ordersPanel;
@@ -294,5 +304,16 @@ public class UIManager : Singleton<UIManager>
         mixer.SetFloat("VoiceLines", voiceVolumeSlider.value);
     }
 
+    public void ToggleBigTimer(bool IsOn)
+    {
+        if(IsOn) bigTimer.SetActive(true);
+        else bigTimer.SetActive(false);
+    }
+
+    public void ToggleSmalltimer(bool IsOn)
+    {
+        if(IsOn) smallTimer.SetActive(true);
+        else smallTimer.SetActive(false);
+    }
 
 }

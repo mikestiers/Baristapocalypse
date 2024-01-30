@@ -19,6 +19,7 @@ public class CustomerManager : Singleton<CustomerManager>
     [SerializeField] private int WavesLeft;
     [SerializeField] private int customersInStore = 0;
     [SerializeField] private float initCustomerSpawnDelay;
+    private ServingState currentServingState;
     private int customerNumber = 0;
     List<string> customerNames = new List<string>
         {
@@ -48,6 +49,13 @@ public class CustomerManager : Singleton<CustomerManager>
             "Rod",
             "Turner"
         };
+
+    public enum ServingState
+    {
+        CurrentlyServing,
+        BreakTime,
+        ShiftOver
+    }
 
 
     public NetworkObject customerPrefab;
@@ -102,6 +110,25 @@ public class CustomerManager : Singleton<CustomerManager>
 
         StartCoroutine(NewCustomer(initCustomerSpawnDelay)); // change this to intial delay
 
+
+    }
+
+    private void Update()
+    {
+        switch (currentServingState)
+        {
+            case ServingState.CurrentlyServing:
+
+                break;
+
+            case ServingState.BreakTime: 
+
+                break;
+
+            case ServingState.ShiftOver:
+
+                break;
+        }
     }
 
     //maybe randomize time of spawning of customers
