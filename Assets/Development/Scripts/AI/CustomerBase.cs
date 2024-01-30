@@ -22,6 +22,7 @@ public class CustomerBase : Base
     public GameObject[] Line;
     public int LineIndex;
     private Transform exit;
+    public int currentPosInLine;
 
     [Header("Identifiers")]
     public string customerName;
