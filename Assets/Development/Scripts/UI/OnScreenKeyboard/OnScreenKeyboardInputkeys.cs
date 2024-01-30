@@ -88,9 +88,7 @@ public class OnScreenKeyboardInputkeys : MonoBehaviour
 
    public void SetLastSelectedObject(GameObject currentGameObject)
    {
-      Debug.Log("did not get last object");
       lastSelectedButton = currentGameObject;
-      Debug.Log("got the last object");
    }
    public void ReturnToLastSelectedObject()
    {
