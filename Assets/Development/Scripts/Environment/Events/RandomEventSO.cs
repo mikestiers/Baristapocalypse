@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu()]
-public class EventSO : ScriptableObject
+public class RandomEventSO : ScriptableObject
 {
+    public GameObject randomObjectEvent;
     public string eventName;
     public bool isEvent;
     public float chanceOfoccurrence;
