@@ -11,6 +11,6 @@ public class GameTimerUI : MonoBehaviour
 
     private void Update()
     {
-        gameTimerText.text = GameManager.Instance.GetGamePlayingTimer().ToString("n2");
+        //gameTimerText.text = GameManager.Instance.GetGamePlayingTimer().ToString("n2");
     }
 }

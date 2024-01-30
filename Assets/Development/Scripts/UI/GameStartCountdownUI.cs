@@ -27,6 +27,8 @@ public class GameStartCountdownUI : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.IsGamePlaying()) return;
+
         countdownText.text = Math.Ceiling(GameManager.Instance.GetCountdownToStartTimer()).ToString();
     }
 

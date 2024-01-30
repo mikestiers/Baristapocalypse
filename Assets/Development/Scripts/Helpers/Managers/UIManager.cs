@@ -38,6 +38,7 @@ public class UIManager : Singleton<UIManager>
     public TextMeshProUGUI countdownText;
     public TextMeshProUGUI currencyText;
     public TextMeshProUGUI streakText;
+    public TextMeshProUGUI gameMessage;
 
     [Header("TimerHolders")]
     public GameObject smallTimer;
@@ -314,6 +315,13 @@ public class UIManager : Singleton<UIManager>
     {
         if(IsOn) smallTimer.SetActive(true);
         else smallTimer.SetActive(false);
+    }
+
+    public void AnimateGameMessage(string GameMessage)
+    {
+        gameMessage.text = GameMessage;
+
+
     }
 
 }

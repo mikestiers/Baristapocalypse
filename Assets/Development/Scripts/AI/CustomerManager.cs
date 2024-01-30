@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -19,6 +20,7 @@ public class CustomerManager : Singleton<CustomerManager>
     [SerializeField] private int WavesLeft;
     [SerializeField] private int customersInStore = 0;
     [SerializeField] private float initCustomerSpawnDelay;
+    private float timer;
     private ServingState currentServingState;
     private int customerNumber = 0;
     List<string> customerNames = new List<string>
@@ -110,7 +112,7 @@ public class CustomerManager : Singleton<CustomerManager>
 
         StartCoroutine(NewCustomer(initCustomerSpawnDelay)); // change this to intial delay
 
-
+        currentServingState = ServingState.CurrentlyServing;
     }
 
     private void Update()
@@ -119,9 +121,42 @@ public class CustomerManager : Singleton<CustomerManager>
         {
             case ServingState.CurrentlyServing:
 
+                if (customersLeftinWave == 0)
+                {
+                    //trigger warning;
+                }
+
+                if(customersInStore == 0 && customersLeftinWave == 0)
+                {
+                    //start breaktime Message
+                }
+
                 break;
 
-            case ServingState.BreakTime: 
+            case ServingState.BreakTime:
+               
+                timer -= Time.deltaTime;
+
+                if(timer <= 0)
+                {
+                    UIManager.Instance.ToggleBigTimer(false);
+                    //end UI & end RestState
+                    //StartCoroutine(NewCustomer(initCustomerSpawnDelay));
+                    currentServingState= ServingState.CurrentlyServing;
+                }
+                else if(timer > 0 && timer < 5)
+                {
+                    //use big timer & hide small timer
+                    UIManager.Instance.countdownText.text = Math.Ceiling(timer).ToString();
+                    UIManager.Instance.ToggleBigTimer(true);
+                    UIManager.Instance.ToggleSmalltimer(false);
+                }
+                else
+                {
+                    //update small timer
+                    UIManager.Instance.gameTimerText.text = Math.Ceiling(timer).ToString();
+                    UIManager.Instance.ToggleSmalltimer(true);
+                }
 
                 break;
 
@@ -134,9 +169,7 @@ public class CustomerManager : Singleton<CustomerManager>
     //maybe randomize time of spawning of customers
     public IEnumerator NewCustomer(float delayS)
     {
-
         yield return new WaitForSeconds(delayS);
-
 
         while (true)
         {
@@ -164,19 +197,25 @@ public class CustomerManager : Singleton<CustomerManager>
     // Trigger Time Between waves
     public void NextWave()
     {
+        timer = GameManager.Instance.difficultySettings.GetTimeBetweenWaves();
+        currentServingState = ServingState.BreakTime;
         WavesLeft--;
         if (WavesLeft <= 0) 
         {
+            currentServingState = ServingState.ShiftOver;
             GameManager.Instance.difficultySettings.NextShift();
             WavesLeft = GameManager.Instance.difficultySettings.GetNumberOfWaves();
             UIManager.Instance.shift.text = ("Shift " + GameManager.Instance.difficultySettings.GetShift().ToString());
+            //Shift Evaluation
         }
         
         customersLeftinWave = GameManager.Instance.difficultySettings.GetNumberofCustomersInwave();
+
         UIManager.Instance.wavesleft.text = ("Waves Left: " + WavesLeft.ToString());
+        //UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
 
         //Trigger UI
-        UIManager.Instance.spawnMode.text = "Resting";
+        //UIManager.Instance.spawnMode.text = "Resting";
 
         StartCoroutine(RestPeriod(GameManager.Instance.difficultySettings.GetTimeBetweenWaves()));
 
@@ -207,9 +246,8 @@ public class CustomerManager : Singleton<CustomerManager>
     {
         yield return new WaitForSeconds(1f);
 
-        if (LineQueue.CanAddCustomer() == true) // add condition for waves? 
+        if (LineQueue.CanAddCustomer() == true)
         {
-            //we can randomize this aswell just set 0 to a random integer from modulo if size of list
             LineQueue.AddCustomer(customersOutsideList[0]);
             customersOutsideList.RemoveAt(0);
         }
