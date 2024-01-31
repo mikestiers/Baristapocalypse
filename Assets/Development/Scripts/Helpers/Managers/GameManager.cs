@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Unity.Netcode;
+using System.Collections;
 
 [DefaultExecutionOrder(-1)]
 public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    // Testing
-    [SerializeField] private GameObject play;
-    [SerializeField] private GameObject mainMenu;
-    [SerializeField] private GameObject playButton;
-    public List<RandomEventBase> randomEventBase;
+    // Quick Time Events
+    [SerializeField] private List<RandomEventBase> randomEventList;
+    [SerializeField] private float minRandomTime = 30;
+    [SerializeField] private float maxRandomTime = 60;
+    [HideInInspector] public bool isEventActive = false;
+    [HideInInspector] public RandomEventBase currentRandomEvent;
+    public event EventHandler OnPlayerDeactivateEvent;
 
     //Input Events
     public Vector2 MovementValue { get; private set; }
@@ -142,9 +145,9 @@ public class GameManager : NetworkBehaviour
         // Temporary for Testing Random Events
         if (Input.GetKeyDown(KeyCode.P))
         {
-            Debug.Log("randomEventObject " + randomEventBase[0].name); 
-            randomEventBase[0].SetEventBool(true);
-            randomEventBase[0].ActivateDeactivateEvent();
+            Debug.Log("randomEventObject " + randomEventList[0].name); 
+            randomEventList[0].SetEventBool(true);
+            randomEventList[0].ActivateDeactivateEvent();
 
         }
 
@@ -337,6 +340,51 @@ public class GameManager : NetworkBehaviour
 
     }
 
+    // Quick Random Events
+
+    // Activate random Event after x amount of random time
+    private IEnumerator ActivateRandomEvent()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(UnityEngine.Random.Range(minRandomTime, maxRandomTime)); // temp time for testing
+
+            if (!isEventActive)
+            {
+                currentRandomEvent = GetRandomEvent();
+                if (currentRandomEvent != null && ShouldEventOccur(currentRandomEvent.RandomEventSO.chanceOfOccurrence))
+                {
+                    ActivateEvent(currentRandomEvent);
+                }
+            }
+        }
+    }
+
+    // Get a random Event from the Random Event List
+    private RandomEventBase GetRandomEvent()
+    {
+        if (randomEventList.Count > 0)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, randomEventList.Count);
+            return randomEventList[randomIndex];
+        }
+
+        return null;
+    }
+
+    // Simple probability of event happening
+    private bool ShouldEventOccur(float chanceOfOccurrence)
+    {
+        return UnityEngine.Random.value <= chanceOfOccurrence;
+    }
+
+    private void ActivateEvent(RandomEventBase randomEvent)
+    {
+        isEventActive = true;
+        randomEvent.SetEventBool(true);
+        randomEvent.ActivateDeactivateEvent();
+        OnPlayerDeactivateEvent?.Invoke(this, EventArgs.Empty);
+    }
 
 }
 
