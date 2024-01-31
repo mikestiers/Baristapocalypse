@@ -176,34 +176,10 @@ public class CustomerManager : Singleton<CustomerManager>
     {
         yield return new WaitForSeconds(delayS);
 
-<<<<<<< HEAD
-        while (true)
-=======
-        
-        //yield return new WaitUntil(() -> customers.isServed);
-        //yield return new WaitForSeconds(delay);
         int randomCustomer = UnityEngine.Random.Range(0, customerNames.Count);
         //while(gameObject is playin) set timer
         if (customerPrefab != null)
->>>>>>> 14628f89d220f887a4a2961c24961ae56d1e5662
         {
-
-<<<<<<< HEAD
-                SpawnCustomerClientRpc();
-                GiveCustomerNameClientRpc(randomCustomer);
-                StartCoroutine(CustomerEnterStore());
-                customersInStore++;
-                customersLeftinWave--;
-                UIManager.Instance.customersInStore.text = ("Customers in Store: ") + customersInStore.ToString();
-                UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
-
-                if (customersLeftinWave <= 0)
-                {
-                    UIManager.Instance.SayGameMessage("Last Customer!"); // UI Warning
-                    yield break;
-                }
-            }
-=======
             SpawnCustomerClientRpc();
             GiveCustomerNameClientRpc(randomCustomer);
             StartCoroutine(CustomerEnterStore());
@@ -211,8 +187,12 @@ public class CustomerManager : Singleton<CustomerManager>
             customersLeftinWave--;
             UIManager.Instance.customersInStore.text = ("Customers in Store: ") + customersInStore.ToString();
             UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
-            
->>>>>>> 14628f89d220f887a4a2961c24961ae56d1e5662
+
+            if (customersLeftinWave <= 0)
+            {
+                UIManager.Instance.SayGameMessage("Last Customer!"); // UI Warning
+                yield break;
+            }
         }
 
         float delay = UnityEngine.Random.Range(minDelay, maxDelay);
@@ -227,7 +207,6 @@ public class CustomerManager : Singleton<CustomerManager>
         UIManager.Instance.SayGameMessage("Break Time!");
 
         timer = GameManager.Instance.difficultySettings.GetTimeBetweenWaves();
-        currentServingState = ServingState.BreakTime;
         WavesLeft--;
         if (WavesLeft <= 0) 
         {
@@ -238,7 +217,8 @@ public class CustomerManager : Singleton<CustomerManager>
             //Shift Evaluation
             UIManager.Instance.ShowShiftEvaluation();
         }
-        
+
+        currentServingState = ServingState.BreakTime;
         customersLeftinWave = GameManager.Instance.difficultySettings.GetNumberofCustomersInwave();
 
         UIManager.Instance.wavesleft.text = ("Waves Left: " + WavesLeft.ToString());
@@ -381,7 +361,6 @@ public class CustomerManager : Singleton<CustomerManager>
         customersInStore--;
     }
 
-<<<<<<< HEAD
     public void customerServedIncrease()
     {
         customerServed++;
@@ -402,6 +381,4 @@ public class CustomerManager : Singleton<CustomerManager>
         return customerLeave;
     }
 }
-=======
-}
->>>>>>> 14628f89d220f887a4a2961c24961ae56d1e5662
+
