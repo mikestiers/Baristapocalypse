@@ -139,7 +139,7 @@ public class GameManager : NetworkBehaviour
         // Temporary for Testing Random Events
         if (Input.GetKeyDown(KeyCode.P))
         {
-            Debug.Log("randomEventObject " + randomEventBase[0].name);
+            Debug.Log("randomEventObject " + randomEventBase[0].name); 
             randomEventBase[0].SetEventBool(true);
             randomEventBase[0].ActivateDeactivateEvent();
 
