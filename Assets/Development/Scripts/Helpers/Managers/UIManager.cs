@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.Audio;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using System.Collections;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -33,6 +35,24 @@ public class UIManager : Singleton<UIManager>
     public TextMeshProUGUI gameOverText;
     public TextMeshProUGUI finalScore;
     public Text volSliderText;
+    public TextMeshProUGUI gameTimerText;
+    public TextMeshProUGUI countdownText;
+    public TextMeshProUGUI currencyText;
+    public TextMeshProUGUI streakText;
+    public TextMeshProUGUI gameMessage;
+
+    [Header("GameMessageHolder")]
+    public GameObject gameMessageContainer;
+
+    [Header("TimerHolders")]
+    public GameObject smallTimer;
+    public GameObject bigTimer;
+
+    [Header("MoneyUI")]
+    public GameObject moneyUI;
+
+    [Header("ShiftEvaluationUI")]
+    public GameObject shiftEvaluationUI;
 
     [Header("Order Stats")]
     public Transform ordersPanel;
@@ -294,5 +314,42 @@ public class UIManager : Singleton<UIManager>
         mixer.SetFloat("VoiceLines", voiceVolumeSlider.value);
     }
 
+    public void ToggleBigTimer(bool IsOn)
+    {
+        if(IsOn) bigTimer.SetActive(true);
+        else bigTimer.SetActive(false);
+    }
+
+    public void ToggleSmalltimer(bool IsOn)
+    {
+        if(IsOn) smallTimer.SetActive(true);
+        else smallTimer.SetActive(false);
+    }
+
+    public void SayGameMessage(string GameMessage)
+    {
+        gameMessage.text = GameMessage;
+
+        gameMessageContainer.SetActive(true);
+
+        StartCoroutine(DeactivateGameMessage());
+    }
+
+    public IEnumerator DeactivateGameMessage() 
+    {
+        yield return new WaitForSeconds(4f);
+
+        gameMessageContainer.SetActive(false);
+    }
+
+    public void UpdateScoreUI(int currentMoney, int adjustedMoney, bool isAdding, float passPercentage)
+    {
+        moneyUI.GetComponent<ScoreUI>().UpdateMoneyVisuals(currentMoney, adjustedMoney, isAdding, passPercentage);
+    }
+    
+    public void ShowShiftEvaluation()
+    {
+        shiftEvaluationUI.GetComponent<ShiftEvaluationUI>().Evaluate();
+    }
 
 }

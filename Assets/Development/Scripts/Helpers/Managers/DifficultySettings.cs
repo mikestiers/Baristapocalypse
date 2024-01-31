@@ -22,6 +22,7 @@ public class DifficultySettings
     private float minWaitTime;
     private float maxWaitTime;
     private float drinkThreshold;
+    private int moneyToPass;
     public IngredientListSO temperatureIngredientList { get; }
     public IngredientListSO sweetnessIngredientList { get; }
     public IngredientListSO strengthIngredientList { get; }
@@ -58,6 +59,7 @@ public class DifficultySettings
         strengthIngredientList = chosenDifficulty.strengthIngredientList;
         spicinessIngredientList = chosenDifficulty.spicinessIngredientList;
 
+        moneyToPass = chosenDifficulty.moneyToPass;
         /*
         switch (currentDifficulty.difficultyString)
         {
@@ -211,5 +213,10 @@ public class DifficultySettings
     public float GetDrinkThreshold()
     {
         return drinkThreshold;
+    }
+
+    public int GetMoneyToPass() 
+    {
+        return moneyToPass;
     }
 }

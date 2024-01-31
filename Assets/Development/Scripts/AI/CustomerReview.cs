@@ -330,6 +330,9 @@ public class CustomerReview : MonoBehaviour
         }
         numReviews++;
         averageReviewScore += reviewScore;
+        //add gain money
+        GameManager.Instance.moneySystem.AdjustMoneyByAmount(GameManager.Instance.moneySystem.ComputeMoney(reviewScore), true);
+        GameManager.Instance.moneySystem.SetAverageReviewRating(GetAverageReviewScore());
         return reviewScore;
     }
 

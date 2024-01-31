@@ -38,4 +38,7 @@ public class DifficultySO : ScriptableObject
     public IngredientListSO sweetnessIngredientList;
     public IngredientListSO strengthIngredientList;
     public IngredientListSO spicinessIngredientList;
+
+    [Header("Money")]
+    public int moneyToPass;
 }

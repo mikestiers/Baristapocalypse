@@ -179,7 +179,13 @@ public class CustomerBase : Base
             DisplayCustomerVisualIdentifiers();
         orderBeingServed = true;
         if (orderTimer >= customerLeaveTime)
+        {
+            CustomerManager.Instance.customerLeaveIncrease();
             CustomerLeave();
+
+            Debug.LogWarning("Unhappy Customer");
+        }
+            
     }
 
     private void UpdateInit()
@@ -284,6 +290,8 @@ public class CustomerBase : Base
             player.GetIngredient().SetIngredientParent(this);
             JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
             player.RemoveIngredientInListByReference(player.GetIngredient());
+            CustomerManager.Instance.customerServedIncrease();
+
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
             interactParticle.Play();
         }
@@ -381,7 +389,7 @@ public class CustomerBase : Base
     public virtual void CustomerLeave()
     {
         if (Random.Range(0, 100) <= GameManager.Instance.difficultySettings.GetChanceToMess()) CreateMess();
-        if (Random.Range(0, 100) <= GameManager.Instance.difficultySettings.GetChanceToLoiter())
+        if (Random.Range(0, 100) < GameManager.Instance.difficultySettings.GetChanceToLoiter())
         {
             SetCustomerStateServerRpc(CustomerState.Loitering);
             messTime = 0f;

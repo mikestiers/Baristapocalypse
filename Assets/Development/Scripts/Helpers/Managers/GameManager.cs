@@ -56,6 +56,9 @@ public class GameManager : NetworkBehaviour
     public DifficultySettings difficultySettings; //will move to GameManager when gamemanager is owki, change references to GameManager aswell
 
     public DifficultySO currentDifficulty;
+
+    public MoneySystem moneySystem;
+
     private void Awake()
     {
         Instance = this;
@@ -168,6 +171,8 @@ public class GameManager : NetworkBehaviour
                     difficultySettings = new DifficultySettings(currentDifficulty, numberOfPlayers);
 
                     difficultySettings.SetAmountOfPlayers(numberOfPlayers); // setdifficulty based on amount of players
+
+                    moneySystem = new MoneySystem(difficultySettings.GetMoneyToPass());
 
 
                 }
