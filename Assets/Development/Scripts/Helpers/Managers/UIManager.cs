@@ -48,8 +48,8 @@ public class UIManager : Singleton<UIManager>
     public GameObject smallTimer;
     public GameObject bigTimer;
 
-    [Header("Bar")]
-    public Slider moneyBar;
+    [Header("MoneyUI")]
+    public GameObject moneyUI;
 
     [Header("Order Stats")]
     public Transform ordersPanel;
@@ -337,6 +337,11 @@ public class UIManager : Singleton<UIManager>
         yield return new WaitForSeconds(4f);
 
         gameMessageContainer.SetActive(false);
-
     }
+
+    public void UpdateScoreUI(int currentMoney, int adjustedMoney, bool isAdding, float passPercentage)
+    {
+        moneyUI.GetComponent<ScoreUI>().UpdateMoneyVisuals(currentMoney, adjustedMoney, isAdding, passPercentage);
+    }
+    
 }
