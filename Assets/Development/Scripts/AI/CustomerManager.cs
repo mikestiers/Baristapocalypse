@@ -9,6 +9,8 @@ using UnityEngine.UI;
 
 public class CustomerManager : Singleton<CustomerManager>
 {
+    //[SerializeField] public GameObject cashRegister; // where customers line up
+    //[SerializeField] public GameObject door;
     [SerializeField] private Transform Counter;
     [SerializeField] private Transform barEntrance;
     [SerializeField] private Transform exit;
@@ -67,17 +69,27 @@ public class CustomerManager : Singleton<CustomerManager>
     // Start is called before the first frame update
     private void Start()
     {
+        //if (cashRegister)
+        //    Counter.transform.position = cashRegister.transform.position;
+
+        //if (door)
+        //{
+        //    exit.transform.position += new Vector3(0, 0, -10.0f);
+        //    exit.transform.position = door.transform.position;
+        //    barEntrance.transform.position += new Vector3(0, 0, -10.0f);
+        //    barEntrance.transform.position = door.transform.position;
+        //}
 
         List<Vector3> waitingQueuePostionList = new List<Vector3>();
         if (Chairs.Length <= 0) Chairs = GameObject.FindGameObjectsWithTag("Waypoint");
         //chairNumber = UnityEngine.Random.Range(0, Chairs.Length);
 
         //where the firstposition is located in scene
-        Vector3 firstposition = new Vector3(Counter.position.x, 0, Counter.position.z + 1.5f);
+        Vector3 firstposition = new Vector3(Counter.position.x, 0, Counter.position.z - 1.5f);
         float positionSize = 2f;
         for (int i = 0; i < numberOfCustomers; i++)
         {
-            waitingQueuePostionList.Add(firstposition + new Vector3(0, 0, 1f) * positionSize * i);
+            waitingQueuePostionList.Add(firstposition - new Vector3(0, 0, 1f) * positionSize * i);
         }
 
         //LineQueue.OnCustomerArrivedAtFrontOfQueue += WaitingQueue_OnCustomerArrivedAtFrontOfQueue; might be used for future code?
