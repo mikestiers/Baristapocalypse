@@ -9,9 +9,9 @@ public class OrderStats : MonoBehaviour
 {
     [Header("Customer Order")]
     [SerializeField] public GameObject customerInfoRoot;
-    [SerializeField] public Text customerNumberText;
-    [SerializeField] public Text customerNameText;
-    [SerializeField] public Text brewingStationText;
+    [SerializeField] public TMPro.TMP_Text customerNumberText;
+    [SerializeField] public TMPro.TMP_Text customerNameText;
+    [SerializeField] public TMPro.TMP_Text brewingStationText;
     [SerializeField] public Slider orderTimer;
     [SerializeField] public OrderStatsSegments temperatureSegments;
     [SerializeField] public OrderStatsSegments sweetnessSegments;

@@ -28,11 +28,11 @@ public class UIManager : Singleton<UIManager>
     public GameObject ordersMenu;
 
     [Header("Text")]
-    public Text timer;
-    public Text score;
+    public TMPro.TMP_Text timer;
+    public TMPro.TMP_Text score;
     public TextMeshProUGUI gameOverText;
     public TextMeshProUGUI finalScore;
-    public Text volSliderText;
+    public TMPro.TMP_Text volSliderText;
 
     [Header("Order Stats")]
     public Transform ordersPanel;
@@ -53,11 +53,11 @@ public class UIManager : Singleton<UIManager>
     private string mainMenuScene = "MainMenuScene"; // using lobby scene in the mean time, need changing to Main menu
 
     [Header("DifficultyTesting")]
-    public Text customersLeft;
-    public Text customersInStore;
-    public Text spawnMode;
-    public Text wavesleft;
-    public Text shift;
+    public TMPro.TMP_Text customersLeft;
+    public TMPro.TMP_Text customersInStore;
+    public TMPro.TMP_Text spawnMode;
+    public TMPro.TMP_Text wavesleft;
+    public TMPro.TMP_Text shift;
 
 
     [Header("Slider")]
@@ -192,7 +192,7 @@ public class UIManager : Singleton<UIManager>
                 if (o.GetOrderOwner() == customer)
                 {
                     Transform customerReviewTransform = t.gameObject.transform.Find("CustomerReview");
-                    Text customerReviewText = customerReviewTransform.gameObject.GetComponent<Text>();
+                    TMPro.TMP_Text customerReviewText = customerReviewTransform.gameObject.GetComponent<TMPro.TMP_Text>();
                     customerReview = customerReviewTransform.GetComponentInParent<CustomerReview>();
                     customerReview.GenerateReview(customer);
                     customerReviewText.text = customerReview.ReviewText;
