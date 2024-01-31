@@ -103,13 +103,10 @@ public class DifficultySettings
             return;
         }
 
-
         minDelay = currentDifficulty.minCustomerSpawnDelay;
         maxDelay = currentDifficulty.maxCustomerSpawnDelay;
 
         numberOfWaves = currentDifficulty.InitialnumberOfWaves + Mathf.FloorToInt(Shift * currentDifficulty.RateOfIncreaseInNumberOfWaves);
-
-
     }
 
     public int GetShift()

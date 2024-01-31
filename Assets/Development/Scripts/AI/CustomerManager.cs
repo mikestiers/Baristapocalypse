@@ -80,6 +80,9 @@ public class CustomerManager : Singleton<CustomerManager>
     private int customerServed = 0;
     private int customerLeave = 0;
 
+    private bool IsServing = true;
+    private bool isSpawningCustomers = false;
+
     private void Start()
     {
         //if (cashRegister)
@@ -112,10 +115,13 @@ public class CustomerManager : Singleton<CustomerManager>
         customersLeftinWave = GameManager.Instance.difficultySettings.GetNumberofCustomersInwave();
         WavesLeft = GameManager.Instance.difficultySettings.GetNumberOfWaves();
 
-        UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
-        UIManager.Instance.spawnMode.text = "Serving Customers";
-        UIManager.Instance.shift.text = ("Shift " + GameManager.Instance.difficultySettings.GetShift().ToString());
-        UIManager.Instance.wavesleft.text = ("Waves Left: " + WavesLeft.ToString());
+        {
+            //UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
+            //UIManager.Instance.spawnMode.text = "Serving Customers";
+            //UIManager.Instance.shift.text = ("Shift " + GameManager.Instance.difficultySettings.GetShift().ToString());
+            //UIManager.Instance.wavesleft.text = ("Waves Left: " + WavesLeft.ToString());
+
+        }
 
         minDelay = GameManager.Instance.difficultySettings.GetMinDelay();
         maxDelay = GameManager.Instance.difficultySettings.GetMaxDelay();
@@ -128,6 +134,7 @@ public class CustomerManager : Singleton<CustomerManager>
         StartCoroutine(NewCustomer(initCustomerSpawnDelay)); // change this to intial delay
 
         currentServingState = ServingState.CurrentlyServing;
+        IsServing = true;
     }
 
     private void Update()
@@ -136,17 +143,33 @@ public class CustomerManager : Singleton<CustomerManager>
         {
             case ServingState.CurrentlyServing:
 
+                if(IsServing == false)
+                {
+                    IsServing = true;
+                }
+
+                if (GetCustomerLeftinStore() <= 0 && isSpawningCustomers == true)
+                {
+                    isSpawningCustomers = false;
+                    currentServingState = ServingState.BreakTime;
+                }
                 break;
+
 
             case ServingState.BreakTime:
                
+                if(IsServing == true)
+                {
+                    IsServing = false;
+                    NextWave();
+                }
+
                 timer -= Time.deltaTime;
 
                 if(timer <= 0)
                 {
                     UIManager.Instance.ToggleBigTimer(false);
                     //end UI & end RestState
-                    //StartCoroutine(NewCustomer(initCustomerSpawnDelay));
                     currentServingState= ServingState.CurrentlyServing;
                 }
                 else if(timer > 0 && timer < 5)
@@ -167,6 +190,7 @@ public class CustomerManager : Singleton<CustomerManager>
 
             case ServingState.ShiftOver:
 
+
                 break;
         }
     }
@@ -185,18 +209,19 @@ public class CustomerManager : Singleton<CustomerManager>
             StartCoroutine(CustomerEnterStore());
             customersInStore++;
             customersLeftinWave--;
-            UIManager.Instance.customersInStore.text = ("Customers in Store: ") + customersInStore.ToString();
-            UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
+            //UIManager.Instance.customersInStore.text = ("Customers in Store: ") + customersInStore.ToString();
+            //UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
 
-            if (customersLeftinWave <= 0)
-            {
-                UIManager.Instance.SayGameMessage("Last Customer!"); // UI Warning
-                yield break;
-            }
+            isSpawningCustomers = true;
         }
 
         float delay = UnityEngine.Random.Range(minDelay, maxDelay);
-        if (customersLeftinWave <= 0) yield break;
+
+        if (customersLeftinWave <= 0)
+        {
+            UIManager.Instance.SayGameMessage("Last Customer!"); // UI Warning
+            yield break;
+        }
         else StartCoroutine(NewCustomer(delay));
 
     }
@@ -204,30 +229,25 @@ public class CustomerManager : Singleton<CustomerManager>
     // Trigger Time Between waves
     public void NextWave()
     {
-        UIManager.Instance.SayGameMessage("Break Time!");
-
-        timer = GameManager.Instance.difficultySettings.GetTimeBetweenWaves();
         WavesLeft--;
         if (WavesLeft <= 0) 
         {
-            currentServingState = ServingState.ShiftOver;
+            //currentServingState = ServingState.ShiftOver;
             GameManager.Instance.difficultySettings.NextShift();
             WavesLeft = GameManager.Instance.difficultySettings.GetNumberOfWaves();
-            UIManager.Instance.shift.text = ("Shift " + GameManager.Instance.difficultySettings.GetShift().ToString());
+
             //Shift Evaluation
+            //UIManager.Instance.shift.text = ("Shift " + GameManager.Instance.difficultySettings.GetShift().ToString());
             UIManager.Instance.ShowShiftEvaluation();
         }
 
-        currentServingState = ServingState.BreakTime;
         customersLeftinWave = GameManager.Instance.difficultySettings.GetNumberofCustomersInwave();
 
-        UIManager.Instance.wavesleft.text = ("Waves Left: " + WavesLeft.ToString());
-        //UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
-
         //Trigger UI
-        //UIManager.Instance.spawnMode.text = "Resting";
+        UIManager.Instance.SayGameMessage("Break Time!");
 
-        StartCoroutine(RestPeriod(GameManager.Instance.difficultySettings.GetTimeBetweenWaves()));
+        timer = GameManager.Instance.difficultySettings.GetTimeBetweenWaves();
+        StartCoroutine(RestPeriod(timer));
 
     }
 
@@ -237,13 +257,9 @@ public class CustomerManager : Singleton<CustomerManager>
         yield return new WaitForSeconds(timer);
 
         //Trigger UI
-        //UIManager.Instance.spawnMode.text = "Serving Customers";
-        //UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
         UIManager.Instance.SayGameMessage("The Customers are coming!");
 
-        float delay = UnityEngine.Random.Range(minDelay, maxDelay);
-
-        StartCoroutine(NewCustomer(delay));
+        StartCoroutine(NewCustomer(initCustomerSpawnDelay));
     }
 
 
