@@ -10,6 +10,9 @@ public class MoneySystem
     private int currentStreakCount;
     private int maxStreakCount; //before activating double tips
     private float baseTipMultiplier;
+
+    //Dont know where to put this
+    private float AverageReviewRatings;
  
     public MoneySystem(int moneyNeededToPass)
     {
@@ -76,6 +79,16 @@ public class MoneySystem
     {
         currentStreakCount--;
         if (currentStreakCount <= 0) currentStreakCount = 0;
+    }
+
+    public void SetAverageReviewRating(float Rating) 
+    {
+       AverageReviewRatings = Rating;
+    }
+
+    public float GetAverageReviewrating()
+    {
+        return AverageReviewRatings;
     }
 
     //process review to money

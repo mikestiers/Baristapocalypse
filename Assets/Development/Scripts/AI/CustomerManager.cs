@@ -74,6 +74,10 @@ public class CustomerManager : Singleton<CustomerManager>
     public GameObject[] Chairs;
     //private int chairNumber = 0;
 
+    //Shift Evaluation values
+    private int customerServed = 0;
+    private int customerLeave = 0;
+
     private void Start()
     {
 
@@ -202,6 +206,7 @@ public class CustomerManager : Singleton<CustomerManager>
             WavesLeft = GameManager.Instance.difficultySettings.GetNumberOfWaves();
             UIManager.Instance.shift.text = ("Shift " + GameManager.Instance.difficultySettings.GetShift().ToString());
             //Shift Evaluation
+            UIManager.Instance.ShowShiftEvaluation();
         }
         
         customersLeftinWave = GameManager.Instance.difficultySettings.GetNumberofCustomersInwave();
@@ -222,8 +227,9 @@ public class CustomerManager : Singleton<CustomerManager>
         yield return new WaitForSeconds(timer);
 
         //Trigger UI
-        UIManager.Instance.spawnMode.text = "Serving Customers";
-        UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
+        //UIManager.Instance.spawnMode.text = "Serving Customers";
+        //UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
+        UIManager.Instance.SayGameMessage("The Customers are coming!");
 
         float delay = UnityEngine.Random.Range(minDelay, maxDelay);
 
@@ -250,6 +256,7 @@ public class CustomerManager : Singleton<CustomerManager>
         {
             customersOutsideList[0].CustomerLeave();
             customersOutsideList.RemoveAt(0);
+            customerLeaveIncrease();
         }
     }
 
@@ -342,5 +349,25 @@ public class CustomerManager : Singleton<CustomerManager>
     public void ReduceCustomerInStore()
     {
         customersInStore--;
+    }
+
+    public void customerServedIncrease()
+    {
+        customerServed++;
+    }
+
+    public void customerLeaveIncrease()
+    {
+        customerLeave++;
+    }
+
+    public int GetCustomerServed()
+    {
+        return customerServed;
+    }
+
+    public int GetCustomerLeave()
+    {
+        return customerLeave;
     }
 }

@@ -51,6 +51,9 @@ public class UIManager : Singleton<UIManager>
     [Header("MoneyUI")]
     public GameObject moneyUI;
 
+    [Header("ShiftEvaluationUI")]
+    public GameObject shiftEvaluationUI;
+
     [Header("Order Stats")]
     public Transform ordersPanel;
     public GameObject ordersUiPrefab;
@@ -344,4 +347,9 @@ public class UIManager : Singleton<UIManager>
         moneyUI.GetComponent<ScoreUI>().UpdateMoneyVisuals(currentMoney, adjustedMoney, isAdding, passPercentage);
     }
     
+    public void ShowShiftEvaluation()
+    {
+        shiftEvaluationUI.GetComponent<ShiftEvaluationUI>().Evaluate();
+    }
+
 }
