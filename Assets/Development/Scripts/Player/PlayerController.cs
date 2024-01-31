@@ -300,17 +300,34 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             anim.SetFloat("horizontal", 0);
             return;
         }
-        
-        curMoveInput = inputManager.moveDir * moveSpeed * Time.deltaTime;
-        transform.forward = inputManager.moveDir;
+
+        //curMoveInput = inputManager.moveDir * moveSpeed * Time.deltaTime; // movement does not take camera position into calculation so the map has to be rotated in a certain way
+        //curMoveInput = Camera.main.transform.forward * inputManager.moveDir.z * moveSpeed * Time.deltaTime;
+        //curMoveInput += Camera.main.transform.right * inputManager.moveDir.x * moveSpeed * Time.deltaTime;
+
+        Vector3 moveInput = new Vector3(inputManager.moveDir.x, 0, inputManager.moveDir.z);
+        Vector3 moveDirection = Camera.main.transform.TransformDirection(moveInput);
+        moveDirection.y = 0; // stay grounded
+        Vector3 curMoveInput = moveDirection.normalized * moveSpeed * Time.deltaTime;
+
+        if (moveDirection != Vector3.zero)
+        {
+            transform.forward = moveDirection.normalized; // Orient the character to face the direction of movement
+        }
+
+        rb.MovePosition(rb.position + curMoveInput);
+
+        //transform.forward = inputManager.moveDir;
 
         // Check movement direction
         float forwardDot = Vector3.Dot(inputManager.moveDir, transform.right);
         float rightDot = Vector3.Dot(inputManager.moveDir, transform.forward);
+        //float forwardDot = Vector3.Dot(inputManager.moveDir, Camera.main.transform.forward);
+        //float rightDot = Vector3.Dot(inputManager.moveDir, Camera.main.transform.right);
         anim.SetFloat("vertical", forwardDot);
         anim.SetFloat("horizontal", rightDot);
 
-        rb.MovePosition(rb.position + curMoveInput);
+        //rb.MovePosition(rb.position + curMoveInput);
     }
 
 
@@ -671,6 +688,16 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             pickup.SetPickupObjectParent(this);
 
             pickup.DisablePickupColliders(pickup);
+
+            if(pickup.GetCustomer().inLine == true)
+            {
+                int _CustomerPos = pickup.GetCustomer().currentPosInLine;
+                CustomerManager.Instance.LineQueue.RemoveCustomerInPos(_CustomerPos);
+            }
+
+            CustomerManager.Instance.ReduceCustomerInStore();
+            UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
+            if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
         }
     }
 

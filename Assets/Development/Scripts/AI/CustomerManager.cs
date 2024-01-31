@@ -10,6 +10,8 @@ using UnityEngine.UI;
 
 public class CustomerManager : Singleton<CustomerManager>
 {
+    //[SerializeField] public GameObject cashRegister; // where customers line up
+    //[SerializeField] public GameObject door;
     [SerializeField] private Transform Counter;
     [SerializeField] private Transform barEntrance;
     [SerializeField] private Transform exit;
@@ -80,17 +82,27 @@ public class CustomerManager : Singleton<CustomerManager>
 
     private void Start()
     {
+        //if (cashRegister)
+        //    Counter.transform.position = cashRegister.transform.position;
+
+        //if (door)
+        //{
+        //    exit.transform.position += new Vector3(0, 0, -10.0f);
+        //    exit.transform.position = door.transform.position;
+        //    barEntrance.transform.position += new Vector3(0, 0, -10.0f);
+        //    barEntrance.transform.position = door.transform.position;
+        //}
 
         List<Vector3> waitingQueuePostionList = new List<Vector3>();
         if (Chairs.Length <= 0) Chairs = GameObject.FindGameObjectsWithTag("Waypoint");
         //chairNumber = UnityEngine.Random.Range(0, Chairs.Length);
 
         //where the firstposition is located in scene
-        Vector3 firstposition = new Vector3(Counter.position.x, 0, Counter.position.z + 1.5f);
+        Vector3 firstposition = new Vector3(Counter.position.x, 0, Counter.position.z - 1.5f);
         float positionSize = 2f;
         for (int i = 0; i < numberOfCustomers; i++)
         {
-            waitingQueuePostionList.Add(firstposition + new Vector3(0, 0, 1f) * positionSize * i);
+            waitingQueuePostionList.Add(firstposition - new Vector3(0, 0, 1f) * positionSize * i);
         }
 
         //LineQueue.OnCustomerArrivedAtFrontOfQueue += WaitingQueue_OnCustomerArrivedAtFrontOfQueue; might be used for future code?
@@ -164,16 +176,19 @@ public class CustomerManager : Singleton<CustomerManager>
     {
         yield return new WaitForSeconds(delayS);
 
+<<<<<<< HEAD
         while (true)
+=======
+        
+        //yield return new WaitUntil(() -> customers.isServed);
+        //yield return new WaitForSeconds(delay);
+        int randomCustomer = UnityEngine.Random.Range(0, customerNames.Count);
+        //while(gameObject is playin) set timer
+        if (customerPrefab != null)
+>>>>>>> 14628f89d220f887a4a2961c24961ae56d1e5662
         {
-            float delay = UnityEngine.Random.Range(minDelay, maxDelay);
-            //yield return new WaitUntil(() -> customers.isServed);
-            yield return new WaitForSeconds(delay);
-            int randomCustomer = UnityEngine.Random.Range(0, customerNames.Count);
-            //while(gameObject is playin) set timer
-            if (customerPrefab != null)
-            {
 
+<<<<<<< HEAD
                 SpawnCustomerClientRpc();
                 GiveCustomerNameClientRpc(randomCustomer);
                 StartCoroutine(CustomerEnterStore());
@@ -188,7 +203,22 @@ public class CustomerManager : Singleton<CustomerManager>
                     yield break;
                 }
             }
+=======
+            SpawnCustomerClientRpc();
+            GiveCustomerNameClientRpc(randomCustomer);
+            StartCoroutine(CustomerEnterStore());
+            customersInStore++;
+            customersLeftinWave--;
+            UIManager.Instance.customersInStore.text = ("Customers in Store: ") + customersInStore.ToString();
+            UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
+            
+>>>>>>> 14628f89d220f887a4a2961c24961ae56d1e5662
         }
+
+        float delay = UnityEngine.Random.Range(minDelay, maxDelay);
+        if (customersLeftinWave <= 0) yield break;
+        else StartCoroutine(NewCustomer(delay));
+
     }
 
     // Trigger Time Between waves
@@ -351,6 +381,7 @@ public class CustomerManager : Singleton<CustomerManager>
         customersInStore--;
     }
 
+<<<<<<< HEAD
     public void customerServedIncrease()
     {
         customerServed++;
@@ -371,3 +402,6 @@ public class CustomerManager : Singleton<CustomerManager>
         return customerLeave;
     }
 }
+=======
+}
+>>>>>>> 14628f89d220f887a4a2961c24961ae56d1e5662

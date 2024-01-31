@@ -13,7 +13,8 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private GameObject play;
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject playButton;
-    
+    public List<RandomEventBase> randomEventBase;
+
     //Input Events
     public Vector2 MovementValue { get; private set; }
 
@@ -137,6 +138,15 @@ public class GameManager : NetworkBehaviour
     private void Update()
     {
         if (!IsServer) { return; }
+
+        // Temporary for Testing Random Events
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Log("randomEventObject " + randomEventBase[0].name); 
+            randomEventBase[0].SetEventBool(true);
+            randomEventBase[0].ActivateDeactivateEvent();
+
+        }
 
         switch (gameState.Value) 
         { 
