@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class RandomEventBase : NetworkBehaviour
 {
-    //[field: SerializeField] public RandomEventSO RandomEventSO { get; private set; }
+    [field: SerializeField] public RandomEventSO RandomEventSO { get; private set; }
     //private bool isEvent;
     private NetworkVariable<bool> isEvent = new NetworkVariable<bool>(false);
 
-    //public RandomEventSO GetRandomEvent()
-    //{
-    //    return RandomEventSO;
-    //}
+    public RandomEventSO GetRandomEvent()
+    {
+        return RandomEventSO;
+    }
 
     public NetworkObject GetNetworkObject()
     {
