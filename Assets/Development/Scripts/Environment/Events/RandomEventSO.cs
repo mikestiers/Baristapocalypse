@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu()]
 public class RandomEventSO : ScriptableObject
 {
-    public GameObject randomObjectEvent;
+    public GameObject objectEventPrefab;
     public string eventName;
     public float chanceOfOccurrence;
 }

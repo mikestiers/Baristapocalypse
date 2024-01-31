@@ -13,7 +13,8 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private GameObject play;
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject playButton;
-    
+    public List<RandomEventBase> randomEventObject;
+
     //Input Events
     public Vector2 MovementValue { get; private set; }
 
@@ -134,6 +135,16 @@ public class GameManager : NetworkBehaviour
     private void Update()
     {
         if (!IsServer) { return; }
+
+        if (Input.GetKeyDown(KeyCode.P)) 
+        {
+            Debug.Log("randomEventObject " + randomEventObject[0].name);
+            randomEventObject[0].SetEventBool(true);
+            randomEventObject[0].ActivateDeactivateEvent();
+
+            //BaristapocalypseMultiplayer.Instance.GetRandomEventSOIndex();
+            //Debug.Log("RandomEventSOIndex " + BaristapocalypseMultiplayer.Instance.GetRandomEventSOIndex());
+        }
 
         switch (gameState.Value) 
         { 

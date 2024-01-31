@@ -5,6 +5,7 @@ using Unity.Netcode;
 using UnityEngine.SceneManagement;
 using Unity.Services.Authentication;
 using System;
+using Unity.VisualScripting;
 
 public class BaristapocalypseMultiplayer  : NetworkBehaviour
 {
@@ -14,7 +15,7 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     [SerializeField] private PickupListSo pickupList;
     [SerializeField] private MessListSO MessList;
     [SerializeField] private ParticleListSO particleListSO;
-    [SerializeField] private 
+    [SerializeField] private RandomEventListSO randomEventListSO;
     public static BaristapocalypseMultiplayer Instance { get; private set; }
 
     public static bool playMultiplayer;
@@ -424,4 +425,14 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
 
     // Quick Time Event Randomizer
 
+    public int GetRandomEventSOIndex()
+    {
+        GameObject randomObject = randomEventListSO.randomEventObject[0];
+        Debug.Log("randomEventSO" + randomObject.name);
+     
+          
+        int i = randomEventListSO.randomEventObject.IndexOf(randomObject);
+        Debug.Log(randomEventListSO.randomEventObject[i]);
+        return randomEventListSO.randomEventObject.IndexOf(randomObject);
+    }
 }

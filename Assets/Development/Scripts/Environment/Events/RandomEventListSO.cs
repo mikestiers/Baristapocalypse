@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class RandomEventListSO : NetworkBehaviour
+[CreateAssetMenu()]
+public class RandomEventListSO : ScriptableObject
 {
-    public List<RandomEventSO> randomEventSOList;
+    public List<GameObject> randomEventObject;
 }
