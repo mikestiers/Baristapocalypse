@@ -85,11 +85,11 @@ public class CustomerManager : Singleton<CustomerManager>
         //chairNumber = UnityEngine.Random.Range(0, Chairs.Length);
 
         //where the firstposition is located in scene
-        Vector3 firstposition = new Vector3(Counter.position.x, 0, Counter.position.z + 1.5f);
+        Vector3 firstposition = new Vector3(Counter.position.x, 0, Counter.position.z - 1.5f);
         float positionSize = 2f;
         for (int i = 0; i < numberOfCustomers; i++)
         {
-            waitingQueuePostionList.Add(firstposition + new Vector3(0, 0, 1f) * positionSize * i);
+            waitingQueuePostionList.Add(firstposition - new Vector3(0, 0, 1f) * positionSize * i);
         }
 
         //LineQueue.OnCustomerArrivedAtFrontOfQueue += WaitingQueue_OnCustomerArrivedAtFrontOfQueue; might be used for future code?
