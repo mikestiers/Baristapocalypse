@@ -399,6 +399,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         while (Time.time < startTime + dashTime)
         {
+            
             rb.AddForce(inputManager.moveDir * dashForce * Time.deltaTime, ForceMode.Acceleration);
             yield return null;
         }
@@ -436,6 +437,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     public int GetNumberOfIngredients()
     {
         UpdateNumberOfIngredients();
+        Debug.Log(message: numberOfIngredientsHeld);
         return numberOfIngredientsHeld;
     } 
 
@@ -449,10 +451,14 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         int count = 0;
         foreach(Ingredient i in ingredientsList)
         {
-            if(i.GetIngredientSO().objectTag == "Milk")
+            if(i.GetIngredientSO().objectTag == "CoffeeCup") // change this tag to milk if we to carry more again
             {
                 count++;
             }
+            // if(i.GetIngredientSO().objectTag == "Milk") // reactive this we are carry other ingredients again
+            // {
+            //     count++;
+            // }
         }
         return count;
     }
