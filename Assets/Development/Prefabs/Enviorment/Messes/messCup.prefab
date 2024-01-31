@@ -35432,6 +35432,7 @@ GameObject:
   - component: {fileID: 5807552410373365763}
   - component: {fileID: -7067559025576878401}
   - component: {fileID: 4363929100105586110}
+  - component: {fileID: -5455888917943514713}
   m_Layer: 11
   m_Name: messCup
   m_TagString: Mess
@@ -35536,6 +35537,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7200bd6b059ae9f4493e1c925284f358, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-5455888917943514713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7498007070164729142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ee73cf91a770604f8cab9c37fb5777c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  InLocalSpace: 0
+  Interpolate: 1
 --- !u!1 &8017479028610069241
 GameObject:
   m_ObjectHideFlags: 0

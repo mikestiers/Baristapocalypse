@@ -23,6 +23,7 @@ public class CustomerLineQueuing
         customer.Walkto(positionList[customerList.IndexOf(customer)]);
         if(customerList.IndexOf(customer) == 0) customer.frontofLine = true;
         customer.inLine = true;
+        customer.currentPosInLine = customerList.IndexOf(customer);
     }
 
     //Gets the customer at front of queue
@@ -36,7 +37,8 @@ public class CustomerLineQueuing
         {
             CustomerBase customer = customerList[0];
             customerList.RemoveAt(0);
-            RelocateAllCustomer();
+            customer.currentPosInLine = -1;
+            RelocateAllCustomer(0);
             return customer;
         }
     }
@@ -58,13 +60,25 @@ public class CustomerLineQueuing
         }
     }
 
-    //Moves Customer Through the line
-   private void RelocateAllCustomer()
+    public void RemoveCustomerInPos(int LinePos)
     {
-        for (int i = 0; i < customerList.Count; i++)
+        if (customerList.Count == 0) return;
+        else
+        {
+            customerList.RemoveAt(LinePos);
+            RelocateAllCustomer(LinePos);
+        }
+    }
+
+
+    //Moves Customer Through the line
+   private void RelocateAllCustomer(int startpos)
+    {
+        for (int i = startpos; i < customerList.Count; i++)
         {
             customerList[i].Walkto(positionList[i]);
             if(i == 0) customerList[i].frontofLine = true;
+            customerList[i].currentPosInLine = i;
         }
     }
     

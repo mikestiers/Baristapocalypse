@@ -122,28 +122,28 @@ public class CustomerManager : Singleton<CustomerManager>
 
         yield return new WaitForSeconds(delayS);
 
-
-        while (true)
+        
+        //yield return new WaitUntil(() -> customers.isServed);
+        //yield return new WaitForSeconds(delay);
+        int randomCustomer = UnityEngine.Random.Range(0, customerNames.Count);
+        //while(gameObject is playin) set timer
+        if (customerPrefab != null)
         {
-            float delay = UnityEngine.Random.Range(minDelay, maxDelay);
-            //yield return new WaitUntil(() -> customers.isServed);
-            yield return new WaitForSeconds(delay);
-            int randomCustomer = UnityEngine.Random.Range(0, customerNames.Count);
-            //while(gameObject is playin) set timer
-            if (customerPrefab != null)
-            {
 
-                SpawnCustomerClientRpc();
-                GiveCustomerNameClientRpc(randomCustomer);
-                StartCoroutine(CustomerEnterStore());
-                customersInStore++;
-                customersLeftinWave--;
-                UIManager.Instance.customersInStore.text = ("Customers in Store: ") + customersInStore.ToString();
-                UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
-
-                if (customersLeftinWave <= 0) yield break;
-            }
+            SpawnCustomerClientRpc();
+            GiveCustomerNameClientRpc(randomCustomer);
+            StartCoroutine(CustomerEnterStore());
+            customersInStore++;
+            customersLeftinWave--;
+            UIManager.Instance.customersInStore.text = ("Customers in Store: ") + customersInStore.ToString();
+            UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
+            
         }
+
+        float delay = UnityEngine.Random.Range(minDelay, maxDelay);
+        if (customersLeftinWave <= 0) yield break;
+        else StartCoroutine(NewCustomer(delay));
+
     }
 
     // Trigger Time Between waves
@@ -295,4 +295,5 @@ public class CustomerManager : Singleton<CustomerManager>
     {
         customersInStore--;
     }
+
 }
