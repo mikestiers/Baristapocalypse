@@ -20,6 +20,7 @@ public class CustomerBase : Base
     public bool moving;
     public float distThreshold;
     public GameObject[] Line;
+    public GameObject queueTimersUI;
     public int LineIndex;
     private Transform exit;
 
@@ -48,6 +49,9 @@ public class CustomerBase : Base
     [SerializeField] public GameObject customerDialogue;
     [SerializeField] private MessSO spillPrefab;
     [SerializeField] private Transform spillSpawnPoint;
+    [SerializeField] private Transform orderQueueSliderTarget;
+
+    public int ordersBeingMade = 0;
 
     //for reactions
     public CustomerReactionIndicator customerReactionIndicator;
@@ -239,6 +243,7 @@ public class CustomerBase : Base
         // To be implmented or removed
     }
 
+
     // INTERACTION
     // Anything related to interacting with the customer goes here
     // This includes delivering a drink, picking up, throwing, assaulting, etc...
@@ -256,6 +261,7 @@ public class CustomerBase : Base
         if (GetCustomerState() == CustomerState.Ordering)
         {
             BrewingStation[] brewingStations = UnityEngine.Object.FindObjectsOfType<BrewingStation>();
+             var queueTimers = queueTimersUI.GetComponent<OrderQueueTimers_UI>();
 
             foreach (BrewingStation brewingStation in brewingStations)
             {
@@ -264,8 +270,18 @@ public class CustomerBase : Base
                     brewingStation.SetOrder(this);
                     break;
                 }
+
                 else
-                    Debug.Log("Brewing station is busy"); // this should add an element to the order queue ui that is not done yet
+                {
+                    ordersBeingMade++;
+                }
+            }
+
+
+
+            if (ordersBeingMade >= 2)
+            {
+                queueTimers.SetOrderTime(this);
             }
 
             LeaveLineServerRpc();
@@ -296,6 +312,7 @@ public class CustomerBase : Base
         }
         
     }
+
 
     [ServerRpc(RequireOwnership = false)]
     private void LeaveLineServerRpc()
@@ -393,6 +410,7 @@ public class CustomerBase : Base
             UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
             if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
         }
+
     }
 
     public void Walkto(Vector3 Spot)
