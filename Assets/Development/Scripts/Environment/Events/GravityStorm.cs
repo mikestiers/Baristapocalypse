@@ -31,6 +31,7 @@ public class GravityStorm : RandomEventBase
         {
             for (int i = 0; i < objectsToMove.Length; i++)
             {
+                objectRigidbodies[i].useGravity = false;
                 MoveObject(objectsToMove[i].transform, objectRigidbodies[i], i);
             }
         }
@@ -47,7 +48,7 @@ public class GravityStorm : RandomEventBase
         // Apply Brownian force
         objRigidbody.AddForce(drift, ForceMode.VelocityChange);
 
-        float maxSpeed = 0.2f; // cap rb max speed
+        float maxSpeed = 0.4f; // cap rb max speed
         if (objRigidbody.velocity.magnitude > maxSpeed)
         {
             objRigidbody.velocity = objRigidbody.velocity.normalized * maxSpeed;
@@ -66,20 +67,20 @@ public class GravityStorm : RandomEventBase
     private Vector3 GenerateRandomVelocity()
     {
         // Box-Muller transform for generating normally distributed random numbers
-        float u1 = 1f - Random.value;
-        float u2 = 1f - Random.value;
-        float z0 = Mathf.Sqrt(-2f * Mathf.Log(u1)) * Mathf.Cos(2f * Mathf.PI * u2);
-        float z1 = Mathf.Sqrt(-2f * Mathf.Log(u1)) * Mathf.Sin(2f * Mathf.PI * u2);
+        //float u1 = 1f - Random.value;
+        //float u2 = 1f - Random.value;
+        //float z0 = Mathf.Sqrt(-2f * Mathf.Log(u1)) * Mathf.Cos(2f * Mathf.PI * u2);
+        //float z1 = Mathf.Sqrt(-2f * Mathf.Log(u1)) * Mathf.Sin(2f * Mathf.PI * u2);
 
-        float z2 = Random.Range(-1f, 1f);
+        //float z2 = Random.Range(-1f, 1f);
 
-        return new Vector3(z0, z1, z2);
+        //return new Vector3(z0, z1, z2);
 
-        //float brownianX = Random.Range(-1f, 1f);
-        //float brownianY = Random.Range(-1f, 1f);
-        //float brownianZ = Random.Range(-1f, 1f);
+        float brownianX = Random.Range(-1f, 1f);
+        float brownianY = Random.Range(-1f, 1f);
+        float brownianZ = Random.Range(-1f, 1f);
 
-        //return new Vector3(brownianX, brownianY, brownianZ).normalized;
+        return new Vector3(brownianX, brownianY, brownianZ).normalized;
     }
 
     public void HandleCollision(Vector3 collisionNormal)
