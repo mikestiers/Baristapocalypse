@@ -99,7 +99,8 @@ public class DifficultySettings
 
         if(Shift <= MaxShift) 
         {
-            //Trigger End Game
+            //GameManager.instance.games
+            
             return;
         }
 
