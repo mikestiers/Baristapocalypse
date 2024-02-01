@@ -193,8 +193,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
+  m_sharedMaterial: {fileID: -6851397157697811242, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -224,7 +224,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 2
   m_fontSizeMax: 40
-  m_fontStyle: 3
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -423,8 +423,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Medium
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
+  m_sharedMaterial: {fileID: -6851397157697811242, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -543,7 +543,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 99220759}
     m_SelectOnDown: {fileID: 723292942}
@@ -554,7 +554,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.4745098, g: 0.4745098, b: 0.4745098, a: 1}
     m_PressedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
-    m_SelectedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
+    m_SelectedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -573,7 +573,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 99220760}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 835440349}
+        m_TargetAssemblyTypeName: NextUIButton, Assembly-CSharp
+        m_MethodName: SetLastSelectedObject
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &99220760
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -665,7 +677,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -1016,8 +1028,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
+  m_sharedMaterial: {fileID: -6851397157697811242, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1047,7 +1059,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 1
   m_fontSizeMax: 40
-  m_fontStyle: 3
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -2060,7 +2072,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Window
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -2091,7 +2103,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 2
   m_fontSizeMax: 40
-  m_fontStyle: 3
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -2124,7 +2136,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!850595691 &389308854
@@ -2372,8 +2384,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Quit Game
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
+  m_sharedMaterial: {fileID: -6851397157697811242, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2403,7 +2415,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 2
   m_fontSizeMax: 40
-  m_fontStyle: 3
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -2838,7 +2850,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 1308168378}
     m_SelectOnDown: {fileID: 2080696817}
@@ -2849,7 +2861,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.4745098, g: 0.4745098, b: 0.4745098, a: 1}
     m_PressedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
-    m_SelectedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
+    m_SelectedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -2996,8 +3008,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Fullscreen
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
+  m_sharedMaterial: {fileID: -6851397157697811242, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3027,7 +3039,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 2
   m_fontSizeMax: 40
-  m_fontStyle: 3
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -3131,8 +3143,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Settings
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
+  m_sharedMaterial: {fileID: -6851397157697811242, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3162,7 +3174,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 2
   m_fontSizeMax: 40
-  m_fontStyle: 3
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -3266,8 +3278,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Music
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
+  m_sharedMaterial: {fileID: -6851397157697811242, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3297,7 +3309,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 2
   m_fontSizeMax: 40
-  m_fontStyle: 3
+  m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -3333,6 +3345,52 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &835440348
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 835440350}
+  - component: {fileID: 835440349}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &835440349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 835440348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 012e2dae402e03048a01ccc835b8a943, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nextSelectedButton: {fileID: 0}
+  uiSwitchTargetbutton: {fileID: 0}
+--- !u!4 &835440350
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 835440348}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &860848242
 GameObject:
   m_ObjectHideFlags: 0
@@ -3403,8 +3461,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
+  m_sharedMaterial: {fileID: -6851397157697811242, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3434,7 +3492,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 2
   m_fontSizeMax: 40
-  m_fontStyle: 3
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -3551,7 +3609,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 930288301}
-  m_LocalRotation: {x: -0.00084016385, y: 0.97416526, z: -0.22580567, w: -0.0036246143}
+  m_LocalRotation: {x: -0.0008401677, y: 0.97416526, z: -0.22580567, w: -0.003624631}
   m_LocalPosition: {x: 18.59, y: 40.31, z: 83.85}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3651,7 +3709,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -3800,8 +3858,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Hard
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
+  m_sharedMaterial: {fileID: -6851397157697811242, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4445,8 +4503,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1162969782}
-  m_LocalRotation: {x: 0.12715119, y: 0, z: 0, w: 0.9918834}
-  m_LocalPosition: {x: 0, y: 4.98, z: -8.05}
+  m_LocalRotation: {x: 0.01037523, y: 0.9806482, z: -0.054162458, w: 0.1878506}
+  m_LocalPosition: {x: -4.333975, y: 4.0699997, z: 47.7165}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4581,7 +4639,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 1208754060}
     m_SelectOnDown: {fileID: 723292942}
@@ -4592,7 +4650,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.4745098, g: 0.4745098, b: 0.4745098, a: 1}
     m_PressedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
-    m_SelectedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
+    m_SelectedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -4611,7 +4669,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1208754061}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 835440349}
+        m_TargetAssemblyTypeName: NextUIButton, Assembly-CSharp
+        m_MethodName: SetLastSelectedObject
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 2080696813}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1208754061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4753,8 +4823,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Main Menu
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
+  m_sharedMaterial: {fileID: -6851397157697811242, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4784,7 +4854,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 2
   m_fontSizeMax: 40
-  m_fontStyle: 3
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -4911,7 +4981,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 2080696817}
     m_SelectOnDown: {fileID: 723292942}
@@ -4922,7 +4992,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.4745098, g: 0.4745098, b: 0.4745098, a: 1}
     m_PressedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
-    m_SelectedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
+    m_SelectedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -4941,7 +5011,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1308168376}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 835440349}
+        m_TargetAssemblyTypeName: NextUIButton, Assembly-CSharp
+        m_MethodName: SetLastSelectedObject
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1326608927
 GameObject:
   m_ObjectHideFlags: 0
@@ -10064,8 +10146,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Easy
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
+  m_sharedMaterial: {fileID: -6851397157697811242, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -10599,7 +10681,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 1538929000}
     m_SelectOnDown: {fileID: 723292942}
@@ -10609,8 +10691,8 @@ MonoBehaviour:
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.4745098, g: 0.4745098, b: 0.4745098, a: 1}
-    m_PressedColor: {r: 0.5882353, g: 0.10196079, b: 0.3921569, a: 1}
-    m_SelectedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
+    m_PressedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
+    m_SelectedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -10721,7 +10803,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 1541689121}
     m_SelectOnDown: {fileID: 723292942}
@@ -10732,7 +10814,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.4745098, g: 0.4745098, b: 0.4745098, a: 1}
     m_PressedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
-    m_SelectedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
+    m_SelectedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -10751,7 +10833,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1541689122}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 835440349}
+        m_TargetAssemblyTypeName: NextUIButton, Assembly-CSharp
+        m_MethodName: SetLastSelectedObject
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 2080696813}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1541689122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10965,7 +11059,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -11194,7 +11288,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 1665468082}
     m_SelectOnDown: {fileID: 723292942}
@@ -11204,8 +11298,8 @@ MonoBehaviour:
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.4745098, g: 0.4745098, b: 0.4745098, a: 1}
-    m_PressedColor: {r: 0.5882353, g: 0.10196079, b: 0.3921569, a: 1}
-    m_SelectedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
+    m_PressedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
+    m_SelectedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -11618,8 +11712,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Single Player
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
+  m_sharedMaterial: {fileID: -6851397157697811242, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -11649,7 +11743,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
   m_fontSizeMax: 40
-  m_fontStyle: 3
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -11753,8 +11847,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: SFX
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
+  m_sharedMaterial: {fileID: -6851397157697811242, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -11784,7 +11878,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 2
   m_fontSizeMax: 40
-  m_fontStyle: 3
+  m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -12008,7 +12102,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1973596138}
-  m_LocalRotation: {x: -0.067161836, y: 0.8836353, z: -0.13378437, w: -0.44359875}
+  m_LocalRotation: {x: -0.06716185, y: 0.8836353, z: -0.13378438, w: -0.4435987}
   m_LocalPosition: {x: 1.6, y: 43.28, z: 121.12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -12144,7 +12238,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 2019314413}
     m_SelectOnDown: {fileID: 723292942}
@@ -12155,7 +12249,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.4745098, g: 0.4745098, b: 0.4745098, a: 1}
     m_PressedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
-    m_SelectedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
+    m_SelectedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -12174,7 +12268,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2019314414}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 835440349}
+        m_TargetAssemblyTypeName: NextUIButton, Assembly-CSharp
+        m_MethodName: SetLastSelectedObject
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2019314414
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12399,7 +12505,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 1
     m_SelectOnUp: {fileID: 2080696817}
     m_SelectOnDown: {fileID: 723292942}
@@ -12410,7 +12516,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.4745098, g: 0.4745098, b: 0.4745098, a: 1}
     m_PressedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
-    m_SelectedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
+    m_SelectedColor: {r: 0.38039216, g: 0.9843137, b: 0.3019608, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -12429,7 +12535,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2080696815}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 835440349}
+        m_TargetAssemblyTypeName: NextUIButton, Assembly-CSharp
+        m_MethodName: SetLastSelectedObject
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2087738555
 GameObject:
   m_ObjectHideFlags: 0
@@ -12530,8 +12648,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Main Menu
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
+  m_sharedMaterial: {fileID: -6851397157697811242, guid: 5405240bd80bf2242b28eca63aa9b97f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -12561,7 +12679,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 2
   m_fontSizeMax: 40
-  m_fontStyle: 3
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
