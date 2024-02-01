@@ -6,6 +6,7 @@ using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
+using UnityEngine.EventSystems;
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -14,19 +15,27 @@ public class MainMenuManager : MonoBehaviour
     public CinemachineVirtualCamera SettingsCamera;
     public CinemachineVirtualCamera PlayerSelectionCamera;
     public CinemachineVirtualCamera QuitGameCamera;
-    [Header("Button")]
-    // Main Menu camera buttons
+
+    [Header("Main Menu")]
+    private Button[] MainMenuButtons;
     [SerializeField] private Button StartGame;
     [SerializeField] private Button Settings;
     [SerializeField] private Button QuitGame;
-    // Quit Menu Buttons
+
+    [Header("Quit Menu")]
+    private Button[] QuitMenuButtons;
     [SerializeField] private Button ExitGame;
     [SerializeField] private Button MainMenuFromQuit;
-    // Player Selection Buttons
+
+    [Header("Player Menu")]
+    private Button[] PlayerSelectionButtons;
     [SerializeField] private Button singlePlayerButton;
     [SerializeField] private Button multiplayerButton;
     [SerializeField] private Button MainMenuFromSelection;
-    // Settings Menu Buttons
+
+    [Header("Settings Menu")]
+    private Button[] SettingsMenuButtons;
+    private Slider[] SettingsMenuSliders;
     [SerializeField] private Button MainMenuFromSettings;
     [SerializeField] private Button FullScreenButton;
     [SerializeField] private Button WindowModeButton;
@@ -34,40 +43,21 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject WindowModeGO;
     [SerializeField] private Resolution[] resolutions;
     [SerializeField] private Dropdown resoultionDropDown;
-   
-    // Add Players To Sceen
-    [SerializeField] private Button Player1;
-    [SerializeField] private Button Player2;
-    [SerializeField] private Button Player3;
-    [SerializeField] private Button Player4;
-    [SerializeField] private GameObject Player1Red;
-    [SerializeField] private GameObject Player2Blue;
-    [SerializeField] private GameObject Player3Green;
-    [SerializeField] private GameObject Player4Yellow;
-    [SerializeField] private Transform Player1SpawnPoint;
-    [SerializeField] private Transform Player2SpawnPoint;
-    [SerializeField] private Transform Player3SpawnPoint;
-    [SerializeField] private Transform Player4SpawnPoint;
-    // for enable and desable 
-    [SerializeField] private GameObject SettingsMenuTab;
-    [SerializeField] private GameObject MainMenuTab;
-    [SerializeField] private GameObject ExitMenuTab;
-    [SerializeField] private GameObject PlayMenuTab;
 
     [Header("Difficulty Modes")]
     [SerializeField] private Button EasyButton;
     [SerializeField] private Button MediumButton;
     [SerializeField] private Button HardButton;
 
+    [Header("Menu Tabs")]
+    [SerializeField] private GameObject SettingsMenuTab;
+    [SerializeField] private GameObject MainMenuTab;
+    [SerializeField] private GameObject ExitMenuTab;
+    [SerializeField] private GameObject PlayMenuTab;
 
-
-    // Start is called before the first frame update
     public void Start()
     {
         MainmenuCamera.Priority = 1;
-        // this is for screen resolutions
-       
-
 
         if (ExitGame)
             ExitGame.onClick.AddListener(closeGame);
@@ -105,6 +95,15 @@ public class MainMenuManager : MonoBehaviour
         if (HardButton)
             HardButton.onClick.AddListener(() => SetDifficulty("Hard"));
 
+        MainMenuButtons = MainmenuCamera.GetComponentsInChildren<Button>();
+        SettingsMenuButtons = SettingsMenuTab.GetComponentsInChildren<Button>();
+        SettingsMenuSliders = SettingsMenuTab.GetComponentsInChildren<Slider>();
+        PlayerSelectionButtons = PlayMenuTab.GetComponentsInChildren<Button>();
+
+        SetInteractableButtons(MainMenuButtons, true);
+        SetInteractableButtons(SettingsMenuButtons, false);
+        SetInteractableSliders(SettingsMenuSliders, false);
+        SetInteractableButtons(PlayerSelectionButtons, false);
     }
 
     void ReturnFromSettings() 
@@ -114,8 +113,11 @@ public class MainMenuManager : MonoBehaviour
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
             SettingsCamera.Priority= 0;
             MainmenuCamera.Priority= 1;
-            MainMenuTab.SetActive(true);
-            SettingsMenuTab.SetActive(false);
+            EventSystem.current.SetSelectedGameObject(StartGame.gameObject);
+            SetInteractableButtons(MainMenuButtons, true);
+            SetInteractableButtons(SettingsMenuButtons, false);
+            SetInteractableSliders(SettingsMenuSliders, false);
+            SetInteractableButtons(PlayerSelectionButtons, false);
         }
     }
     void ReturnFromSelection() 
@@ -125,13 +127,14 @@ public class MainMenuManager : MonoBehaviour
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
             PlayerSelectionCamera.Priority= 0;
             MainmenuCamera.Priority= 1;
-            MainMenuTab.SetActive(true);
-            PlayMenuTab.SetActive(false);
+            EventSystem.current.SetSelectedGameObject(StartGame.gameObject);
+            SetInteractableButtons(MainMenuButtons, true);
+            SetInteractableButtons(SettingsMenuButtons, false);
+            SetInteractableSliders(SettingsMenuSliders, false);
+            SetInteractableButtons(PlayerSelectionButtons, false);
         }
     }
 
-   
- 
     void SettingsScreen() 
     { 
         if (MainmenuCamera.Priority == 1)
@@ -139,8 +142,11 @@ public class MainMenuManager : MonoBehaviour
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
             MainmenuCamera.Priority = 0;
             SettingsCamera.Priority = 1;
-            MainMenuTab.SetActive(false);
-            SettingsMenuTab.SetActive(true);
+            EventSystem.current.SetSelectedGameObject(FullScreenGO.gameObject);
+            SetInteractableButtons(MainMenuButtons, false);
+            SetInteractableButtons(SettingsMenuButtons, true);
+            SetInteractableSliders(SettingsMenuSliders, true);
+            SetInteractableButtons(PlayerSelectionButtons, false);
         }
     }
     void PlayerSelect()
@@ -150,8 +156,11 @@ public class MainMenuManager : MonoBehaviour
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
             MainmenuCamera.Priority = 0;
             PlayerSelectionCamera.Priority = 1;
-            MainMenuTab.SetActive(false);
-            PlayMenuTab.SetActive(true);
+            EventSystem.current.SetSelectedGameObject(singlePlayerButton.gameObject);
+            SetInteractableButtons(MainMenuButtons, false);
+            SetInteractableButtons(SettingsMenuButtons, false);
+            SetInteractableSliders(SettingsMenuSliders, false);
+            SetInteractableButtons(PlayerSelectionButtons, true);
         }
     }
 
@@ -160,7 +169,6 @@ public class MainMenuManager : MonoBehaviour
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         BaristapocalypseMultiplayer.playMultiplayer = true;
         SceneManager.LoadScene("LobbyScene");
-        //Loader.Load(Loader.Scene.LobbyScene);
         gameObject.SetActive(false);
     }
 
@@ -169,7 +177,6 @@ public class MainMenuManager : MonoBehaviour
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         BaristapocalypseMultiplayer.playMultiplayer = false;
         SceneManager.LoadScene("LobbyScene");
-        //Loader.Load(Loader.Scene.T5M3_BUILD);
         gameObject.SetActive(false);
     }
 
@@ -207,5 +214,21 @@ public class MainMenuManager : MonoBehaviour
     public void SetDifficulty(string Difficulty)
     {
         GameValueHolder.Instance.DifficultyString = Difficulty;
+    }
+
+    private void SetInteractableButtons(Button[] buttons, bool interactable)
+    {
+        foreach (Button button in buttons)
+        {
+            button.interactable = interactable;
+        }
+    }
+
+    private void SetInteractableSliders(Slider[] sliders, bool interactable)
+    {
+        foreach (Slider slider in sliders)
+        {
+            slider.interactable = interactable;
+        }
     }
 }
