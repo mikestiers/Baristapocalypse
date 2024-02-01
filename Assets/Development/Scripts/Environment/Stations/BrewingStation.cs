@@ -267,7 +267,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         }
     }
 
-    public void AddIngredeitnToListSO(int ingredientSOIndex)
+    public void AddIngredientToListSO(int ingredientSOIndex)
     {
         AddIngredientToListSOServerRpc(ingredientSOIndex);
     }
