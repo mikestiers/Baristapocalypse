@@ -42,7 +42,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject FullScreenGO;
     [SerializeField] private GameObject WindowModeGO;
     [SerializeField] private Resolution[] resolutions;
-    [SerializeField] private Dropdown resoultionDropDown;
+    [SerializeField] private TMPro.TMP_Dropdown resoultionDropDown;
 
     [Header("Difficulty Modes")]
     [SerializeField] private Button EasyButton;
