@@ -185,12 +185,12 @@ public class GameManager : NetworkBehaviour
                 break;
 
             case GameState.GamePlaying:
-                gamePlayingTimer.Value -= Time.deltaTime;
-                if (gamePlayingTimer.Value < 0f)
-                {
-                    gameState.Value = GameState.GameOver;
+                //gamePlayingTimer.Value -= Time.deltaTime;
+                //if (gamePlayingTimer.Value < 0f)
+                //{
+                    //gameState.Value = GameState.GameOver;
                     //OnGameStateChanged?.Invoke(this, EventArgs.Empty);
-                }
+                //}
                 break;
 
             case GameState.GameOver:
@@ -396,6 +396,11 @@ public class GameManager : NetworkBehaviour
         randomEvent.SetEventBool(true);
         randomEvent.ActivateDeactivateEvent();
        
+    }
+
+    public void SetGameStateValue(GameState gameState)
+    {
+        //gameState.Value = GameState.GameOver;
     }
 
 
