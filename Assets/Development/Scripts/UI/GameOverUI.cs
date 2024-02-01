@@ -31,9 +31,9 @@ public class GameOverUI : MonoBehaviour
         if (GameManager.Instance.IsGameOver())
         {
             Show();
+            ComputeEndGameStats();
             // Add logic to show in the Game Over UI screen
             // Whatever we are going to show, Money, amount of recepies, etc
-
         }
         else
             Hide();
@@ -49,9 +49,9 @@ public class GameOverUI : MonoBehaviour
         tipsAcquiredValue.text = (("$") + GameManager.Instance.moneySystem.GetCurrentMoney().ToString());
         tipsNeededValue.text = (("S") + GameManager.Instance.difficultySettings.GetMoneyToPass().ToString());
 
-        string difference = iSWin? "+" : "-";
+        string difference = iSWin? "+" : " ";
         
-        tipsDifferenceValue.text = difference + (GameManager.Instance.moneySystem.GetCurrentMoney() >= GameManager.Instance.difficultySettings.GetMoneyToPass()).ToString();
+        tipsDifferenceValue.text = difference + (GameManager.Instance.moneySystem.GetCurrentMoney() - GameManager.Instance.difficultySettings.GetMoneyToPass()).ToString();
         tipsDifferenceValue.color = iSWin? Color.green : Color.red;
 
         TipsDiffernceText.text = iSWin? "Extra Tips" : "Tips Short";

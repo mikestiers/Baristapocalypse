@@ -62,6 +62,9 @@ public class GameManager : NetworkBehaviour
 
     public MoneySystem moneySystem;
 
+    //bool for endgame -> please update code
+    public bool iSEndGame = false;
+
     private void Awake()
     {
         Instance = this;
@@ -185,12 +188,16 @@ public class GameManager : NetworkBehaviour
                 break;
 
             case GameState.GamePlaying:
-                //gamePlayingTimer.Value -= Time.deltaTime;
-                //if (gamePlayingTimer.Value < 0f)
-                //{
-                    //gameState.Value = GameState.GameOver;
-                    //OnGameStateChanged?.Invoke(this, EventArgs.Empty);
-                //}
+                if (iSEndGame == true) gameState.Value = GameState.GameOver;
+                { 
+                    //gamePlayingTimer.Value -= Time.deltaTime;
+                  //if (gamePlayingTimer.Value < 0f)
+                  //{
+                  //gameState.Value = GameState.GameOver;
+                  //OnGameStateChanged?.Invoke(this, EventArgs.Empty);
+                  //}
+                }
+
                 break;
 
             case GameState.GameOver:

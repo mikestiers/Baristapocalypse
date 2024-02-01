@@ -15,7 +15,7 @@ public class DifficultySettings
     private float minDelay;
     private float maxDelay;
     private int playerCount;
-    private int MaxShift = 5; //do determine end of game
+    private int MaxShift = 3; //do determine end of game
     private float chanceToMess;
     private float loiterMessEverySec;
     private float chanceToLoiter;
@@ -23,6 +23,7 @@ public class DifficultySettings
     private float maxWaitTime;
     private float drinkThreshold;
     private int moneyToPass;
+
     public IngredientListSO temperatureIngredientList { get; }
     public IngredientListSO sweetnessIngredientList { get; }
     public IngredientListSO strengthIngredientList { get; }
@@ -97,10 +98,12 @@ public class DifficultySettings
     {
         Shift++;
 
-        if(Shift <= MaxShift) 
+        if(Shift >= MaxShift) 
         {
-            //GameManager.instance.games
-            
+            //GameManager
+            GameManager.Instance.iSEndGame = true;
+            UIManager.Instance.shiftEvaluationUI.SetActive(false);
+
             return;
         }
 

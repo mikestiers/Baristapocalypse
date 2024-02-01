@@ -303,7 +303,7 @@ public class CustomerBase : Base
             makingAMess = false;
             leaving = true;
 
-            CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
+            //CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
             //UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
             //if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
         }
@@ -402,7 +402,7 @@ public class CustomerBase : Base
             agent.SetDestination(exit.position);
 
 
-            CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
+            //CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
             //UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
             //if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
         }
@@ -440,8 +440,8 @@ public class CustomerBase : Base
     {
         yield return new WaitForSeconds(deadTimerSeconds);
         UIManager.Instance.RemoveCustomerUiOrder(this);
-        CustomerManager.Instance.LineQueue.GetFirstInQueue(); // moves everyone up one and pops out position 0
-        CustomerManager.Instance.LineQueue.RemoveFromQueue(this);
+        //CustomerManager.Instance.LineQueue.GetFirstInQueue(); // moves everyone up one and pops out position 0
+        //CustomerManager.Instance.LineQueue.RemoveFromQueue(this);
         Destroy(gameObject);
     }
 
@@ -494,5 +494,10 @@ public class CustomerBase : Base
         Pickup.SpawnPickupItem(pickupSO, this);
         //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
         messTime = 0f;
+    }
+
+    private void OnDestroy()
+    {
+        CustomerManager.Instance.ReduceCustomerInStore();
     }
 }

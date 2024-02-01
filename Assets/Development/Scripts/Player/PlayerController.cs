@@ -695,7 +695,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                 CustomerManager.Instance.LineQueue.RemoveCustomerInPos(_CustomerPos);
             }
 
-            CustomerManager.Instance.ReduceCustomerInStore();
             //UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
             //if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
         }
