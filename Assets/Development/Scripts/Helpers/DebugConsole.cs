@@ -6,7 +6,7 @@ using static CustomerBase;
 
 public class DebugConsole : MonoBehaviour
 {
-    public TMPro.TMP_InputField debugInput;
+    public InputField debugInput;
     public Ingredient coffeeCup;
     public PlayerController player;
 
