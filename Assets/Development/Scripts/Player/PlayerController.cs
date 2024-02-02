@@ -42,11 +42,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] private float stationInteractDistance;
     [SerializeField] private float customerInteractDistance;
 
-    //[SerializeField] private GameObject ingredientInstanceHolder;
     private BaseStation selectedStation;
     private Base selectedCustomer;
-    //private Collider ingredientCollider;
-    public int currentBrewingStation { get; set; } = 0;
+    public int currentBrewingStation = 0;
 
     [Header("Ingredients Data")]
     [SerializeField] public Transform[] ingredientHoldPoints; // Array to hold multiple ingredient
@@ -708,7 +706,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         if (pickup.IsCustomer)
         {
-            Debug.Log("Customer deadge");
+            Debug.Log("Customer dead");
             pickup.GetCustomer().Dead();
         }
 
@@ -717,9 +715,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         pickup.GetCollider().enabled = true;
         pickup.AddRigidbody();
         pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
-
         pickup.ClearPickupOnParent();
-        //Pickup.DestroyPickup(pickup);
     }
 
     // temp for debugging 
@@ -737,54 +733,19 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public void OnChangeBrewingStationSelect()
     {
-        BrewingStation[] brewingStations = UnityEngine.Object.FindObjectsOfType<BrewingStation>();
-
-        // Check if there are any brewing stations
-        if (brewingStations.Length > 1)
+        if (OrderManager.Instance.brewingStations.Length > 1)
         {
             // Increment the currentBrewingStation index, wrapping around using modulo
-            //int nextBrewingStation = currentBrewingStation;
-            // int nextBrewingStation;
-            int nextBrewingStation = (currentBrewingStation + 1) % brewingStations.Length;
-            OrderStats[] orderStats = UnityEngine.Object.FindObjectsOfType<OrderStats>();
-            orderStats[currentBrewingStation].selectedByPlayerImage.SetActive(true);
-            orderStats[nextBrewingStation].selectedByPlayerImage.SetActive(false);
+            int nextBrewingStation = (currentBrewingStation + 1) % OrderManager.Instance.brewingStations.Length;
+            OrderManager.Instance.orderStats[nextBrewingStation].selectedByPlayerImage.SetActive(true);
+            OrderManager.Instance.orderStats[currentBrewingStation].selectedByPlayerImage.SetActive(false);
             currentBrewingStation = nextBrewingStation;
-        }
-        else
-        {
-            Debug.Log("No brewing stations found");
         }
     }
 
     public void OnBrewingStationEmpty()
     {
-        BrewingStation[] brewingStations = UnityEngine.Object.FindObjectsOfType<BrewingStation>();
-        Debug.Log($"Emptying {currentBrewingStation}");
-        // Check if there are any brewing stations
-        if (brewingStations.Length > 1)
-        {
-            //currentBrewingStation = (currentBrewingStation + 1) % brewingStations.Length;
-            brewingStations[(currentBrewingStation + 1) % brewingStations.Length].Empty();
-            OrderStats[] orderStats = UnityEngine.Object.FindObjectsOfType<OrderStats>();
-            Debug.Log($"Resetting {currentBrewingStation}");
-            orderStats[(currentBrewingStation + 1) % brewingStations.Length].temperatureSegments.cumulativeIngredientsValue = 0;
-            orderStats[(currentBrewingStation + 1) % brewingStations.Length].sweetnessSegments.cumulativeIngredientsValue = 0;
-            orderStats[(currentBrewingStation + 1) % brewingStations.Length].spicinessSegments.cumulativeIngredientsValue = 0;
-            orderStats[(currentBrewingStation + 1) % brewingStations.Length].strengthSegments.cumulativeIngredientsValue = 0;
-            orderStats[(currentBrewingStation + 1) % brewingStations.Length].strengthSegments.UpdateSegments(0);
-            orderStats[(currentBrewingStation + 1) % brewingStations.Length].spicinessSegments.UpdateSegments(0);
-            orderStats[(currentBrewingStation + 1) % brewingStations.Length].sweetnessSegments.UpdateSegments(0);
-            orderStats[(currentBrewingStation + 1) % brewingStations.Length].temperatureSegments.UpdateSegments(0);
-            orderStats[(currentBrewingStation + 1) % brewingStations.Length].temperatureSegments.ResetSegments();
-            orderStats[(currentBrewingStation + 1) % brewingStations.Length].sweetnessSegments.ResetSegments();
-            orderStats[(currentBrewingStation + 1) % brewingStations.Length].spicinessSegments.ResetSegments();
-            orderStats[(currentBrewingStation + 1) % brewingStations.Length].strengthSegments.ResetSegments();
-        }
-        else
-        {
-            Debug.Log("No brewing stations found");
-        }
+        OrderManager.Instance.brewingStations[currentBrewingStation].Empty();
     }
 
     public override void OnNetworkSpawn()

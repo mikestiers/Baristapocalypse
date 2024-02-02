@@ -31,6 +31,7 @@ public class CustomerBase : Base
 
     [Header("Coffee Attributes")]
     public CoffeeAttributes coffeeAttributes;
+    public Order order;
 
     [Header("State Related")]
     public CustomerState currentState;
@@ -266,19 +267,8 @@ public class CustomerBase : Base
         // Take customer order
         if (GetCustomerState() == CustomerState.Ordering)
         {
-            BrewingStation[] brewingStations = UnityEngine.Object.FindObjectsOfType<BrewingStation>();
-
-            foreach (BrewingStation brewingStation in brewingStations)
-            {
-                if (!brewingStation.orderAssigned)
-                {
-                    brewingStation.SetOrder(this);
-                    break;
-                }
-                else
-                    Debug.Log("Brewing station is busy"); // this should add an element to the order queue ui that is not done yet
-            }
-
+            Order order = new Order();
+            order.Initialize(this);
             LeaveLineServerRpc();
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
             interactParticle.Play();
@@ -439,7 +429,6 @@ public class CustomerBase : Base
     IEnumerator DeadTimer()
     {
         yield return new WaitForSeconds(deadTimerSeconds);
-        UIManager.Instance.RemoveCustomerUiOrder(this);
         CustomerManager.Instance.LineQueue.GetFirstInQueue(); // moves everyone up one and pops out position 0
         CustomerManager.Instance.LineQueue.RemoveFromQueue(this);
         Destroy(gameObject);

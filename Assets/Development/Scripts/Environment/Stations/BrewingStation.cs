@@ -6,6 +6,7 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine.UI;
 using static UnityEngine.Rendering.HableCurve;
+using Unity.VisualScripting;
 
 public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 {
@@ -16,10 +17,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     [SerializeField] private ParticleSystem interactParticle;
 
     [Header("Order")]
-    public Transform orderStatsRoot;
-    public GameObject orderStatsPrefab;
-    public OrderStats orderStats;
-    public CustomerBase customer;
+    private Order currentOrder;
 
     [Header("Ingredients")]
     [SerializeField] public List<IngredientSO> ingredientSOList = new List<IngredientSO>();
@@ -32,7 +30,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     private NetworkVariable<float> brewingTimer = new NetworkVariable<float>(0f);
     [SerializeField] private BrewingRecipeSO brewingRecipeSO;
     private bool isBrewing;
-    public bool orderAssigned;
+    public bool availableForOrder = true;
     private float minigameTimer;
     private bool minigameTiming = false;
     private float maxMinigameTimer = 4.0f;
@@ -40,9 +38,43 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     private float maxSweetSpotPosition = 0.9f;
     private float sweetSpotPosition;
 
+    public delegate void OnBrewingDoneHandler(object sender, EventArgs e);
+    public event OnBrewingDoneHandler OnBrewingDone;
+
+    public delegate void OnBrewingEmptyHandler(object sender, EventArgs e);
+    public event OnBrewingEmptyHandler OnBrewingEmpty;
+
+
+    protected virtual void RaiseBrewingDone()
+    {
+        currentOrder.State = Order.OrderState.Finished;
+        OnBrewingDone?.Invoke(this, EventArgs.Empty);
+    }
+
+    protected virtual void RaiseBrewingEmpty()
+    {
+        OnBrewingEmpty?.Invoke(this, EventArgs.Empty);
+    }
+
+    //private void OnEnable()
+    //{
+    //    OrderManager.Instance.OnOrderUpdated += ProcessOrder;
+    //}
+
+    //private void OnDisable()
+    //{
+    //    OrderManager.Instance.OnOrderUpdated -= ProcessOrder;
+    //}
+
+    //private void ProcessOrder(Order order)
+    //{
+    //    SetOrder(order);
+    //}
+
     private void Start()
     {
-        orderStats = Instantiate(orderStatsPrefab, orderStatsRoot).GetComponent<OrderStats>();
+        RaiseBrewingEmpty();
+        Empty();
     }
 
     private void Awake()
@@ -95,38 +127,13 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
                 sweetSpotPosition = sweetSpotPosition
             });
         }
-
-        if (orderStats.GetOrderOwner() != null)
-        {
-            orderStats.OrderInProgress(true);
-        }
-        else if (orderStats.GetOrderOwner() == null)
-        {
-            orderStats.OrderInProgress(false);
-        }
     }
 
-    public void SetOrder(CustomerBase customerOrder)
+    public void SetOrder(Order order)
     {
-        orderStats.SetOrderOwner(customerOrder);  //<--- TURN THIS ON AND FIX / REMOVE WHAT BREAKS.  reveals lots of dead code
-        orderStats.customerInfoRoot.SetActive(true);
-        orderStats.customerNumberText.text = customerOrder.customerNumber.ToString();
-        orderStats.customerNameText.text = customerOrder.customerName;
-        orderStats.brewingStationText.text = this.name;
-        orderStats.orderTimer.value = customerOrder.orderTimer.Value;
-        orderStats.temperatureSegments.targetAttributeValue = customerOrder.coffeeAttributes.GetTemperature();
-        orderStats.sweetnessSegments.targetAttributeValue = customerOrder.coffeeAttributes.GetSweetness();
-        orderStats.spicinessSegments.targetAttributeValue = customerOrder.coffeeAttributes.GetSpiciness();
-        orderStats.strengthSegments.targetAttributeValue = customerOrder.coffeeAttributes.GetStrength();
-        orderStats.temperatureSegments.potentialIngredientValue = 0;
-        orderStats.sweetnessSegments.potentialIngredientValue = 0;
-        orderStats.spicinessSegments.potentialIngredientValue = 0;
-        orderStats.strengthSegments.potentialIngredientValue = 0;
-        orderStats.SetPotentialSweetness();
-        orderStats.SetPotentialTemperature();
-        orderStats.SetPotentialSpiciness();
-        orderStats.SetPotentialStrength();
-        orderAssigned = true;
+        currentOrder = order;
+        availableForOrder = false;
+        order.State = Order.OrderState.Brewing;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -159,9 +166,10 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     [ClientRpc]
     private void BrewingDoneClientRpc()
     {
+        RaiseBrewingDone();
         ingredientSOList.Clear();
         isBrewing = false;
-        orderAssigned = false;
+        availableForOrder = true;
 
         //setup minigame
         minigameTiming = true;
@@ -208,9 +216,6 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
         if (minigameTiming)
         {
-            //Debug.Log("Minigame timing: " + minigameTimer / maxMinigameTimer);
-            //Debug.Log("SweetSpot position: " + sweetSpotPosition);
-            //Debug.Log("Timing calc: " + Mathf.Abs((minigameTimer / maxMinigameTimer) - sweetSpotPosition));
             float timingPressed = Mathf.Abs((minigameTimer / maxMinigameTimer) - sweetSpotPosition);
             bool minigameResult = false;
             if (timingPressed <= 0.1f)
@@ -283,11 +288,6 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     {
         IngredientSO ingredientSO = BaristapocalypseMultiplayer.Instance.GetIngredientSOFromIndex(ingredientSOIndex);
         ingredientSOList.Add(ingredientSO);
-
-        orderStats.temperatureSegments.cumulativeIngredientsValue += ingredientSO.temperature;
-        orderStats.sweetnessSegments.cumulativeIngredientsValue += ingredientSO.sweetness;
-        orderStats.spicinessSegments.cumulativeIngredientsValue += ingredientSO.spiciness;
-        orderStats.strengthSegments.cumulativeIngredientsValue += ingredientSO.strength;
     }
 
     public bool TryAddIngredient(IngredientSO ingredientSO)
@@ -299,7 +299,6 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
         foreach (IngredientSO ingredient in ingredientSOList)
         {
-            //currentIngredientSOList += ingredient.name + "\n";
             if (ingredient.objectTag == ingredientSO.objectTag)
             {
                 return false;
