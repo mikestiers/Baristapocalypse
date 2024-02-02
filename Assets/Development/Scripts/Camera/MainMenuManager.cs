@@ -55,6 +55,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject ExitMenuTab;
     [SerializeField] private GameObject PlayMenuTab;
 
+    [SerializeField] private LevelLoader levelLoader;
     public void Start()
     {
         MainmenuCamera.Priority = 1;
@@ -168,7 +169,12 @@ public class MainMenuManager : MonoBehaviour
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         BaristapocalypseMultiplayer.playMultiplayer = true;
-        SceneManager.LoadScene("LobbyScene");
+        //SceneManager.LoadScene("LobbyScene");
+        if (!levelLoader.isActiveAndEnabled)
+        {
+            levelLoader.gameObject.SetActive(true);
+        }
+        levelLoader.PlaySceneTransition();
         gameObject.SetActive(false);
     }
 
@@ -176,7 +182,12 @@ public class MainMenuManager : MonoBehaviour
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         BaristapocalypseMultiplayer.playMultiplayer = false;
-        SceneManager.LoadScene("LobbyScene");
+        //SceneManager.LoadScene("LobbyScene");
+        if (!levelLoader.isActiveAndEnabled)
+        {
+            levelLoader.gameObject.SetActive(true);
+        }
+        levelLoader.PlaySceneTransition();
         gameObject.SetActive(false);
     }
 

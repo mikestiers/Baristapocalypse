@@ -20,6 +20,7 @@ public class GameOverUI : MonoBehaviour
             Show();
             // Add logic to show in the Game Over UI screen
             // Whatever we are going to show, Money, amount of recepies, etc
+            // Add Scene transition effect logic when swapping scenes back to main lobby
         }
         else
             Hide();

@@ -8,7 +8,8 @@ using UnityEngine.UI;
 
 public class LobbyUI : MonoBehaviour
 {
-    [Header("Panels")] [SerializeField] private GameObject multiplayerPanel;
+    [Header("Panels")] 
+    [SerializeField] private GameObject multiplayerPanel;
     [SerializeField] private GameObject hostSettingsPanel;
 
     [Header("Buttons")] [SerializeField] private Button hostLobbyButton;
@@ -75,6 +76,11 @@ public class LobbyUI : MonoBehaviour
 
     private void Start()
     {
+        if (BaristapocalypseMultiplayer.playMultiplayer == false)
+        {
+            multiplayerPanel.SetActive(false);
+        }
+
         LobbyManager.Instance.OnLobbyListChanged += LobbyManager_OnLobbyListChanged;
         UpdateLobbyList(new List<Lobby>());
     }
