@@ -112,7 +112,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         if (isBrewing)
         {
             brewingTimer.Value += Time.deltaTime;
-            if (brewingTimer.Value >= brewingRecipeSO.brewingMax)
+            if (brewingTimer.Value >= 0)
             {
                 SpawnCoffeeDrinkServerRpc();   
                 BrewingDoneServerRpc();   
@@ -240,12 +240,19 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
                 minigameTimingNormalized = 0f,
                 sweetSpotPosition = sweetSpotPosition
             });
+            GetIngredient().SetIngredientParent(player);
         }
         if (minigameTimer >= maxMinigameTimer)
         {
             minigameTiming = false;
+            GetIngredient().SetIngredientParent(player);
         }
         PrintHeldIngredientList();
+    }
+
+    public void InteractLogicPlaceObjectOnBrewing()
+    {
+        InteractLogicPlaceObjectOnBrewingServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -263,6 +270,11 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             isBrewing = true;
             ingredientsIndicatorText.SetText("");
         }
+    }
+
+    public void AddIngredientToListSO(int ingredientSOIndex)
+    {
+        AddIngredientToListSOServerRpc(ingredientSOIndex);
     }
 
     [ServerRpc(RequireOwnership = false)]

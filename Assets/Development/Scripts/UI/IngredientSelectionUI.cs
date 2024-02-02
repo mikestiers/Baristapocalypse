@@ -94,6 +94,19 @@ public class IngredientSelectionUI : BaseStation
         OrderManager.Instance.orderStats[player.currentBrewingStation].SetTemperature();
         OrderManager.Instance.orderStats[player.currentBrewingStation].SetSpiciness();
         OrderManager.Instance.orderStats[player.currentBrewingStation].SetStrength();
+        if (brewingStations[player.currentBrewingStation].TryAddIngredient(currentIngredient))
+        {
+            brewingStations[player.currentBrewingStation].AddIngredientToListSO(BaristapocalypseMultiplayer.Instance.GetIngredientSOIndex(currentIngredient));
+            OrderStats orderStats = orderStatsRoot.GetChild(player.currentBrewingStation).GetComponent<OrderStats>();
+            orderStats.temperatureSegments.cumulativeIngredientsValue = orderStats.temperatureSegments.potentialIngredientValue;
+            orderStats.sweetnessSegments.cumulativeIngredientsValue = orderStats.sweetnessSegments.potentialIngredientValue;
+            orderStats.spicinessSegments.cumulativeIngredientsValue = orderStats.spicinessSegments.potentialIngredientValue;
+            orderStats.strengthSegments.cumulativeIngredientsValue = orderStats.strengthSegments.potentialIngredientValue;
+            orderStats.SetSweetness();
+            orderStats.SetTemperature();
+            orderStats.SetSpiciness();
+            orderStats.SetStrength();
+        }
         StartCoroutine(CloseMenu());
     }
 
