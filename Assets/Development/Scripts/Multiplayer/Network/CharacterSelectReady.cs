@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class CharacterSelectReady : NetworkBehaviour
 {
+    [SerializeField] private LevelLoader levelLoader;
+
     public static CharacterSelectReady Instance { get; private set; }
     private Dictionary<ulong, bool> playerReadyDictionary;
 
@@ -40,6 +42,7 @@ public class CharacterSelectReady : NetworkBehaviour
 
         if (allClientsReady)
         {
+            levelLoader.PlaySceneTransition();
             LobbyManager.Instance.DeleteLobby();
             Loader.LoadNetwork(Loader.Scene.T5M3_BUILD);
         }
