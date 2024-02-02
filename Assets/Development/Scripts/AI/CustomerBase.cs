@@ -498,6 +498,9 @@ public class CustomerBase : Base
 
     private void OnDestroy()
     {
-        CustomerManager.Instance.ReduceCustomerInStore();
+        if (Application.isPlaying)
+        {
+            CustomerManager.Instance.ReduceCustomerInStore();
+        }
     }
 }

@@ -174,15 +174,7 @@ public class GameManager : NetworkBehaviour
                     GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
                     int numberOfPlayers = (players.Length - Mathf.FloorToInt(players.Length * 0.5f));
 
-
-                    SetCurrentDifficultyTo(GameValueHolder.Instance.DifficultyString);
-
-                    difficultySettings = new DifficultySettings(currentDifficulty, numberOfPlayers);
-
-                    difficultySettings.SetAmountOfPlayers(numberOfPlayers); // setdifficulty based on amount of players
-
-                    moneySystem = new MoneySystem(difficultySettings.GetMoneyToPass());
-
+                    UpdateClientRpc(numberOfPlayers);
 
                 }
                 break;
@@ -206,7 +198,6 @@ public class GameManager : NetworkBehaviour
 
         //Debug.Log("autoTestGamePausedState" + autoTestGamePausedState);
     }
-
     private void LateUpdate()
     {
         if (autoTestGamePausedState)
@@ -405,13 +396,22 @@ public class GameManager : NetworkBehaviour
        
     }
 
-    public void SetGameStateValue(GameState gameState)
+    [ClientRpc]
+    public void UpdateClientRpc(int numberOfPlayers)
     {
-        //gameState.Value = GameState.GameOver;
+        InitializeDifficultyMoney(numberOfPlayers);
     }
 
+    public void InitializeDifficultyMoney(int numberOfPlayers)
+    {
+        SetCurrentDifficultyTo(GameValueHolder.Instance.DifficultyString);
 
+        difficultySettings = new DifficultySettings(currentDifficulty, numberOfPlayers);
 
+        difficultySettings.SetAmountOfPlayers(numberOfPlayers); // setdifficulty based on amount of players
+
+        moneySystem = new MoneySystem(difficultySettings.GetMoneyToPass());
+    }
 
 }
 
