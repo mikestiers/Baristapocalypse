@@ -5,23 +5,18 @@ using UnityEngine;
 
 public class OrderManager : Singleton<OrderManager>
 {
-    public List<Order> orders = new List<Order>();
+    private List<Order> orders = new List<Order>();
     public delegate void OrderUpdateHandler(Order order);
     public event OrderUpdateHandler OnOrderUpdated;
-    private BrewingStation[] brewingStations;
+    public BrewingStation[] brewingStations; // Assign in inspector, do not find in active game
+    public OrderStats[] orderStats; // Assign in inspector, do not find in active game
+    BrewingStation availableBrewingStation;
+    OrderStats associatedOrderStats;
 
     private void Update()
     {
         if (orders.Any(order => order.State == Order.OrderState.Waiting))
             TryStartOrder();
-
-        //if (orders.Count > 0)
-        //    foreach (Order order in orders)
-        //        if (order.State == Order.OrderState.Waiting)
-        //        {
-        //            TryStartOrder();
-        //            break;
-        //        }
     }
 
     public void AddOrder(Order order)
@@ -30,9 +25,10 @@ public class OrderManager : Singleton<OrderManager>
         TryStartOrder();
     }
 
-    public void RemoveOrder(Order order)
+    public void FinishOrder(Order order)
     {
-        orders.Remove(order);
+        // orders.Remove(order);
+        order.State = Order.OrderState.Finished;
         TryStartOrder();
     }
 
@@ -44,16 +40,24 @@ public class OrderManager : Singleton<OrderManager>
     public void TryStartOrder()
     {
         bool availableStationFound = false;
-        brewingStations = FindObjectsOfType<BrewingStation>();
-        foreach (BrewingStation brewingStation in brewingStations)
+
+        // We are doing this instead of finding the objects dynamically because
+        // we are avoiding having brewingstations reference orderstats due to networking
+        // issues
+        for (int i = 0; i < brewingStations.Length; i++)
         {
+            BrewingStation brewingStation = brewingStations[i];
             Debug.Log($"availablefororder: {brewingStation.availableForOrder}");
             if (brewingStation.availableForOrder)
             {
                 availableStationFound = true;
+                availableBrewingStation = brewingStations[i];
+                associatedOrderStats = orderStats[i];
+                Debug.Log($"Element number (index) of available brewing station: {i}");
                 break;
             }
         }
+
 
         if (!availableStationFound)
         {
@@ -78,6 +82,8 @@ public class OrderManager : Singleton<OrderManager>
 
     public void StartOrder(Order order)
     {
-        OnOrderUpdated?.Invoke(order);
+        //OnOrderUpdated?.Invoke(order);
+        availableBrewingStation.SetOrder(order);
+        associatedOrderStats.SetOrderInfo(order);
     }
 }

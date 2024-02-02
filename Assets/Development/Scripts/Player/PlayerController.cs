@@ -733,28 +733,19 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public void OnChangeBrewingStationSelect()
     {
-        BrewingStation[] brewingStations = UnityEngine.Object.FindObjectsOfType<BrewingStation>();
-
-        if (brewingStations.Length > 1)
+        if (OrderManager.Instance.brewingStations.Length > 1)
         {
             // Increment the currentBrewingStation index, wrapping around using modulo
-            int nextBrewingStation = (currentBrewingStation + 1) % brewingStations.Length;
-            OrderStats[] orderStats = UnityEngine.Object.FindObjectsOfType<OrderStats>();
-            orderStats[currentBrewingStation].selectedByPlayerImage.SetActive(true);
-            orderStats[nextBrewingStation].selectedByPlayerImage.SetActive(false);
+            int nextBrewingStation = (currentBrewingStation + 1) % OrderManager.Instance.brewingStations.Length;
+            OrderManager.Instance.orderStats[nextBrewingStation].selectedByPlayerImage.SetActive(true);
+            OrderManager.Instance.orderStats[currentBrewingStation].selectedByPlayerImage.SetActive(false);
             currentBrewingStation = nextBrewingStation;
-        }
-        else
-        {
-            Debug.Log("No brewing stations found");
         }
     }
 
     public void OnBrewingStationEmpty()
     {
-        BrewingStation[] brewingStations = UnityEngine.Object.FindObjectsOfType<BrewingStation>();
-        brewingStations[(currentBrewingStation + 1) % brewingStations.Length].Empty();
-        Debug.Log($"Emptying {currentBrewingStation}");
+        OrderManager.Instance.brewingStations[currentBrewingStation].Empty();
     }
 
     public override void OnNetworkSpawn()

@@ -6,6 +6,7 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine.UI;
 using static UnityEngine.Rendering.HableCurve;
+using Unity.VisualScripting;
 
 public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 {
@@ -16,8 +17,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     [SerializeField] private ParticleSystem interactParticle;
 
     [Header("Order")]
-    public CustomerBase customer;
-    private Order order;
+    private Order currentOrder;
 
     [Header("Ingredients")]
     [SerializeField] public List<IngredientSO> ingredientSOList = new List<IngredientSO>();
@@ -47,6 +47,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     protected virtual void RaiseBrewingDone()
     {
+        currentOrder.State = Order.OrderState.Finished;
         OnBrewingDone?.Invoke(this, EventArgs.Empty);
     }
 
@@ -128,17 +129,12 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         }
     }
 
-    //public void SetOrder(Order incomingOrder)
-    //{
-    //    order = incomingOrder;
-    //    // All machines are going to listen for new orders, so this will back off if one already grabbed it
-    //    if (availableForOrder == false)
-    //    {
-    //        return;
-    //    }
-    //    availableForOrder = false;
-    //    order.State = Order.OrderState.Brewing;
-    //}
+    public void SetOrder(Order order)
+    {
+        currentOrder = order;
+        availableForOrder = false;
+        order.State = Order.OrderState.Brewing;
+    }
 
     [ServerRpc(RequireOwnership = false)]
     private void SpawnCoffeeDrinkServerRpc()
@@ -170,7 +166,6 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     [ClientRpc]
     private void BrewingDoneClientRpc()
     {
-        //order.State = Order.OrderState.Finished;
         RaiseBrewingDone();
         ingredientSOList.Clear();
         isBrewing = false;

@@ -4,7 +4,6 @@ using System.Linq;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.UI;
-using static Order;
 
 public class OrderStats : MonoBehaviour
 {
@@ -28,14 +27,14 @@ public class OrderStats : MonoBehaviour
 
     private void OnEnable()
     {
-        OrderManager.Instance.OnOrderUpdated += SetOrderInfo;
+        //OrderManager.Instance.OnOrderUpdated += SetOrderInfo;
         brewingStation.OnBrewingEmpty += OrderCompleted;
         brewingStation.OnBrewingDone += OrderCompleted;
     }
 
     private void OnDisable()
     {
-        OrderManager.Instance.OnOrderUpdated -= SetOrderInfo;
+        //OrderManager.Instance.OnOrderUpdated -= SetOrderInfo;
         brewingStation.OnBrewingEmpty -= OrderCompleted;
         brewingStation.OnBrewingDone -= OrderCompleted;
     }
@@ -46,7 +45,7 @@ public class OrderStats : MonoBehaviour
         OrderInProgress(false);
     }
 
-    private void SetOrderInfo(Order order)
+    public void SetOrderInfo(Order order)
     {
         orderInProgress = true;
         OrderInProgress(true);
