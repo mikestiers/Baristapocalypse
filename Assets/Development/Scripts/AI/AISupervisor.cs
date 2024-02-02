@@ -9,7 +9,7 @@ public class AISupervisor : NetworkBehaviour
     public static AISupervisor Instance { get; private set; }
 
     [SerializeField] private TextMeshProUGUI supervisorMessageText;
-    private string stringTest = "hola";
+    private string stringTest = "There's no story in video games";
 
     [SerializeField] private float transitionSpeed;
     [SerializeField] private float popOutReviewTime;
