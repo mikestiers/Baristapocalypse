@@ -85,27 +85,17 @@ public class IngredientSelectionUI : BaseStation
         EventSystem.current.SetSelectedGameObject(null);
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
         player.movementToggle = true;
-        OrderManager.Instance.brewingStations[player.currentBrewingStation].ingredientSOList.Add(currentIngredient);
-        OrderManager.Instance.orderStats[player.currentBrewingStation].temperatureSegments.cumulativeIngredientsValue = OrderManager.Instance.orderStats[player.currentBrewingStation].temperatureSegments.potentialIngredientValue;
-        OrderManager.Instance.orderStats[player.currentBrewingStation].sweetnessSegments.cumulativeIngredientsValue = OrderManager.Instance.orderStats[player.currentBrewingStation].sweetnessSegments.potentialIngredientValue;
-        OrderManager.Instance.orderStats[player.currentBrewingStation].spicinessSegments.cumulativeIngredientsValue = OrderManager.Instance.orderStats[player.currentBrewingStation].spicinessSegments.potentialIngredientValue;
-        OrderManager.Instance.orderStats[player.currentBrewingStation].strengthSegments.cumulativeIngredientsValue = OrderManager.Instance.orderStats[player.currentBrewingStation].strengthSegments.potentialIngredientValue;
-        OrderManager.Instance.orderStats[player.currentBrewingStation].SetSweetness();
-        OrderManager.Instance.orderStats[player.currentBrewingStation].SetTemperature();
-        OrderManager.Instance.orderStats[player.currentBrewingStation].SetSpiciness();
-        OrderManager.Instance.orderStats[player.currentBrewingStation].SetStrength();
-        if (brewingStations[player.currentBrewingStation].TryAddIngredient(currentIngredient))
+        if (OrderManager.Instance.brewingStations[player.currentBrewingStation].TryAddIngredient(currentIngredient))
         {
-            brewingStations[player.currentBrewingStation].AddIngredientToListSO(BaristapocalypseMultiplayer.Instance.GetIngredientSOIndex(currentIngredient));
-            OrderStats orderStats = orderStatsRoot.GetChild(player.currentBrewingStation).GetComponent<OrderStats>();
-            orderStats.temperatureSegments.cumulativeIngredientsValue = orderStats.temperatureSegments.potentialIngredientValue;
-            orderStats.sweetnessSegments.cumulativeIngredientsValue = orderStats.sweetnessSegments.potentialIngredientValue;
-            orderStats.spicinessSegments.cumulativeIngredientsValue = orderStats.spicinessSegments.potentialIngredientValue;
-            orderStats.strengthSegments.cumulativeIngredientsValue = orderStats.strengthSegments.potentialIngredientValue;
-            orderStats.SetSweetness();
-            orderStats.SetTemperature();
-            orderStats.SetSpiciness();
-            orderStats.SetStrength();
+            OrderManager.Instance.brewingStations[player.currentBrewingStation].AddIngredientToListSO(BaristapocalypseMultiplayer.Instance.GetIngredientSOIndex(currentIngredient));
+            OrderManager.Instance.orderStats[player.currentBrewingStation].temperatureSegments.cumulativeIngredientsValue = OrderManager.Instance.orderStats[player.currentBrewingStation].temperatureSegments.potentialIngredientValue;
+            OrderManager.Instance.orderStats[player.currentBrewingStation].sweetnessSegments.cumulativeIngredientsValue = OrderManager.Instance.orderStats[player.currentBrewingStation].sweetnessSegments.potentialIngredientValue;
+            OrderManager.Instance.orderStats[player.currentBrewingStation].spicinessSegments.cumulativeIngredientsValue = OrderManager.Instance.orderStats[player.currentBrewingStation].spicinessSegments.potentialIngredientValue;
+            OrderManager.Instance.orderStats[player.currentBrewingStation].strengthSegments.cumulativeIngredientsValue = OrderManager.Instance.orderStats[player.currentBrewingStation].strengthSegments.potentialIngredientValue;
+            OrderManager.Instance.orderStats[player.currentBrewingStation].SetSweetness();
+            OrderManager.Instance.orderStats[player.currentBrewingStation].SetTemperature();
+            OrderManager.Instance.orderStats[player.currentBrewingStation].SetSpiciness();
+            OrderManager.Instance.orderStats[player.currentBrewingStation].SetStrength();
         }
         StartCoroutine(CloseMenu());
     }
