@@ -99,7 +99,9 @@ public class DifficultySettings
 
         if(Shift <= MaxShift) 
         {
-            //Trigger End Game
+            //GameManager
+            GameManager.Instance.iSEndGame = true;
+            UIManager.Instance.shiftEvaluationUI.SetActive(false);
             return;
         }
 
