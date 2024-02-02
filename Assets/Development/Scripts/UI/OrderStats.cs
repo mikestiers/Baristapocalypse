@@ -23,7 +23,6 @@ public class OrderStats : MonoBehaviour
     [SerializeField] public bool orderInProgress { get; set; }
     [SerializeField] private CustomerBase orderOwner;
     [SerializeField] public BrewingStation brewingStation;
-   
 
     private void OnEnable()
     {
@@ -39,22 +38,25 @@ public class OrderStats : MonoBehaviour
         brewingStation.OnBrewingDone -= OrderCompleted;
     }
 
+    private void Start()
+    {
+        orderInProgress = false;
+        OrderInProgress();
+    }
+
     private void OrderCompleted(object sender, EventArgs e)
     {
         orderInProgress = false;
-        OrderInProgress(false);
+        OrderInProgress();
     }
 
     public void SetOrderInfo(Order order)
     {
-        orderInProgress = true;
-        OrderInProgress(true);
         SetOrderOwner(order.customer);
         customerInfoRoot.SetActive(true);
         customerNumberText.text = order.customer.customerNumber.ToString();
         customerNameText.text = order.customer.customerName;
         orderTimer.value = order.customer.orderTimer.Value;
-        orderTimer.maxValue = order.customer.customerLeaveTime;
         temperatureSegments.targetAttributeValue = order.customer.coffeeAttributes.GetTemperature();
         sweetnessSegments.targetAttributeValue = order.customer.coffeeAttributes.GetSweetness();
         spicinessSegments.targetAttributeValue = order.customer.coffeeAttributes.GetSpiciness();
@@ -67,11 +69,13 @@ public class OrderStats : MonoBehaviour
         SetPotentialTemperature();
         SetPotentialSpiciness();
         SetPotentialStrength();
+        orderInProgress = true;
+        OrderInProgress();
     }
 
     private void Update()
     {
-        if (orderInProgress)
+        if (orderInProgress == true)
         {
             UpdateTimer();
         }
@@ -88,13 +92,13 @@ public class OrderStats : MonoBehaviour
     }
 
     // Fade or unfade the order stats
-    public void OrderInProgress(bool isInProgress)
+    public void OrderInProgress()
     {
         Image[] images = GetComponentsInChildren<Image>(); // not including 'true' parameter because it includes inactive objects and the segments are not active by default
         foreach (Image image in images)
         {
             Color imageColor = image.GetComponent<Image>().color;
-            if (!isInProgress)
+            if (!orderInProgress)
             {
                 imageColor.a = 0.2f;
                 selectedByPlayerImage.SetActive(false);
@@ -109,7 +113,7 @@ public class OrderStats : MonoBehaviour
                 strengthSegments.cumulativeIngredientsValue = 0;
                 orderOwner = null;
             }
-            else if (isInProgress)
+            else if (orderInProgress)
             {
                 imageColor.a = 1.0f;
             }
@@ -123,7 +127,7 @@ public class OrderStats : MonoBehaviour
                 image.color = tempcolor;
             }
         }
-        orderInProgress = isInProgress;
+        //orderInProgress = isInProgress;
     }
 
     private void UpdateTimer()
