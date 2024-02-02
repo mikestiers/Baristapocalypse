@@ -139,7 +139,9 @@ public class CustomerManager : Singleton<CustomerManager>
 
     private void Update()
     {
-        if(GameManager.Instance.IsGamePlaying())
+        if (!IsServer) { return; }
+
+        if (GameManager.Instance.IsGamePlaying())
         {
             switch (currentServingState)
             {
@@ -168,25 +170,10 @@ public class CustomerManager : Singleton<CustomerManager>
 
                     timer -= Time.deltaTime;
 
-                    if (timer <= 0)
-                    {
-                        UIManager.Instance.ToggleBigTimer(false);
-                        //end UI & end RestState
-                        currentServingState = ServingState.CurrentlyServing;
-                    }
-                    else if (timer > 0 && timer < 5)
-                    {
-                        //use big timer & hide small timer
-                        UIManager.Instance.countdownText.text = Math.Ceiling(timer).ToString();
-                        UIManager.Instance.ToggleBigTimer(true);
-                        UIManager.Instance.ToggleSmalltimer(false);
-                    }
-                    else
-                    {
-                        //update small timer
-                        UIManager.Instance.gameTimerText.text = Math.Ceiling(timer).ToString();
-                        UIManager.Instance.ToggleSmalltimer(true);
-                    }
+                    if (timer < 0) currentServingState = ServingState.CurrentlyServing;
+
+                    UpdateTimeUIClientRpc(timer);
+
 
                     break;
 
@@ -267,6 +254,29 @@ public class CustomerManager : Singleton<CustomerManager>
         UIManager.Instance.SayGameMessage("The Customers are coming!");
 
         StartCoroutine(NewCustomer(initCustomerSpawnDelay));
+    }
+
+    [ClientRpc]
+    public void UpdateTimeUIClientRpc(float timer)
+    {
+        if (timer <= 0)
+        {
+            UIManager.Instance.ToggleBigTimer(false);
+            //end UI & end RestState
+        }
+        else if (timer > 0 && timer < 5)
+        {
+            //use big timer & hide small timer
+            UIManager.Instance.countdownText.text = Math.Ceiling(timer).ToString();
+            UIManager.Instance.ToggleBigTimer(true);
+            UIManager.Instance.ToggleSmalltimer(false);
+        }
+        else
+        {
+            //update small timer
+            UIManager.Instance.gameTimerText.text = Math.Ceiling(timer).ToString();
+            UIManager.Instance.ToggleSmalltimer(true);
+        }
     }
 
 
