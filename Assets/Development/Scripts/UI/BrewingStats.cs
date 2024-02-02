@@ -4,9 +4,8 @@ using System.Linq;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.UI;
-using static Order;
 
-public class OrderStats : MonoBehaviour
+public class BrewingStats : MonoBehaviour
 {
     [Header("Customer Order")]
     [SerializeField] public GameObject customerInfoRoot;
@@ -19,56 +18,12 @@ public class OrderStats : MonoBehaviour
     [SerializeField] public OrderStatsSegments spicinessSegments;
     [SerializeField] public OrderStatsSegments strengthSegments;
     [SerializeField] public GameObject selectedByPlayerImage;
+    [SerializeField] public GameObject NextBrewingStation;
+    [SerializeField] public GameObject PreviousBrewingStation;
     [SerializeField] public List<PlayerController> currentPlayers;
     [SerializeField] public Image resetMachineImage;
     [SerializeField] public bool orderInProgress { get; set; }
     [SerializeField] private CustomerBase orderOwner;
-    [SerializeField] public BrewingStation brewingStation;
-   
-
-    private void OnEnable()
-    {
-        OrderManager.Instance.OnOrderUpdated += SetOrderInfo;
-        brewingStation.OnBrewingEmpty += OrderCompleted;
-        brewingStation.OnBrewingDone += OrderCompleted;
-    }
-
-    private void OnDisable()
-    {
-        OrderManager.Instance.OnOrderUpdated -= SetOrderInfo;
-        brewingStation.OnBrewingEmpty -= OrderCompleted;
-        brewingStation.OnBrewingDone -= OrderCompleted;
-    }
-
-    private void OrderCompleted(object sender, EventArgs e)
-    {
-        orderInProgress = false;
-        OrderInProgress(false);
-    }
-
-    private void SetOrderInfo(Order order)
-    {
-        orderInProgress = true;
-        OrderInProgress(true);
-        SetOrderOwner(order.customer);
-        customerInfoRoot.SetActive(true);
-        customerNumberText.text = order.customer.customerNumber.ToString();
-        customerNameText.text = order.customer.customerName;
-        orderTimer.value = order.customer.orderTimer.Value;
-        orderTimer.maxValue = order.customer.customerLeaveTime;
-        temperatureSegments.targetAttributeValue = order.customer.coffeeAttributes.GetTemperature();
-        sweetnessSegments.targetAttributeValue = order.customer.coffeeAttributes.GetSweetness();
-        spicinessSegments.targetAttributeValue = order.customer.coffeeAttributes.GetSpiciness();
-        strengthSegments.targetAttributeValue = order.customer.coffeeAttributes.GetStrength();
-        temperatureSegments.potentialIngredientValue = 0;
-        sweetnessSegments.potentialIngredientValue = 0;
-        spicinessSegments.potentialIngredientValue = 0;
-        strengthSegments.potentialIngredientValue = 0;
-        SetPotentialSweetness();
-        SetPotentialTemperature();
-        SetPotentialSpiciness();
-        SetPotentialStrength();
-    }
 
     private void Update()
     {
