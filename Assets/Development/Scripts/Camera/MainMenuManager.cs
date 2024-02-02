@@ -59,7 +59,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private Button MediumButton;
     [SerializeField] private Button HardButton;
 
-
+    public LevelLoader levelLoader;
 
     // Start is called before the first frame update
     public void Start()
@@ -159,17 +159,23 @@ public class MainMenuManager : MonoBehaviour
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         BaristapocalypseMultiplayer.playMultiplayer = true;
-        SceneManager.LoadScene("LobbyScene");
+        //SceneManager.LoadScene("LobbyScene");
         //Loader.Load(Loader.Scene.LobbyScene);
-        gameObject.SetActive(false);
+        levelLoader.PlaySceneTransition();
+        //gameObject.SetActive(false);
     }
 
     void PlayScene_SinglePlayer()
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         BaristapocalypseMultiplayer.playMultiplayer = false;
-        SceneManager.LoadScene("LobbyScene");
+        //SceneManager.LoadScene("LobbyScene");
         //Loader.Load(Loader.Scene.T5M3_BUILD);
+        if (!levelLoader.isActiveAndEnabled)
+        {
+            levelLoader.gameObject.SetActive(true);
+        }
+        levelLoader.PlaySceneTransition();
         gameObject.SetActive(false);
     }
 
