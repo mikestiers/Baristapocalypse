@@ -19,6 +19,9 @@ public class GameManager : NetworkBehaviour
     // Event to trigger events
     public delegate void RandomEventHandler();
     public static event RandomEventHandler OnRandomEventTriggered;
+    // List of random times to trigger the events
+    private List<float> randomEventTimes = new List<float>();
+    private float timeSinceStart = 0f;
 
     //Input Events
     public Vector2 MovementValue { get; private set; }
@@ -84,6 +87,13 @@ public class GameManager : NetworkBehaviour
         }
 
         OnRandomEventTriggered += HandleRandomEvent;
+        Debug.LogWarning("Current difficulty " + currentDifficulty.difficultyString);
+        SetRandomEventTimes();
+        foreach (float randomTime in randomEventTimes)
+        {
+            Debug.LogWarning("random Time " + randomEventTimes);
+
+        }
     }
 
     public override void OnDestroy()
@@ -189,6 +199,19 @@ public class GameManager : NetworkBehaviour
             case GameState.GamePlaying:
                 if (iSEndGame == true) gameState.Value = GameState.GameOver;
 
+                timeSinceStart += Time.deltaTime;
+
+                if (currentDifficulty != null)
+                {
+                    // Adjust the difficulty based on time passed
+                    foreach (float randomEventTime in randomEventTimes)
+                    {
+                        if (timeSinceStart > randomEventTime)
+                        {
+                            TriggerRandomEvent();
+                        }
+                    }
+                }
                 /*
                 gamePlayingTimer.Value -= Time.deltaTime;
                 if (gamePlayingTimer.Value < 0f)
@@ -352,6 +375,58 @@ public class GameManager : NetworkBehaviour
     }
 
     // Quick Random Events
+
+    private void SetRandomEventTimes()
+    {
+        if (currentDifficulty != null)
+        {
+            int numberOfRandomEvents = GetNumberOfRandomEvents(currentDifficulty.difficultyString);
+
+            for (int i = 0; i < numberOfRandomEvents; i++)
+            {
+                float randomTime = CalculateRandomEventTime(currentDifficulty.difficultyString);
+                randomEventTimes.Add(randomTime);
+            }
+        }
+    }
+
+    private int GetNumberOfRandomEvents(string difficulty)
+    {
+        switch (difficulty)
+        {
+            case "Easy":
+                return 1;
+            case "Medium":
+                return 2;
+            case "Hard":
+                return 3;
+            default:
+                return 0;
+        }
+    }
+
+    private float CalculateRandomEventTime(string difficulty)
+    {
+        float totalTime = gamePlayingTimerMax;
+        float timeWindow = totalTime / 2f;  // Adjust the time window as needed
+
+        float startTime = 0f;
+
+        switch (difficulty)
+        {
+            case "Easy":
+                startTime = UnityEngine.Random.Range(timeWindow * 0.9f, timeWindow * 1.3f);
+                break;
+            case "Medium":
+                startTime = UnityEngine.Random.Range(timeWindow * 0.6f, timeWindow * 1.5f);
+                break;
+            case "Hard":
+                startTime = UnityEngine.Random.Range(timeWindow * 0.5f, timeWindow * 1.7f);
+                break;
+        }
+
+        return startTime;
+    }
 
     private void HandleRandomEvent()
     {
