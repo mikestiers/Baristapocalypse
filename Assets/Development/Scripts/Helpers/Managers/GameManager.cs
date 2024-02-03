@@ -87,13 +87,15 @@ public class GameManager : NetworkBehaviour
         }
 
         OnRandomEventTriggered += HandleRandomEvent;
-        Debug.LogWarning("Current difficulty " + currentDifficulty.difficultyString);
+        
         SetRandomEventTimes();
-        foreach (float randomTime in randomEventTimes)
-        {
-            Debug.LogWarning("random Time " + randomEventTimes);
 
-        }
+        // debug for random event times (to be deleted)
+        Debug.LogWarning("Current difficulty " + currentDifficulty.difficultyString);
+        for (int i = 0; i < randomEventTimes.Count; i++)
+        {
+            Debug.LogWarning("random Time"+ i + " " + randomEventTimes[i]);
+        }       
     }
 
     public override void OnDestroy()
@@ -408,22 +410,56 @@ public class GameManager : NetworkBehaviour
     private float CalculateRandomEventTime(string difficulty)
     {
         float totalTime = gamePlayingTimerMax;
-        float timeWindow = totalTime / 2f;  // Adjust the time window as needed
+        float timeWindow = totalTime / 2f;
 
         float startTime = 0f;
-
         switch (difficulty)
         {
             case "Easy":
-                startTime = UnityEngine.Random.Range(timeWindow * 0.9f, timeWindow * 1.3f);
+                startTime = UnityEngine.Random.Range(120f, 240f);  // bewtween 2 to 4 minutes
                 break;
             case "Medium":
-                startTime = UnityEngine.Random.Range(timeWindow * 0.6f, timeWindow * 1.5f);
+                if (randomEventTimes.Count == 0)
+                {
+                    // First random time around minute 2.5
+                    startTime = UnityEngine.Random.Range(150f, 190);
+                }
+                else
+                {
+                    // Second random time around minute 4.5
+                    startTime = UnityEngine.Random.Range(270f, 300f);
+                }
                 break;
             case "Hard":
-                startTime = UnityEngine.Random.Range(timeWindow * 0.5f, timeWindow * 1.7f);
+                switch (randomEventTimes.Count)
+                {
+                    case 0:
+                        // First random time around minute 1.5
+                        startTime = UnityEngine.Random.Range(90f, 105f);
+                        break;
+                    case 1:
+                        // Second random time around minute 3.5
+                        startTime = UnityEngine.Random.Range(165f, 210f);
+                        break;
+                    case 2:
+                        // Third random time around minute 5
+                        startTime = UnityEngine.Random.Range(270f, 310f);
+                        break;
+                }
                 break;
         }
+        //switch (difficulty)
+        //{
+        //    case "Easy":
+        //        startTime = UnityEngine.Random.Range(timeWindow * 0.9f, timeWindow * 1.3f);
+        //        break;
+        //    case "Medium":
+        //        startTime = UnityEngine.Random.Range(timeWindow * 0.6f, timeWindow * 1.5f);
+        //        break;
+        //    case "Hard":
+        //        startTime = UnityEngine.Random.Range(timeWindow * 0.5f, timeWindow * 1.7f);
+        //        break;
+        //}
 
         return startTime;
     }
@@ -447,6 +483,7 @@ public class GameManager : NetworkBehaviour
             if (currentRandomEvent != null)
             {
                 ActivateEvent(currentRandomEvent);
+                AISupervisor.Instance.SupervisorMessageToDisplay(currentRandomEvent.GetRandomEvent().supervisorMessageOnEventTriggered);
             }
         }
     }
