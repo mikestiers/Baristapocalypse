@@ -139,59 +139,49 @@ public class CustomerManager : Singleton<CustomerManager>
 
     private void Update()
     {
-        switch (currentServingState)
+        if (!IsServer) { return; }
+
+        if (GameManager.Instance.IsGamePlaying())
         {
-            case ServingState.CurrentlyServing:
+            switch (currentServingState)
+            {
+                case ServingState.CurrentlyServing:
 
-                if(IsServing == false)
-                {
-                    IsServing = true;
-                }
+                    if (IsServing == false)
+                    {
+                        IsServing = true;
+                    }
 
-                if (GetCustomerLeftinStore() <= 0 && isSpawningCustomers == true)
-                {
-                    isSpawningCustomers = false;
-                    currentServingState = ServingState.BreakTime;
-                }
-                break;
-
-
-            case ServingState.BreakTime:
-               
-                if(IsServing == true)
-                {
-                    IsServing = false;
-                    NextWave();
-                }
-
-                timer -= Time.deltaTime;
-
-                if(timer <= 0)
-                {
-                    UIManager.Instance.ToggleBigTimer(false);
-                    //end UI & end RestState
-                    currentServingState= ServingState.CurrentlyServing;
-                }
-                else if(timer > 0 && timer < 5)
-                {
-                    //use big timer & hide small timer
-                    UIManager.Instance.countdownText.text = Math.Ceiling(timer).ToString();
-                    UIManager.Instance.ToggleBigTimer(true);
-                    UIManager.Instance.ToggleSmalltimer(false);
-                }
-                else
-                {
-                    //update small timer
-                    UIManager.Instance.gameTimerText.text = Math.Ceiling(timer).ToString();
-                    UIManager.Instance.ToggleSmalltimer(true);
-                }
-
-                break;
-
-            case ServingState.ShiftOver:
+                    if (GetCustomerLeftinStore() <= 0 && isSpawningCustomers == true)
+                    {
+                        isSpawningCustomers = false;
+                        currentServingState = ServingState.BreakTime;
+                    }
+                    break;
 
 
-                break;
+                case ServingState.BreakTime:
+
+                    if (IsServing == true)
+                    {
+                        IsServing = false;
+                        NextWave();
+                    }
+
+                    timer -= Time.deltaTime;
+
+                    if (timer < 0) currentServingState = ServingState.CurrentlyServing;
+
+                    UpdateTimeUIClientRpc(timer);
+
+
+                    break;
+
+                case ServingState.ShiftOver:
+
+
+                    break;
+            }
         }
     }
 
@@ -241,6 +231,8 @@ public class CustomerManager : Singleton<CustomerManager>
             UIManager.Instance.ShowShiftEvaluation();
         }
 
+        if (GameManager.Instance.IsGamePlaying() == false) return;
+
         customersLeftinWave = GameManager.Instance.difficultySettings.GetNumberofCustomersInwave();
 
         //Trigger UI
@@ -262,6 +254,28 @@ public class CustomerManager : Singleton<CustomerManager>
         StartCoroutine(NewCustomer(initCustomerSpawnDelay));
     }
 
+    [ClientRpc]
+    public void UpdateTimeUIClientRpc(float timer)
+    {
+        if (timer <= 0)
+        {
+            UIManager.Instance.ToggleBigTimer(false);
+            //end UI & end RestState
+        }
+        else if (timer > 0 && timer < 5)
+        {
+            //use big timer & hide small timer
+            UIManager.Instance.countdownText.text = Math.Ceiling(timer).ToString();
+            UIManager.Instance.ToggleBigTimer(true);
+            UIManager.Instance.ToggleSmalltimer(false);
+        }
+        else
+        {
+            //update small timer
+            UIManager.Instance.gameTimerText.text = Math.Ceiling(timer).ToString();
+            UIManager.Instance.ToggleSmalltimer(true);
+        }
+    }
 
     [ClientRpc]
     public void SpawnCustomerClientRpc()
