@@ -16,7 +16,9 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private float maxRandomTime = 2f;
     [HideInInspector] public bool isEventActive = false;
     [HideInInspector] public RandomEventBase currentRandomEvent;
-    public event EventHandler OnPlayerDeactivateEvent;
+    // Event to trigger events
+    public delegate void RandomEventHandler();
+    public static event RandomEventHandler OnRandomEventTriggered;
 
     //Input Events
     public Vector2 MovementValue { get; private set; }
@@ -81,7 +83,12 @@ public class GameManager : NetworkBehaviour
             InputManager.Instance.InteractEvent += InputManager_OnInteractEvent;
         }
 
+        OnRandomEventTriggered += HandleRandomEvent;
+    }
 
+    public override void OnDestroy()
+    {
+        OnRandomEventTriggered -= HandleRandomEvent;
     }
 
     private void InputManager_OnInteractEvent()
@@ -149,7 +156,7 @@ public class GameManager : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.P))
         {
             Debug.LogWarning("ActivateRandomEvent " + randomEventList.Count);
-            ActivateRandomEvent();
+            TriggerRandomEvent();
 
             //Debug.Log("randomEventObject " + randomEventList[0].name); 
             //randomEventList[0].SetEventBool(true);
@@ -346,22 +353,27 @@ public class GameManager : NetworkBehaviour
 
     // Quick Random Events
 
+    private void HandleRandomEvent()
+    {
+        ActivateRandomEvent();
+    }
+
+    private void TriggerRandomEvent()
+    {
+        OnRandomEventTriggered?.Invoke();
+    }
+
     // Activate random Event after x amount of random time, will add the time variable after testing
     private void ActivateRandomEvent()
     {
-        //while (true)
-        //{
-        //    yield return new WaitForSeconds(5f); // temp time for testing WaitForSeconds(UnityEngine.Random.Range(minRandomTime, maxRandomTime))
-
-            if (!isEventActive)
+        if (!isEventActive)
+        {
+            currentRandomEvent = GetRandomEvent();
+            if (currentRandomEvent != null)
             {
-                currentRandomEvent = GetRandomEvent();
-                if (currentRandomEvent != null)
-                {
-                    ActivateEvent(currentRandomEvent);
-                }
+                ActivateEvent(currentRandomEvent);
             }
-        //}
+        }
     }
 
     // Get a random Event from the Random Event List
