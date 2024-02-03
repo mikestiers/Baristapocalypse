@@ -8,4 +8,5 @@ public class RandomEventSO : ScriptableObject
     public GameObject objectEventPrefab;
     public string eventName;
     public float chanceOfOccurrence;
+    public string supervisorMessageOnEventTriggered;
 }

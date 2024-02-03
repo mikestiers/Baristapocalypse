@@ -16,7 +16,12 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private float maxRandomTime = 2f;
     [HideInInspector] public bool isEventActive = false;
     [HideInInspector] public RandomEventBase currentRandomEvent;
-    public event EventHandler OnPlayerDeactivateEvent;
+    // Event to trigger events
+    public delegate void RandomEventHandler();
+    public static event RandomEventHandler OnRandomEventTriggered;
+    // List of random times to trigger the events
+    private List<float> randomEventTimes = new List<float>();
+    private float timeSinceStart = 0f;
 
     //Input Events
     public Vector2 MovementValue { get; private set; }
@@ -81,7 +86,21 @@ public class GameManager : NetworkBehaviour
             InputManager.Instance.InteractEvent += InputManager_OnInteractEvent;
         }
 
+        OnRandomEventTriggered += HandleRandomEvent;
+        
+        SetRandomEventTimes();
 
+        // debug for random event times (to be deleted)
+        Debug.LogWarning("Current difficulty " + currentDifficulty.difficultyString);
+        for (int i = 0; i < randomEventTimes.Count; i++)
+        {
+            Debug.LogWarning("random Time"+ i + " " + randomEventTimes[i]);
+        }       
+    }
+
+    public override void OnDestroy()
+    {
+        OnRandomEventTriggered -= HandleRandomEvent;
     }
 
     private void InputManager_OnInteractEvent()
@@ -149,7 +168,7 @@ public class GameManager : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.P))
         {
             Debug.LogWarning("ActivateRandomEvent " + randomEventList.Count);
-            ActivateRandomEvent();
+            TriggerRandomEvent();
 
             //Debug.Log("randomEventObject " + randomEventList[0].name); 
             //randomEventList[0].SetEventBool(true);
@@ -182,6 +201,19 @@ public class GameManager : NetworkBehaviour
             case GameState.GamePlaying:
                 if (iSEndGame == true) gameState.Value = GameState.GameOver;
 
+                timeSinceStart += Time.deltaTime;
+
+                if (currentDifficulty != null)
+                {
+                    // Adjust the difficulty based on time passed
+                    foreach (float randomEventTime in randomEventTimes)
+                    {
+                        if (timeSinceStart > randomEventTime)
+                        {
+                            TriggerRandomEvent();
+                        }
+                    }
+                }
                 /*
                 gamePlayingTimer.Value -= Time.deltaTime;
                 if (gamePlayingTimer.Value < 0f)
@@ -346,22 +378,114 @@ public class GameManager : NetworkBehaviour
 
     // Quick Random Events
 
+    private void SetRandomEventTimes()
+    {
+        if (currentDifficulty != null)
+        {
+            int numberOfRandomEvents = GetNumberOfRandomEvents(currentDifficulty.difficultyString);
+
+            for (int i = 0; i < numberOfRandomEvents; i++)
+            {
+                float randomTime = CalculateRandomEventTime(currentDifficulty.difficultyString);
+                randomEventTimes.Add(randomTime);
+            }
+        }
+    }
+
+    private int GetNumberOfRandomEvents(string difficulty)
+    {
+        switch (difficulty)
+        {
+            case "Easy":
+                return 1;
+            case "Medium":
+                return 2;
+            case "Hard":
+                return 3;
+            default:
+                return 0;
+        }
+    }
+
+    private float CalculateRandomEventTime(string difficulty)
+    {
+        float totalTime = gamePlayingTimerMax;
+        float timeWindow = totalTime / 2f;
+
+        float startTime = 0f;
+        switch (difficulty)
+        {
+            case "Easy":
+                startTime = UnityEngine.Random.Range(120f, 240f);  // bewtween 2 to 4 minutes
+                break;
+            case "Medium":
+                if (randomEventTimes.Count == 0)
+                {
+                    // First random time around minute 2.5
+                    startTime = UnityEngine.Random.Range(150f, 190);
+                }
+                else
+                {
+                    // Second random time around minute 4.5
+                    startTime = UnityEngine.Random.Range(270f, 300f);
+                }
+                break;
+            case "Hard":
+                switch (randomEventTimes.Count)
+                {
+                    case 0:
+                        // First random time around minute 1.5
+                        startTime = UnityEngine.Random.Range(90f, 105f);
+                        break;
+                    case 1:
+                        // Second random time around minute 3.5
+                        startTime = UnityEngine.Random.Range(165f, 210f);
+                        break;
+                    case 2:
+                        // Third random time around minute 5
+                        startTime = UnityEngine.Random.Range(270f, 310f);
+                        break;
+                }
+                break;
+        }
+        //switch (difficulty)
+        //{
+        //    case "Easy":
+        //        startTime = UnityEngine.Random.Range(timeWindow * 0.9f, timeWindow * 1.3f);
+        //        break;
+        //    case "Medium":
+        //        startTime = UnityEngine.Random.Range(timeWindow * 0.6f, timeWindow * 1.5f);
+        //        break;
+        //    case "Hard":
+        //        startTime = UnityEngine.Random.Range(timeWindow * 0.5f, timeWindow * 1.7f);
+        //        break;
+        //}
+
+        return startTime;
+    }
+
+    private void HandleRandomEvent()
+    {
+        ActivateRandomEvent();
+    }
+
+    private void TriggerRandomEvent()
+    {
+        OnRandomEventTriggered?.Invoke();
+    }
+
     // Activate random Event after x amount of random time, will add the time variable after testing
     private void ActivateRandomEvent()
     {
-        //while (true)
-        //{
-        //    yield return new WaitForSeconds(5f); // temp time for testing WaitForSeconds(UnityEngine.Random.Range(minRandomTime, maxRandomTime))
-
-            if (!isEventActive)
+        if (!isEventActive)
+        {
+            currentRandomEvent = GetRandomEvent();
+            if (currentRandomEvent != null)
             {
-                currentRandomEvent = GetRandomEvent();
-                if (currentRandomEvent != null)
-                {
-                    ActivateEvent(currentRandomEvent);
-                }
+                ActivateEvent(currentRandomEvent);
+                AISupervisor.Instance.SupervisorMessageToDisplay(currentRandomEvent.GetRandomEvent().supervisorMessageOnEventTriggered);
             }
-        //}
+        }
     }
 
     // Get a random Event from the Random Event List
