@@ -11,6 +11,7 @@ public class RadioStation : BaseStation
     [SerializeField] private AudioClip ChangeSound;
     [SerializeField] private ParticleSystem interactParticle; // NOte could be deleted later
     [SerializeField] private AudioClip brokenRadio;
+    bool eventisOn = false;
     private int AudioIndex = 0;
 
     public override void Interact(PlayerController player)
@@ -66,10 +67,14 @@ public class RadioStation : BaseStation
 
     public void EventOn() 
     {
+        eventisOn = true;
         MainAudio.clip = brokenRadio;
+        MainAudio.Play();
     }
     public void EventOff() 
     {
+        eventisOn = false;
         MainAudio.clip = Audios[AudioIndex];
+        MainAudio.Play();
     }
 }
