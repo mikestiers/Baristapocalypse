@@ -293,7 +293,7 @@ public class CustomerBase : Base
             makingAMess = false;
             leaving = true;
 
-            CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
+            //CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
             //UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
             //if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
         }
@@ -392,7 +392,7 @@ public class CustomerBase : Base
             agent.SetDestination(exit.position);
 
 
-            CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
+            //CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
             //UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
             //if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
         }
@@ -483,5 +483,10 @@ public class CustomerBase : Base
         Pickup.SpawnPickupItem(pickupSO, this);
         //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
         messTime = 0f;
+    }
+
+    private void OnDestroy()
+    {
+       if(Application.isPlaying) CustomerManager.Instance.ReduceCustomerInStore();
     }
 }

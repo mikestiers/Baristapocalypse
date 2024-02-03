@@ -60,6 +60,9 @@ public class DifficultySettings
         spicinessIngredientList = chosenDifficulty.spicinessIngredientList;
 
         moneyToPass = chosenDifficulty.moneyToPass;
+
+        if (moneyToPass < 100) moneyToPass = 100;
+
         /*
         switch (currentDifficulty.difficultyString)
         {
@@ -97,9 +100,12 @@ public class DifficultySettings
     {
         Shift++;
 
-        if(Shift <= MaxShift) 
+        if(Shift > MaxShift) 
         {
             //Trigger End Game
+            GameManager.Instance.iSEndGame = true;
+            UIManager.Instance.shiftEvaluationUI.SetActive(false);
+
             return;
         }
 

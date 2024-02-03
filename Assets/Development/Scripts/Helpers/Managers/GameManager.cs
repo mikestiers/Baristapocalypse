@@ -62,6 +62,9 @@ public class GameManager : NetworkBehaviour
 
     public MoneySystem moneySystem;
 
+    //bool for endgame -> please update code
+    public bool iSEndGame = false;
+
     private void Awake()
     {
         Instance = this;
@@ -172,25 +175,23 @@ public class GameManager : NetworkBehaviour
                     int numberOfPlayers = (players.Length - Mathf.FloorToInt(players.Length * 0.5f));
 
 
-                    SetCurrentDifficultyTo(GameValueHolder.Instance.DifficultyString);
-
-                    difficultySettings = new DifficultySettings(currentDifficulty, numberOfPlayers);
-
-                    difficultySettings.SetAmountOfPlayers(numberOfPlayers); // setdifficulty based on amount of players
-
-                    moneySystem = new MoneySystem(difficultySettings.GetMoneyToPass());
-
-
+                    UpdateClientRpc(numberOfPlayers);
                 }
                 break;
 
             case GameState.GamePlaying:
+                if (iSEndGame == true) gameState.Value = GameState.GameOver;
+
+                /*
                 gamePlayingTimer.Value -= Time.deltaTime;
                 if (gamePlayingTimer.Value < 0f)
                 {
                     gameState.Value = GameState.GameOver;
                     //OnGameStateChanged?.Invoke(this, EventArgs.Empty);
                 }
+
+                */
+
                 break;
 
             case GameState.GameOver:
@@ -398,8 +399,22 @@ public class GameManager : NetworkBehaviour
        
     }
 
+    [ClientRpc]
+    public void UpdateClientRpc(int numberOfPlayers)
+    {
+        InitializeDifficultyMoney(numberOfPlayers);
+    }
 
+    public void InitializeDifficultyMoney(int numberOfPlayers)
+    {
+        SetCurrentDifficultyTo(GameValueHolder.Instance.DifficultyString);
 
+        difficultySettings = new DifficultySettings(currentDifficulty, numberOfPlayers);
+
+        difficultySettings.SetAmountOfPlayers(numberOfPlayers); // setdifficulty based on amount of players
+
+        moneySystem = new MoneySystem(difficultySettings.GetMoneyToPass());
+    }
 
 }
 
