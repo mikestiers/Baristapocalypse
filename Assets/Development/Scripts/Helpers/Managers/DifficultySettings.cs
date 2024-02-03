@@ -15,7 +15,7 @@ public class DifficultySettings
     private float minDelay;
     private float maxDelay;
     private int playerCount;
-    private int MaxShift = 5; //do determine end of game
+    private int MaxShift = 2; //do determine end of game
     private float chanceToMess;
     private float loiterMessEverySec;
     private float chanceToLoiter;
@@ -97,7 +97,7 @@ public class DifficultySettings
     {
         Shift++;
 
-        if(Shift <= MaxShift) 
+        if(Shift > MaxShift) 
         {
             //GameManager
             GameManager.Instance.iSEndGame = true;
