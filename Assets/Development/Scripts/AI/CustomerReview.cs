@@ -39,11 +39,155 @@ public class CustomerReview : MonoBehaviour
 
         if (difficulty == "Medium")
         {
+            float score = 0;
 
+            float tempDif = customer.coffeeAttributes.GetTemperature() - customer.GetIngredient().GetComponent<CoffeeAttributes>().GetTemperature();
+            float sweetDif = customer.coffeeAttributes.GetSweetness() - customer.GetIngredient().GetComponent<CoffeeAttributes>().GetSweetness();
+            float spicyDif = customer.coffeeAttributes.GetSpiciness() - customer.GetIngredient().GetComponent<CoffeeAttributes>().GetSpiciness();
+            float strengthDif = customer.coffeeAttributes.GetStrength() - customer.GetIngredient().GetComponent<CoffeeAttributes>().GetStrength();
+
+            Debug.Log("Temp dif: " + tempDif + ", Sweet dif: " + sweetDif + ", Spicy dif: " + spicyDif + ", Strength dif: " + strengthDif);
+
+            //Calculate Temperture difference
+            if (tempDif <= 1 && tempDif >= -1)
+                score += 5;
+            else if (tempDif <= 2 && tempDif >= -2)
+                score += 4;
+            else if (tempDif <= 3 && tempDif >= -3)
+                score += 3;
+            else if (tempDif <= 4 && tempDif >= -4)
+                score += 2;
+            else if (tempDif <= 5 && tempDif >= -5)
+                score += 1;
+            else
+            {
+                //do nothing
+            }
+
+            //Calculate Sweetness difference
+            if (sweetDif <= 1 && sweetDif >= -1)
+                score += 5;
+            else if (sweetDif <= 2 && sweetDif >= -2)
+                score += 4;
+            else if (sweetDif <= 3 && sweetDif >= -3)
+                score += 3;
+            else if (sweetDif <= 4 && sweetDif >= -4)
+                score += 2;
+            else if (sweetDif <= 5 && sweetDif >= -5)
+                score += 1;
+            else
+            {
+                //do nothing
+            }
+
+            //Calculate Spicyiness difference
+            if (spicyDif <= 1 && spicyDif >= -1)
+                score += 5;
+            else if (spicyDif <= 2 && spicyDif >= -2)
+                score += 4;
+            else if (spicyDif <= 3 && spicyDif >= -3)
+                score += 3;
+            else if (spicyDif <= 4 && spicyDif >= -4)
+                score += 2;
+            else if (spicyDif <= 5 && spicyDif >= -5)
+                score += 1;
+            else
+            {
+                //do nothing
+            }
+
+            //Calculate Strength difference
+            if (strengthDif <= 1 && strengthDif >= -1)
+                score += 5;
+            else if (strengthDif <= 2 && strengthDif >= -2)
+                score += +4;
+            else if (strengthDif <= 3 && strengthDif >= -3)
+                score += 3;
+            else if (strengthDif <= 4 && strengthDif >= -4)
+                score += 2;
+            else if (strengthDif <= 5 && strengthDif >= -5)
+                score += 1;
+            else
+            {
+                //do nothing
+            }
+            orderScore = score;
         }
         else if (difficulty == "Hard")
         {
+            float score = 0;
 
+            float tempDif = customer.coffeeAttributes.GetTemperature() - customer.GetIngredient().GetComponent<CoffeeAttributes>().GetTemperature();
+            float sweetDif = customer.coffeeAttributes.GetSweetness() - customer.GetIngredient().GetComponent<CoffeeAttributes>().GetSweetness();
+            float spicyDif = customer.coffeeAttributes.GetSpiciness() - customer.GetIngredient().GetComponent<CoffeeAttributes>().GetSpiciness();
+            float strengthDif = customer.coffeeAttributes.GetStrength() - customer.GetIngredient().GetComponent<CoffeeAttributes>().GetStrength();
+
+            Debug.Log("Temp dif: " + tempDif + ", Sweet dif: " + sweetDif + ", Spicy dif: " + spicyDif + ", Strength dif: " + strengthDif);
+
+            //Calculate Temperture difference
+            if (tempDif == 0)
+                score += 5;
+            else if (tempDif <= 1 && tempDif >= -1)
+                score += 4;
+            else if (tempDif <= 2 && tempDif >= -2)
+                score += 3;
+            else if (tempDif <= 3 && tempDif >= -3)
+                score += 2;
+            else if (tempDif <= 4 && tempDif >= -4)
+                score += 1;
+            else
+            {
+                //do nothing
+            }
+
+            //Calculate Sweetness difference
+            if (sweetDif == 0)
+                score += 5;
+            else if (sweetDif <= 1 && sweetDif >= -1)
+                score += 4;
+            else if (sweetDif <= 2 && sweetDif >= -2)
+                score += 3;
+            else if (sweetDif <= 3 && sweetDif >= -3)
+                score += 2;
+            else if (sweetDif <= 4 && sweetDif >= -4)
+                score += 1;
+            else
+            {
+                //do nothing
+            }
+
+            //Calculate Spicyiness difference
+            if (spicyDif == 0)
+                score += 5;
+            else if (spicyDif <= 1 && spicyDif >= -1)
+                score += 4;
+            else if (spicyDif <= 2 && spicyDif >= -2)
+                score += 3;
+            else if (spicyDif <= 3 && spicyDif >= -3)
+                score += 2;
+            else if (spicyDif <= 4 && spicyDif >= -4)
+                score += 1;
+            else
+            {
+                //do nothing
+            }
+
+            //Calculate Strength difference
+            if (strengthDif == 0)
+                score += 5;
+            else if (strengthDif <= 1 && strengthDif >= -1)
+                score += +4;
+            else if (strengthDif <= 2 && strengthDif >= -2)
+                score += 3;
+            else if (strengthDif <= 3 && strengthDif >= -3)
+                score += 2;
+            else if (strengthDif <= 4 && strengthDif >= -4)
+                score += 1;
+            else
+            {
+                //do nothing
+            }
+            orderScore = score;
         }
         else //default or easy setting
         {
@@ -337,10 +481,12 @@ public class CustomerReview : MonoBehaviour
         if (drinkScore == 20)
         {
             GameManager.Instance.moneySystem.IncreaseStreakCount();
+            FindObjectOfType<ScoreUI>().UpdateStreak();
         }
         else
         {
             GameManager.Instance.moneySystem.ResetStreak();
+            FindObjectOfType<ScoreUI>().DeactivateStreak();
         }
         return reviewScore;
     }

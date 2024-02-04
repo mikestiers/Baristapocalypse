@@ -7,7 +7,7 @@ public class MoneySystem
 {
     private int currentMoney;
     private int moneyNeededToPass;
-    private int currentStreakCount;
+    public int currentStreakCount;
     private int maxStreakCount; //before activating double tips
     private float baseTipMultiplier;
     private float streakBonus;
