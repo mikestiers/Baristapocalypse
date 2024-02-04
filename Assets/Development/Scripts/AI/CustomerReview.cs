@@ -333,6 +333,15 @@ public class CustomerReview : MonoBehaviour
         //add gain money
         GameManager.Instance.moneySystem.AdjustMoneyByAmount(GameManager.Instance.moneySystem.ComputeMoney(reviewScore), true);
         GameManager.Instance.moneySystem.SetAverageReviewRating(GetAverageReviewScore());
+        //if Order is perfect adds to streak
+        if (drinkScore == 20)
+        {
+            GameManager.Instance.moneySystem.IncreaseStreakCount();
+        }
+        else
+        {
+            GameManager.Instance.moneySystem.ResetStreak();
+        }
         return reviewScore;
     }
 

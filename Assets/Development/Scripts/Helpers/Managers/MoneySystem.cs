@@ -10,6 +10,7 @@ public class MoneySystem
     private int currentStreakCount;
     private int maxStreakCount; //before activating double tips
     private float baseTipMultiplier;
+    private float streakBonus;
 
     //Dont know where to put this
     private float AverageReviewRatings;
@@ -19,6 +20,7 @@ public class MoneySystem
         this.moneyNeededToPass = moneyNeededToPass;
         this.currentMoney = 0;
         this.currentStreakCount = 0;
+        this.streakBonus = 0.5f;
 
         //can be exposed in difficultysettings, ask team
         this.maxStreakCount = 5;
@@ -48,7 +50,7 @@ public class MoneySystem
     public int ComputeMoney(int reviewscore)
     {
         int baseAmount = 10; //change with amount of ingredients? check with team
-        int money = Mathf.CeilToInt(baseAmount * (reviewscore * baseTipMultiplier));
+        int money = Mathf.CeilToInt(baseAmount * (reviewscore * baseTipMultiplier) + (streakBonus * currentStreakCount));
 
         if (CheckStreak() == true) money *= 2;
 
@@ -81,6 +83,11 @@ public class MoneySystem
         if (currentStreakCount <= 0) currentStreakCount = 0;
     }
 
+    public void ResetStreak()
+    {
+        currentStreakCount = 0;
+    }
+
     public void SetAverageReviewRating(float Rating) 
     {
        AverageReviewRatings = Rating;
@@ -96,7 +103,7 @@ public class MoneySystem
 
 
     //Compute Money
-    //tips = baseamount * (review *.20) cuz its extra for cost of drink
+    //tips = baseamount * (review *.20) + (streakbonus) cuz its extra for cost of drink
     //streak counter when full will double the tips 
   
 }
