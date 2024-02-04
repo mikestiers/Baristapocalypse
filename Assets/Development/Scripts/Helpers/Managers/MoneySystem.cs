@@ -52,8 +52,6 @@ public class MoneySystem
         int baseAmount = 10; //change with amount of ingredients? check with team
         int money = Mathf.CeilToInt(baseAmount * (reviewscore * baseTipMultiplier) + (streakBonus * currentStreakCount));
 
-        if (CheckStreak() == true) money *= 2;
-
         return money;
     }
 
@@ -103,7 +101,7 @@ public class MoneySystem
 
 
     //Compute Money
-    //tips = baseamount * (review *.20) + (streakbonus) cuz its extra for cost of drink
+    //tips = baseamount * (review *.20) + (streakbonus * currentStreak) cuz its extra for cost of drink
     //streak counter when full will double the tips 
   
 }
