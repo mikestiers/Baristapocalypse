@@ -9,6 +9,8 @@ using System.Collections;
 public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance { get; private set; }
+    //Frame rate cap
+    private const int maxFrameRate = 60;
 
     // Quick Time Events
     [SerializeField] private List<RandomEventBase> randomEventList;
@@ -80,6 +82,8 @@ public class GameManager : NetworkBehaviour
 
     private void Start()
     {
+        Application.targetFrameRate = maxFrameRate;
+
         if (InputManager.Instance)
         {
             InputManager.Instance.PauseEvent += InputManager_PauseEvent;
