@@ -42,19 +42,6 @@ public class CustomerReviewManager : NetworkBehaviour
         OnCustomerReviewReceived -= HandleCustomerReview;
     }
 
-    private void Update()
-    {
-        if (!IsServer)
-        {
-            return;
-        }
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            Debug.Log("showing customer review");
-            StartCoroutine(MoveRP());
-        }
-    }
-
     private void HandleCustomerReview(CustomerBase customer)
     {
        ShowCustomerReview(customer);
