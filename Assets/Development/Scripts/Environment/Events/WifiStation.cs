@@ -14,6 +14,7 @@ public class WifiStation : RandomEventBase
     }
     public void WifiEventIsDone()
     {
+        GameManager.Instance.isEventActive = false;
         iseventover = true;
         Debug.Log("Wifi event is done");
         ChangeColorBasedOnEvent();
