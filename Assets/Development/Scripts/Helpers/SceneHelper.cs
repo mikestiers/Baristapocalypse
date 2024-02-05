@@ -58,7 +58,7 @@ public class SceneHelper : MonoBehaviour
         FindObjectOfType<CustomerManager>()?.ResetSingleton();
         FindObjectOfType<GameValueHolder>()?.ResetSingleton();
         FindObjectOfType<ScoreTimerManager>()?.ResetSingleton();
-        FindObjectOfType<CustomerReviewManager>()?.ResetSingleton();
+        DestroyIfExists<CustomerReviewManager>();
         DestroyIfExists<LobbyManager>();
         DestroyIfExists<PlayerConfigurationManager>();
         DestroyIfExists<BaristapocalypseMultiplayer>();
