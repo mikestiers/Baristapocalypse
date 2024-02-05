@@ -47,15 +47,6 @@ public class CleanupBot : MonoBehaviour
             path = GameObject.FindGameObjectsWithTag("Node");
         }
 
-        if (_currentState == CleanupBotState.Cleanup)
-        {
-            target = GameObject.FindGameObjectWithTag("Mess");
-
-            if (target)
-                agent.SetDestination(target.transform.position);
-
-        }
-
         if (distToNextNode <= 0)
         {
             distToNextNode = 0.5f;
@@ -86,8 +77,25 @@ public class CleanupBot : MonoBehaviour
         {
             if (target.gameObject.tag == "Node")
             {
-                target = GameObject.FindGameObjectWithTag("Mess");
+                
             }
+
+        }
+        if (GameObject.FindGameObjectWithTag("Mess") == null)
+        {
+            currentState = CleanupBotState.Roam;
+        }
+        else
+        {
+            currentState = CleanupBotState.Cleanup;
+        }
+
+        if (_currentState == CleanupBotState.Cleanup)
+        {
+            target = GameObject.FindGameObjectWithTag("Mess");
+
+            if (target)
+                agent.SetDestination(target.transform.position);
 
         }
 
@@ -96,6 +104,14 @@ public class CleanupBot : MonoBehaviour
 
         float distToPlayer = Vector3.Distance(transform.position, messTransform.transform.position);
 
+    }
+    private void OnCollisionEnter(Collision other)
+    {
+        if(other.gameObject == GameObject.FindGameObjectWithTag("Mess"))
+        {
+            //destroy mess
+            Destroy(other.gameObject);
+        }
     }
 }
 
