@@ -10,9 +10,8 @@ public class CleanupBot : MonoBehaviour
     public UnityEvent<CleanupBotState, GameObject> onStateChanged;
     NavMeshAgent agent;
 
-    //Keep reference to player or target if aggro'd.
     public GameObject target;
-    public Transform playerTransform;
+    public GameObject messTransform;
     public float distance = 20f;
 
     public enum CleanupBotState
@@ -50,7 +49,7 @@ public class CleanupBot : MonoBehaviour
 
         if (_currentState == CleanupBotState.Cleanup)
         {
-            target = GameObject.FindGameObjectWithTag("Spill");
+            target = GameObject.FindGameObjectWithTag("Mess");
 
             if (target)
                 agent.SetDestination(target.transform.position);
@@ -70,7 +69,7 @@ public class CleanupBot : MonoBehaviour
         {
 
             if (target)
-                Debug.DrawLine(transform.position, target.transform.position, Color.red);
+                Debug.DrawLine(transform.position, target.transform.position, Color.blue);
 
             if (agent.remainingDistance < distToNextNode)
             {
@@ -87,7 +86,7 @@ public class CleanupBot : MonoBehaviour
         {
             if (target.gameObject.tag == "Node")
             {
-                target = GameObject.FindGameObjectWithTag("Spill");
+                target = GameObject.FindGameObjectWithTag("Mess");
             }
 
         }
@@ -95,7 +94,7 @@ public class CleanupBot : MonoBehaviour
         if (target)
             agent.SetDestination(target.transform.position);
 
-        float distToPlayer = Vector3.Distance(transform.position, playerTransform.transform.position);
+        float distToPlayer = Vector3.Distance(transform.position, messTransform.transform.position);
 
     }
 }
