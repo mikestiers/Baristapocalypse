@@ -42,7 +42,8 @@ public class AISupervisor : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.O))
         {
-            SupervisorMessageToDisplayEvent(stringTest);
+            //SupervisorMessageToDisplayEvent(stringTest);
+            StartCoroutine(MoveFeedback());
         }
     }
 
