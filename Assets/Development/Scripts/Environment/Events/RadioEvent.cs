@@ -9,16 +9,19 @@ public class RadioEvent : RandomEventBase
     public float holdTime = 2f; // Adjust this value to set the required hold time
     private bool isButtonDown = false;
     private float buttonDownTime;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip BrokenAudio;
 
-    private void Awake()
+    private void Start()
     {
-       
-        radioStation = GetComponent<RadioStation>();
         radioBroken();
     }
     private void radioBroken() 
     {
+        audioSource.clip = BrokenAudio;  
+        audioSource.Play();
         radioStation.EventOn();
+        
     }
 
     private void RadioFixed() 
