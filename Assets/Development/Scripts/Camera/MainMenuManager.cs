@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 using UnityEngine.EventSystems;
+using UnityEngine.Audio;
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -56,6 +57,14 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject PlayMenuTab;
 
     [SerializeField] private LevelLoader levelLoader;
+
+    [SerializeField] private AudioMixer myMixer;
+    [SerializeField] private Slider musicSlider;
+    [SerializeField] private Slider SFXSlider;
+    [SerializeField] private Slider MasterSlider;
+    [SerializeField] private Slider VoiceLinesSlider;
+
+
     public void Start()
     {
         MainmenuCamera.Priority = 1;
@@ -241,5 +250,27 @@ public class MainMenuManager : MonoBehaviour
         {
             slider.interactable = interactable;
         }
+    }
+    public void SetMasterVolume()
+    {
+        float Musvolume = musicSlider.value;
+        myMixer.SetFloat("Master", Mathf.Log10(Musvolume) * 20);
+    }
+
+    public void SetSFXVolume()
+    {
+        float SFXvolume = SFXSlider.value;
+        myMixer.SetFloat("SFX", Mathf.Log10(SFXvolume) * 20);
+    }
+    public void SetMusicVolume()
+    {
+        float Musvolume = musicSlider.value;
+        myMixer.SetFloat("Music", Mathf.Log10(Musvolume) * 20);
+    }
+
+    public void SetVoiceLinesVolume()
+    {
+        float SFXvolume = SFXSlider.value;
+        myMixer.SetFloat("VoiceLines", Mathf.Log10(SFXvolume) * 20);
     }
 }

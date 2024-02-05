@@ -1,5 +1,19 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!244 &-7553992149914264751
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: 8ae7cd8b550615e4abea0d5f0382d40f
+  m_EffectName: Attenuation
+  m_MixLevel: f741689dec749a74e99e5acec2cd27a1
+  m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
 --- !u!244 &-4442416069286721500
 AudioMixerEffectController:
   m_ObjectHideFlags: 3
@@ -29,12 +43,21 @@ AudioMixerController:
   m_SuspendThreshold: -80
   m_EnableSuspend: 1
   m_UpdateMode: 0
-  m_ExposedParameters: []
+  m_ExposedParameters:
+  - guid: a1eb39ef5bb3f884895d92d904fe1e26
+    name: Master
+  - guid: eaf7b7eb221801a45ad40a0ad9805c8e
+    name: Music
+  - guid: 4ed90816ca823a84fb64705954dda5ff
+    name: SFX
+  - guid: 00d74026ff9da8247ba07fe3729d6b42
+    name: VoiceLines
   m_AudioMixerGroupViews:
   - guids:
     - 7e894a9b70be2214fb76686b88971e1d
     - 1b183541818f70948acf0e32703cb044
     - 583a7776299b78043a17d97199670eb3
+    - a28031cae01f30f4aa7515d9cfa9566f
     name: View
   m_CurrentViewIndex: 0
   m_TargetSnapshot: {fileID: 24500006}
@@ -48,8 +71,9 @@ AudioMixerGroupController:
   m_AudioMixer: {fileID: 24100000}
   m_GroupID: 7e894a9b70be2214fb76686b88971e1d
   m_Children:
-  - {fileID: 4533755897248373498}
+  - {fileID: 4391482438687186131}
   - {fileID: 7932454930221866299}
+  - {fileID: 4533755897248373498}
   m_Volume: a1eb39ef5bb3f884895d92d904fe1e26
   m_Pitch: 7fb8ddd24d1092043aededc6426f30df
   m_Send: 00000000000000000000000000000000
@@ -83,8 +107,8 @@ AudioMixerSnapshotController:
   m_AudioMixer: {fileID: 24100000}
   m_SnapshotID: e245be34ddc0c614e9cf0d4e293445f8
   m_FloatValues:
-    4ed90816ca823a84fb64705954dda5ff: -21.302507
-    eaf7b7eb221801a45ad40a0ad9805c8e: -1.5
+    4ed90816ca823a84fb64705954dda5ff: 0
+    eaf7b7eb221801a45ad40a0ad9805c8e: 0
     a1eb39ef5bb3f884895d92d904fe1e26: 0
   m_TransitionOverrides: {}
 --- !u!244 &4381713797170674934
@@ -101,6 +125,25 @@ AudioMixerEffectController:
   m_SendTarget: {fileID: 0}
   m_EnableWetMix: 0
   m_Bypass: 0
+--- !u!243 &4391482438687186131
+AudioMixerGroupController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: VoiceLines
+  m_AudioMixer: {fileID: 24100000}
+  m_GroupID: a28031cae01f30f4aa7515d9cfa9566f
+  m_Children: []
+  m_Volume: 00d74026ff9da8247ba07fe3729d6b42
+  m_Pitch: f31def0d0f40a864d8f093df9ad0e33e
+  m_Send: 00000000000000000000000000000000
+  m_Effects:
+  - {fileID: -7553992149914264751}
+  m_UserColorIndex: 0
+  m_Mute: 0
+  m_Solo: 0
+  m_BypassEffects: 0
 --- !u!243 &4533755897248373498
 AudioMixerGroupController:
   m_ObjectHideFlags: 0
