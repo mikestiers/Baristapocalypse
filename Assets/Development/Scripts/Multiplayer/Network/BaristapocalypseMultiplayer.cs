@@ -10,7 +10,7 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
 {
     public const int MAX_PLAYERS = 4;
 
-    [SerializeField] private IngredientListSO ingredientListSO;
+    private IngredientListSO ingredientListSO;
     [SerializeField] private PickupListSo pickupList;
     [SerializeField] private MessListSO MessList;
     [SerializeField] private ParticleListSO particleListSO;
@@ -44,6 +44,19 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
             StartHost();
             Loader.LoadNetwork(Loader.Scene.T5M3_BUILD);
         }
+    }
+    // This should not be in Update() but difficultysettings are not available when the game starts for some reason
+    private bool isFoundDifficulty = false;
+    private void Update()
+    {
+        if (GameManager.Instance.difficultySettings == null)
+            return;
+        if (!isFoundDifficulty)
+        {
+            isFoundDifficulty = true;
+            ingredientListSO = GameManager.Instance.difficultySettings.allIngredientsList;
+        }
+
     }
 
     private void PlayerDataNetworkList_OnListChanged(NetworkListEvent<PlayerData> changeEvent)
