@@ -28,7 +28,7 @@ public class OrderManager : Singleton<OrderManager>
     public void FinishOrder(Order order)
     {
         // orders.Remove(order);
-        order.State = Order.OrderState.Finished;
+        order.State = Order.OrderState.Delivered;
         TryStartOrder();
     }
 
@@ -47,13 +47,11 @@ public class OrderManager : Singleton<OrderManager>
         for (int i = 0; i < brewingStations.Length; i++)
         {
             BrewingStation brewingStation = brewingStations[i];
-            Debug.Log($"availablefororder: {brewingStation.availableForOrder}");
             if (brewingStation.availableForOrder)
             {
                 availableStationFound = true;
                 availableBrewingStation = brewingStations[i];
                 associatedOrderStats = orderStats[i];
-                Debug.Log($"Element number (index) of available brewing station: {i}");
                 break;
             }
         }
