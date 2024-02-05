@@ -8,9 +8,9 @@ public class LevelLoader : MonoBehaviour
     public Animator transition;
     public float transitionTime = 2f;
 
-    void Update()
+    private void Start()
     {
-
+        transition.Play("SceneTransition_End");
     }
 
     public void PlaySceneTransition()
@@ -21,12 +21,7 @@ public class LevelLoader : MonoBehaviour
         {
             StartCoroutine(SceneTransition(sceneIndex + 1));
         }
-        else if (sceneIndex == 2)
-        {
-            // Add game over return to lobby/main menu functionality
-            return;
-        }
-        else if (sceneIndex == 3)
+        else
         {
             StartCoroutine(SceneTransition(sceneIndex));
         }
@@ -36,7 +31,14 @@ public class LevelLoader : MonoBehaviour
     {
         transition.SetTrigger("Start");
         yield return new WaitForSeconds(transitionTime);
-        if (levelIndex != 3)
+
+        if (SceneManager.GetActiveScene().buildIndex == 2)
+        {
+            // DOES NOT WORK, Breaks object references in UIManager.cs line 167-172
+            //SceneManager.LoadScene(0);
+            //SceneHelper.Instance.ResetGame();
+        }
+        else if (levelIndex < 3)
         {
             SceneManager.LoadScene(levelIndex);
         }

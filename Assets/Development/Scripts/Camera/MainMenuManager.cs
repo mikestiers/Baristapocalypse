@@ -58,6 +58,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private LevelLoader levelLoader;
     public void Start()
     {
+        Time.timeScale = 1f;
         MainmenuCamera.Priority = 1;
 
         if (ExitGame)
