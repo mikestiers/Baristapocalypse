@@ -27,6 +27,7 @@ public class DifficultySettings
     public IngredientListSO sweetnessIngredientList { get; }
     public IngredientListSO strengthIngredientList { get; }
     public IngredientListSO spicinessIngredientList { get; }
+    public IngredientListSO allIngredientsList { get; }
 
     public DifficultySettings(DifficultySO chosenDifficulty, int InitplayerCount)
     {
@@ -58,6 +59,7 @@ public class DifficultySettings
         sweetnessIngredientList = chosenDifficulty.sweetnessIngredientList;
         strengthIngredientList = chosenDifficulty.strengthIngredientList;
         spicinessIngredientList = chosenDifficulty.spicinessIngredientList;
+        allIngredientsList = chosenDifficulty.allIngredientsList;
 
         moneyToPass = chosenDifficulty.moneyToPass;
 

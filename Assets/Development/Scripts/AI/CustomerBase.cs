@@ -279,7 +279,7 @@ public class CustomerBase : Base
         else if (GetCustomerState() == CustomerState.Insit && player.GetIngredient().CompareTag("CoffeeCup"))
         {
             player.GetIngredient().SetIngredientParent(this);
-            JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
+            JustGotHandedCoffee();
             player.RemoveIngredientInListByReference(player.GetIngredient());
             CustomerManager.Instance.customerServedIncrease();
 
@@ -407,9 +407,21 @@ public class CustomerBase : Base
         moving = true;
     }
 
-    public void JustGotHandedCoffee(CoffeeAttributes coffee)
+    public void JustGotHandedCoffee()
     {
-        CustomerReviewManager.Instance.ShowCustomerReview(this);
+        JustGotHandedCoffeeServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void JustGotHandedCoffeeServerRpc()
+    {
+        JustGotHandedCoffeeClientRpc();
+    }
+
+    [ClientRpc]
+    private void JustGotHandedCoffeeClientRpc()
+    {
+        CustomerReviewManager.Instance.CustomerReviewEvent(this);
         StopOrderTimer();
         CustomerLeave();
     }

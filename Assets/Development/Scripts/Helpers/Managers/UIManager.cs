@@ -87,6 +87,7 @@ public class UIManager : Singleton<UIManager>
     public Slider voiceVolumeSlider;
 
     public AudioMixer mixer;
+    [SerializeField] private LevelLoader levelLoader;
 
     private void Start()
     {
@@ -162,6 +163,8 @@ public class UIManager : Singleton<UIManager>
     private void ShowMainMenu()
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+        // Moved Reset game function above scene change due to it not being called if scene swapped beforehand
+        SceneHelper.Instance.ResetGame();        
         SceneManager.LoadScene(mainMenuScene); 
         timer.enabled = false;
         score.enabled = false;
@@ -169,7 +172,6 @@ public class UIManager : Singleton<UIManager>
         pauseMenu.SetActive(false);
         gameOverMenu.SetActive(false);
         Time.timeScale = 1f;
-        SceneHelper.Instance.ResetGame();
     }
 
     private void QuitGame()
