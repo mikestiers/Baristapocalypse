@@ -1357,11 +1357,6 @@ MonoBehaviour:
   ExitMenuTab: {fileID: 0}
   PlayMenuTab: {fileID: 1567503593}
   levelLoader: {fileID: 53240911447269502}
-  myMixer: {fileID: 24100000, guid: 706d11347a7f6dd43a4c406c59e7b7e8, type: 2}
-  musicSlider: {fileID: 2888496882538505189}
-  SFXSlider: {fileID: 2888496882432346670}
-  MasterSlider: {fileID: 0}
-  VoiceLinesSlider: {fileID: 0}
 --- !u!1 &309042715
 GameObject:
   m_ObjectHideFlags: 0
@@ -2812,7 +2807,7 @@ AudioSource:
   m_GameObject: {fileID: 709675210}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 24300002, guid: 706d11347a7f6dd43a4c406c59e7b7e8, type: 2}
+  OutputAudioMixerGroup: {fileID: 7932454930221866299, guid: 706d11347a7f6dd43a4c406c59e7b7e8, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -3285,7 +3280,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 930288301}
-  m_LocalRotation: {x: -0.0008401677, y: 0.97416526, z: -0.22580567, w: -0.003624631}
+  m_LocalRotation: {x: -0.00084016385, y: 0.97416526, z: -0.22580567, w: -0.0036246143}
   m_LocalPosition: {x: 18.59, y: 40.31, z: 83.85}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4121,7 +4116,7 @@ GameObject:
   - component: {fileID: 1162969784}
   - component: {fileID: 1162969786}
   - component: {fileID: 1162969787}
-  - component: {fileID: 1162969788}
+  - component: {fileID: 1162969789}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -4254,7 +4249,7 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
---- !u!81 &1162969788
+--- !u!81 &1162969789
 AudioListener:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -11293,7 +11288,7 @@ AudioSource:
   m_GameObject: {fileID: 1719628094}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 24300002, guid: 706d11347a7f6dd43a4c406c59e7b7e8, type: 2}
+  OutputAudioMixerGroup: {fileID: 7932454930221866299, guid: 706d11347a7f6dd43a4c406c59e7b7e8, type: 2}
   m_audioClip: {fileID: 8300000, guid: 17600b0e90bad2b4f8721fcb6ee62c2f, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -11934,7 +11929,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1973596138}
-  m_LocalRotation: {x: -0.067161836, y: 0.8836353, z: -0.13378437, w: -0.44359875}
+  m_LocalRotation: {x: -0.06716185, y: 0.8836353, z: -0.13378438, w: -0.4435987}
   m_LocalPosition: {x: 1.6, y: 43.28, z: 121.12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -13172,6 +13167,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2888496882432346669}
   - component: {fileID: 2888496882432346670}
+  - component: {fileID: 2888496882432346671}
   m_Layer: 5
   m_Name: SFX Slider
   m_TagString: Untagged
@@ -13254,7 +13250,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2888496882432346671}
         m_TargetAssemblyTypeName: VolumeSettings, Assembly-CSharp
         m_MethodName: SetSFXVolume
         m_Mode: 1
@@ -13266,6 +13262,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2888496882432346671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2888496882432346668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55ead9ad4d8c10143a6a1a91c6a15bd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mixer: {fileID: 24100000, guid: 706d11347a7f6dd43a4c406c59e7b7e8, type: 2}
+  musicSlider: {fileID: 2888496882538505189}
+  SFXSlider: {fileID: 2888496882432346670}
 --- !u!1 &2888496882538505187
 GameObject:
   m_ObjectHideFlags: 0
@@ -13276,6 +13287,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2888496882538505188}
   - component: {fileID: 2888496882538505189}
+  - component: {fileID: 2888496882538505190}
   m_Layer: 5
   m_Name: BGM Slider
   m_TagString: Untagged
@@ -13358,7 +13370,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2888496882538505190}
         m_TargetAssemblyTypeName: VolumeSettings, Assembly-CSharp
         m_MethodName: SetMusicVolume
         m_Mode: 1
@@ -13370,6 +13382,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2888496882538505190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2888496882538505187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55ead9ad4d8c10143a6a1a91c6a15bd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mixer: {fileID: 24100000, guid: 706d11347a7f6dd43a4c406c59e7b7e8, type: 2}
+  musicSlider: {fileID: 2888496882538505189}
+  SFXSlider: {fileID: 2888496882432346670}
 --- !u!1 &2888496882683587079
 GameObject:
   m_ObjectHideFlags: 0
