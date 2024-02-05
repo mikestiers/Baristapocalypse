@@ -135,11 +135,15 @@ public class IngredientSelectionUI : BaseStation
     {
         if (other.tag == "Player")
         {
+            player = other.GetComponent<PlayerController>();
             player.movementToggle = true;
 
-            // Hide UI ingredient menu
-            EventSystem.current.SetSelectedGameObject(null);
-            StartCoroutine(CloseMenu());
+            if (player.IsLocalPlayer)
+            {
+                // Hide UI ingredient menu
+                EventSystem.current.SetSelectedGameObject(null);
+                StartCoroutine(CloseMenu());
+            }
         }
     }
 
