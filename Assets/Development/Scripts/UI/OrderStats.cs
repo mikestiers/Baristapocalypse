@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Services.Lobbies.Models;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.UI;
@@ -61,14 +62,7 @@ public class OrderStats : MonoBehaviour
         sweetnessSegments.targetAttributeValue = order.customer.coffeeAttributes.GetSweetness();
         spicinessSegments.targetAttributeValue = order.customer.coffeeAttributes.GetSpiciness();
         strengthSegments.targetAttributeValue = order.customer.coffeeAttributes.GetStrength();
-        temperatureSegments.potentialIngredientValue = 0;
-        sweetnessSegments.potentialIngredientValue = 0;
-        spicinessSegments.potentialIngredientValue = 0;
-        strengthSegments.potentialIngredientValue = 0;
-        SetPotentialSweetness();
-        SetPotentialTemperature();
-        SetPotentialSpiciness();
-        SetPotentialStrength();
+        ResetPotential();
         orderInProgress = true;
         OrderInProgress();
     }
@@ -107,10 +101,7 @@ public class OrderStats : MonoBehaviour
                 sweetnessSegments.targetAttributeValue = 0;
                 spicinessSegments.targetAttributeValue = 0;
                 strengthSegments.targetAttributeValue = 0;
-                temperatureSegments.cumulativeIngredientsValue = 0;
-                sweetnessSegments.cumulativeIngredientsValue = 0;
-                spicinessSegments.cumulativeIngredientsValue = 0;
-                strengthSegments.cumulativeIngredientsValue = 0;
+                ResetCumulative();
                 orderOwner = null;
             }
             else if (orderInProgress)
@@ -127,7 +118,6 @@ public class OrderStats : MonoBehaviour
                 image.color = tempcolor;
             }
         }
-        //orderInProgress = isInProgress;
     }
 
     private void UpdateTimer()
@@ -159,43 +149,92 @@ public class OrderStats : MonoBehaviour
         }
     }
 
-    public void SetTemperature()
+    public void SetPotentialTemperature(int value)
     {
-        temperatureSegments.UpdateSegments(temperatureSegments.cumulativeIngredientsValue);
+        temperatureSegments.potentialIngredientValue = value;
+        temperatureSegments.UpdateSegments(value);
     }
 
-    public void SetSweetness()
+    public void SetPotentialSweetness(int value)
     {
-        sweetnessSegments.UpdateSegments(sweetnessSegments.cumulativeIngredientsValue);
+        sweetnessSegments.potentialIngredientValue = value;
+        sweetnessSegments.UpdateSegments(value);
     }
 
-    public void SetSpiciness()
+    public void SetPotentialSpiciness(int value)
     {
-        spicinessSegments.UpdateSegments(spicinessSegments.cumulativeIngredientsValue);
+        spicinessSegments.potentialIngredientValue = value;
+        spicinessSegments.UpdateSegments(value);
     }
 
-    public void SetStrength()
+    public void SetPotentialStrength(int value)
     {
-        strengthSegments.UpdateSegments(strengthSegments.cumulativeIngredientsValue);
+        strengthSegments.potentialIngredientValue = value;
+        strengthSegments.UpdateSegments(value);
     }
 
-    public void SetPotentialTemperature()
+    public void SetCumulativeTemperature(int value)
     {
-        temperatureSegments.UpdateSegments(temperatureSegments.potentialIngredientValue);
+        temperatureSegments.cumulativeIngredientsValue = value;
+        temperatureSegments.UpdateSegments(value);
     }
 
-    public void SetPotentialSweetness()
+    public void SetCumulativeSweetness(int value)
     {
-        sweetnessSegments.UpdateSegments(sweetnessSegments.potentialIngredientValue);
+        sweetnessSegments.cumulativeIngredientsValue = value;
+        sweetnessSegments.UpdateSegments(value);
     }
 
-    public void SetPotentialSpiciness()
+    public void SetCumulativeSpiciness(int value)
     {
-        spicinessSegments.UpdateSegments(spicinessSegments.potentialIngredientValue);
+        spicinessSegments.cumulativeIngredientsValue = value;
+        spicinessSegments.UpdateSegments(value);
     }
 
-    public void SetPotentialStrength()
+    public void SetCumulativeStrength(int value)
     {
-        strengthSegments.UpdateSegments(strengthSegments.potentialIngredientValue);
+        strengthSegments.cumulativeIngredientsValue = value;
+        strengthSegments.UpdateSegments(value);
+    }
+
+    private void ResetPotential()
+    {
+        SetPotentialSweetness(0);
+        SetPotentialTemperature(0);
+        SetPotentialSpiciness(0);
+        SetPotentialStrength(0);
+    }
+
+    private void ResetCumulative()
+    {
+        SetCumulativeTemperature(0);
+        SetCumulativeSweetness(0);
+        SetCumulativeSpiciness(0);
+        SetCumulativeStrength(0);
+    }
+
+    public void SetCumulativeToPotential()
+    {
+        SetCumulativeTemperature(temperatureSegments.potentialIngredientValue);
+        SetCumulativeSweetness(sweetnessSegments.potentialIngredientValue);
+        SetCumulativeSpiciness(spicinessSegments.potentialIngredientValue);
+        SetCumulativeStrength(strengthSegments.potentialIngredientValue);
+    }
+
+    // Likely when the player walks away without selecting anything
+    public void SetPotentialToCumulative()
+    {
+        SetPotentialTemperature(temperatureSegments.cumulativeIngredientsValue);
+        SetPotentialSweetness(sweetnessSegments.cumulativeIngredientsValue);
+        SetPotentialSpiciness(spicinessSegments.cumulativeIngredientsValue);
+        SetPotentialStrength(strengthSegments.cumulativeIngredientsValue);
+    }
+
+    public void HoverIngredient(IngredientSO currentIngredient)
+    {
+        SetPotentialTemperature(currentIngredient.temperature + temperatureSegments.cumulativeIngredientsValue);
+        SetPotentialSweetness(currentIngredient.sweetness + sweetnessSegments.cumulativeIngredientsValue);
+        SetPotentialSpiciness(currentIngredient.spiciness + spicinessSegments.cumulativeIngredientsValue);
+        SetPotentialStrength(currentIngredient.strength + strengthSegments.cumulativeIngredientsValue);
     }
 }
