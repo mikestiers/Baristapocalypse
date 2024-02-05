@@ -746,6 +746,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     public void OnBrewingStationEmpty()
     {
         OrderManager.Instance.brewingStations[currentBrewingStation].Empty();
+        OrderManager.Instance.orderStats[currentBrewingStation].ResetAll();
     }
 
     public override void OnNetworkSpawn()

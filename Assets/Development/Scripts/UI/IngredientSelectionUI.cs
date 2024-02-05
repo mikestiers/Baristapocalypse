@@ -159,10 +159,7 @@ public class IngredientSelectionUI : BaseStation
 
     private void CalculateIngredients(IngredientSO currentIngredient)
     {
-        if (orderStatsRoot != null && orderStatsRoot.childCount > 0)
-        {
-            OrderManager.Instance.orderStats[player.currentBrewingStation].HoverIngredient(currentIngredient);
-        }
+        OrderManager.Instance.orderStats[player.currentBrewingStation].HoverIngredient(currentIngredient);
     }
 
     IEnumerator CloseMenu()
