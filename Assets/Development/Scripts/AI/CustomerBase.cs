@@ -182,6 +182,7 @@ public class CustomerBase : Base
         if (orderTimer >= customerLeaveTime)
         {
             CustomerManager.Instance.customerLeaveIncrease();
+            GameManager.Instance.moneySystem.ResetStreak();
             CustomerLeave();
 
             Debug.LogWarning("Unhappy Customer");
