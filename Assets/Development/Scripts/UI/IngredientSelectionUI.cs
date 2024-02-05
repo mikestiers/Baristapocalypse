@@ -123,7 +123,11 @@ public class IngredientSelectionUI : BaseStation
             //player.movementToggle = false;
 
             //Display UI ingredient menu
-            Show(ingredientMenu);
+            if (player.IsLocalPlayer)
+            {
+                Show(ingredientMenu);
+            }
+            
         }
     }
 
