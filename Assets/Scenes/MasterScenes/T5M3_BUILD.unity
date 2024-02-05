@@ -2508,7 +2508,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 343035181}
-  m_LocalRotation: {x: 0.17475934, y: -0.03213967, z: 0.0057076304, w: 0.98406994}
+  m_LocalRotation: {x: 0.17475934, y: -0.032139655, z: 0.005707627, w: 0.98406994}
   m_LocalPosition: {x: -19.936138, y: -3.1976128, z: 18.243393}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2555,11 +2555,6 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 1243222267}
---- !u!82 &345820304 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 8946261014034885091, guid: 43fcf7eed79c2f94abf7a4d73cf79761, type: 3}
-  m_PrefabInstance: {fileID: 874483909}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &346700245
 GameObject:
   m_ObjectHideFlags: 0
@@ -3119,7 +3114,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 404493991}
-  m_LocalRotation: {x: 0.17475934, y: -0.03213967, z: 0.0057076304, w: 0.98406994}
+  m_LocalRotation: {x: 0.17475934, y: -0.032139655, z: 0.005707627, w: 0.98406994}
   m_LocalPosition: {x: -17.957838, y: 2.1339407, z: 19.340193}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -12531,6 +12526,10 @@ PrefabInstance:
       propertyPath: brokenRadio
       value: 
       objectReference: {fileID: 8300000, guid: 6139dbe5288e8844c9ed2d6c3c5470cd, type: 3}
+    - target: {fileID: 8246325954397199029, guid: 43fcf7eed79c2f94abf7a4d73cf79761, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8946261014034885089, guid: 43fcf7eed79c2f94abf7a4d73cf79761, type: 3}
       propertyPath: m_Name
       value: Radio
@@ -12592,9 +12591,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <RandomEventSO>k__BackingField: {fileID: 11400000, guid: cf01872d880ccd648865bf92d35959f4, type: 2}
   radioStation: {fileID: 874483913}
-  holdTime: 2
-  audioSource: {fileID: 345820304}
-  BrokenAudio: {fileID: 8300000, guid: 6139dbe5288e8844c9ed2d6c3c5470cd, type: 3}
 --- !u!43 &891045785
 Mesh:
   m_ObjectHideFlags: 0
@@ -14626,7 +14622,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   randomEventList:
-  - {fileID: 1204151809}
+  - {fileID: 874483914}
   minRandomTime: 30
   maxRandomTime: 60
   isEventActive: 0

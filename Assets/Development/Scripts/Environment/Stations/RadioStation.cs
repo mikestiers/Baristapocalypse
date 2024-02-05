@@ -10,9 +10,14 @@ public class RadioStation : BaseStation
     [SerializeField] private AudioClip[] Audios;
     [SerializeField] private AudioSource MainAudio;
     [SerializeField] private AudioClip ChangeSound;
+    [SerializeField] private AudioClip brokenRadio;
+
     [SerializeField] private ParticleSystem interactParticle; // NOte could be deleted later
-   
+    private bool isButtonDown = false;
+    private float buttonDownTime;
+    public float holdTime = 2f;
     
+
     private int AudioIndex = 0;
 
     public override void Interact(PlayerController player)
@@ -67,19 +72,49 @@ public class RadioStation : BaseStation
     }
 
     public void EventOn() 
-    {
-        Debug.Log("it is broken");
+    {  
         
-       
+        MainAudio.clip = brokenRadio;
+        MainAudio.Play();
+        
     }
+       
+       
+       
+       
+
     public void EventOff() 
     {
         
         MainAudio.clip = Audios[AudioIndex];
         MainAudio.Play();
         DeactivateRandomEvent();
+       
     }
 
+    private void RadioFixed()
+    {
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            isButtonDown = true;
+            buttonDownTime = Time.time;
+        }
+
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            isButtonDown = false;
+        }
+
+        if (isButtonDown && Time.time - buttonDownTime >= holdTime)
+        {
+            
+           EventOff();
+
+        }
+
+
+    }
     private void GameManager_OnPlayerDeactivateEvent(object sender, EventArgs e)
     {
         DeactivateRandomEvent();
