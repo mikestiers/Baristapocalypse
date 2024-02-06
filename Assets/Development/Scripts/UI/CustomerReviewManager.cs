@@ -105,6 +105,8 @@ public class CustomerReviewManager : NetworkBehaviour
             yield return null;
         }
 
+        reviewInProgress = false;
+
         StartCoroutine(ShowElements());
     }
 
