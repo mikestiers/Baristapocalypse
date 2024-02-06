@@ -24,7 +24,7 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -80,7 +80,352 @@ ModelImporter:
   humanDescription:
     serializedVersion: 3
     human: []
-    skeleton: []
+    skeleton:
+    - name: BP_Philip(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_Skeleton_GRP
+      parentName: BP_Philip(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 2.25, y: 2.25, z: 2.25}
+    - name: Philip_Hips
+      parentName: Philip_Skeleton_GRP
+      position: {x: -2.7663069e-17, y: 0.84838104, z: -0.049999997}
+      rotation: {x: 0.08879861, y: -0.701509, z: -0.08879861, w: 0.701509}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_Spine
+      parentName: Philip_Hips
+      position: {x: -0.016593233, y: 0.17083855, z: -1.3284375e-16}
+      rotation: {x: 6.383384e-17, y: -6.330335e-17, z: 0.23313934, w: 0.97244334}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_Spine1
+      parentName: Philip_Spine
+      position: {x: -0.0036064344, y: 0.20100355, z: -1.552773e-16}
+      rotation: {x: 2.9345289e-18, y: -1.1438718e-16, z: -0.08461104, w: 0.99641407}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_Neck
+      parentName: Philip_Spine1
+      position: {x: 0.01869987, y: 0.19176784, z: 3.5665085e-16}
+      rotation: {x: -0.0032078975, y: -0.0006642823, z: -0.25084138, w: 0.96802264}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_Head
+      parentName: Philip_Neck
+      position: {x: -0, y: 0.039485477, z: 2.1229872e-17}
+      rotation: {x: 0, y: 0, z: 0.023503246, w: 0.9997238}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_HeadEnd
+      parentName: Philip_Head
+      position: {x: -0.072634034, y: 0.19690712, z: -5.313337e-16}
+      rotation: {x: 0, y: 0, z: 0.19941175, w: 0.9799158}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightShoulder
+      parentName: Philip_Spine1
+      position: {x: 0.063866936, y: 0.11940255, z: -0.07364402}
+      rotation: {x: -0.017999519, y: -0.55034363, z: -0.010176835, w: 0.8346823}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightArm
+      parentName: Philip_RightShoulder
+      position: {x: -0.18126565, y: -0.0020757602, z: -0.0139492}
+      rotation: {x: -0.07387664, y: -0.2006036, z: -0.012872574, w: 0.9767982}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightForeArm
+      parentName: Philip_RightArm
+      position: {x: -0.28838775, y: 7.105427e-17, z: 1.4210854e-16}
+      rotation: {x: 0.038706504, y: 0.010305275, z: 0.028218284, w: 0.99879897}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightHand
+      parentName: Philip_RightForeArm
+      position: {x: -0.2604677, y: 7.105427e-17, z: -5.3290704e-17}
+      rotation: {x: -0.11961699, y: -0.032780547, z: -0.03523668, w: 0.99165297}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightPalm
+      parentName: Philip_RightHand
+      position: {x: -0.04911588, y: -1.1368684e-15, z: -3.1974422e-16}
+      rotation: {x: 0.34404516, y: 0.64487165, z: 0.47885635, w: -0.4862819}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightHandThumb1
+      parentName: Philip_RightPalm
+      position: {x: -0.04556294, y: 2.842171e-16, z: 0}
+      rotation: {x: -0.071916744, y: 0.15911733, z: 0.50829536, w: 0.84329444}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightHandThumb2
+      parentName: Philip_RightHandThumb1
+      position: {x: -0.035662785, y: -5.3290704e-17, z: 0}
+      rotation: {x: 0.75645226, y: 0.027870419, z: 0.02135388, w: 0.65310585}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightHandThumb3
+      parentName: Philip_RightHandThumb2
+      position: {x: -0.04363258, y: 1.4210854e-16, z: 6.661338e-17}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightHandPinky1
+      parentName: Philip_RightPalm
+      position: {x: 0.05093454, y: -0.052370984, z: 0.0023709084}
+      rotation: {x: 0.45700753, y: 0.6261982, z: 0.46852517, w: 0.42367935}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightHandPinky2
+      parentName: Philip_RightHandPinky1
+      position: {x: -0.03920348, y: -7.105427e-17, z: 0}
+      rotation: {x: 0.0482346, y: -0.002720087, z: 0.031983398, w: 0.99832016}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightHandPinky3
+      parentName: Philip_RightHandPinky2
+      position: {x: -0.043163504, y: 4.796163e-16, z: -8.8817837e-17}
+      rotation: {x: 0.024047755, y: -0.009250478, z: 0.03825986, w: 0.9989356}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightHandPinky4
+      parentName: Philip_RightHandPinky3
+      position: {x: -0.03866592, y: -3.5386813e-16, z: 7.596354e-17}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightHandRing1
+      parentName: Philip_RightPalm
+      position: {x: 0.03177292, y: -0.05781747, z: 0.005777002}
+      rotation: {x: 0.5668482, y: 0.73241055, z: 0.26344582, w: 0.26991528}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightHandRing2
+      parentName: Philip_RightHandRing1
+      position: {x: -0.04180656, y: -1.4210854e-16, z: 7.105427e-17}
+      rotation: {x: -0.23125258, y: 0.009446917, z: 0.028562479, w: 0.97242856}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightHandRing3
+      parentName: Philip_RightHandRing2
+      position: {x: -0.042440224, y: -8.881784e-18, z: -5.3290704e-17}
+      rotation: {x: 0.0069907745, y: -0.00320599, z: 0.03992685, w: 0.9991731}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightHandRing4
+      parentName: Philip_RightHandRing3
+      position: {x: -0.038906865, y: 2.1316282e-16, z: 7.105427e-17}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightHandMiddle1
+      parentName: Philip_RightPalm
+      position: {x: 0.008919155, y: -0.06480896, z: 0.014578391}
+      rotation: {x: 0.47942868, y: 0.6508218, z: 0.4346798, w: 0.39702982}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightHandMiddle2
+      parentName: Philip_RightHandMiddle1
+      position: {x: -0.040202796, y: 2.842171e-16, z: 8.881784e-18}
+      rotation: {x: -0.00886635, y: 0.00040137747, z: 0.030735597, w: 0.99948823}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightHandMiddle3
+      parentName: Philip_RightHandMiddle2
+      position: {x: -0.04177753, y: -6.217249e-17, z: 2.6645352e-17}
+      rotation: {x: 0.013792329, y: -0.006769802, z: 0.039705966, w: 0.9990933}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightHandMiddle4
+      parentName: Philip_RightHandMiddle3
+      position: {x: -0.03983651, y: 2.1316282e-16, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightHandIndex1
+      parentName: Philip_RightPalm
+      position: {x: -0.011421033, y: -0.07044742, z: 0.019610334}
+      rotation: {x: 0.34979653, y: 0.51811546, z: 0.59730774, w: 0.5024163}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightHandIndex2
+      parentName: Philip_RightHandIndex1
+      position: {x: -0.041359633, y: 0, z: 1.0658141e-16}
+      rotation: {x: 0.2873326, y: -0.01021327, z: 0.028518032, w: 0.9573518}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightHandIndex3
+      parentName: Philip_RightHandIndex2
+      position: {x: -0.041889053, y: 1.9984014e-17, z: -7.9936054e-17}
+      rotation: {x: -0.005241899, y: 0.0011563017, z: 0.03660839, w: 0.9993153}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightHandIndex4
+      parentName: Philip_RightHandIndex3
+      position: {x: -0.03970972, y: -2.4868996e-16, z: 1.7763568e-17}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftShoulder
+      parentName: Philip_Spine1
+      position: {x: 0.063866936, y: 0.11940255, z: 0.07364402}
+      rotation: {x: 0.017230473, y: 0.549243, z: -0.010605377, w: 0.83541775}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftArm
+      parentName: Philip_LeftShoulder
+      position: {x: -0.18129683, y: -0.0036396077, z: 0.014853901}
+      rotation: {x: 0.072519645, y: 0.20280215, z: -0.011827154, w: 0.97645915}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftForeArm
+      parentName: Philip_LeftArm
+      position: {x: -0.28838775, y: 2.842171e-16, z: -1.7763568e-17}
+      rotation: {x: -0.038706504, y: -0.010305275, z: 0.028218284, w: 0.99879897}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftHand
+      parentName: Philip_LeftForeArm
+      position: {x: -0.2604677, y: 0, z: 8.8817837e-17}
+      rotation: {x: 0.11961699, y: 0.032780547, z: -0.03523668, w: 0.99165297}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftPalm
+      parentName: Philip_LeftHand
+      position: {x: -0.04911588, y: 4.973799e-16, z: -1.0658141e-16}
+      rotation: {x: 0.34404516, y: 0.64487165, z: -0.47885635, w: 0.4862819}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftHandThumb1
+      parentName: Philip_LeftPalm
+      position: {x: -0.04556294, y: 4.2632563e-16, z: 7.81597e-16}
+      rotation: {x: 0.0712095, y: -0.15838915, z: 0.5083723, w: 0.8434451}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftHandThumb2
+      parentName: Philip_LeftHandThumb1
+      position: {x: -0.035662785, y: 1.7763568e-17, z: 4.2632563e-16}
+      rotation: {x: 0.6531058, y: 0.021352066, z: 0.02786957, w: 0.7564524}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftHandThumb3
+      parentName: Philip_LeftHandThumb2
+      position: {x: -0.04363258, y: -4.2632563e-16, z: 1.0658141e-16}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftHandPinky1
+      parentName: Philip_LeftPalm
+      position: {x: 0.05093454, y: -0.052370984, z: -0.0023709084}
+      rotation: {x: 0.45700747, y: 0.6261982, z: -0.46852526, w: -0.42367914}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftHandPinky2
+      parentName: Philip_LeftHandPinky1
+      position: {x: -0.03920348, y: 7.105427e-17, z: 0}
+      rotation: {x: -0.048234403, y: 0.0027209967, z: 0.031982392, w: 0.9983202}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftHandPinky3
+      parentName: Philip_LeftHandPinky2
+      position: {x: -0.043163504, y: 4.4408918e-17, z: 5.3290704e-17}
+      rotation: {x: -0.024047762, y: 0.009248507, z: 0.038258336, w: 0.99893576}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftHandPinky4
+      parentName: Philip_LeftHandPinky3
+      position: {x: -0.039989334, y: -3.5527136e-17, z: -3.5527136e-17}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftHandRing1
+      parentName: Philip_LeftPalm
+      position: {x: 0.031479415, y: -0.05650437, z: -0.0058654025}
+      rotation: {x: 0.5668488, y: 0.73240995, z: -0.26344565, w: -0.26991582}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftHandRing2
+      parentName: Philip_LeftHandRing1
+      position: {x: -0.04180656, y: 0, z: 8.8817837e-17}
+      rotation: {x: 0.23125303, y: -0.009443788, z: 0.028562717, w: 0.97242844}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftHandRing3
+      parentName: Philip_LeftHandRing2
+      position: {x: -0.042440224, y: 2.0428103e-16, z: 5.3290704e-17}
+      rotation: {x: -0.0069908598, y: 0.0032057497, z: 0.039925434, w: 0.99917305}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftHandRing4
+      parentName: Philip_LeftHandRing3
+      position: {x: -0.038906865, y: -3.1974422e-16, z: -7.105427e-17}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftHandMiddle1
+      parentName: Philip_LeftPalm
+      position: {x: 0.008919155, y: -0.06480896, z: -0.014578391}
+      rotation: {x: 0.47942916, y: 0.6508214, z: -0.43468037, w: -0.3970292}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftHandMiddle2
+      parentName: Philip_LeftHandMiddle1
+      position: {x: -0.040202796, y: 7.105427e-17, z: -8.881784e-18}
+      rotation: {x: 0.008866188, y: -0.00040286765, z: 0.03073408, w: 0.99948823}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftHandMiddle3
+      parentName: Philip_LeftHandMiddle2
+      position: {x: -0.04177753, y: -1.5099033e-16, z: 1.7763568e-17}
+      rotation: {x: -0.013792342, y: 0.0067707812, z: 0.039705176, w: 0.9990933}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftHandMiddle4
+      parentName: Philip_LeftHandMiddle3
+      position: {x: -0.03983651, y: -1.9539925e-16, z: 3.5527136e-17}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftHandIndex1
+      parentName: Philip_LeftPalm
+      position: {x: -0.011421033, y: -0.07044742, z: -0.019610334}
+      rotation: {x: -0.3497965, y: -0.5181154, z: 0.5973079, w: 0.50241625}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftHandIndex2
+      parentName: Philip_LeftHandIndex1
+      position: {x: -0.041359633, y: 0, z: -1.4210854e-16}
+      rotation: {x: -0.28733227, y: 0.010215008, z: 0.028520865, w: 0.95735174}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftHandIndex3
+      parentName: Philip_LeftHandIndex2
+      position: {x: -0.041889053, y: 7.2164494e-17, z: 7.5495166e-17}
+      rotation: {x: 0.005242018, y: -0.0011588377, z: 0.03660703, w: 0.9993153}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftHandIndex4
+      parentName: Philip_LeftHandIndex3
+      position: {x: -0.03970972, y: -3.5527136e-17, z: -4.440892e-18}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightUpLeg
+      parentName: Philip_Hips
+      position: {x: 0.006337169, y: -0.008314217, z: -0.12884618}
+      rotation: {x: 0.57926416, y: 0.8151399, z: -1.059317e-14, w: -8.964964e-15}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightLeg
+      parentName: Philip_RightUpLeg
+      position: {x: -0.30686924, y: 7.9936054e-17, z: 1.4210854e-16}
+      rotation: {x: 0, y: 0, z: 0.068129584, w: 0.9976765}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightShin
+      parentName: Philip_RightLeg
+      position: {x: -0.06619985, y: -0.00011292131, z: 0.00024908377}
+      rotation: {x: 0.15541092, y: -0.007906883, z: -0.0021847612, w: 0.98781586}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightFoot
+      parentName: Philip_RightShin
+      position: {x: -0.33430356, y: 0.0013853876, z: -0.00047478525}
+      rotation: {x: -0.1396652, y: -0.06862001, z: -0.47817284, w: 0.8643701}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightToeBase
+      parentName: Philip_RightFoot
+      position: {x: -0.12924147, y: -0.028042935, z: 5.417917e-17}
+      rotation: {x: 0, y: -0, z: -0.26495394, w: 0.9642611}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_RightToeTip
+      parentName: Philip_RightToeBase
+      position: {x: -0.13044387, y: 2.942091e-17, z: 7.643538e-10}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftUPLeg
+      parentName: Philip_Hips
+      position: {x: 0.006337169, y: -0.008314217, z: 0.12884618}
+      rotation: {x: 0.57926416, y: 0.8151399, z: 1.5112797e-14, w: 1.2571317e-14}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftLeg
+      parentName: Philip_LeftUPLeg
+      position: {x: -0.30686924, y: -4.440892e-18, z: 0}
+      rotation: {x: 0, y: 0, z: 0.068129584, w: 0.9976765}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftShin
+      parentName: Philip_LeftLeg
+      position: {x: -0.06619985, y: -0.00011292131, z: -0.00024908377}
+      rotation: {x: -0.15541092, y: 0.007906883, z: -0.0021847612, w: 0.98781586}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftFoot
+      parentName: Philip_LeftShin
+      position: {x: -0.33430356, y: 0.0013853876, z: 0.00047478525}
+      rotation: {x: 0.1396652, y: 0.06862001, z: -0.47817284, w: 0.8643701}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftToeBase
+      parentName: Philip_LeftFoot
+      position: {x: -0.12924147, y: -0.028042935, z: 7.194273e-17}
+      rotation: {x: 0, y: -0, z: -0.26495394, w: 0.9642611}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Philip_LeftToeTip
+      parentName: Philip_LeftToeBase
+      position: {x: -0.13044387, y: -6.1062266e-18, z: 8.625004e-11}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Merged_Head1
+      parentName: BP_Philip(Clone)
+      position: {x: -0, y: 0.7704791, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 54.15537, y: 54.15537, z: 54.15537}
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5
@@ -89,9 +434,9 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     globalScale: 1
-    rootMotionBoneName: 
+    rootMotionBoneName: Philip_Skeleton_GRP
     hasTranslationDoF: 0
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   autoGenerateAvatarMappingIfUnspecified: 1

@@ -57,6 +57,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] public Animator anim { get; private set; }
     private Vector3 curMoveInput;
     private Vector3 moveDir;
+    private Vector3 moveDirection;
+    public float rotationSpeed;
 
     [Header("Mess Data")]
     [SerializeField] private LayerMask isMopLayer;
@@ -137,6 +139,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if (customersSphereCastRadius <= 0) customersSphereCastRadius = 1.0F;
         if (stationInteractDistance <= 0) stationInteractDistance = 1.5F;
         if (customerInteractDistance <= 0) customerInteractDistance = 5.0F;
+        if (rotationSpeed <= 0) rotationSpeed = 10.0F;
 
         //Define the interactable layer mask to include station, ingredient, and mess layers.
         interactableLayerMask = isStationLayer | isIngredientLayer | isMessLayer | isMopLayer | isCustomerLayer | isGravityAffectedLayer;
@@ -304,13 +307,18 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         //curMoveInput += Camera.main.transform.right * inputManager.moveDir.x * moveSpeed * Time.deltaTime;
 
         Vector3 moveInput = new Vector3(inputManager.moveDir.x, 0, inputManager.moveDir.z);
-        Vector3 moveDirection = Camera.main.transform.TransformDirection(moveInput);
+        moveDirection = Camera.main.transform.TransformDirection(moveInput);
         moveDirection.y = 0; // stay grounded
         Vector3 curMoveInput = moveDirection.normalized * moveSpeed * Time.deltaTime;
 
         if (moveDirection != Vector3.zero)
         {
-            transform.forward = moveDirection.normalized; // Orient the character to face the direction of movement
+            //transform.forward = moveDirection.normalized; // Orient the character to face the direction of movement
+            // Calculate the target rotation based on the movement direction
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection.normalized, Vector3.up);
+
+            // Interpolate between the current rotation and the target rotation
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
 
         rb.MovePosition(rb.position + curMoveInput);
@@ -397,12 +405,14 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         while (Time.time < startTime + dashTime)
         {
-            rb.AddForce(inputManager.moveDir * dashForce * Time.deltaTime, ForceMode.Acceleration);
+            rb.AddForce(moveDirection * dashForce * Time.deltaTime, ForceMode.Acceleration);
+            anim.SetBool("isDashing", isDashing);
             yield return null;
         }
 
         yield return new WaitForSeconds(dashCooldownTime);
         isDashing = false;
+        anim.SetBool("isDashing", isDashing);
 
     }
 
