@@ -109,7 +109,8 @@ public class GameManager : NetworkBehaviour
             Debug.LogWarning("random Time" + i + " " + randomEventTimes[i]);
         }
 
-        difficultySettings = new DifficultySettings(currentDifficulty);
+        difficultySettings = new DifficultySettings();
+        difficultyString = "Easy";
     }
 
     public override void OnDestroy()

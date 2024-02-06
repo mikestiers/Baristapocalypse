@@ -224,13 +224,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0bd5864711b256f4b907c38ce13a1279, type: 2}
-  - {fileID: -7720851650173870308, guid: 87763d49f84b8484a937c64afab69a17, type: 3}
-  - {fileID: -8876429951165359728, guid: 36694ad9cc3abc04ab48fdb0373f2037, type: 3}
-  - {fileID: 2100000, guid: aacba62a2b8da474c8d6c6a30da0f059, type: 2}
-  - {fileID: 2100000, guid: 5fadf2d881e1b03448ff00e1026bc137, type: 2}
-  - {fileID: 2100000, guid: 5fadf2d881e1b03448ff00e1026bc137, type: 2}
-  - {fileID: 2100000, guid: 5fadf2d881e1b03448ff00e1026bc137, type: 2}
+  - {fileID: 2100000, guid: 97a5905ff5cffe74794295b327ce765e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1073,9 +1067,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5640675751676341536}
-  - component: {fileID: 4398326610705668731}
   - component: {fileID: -1901236288692940652}
   - component: {fileID: 5640675751676341543}
+  - component: {fileID: 4398326610705668731}
   - component: {fileID: 4092279481114173512}
   - component: {fileID: 5640675751676341539}
   - component: {fileID: 8530179824857224679}
@@ -1112,41 +1106,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4398326610705668731
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5640675751676341541}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2afbef11e72430469503d560b34bbd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Races:
-  - {fileID: 11400000, guid: b939f751edab4d44186cc922fac4f41d, type: 2}
-  - {fileID: 11400000, guid: 795cd151b2010c442bfd9c9b3cb75eec, type: 2}
-  - {fileID: 11400000, guid: a02e55d037cadbe46b5d276b5378a324, type: 2}
-  - {fileID: 11400000, guid: 191a6f33d4e3906478df89a97ebfce76, type: 2}
-  heads:
-  - {fileID: 8571327297907685429}
-  - {fileID: 2438364519506259247}
-  - {fileID: 2900567331128240276}
-  bodies:
-  - {fileID: 673274661197347126}
-  - {fileID: 673274661197347126}
-  - {fileID: 673274661197347126}
-  cheatIconsLayoutGroup: {fileID: 1460613503856776164}
-  temperatureIngredientList: {fileID: 0}
-  sweetnessIngredientList: {fileID: 0}
-  strengthIngredientList: {fileID: 0}
-  spicinessIngredientList: {fileID: 0}
-  sweet: {fileID: 0}
-  str: {fileID: 0}
-  temp: {fileID: 0}
-  spc: {fileID: 0}
-  coffeePreferences: {fileID: 0}
 --- !u!114 &-1901236288692940652
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1202,6 +1161,41 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &4398326610705668731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5640675751676341541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2afbef11e72430469503d560b34bbd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Races:
+  - {fileID: 11400000, guid: b939f751edab4d44186cc922fac4f41d, type: 2}
+  - {fileID: 11400000, guid: 795cd151b2010c442bfd9c9b3cb75eec, type: 2}
+  - {fileID: 11400000, guid: a02e55d037cadbe46b5d276b5378a324, type: 2}
+  - {fileID: 11400000, guid: 191a6f33d4e3906478df89a97ebfce76, type: 2}
+  heads:
+  - {fileID: 8571327297907685429}
+  - {fileID: 2438364519506259247}
+  - {fileID: 2900567331128240276}
+  bodies:
+  - {fileID: 673274661197347126}
+  - {fileID: 673274661197347126}
+  - {fileID: 673274661197347126}
+  cheatIconsLayoutGroup: {fileID: 1460613503856776164}
+  temperatureIngredientList: {fileID: 0}
+  sweetnessIngredientList: {fileID: 0}
+  strengthIngredientList: {fileID: 0}
+  spicinessIngredientList: {fileID: 0}
+  sweet: {fileID: 0}
+  str: {fileID: 0}
+  temp: {fileID: 0}
+  spc: {fileID: 0}
+  coffeePreferences: {fileID: 0}
 --- !u!114 &4092279481114173512
 MonoBehaviour:
   m_ObjectHideFlags: 0
