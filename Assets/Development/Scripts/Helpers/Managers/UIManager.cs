@@ -156,10 +156,10 @@ public class UIManager : Singleton<UIManager>
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         // Moved Reset game function above scene change due to it not being called if scene swapped beforehand
-        SceneHelper.Instance.ResetGame();        
+        //SceneHelper.Instance.ResetGame();        
         SceneManager.LoadScene(mainMenuScene); 
         timer.enabled = false;
-        score.enabled = false;
+        //score.enabled = false;
         ordersMenu.SetActive(false);
         pauseMenu.SetActive(false);
         gameOverMenu.SetActive(false);

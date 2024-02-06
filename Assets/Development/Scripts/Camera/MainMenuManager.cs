@@ -56,6 +56,10 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject PlayMenuTab;
 
     [SerializeField] private LevelLoader levelLoader;
+    private void Awake()
+    {
+        SceneHelper.Instance.ResetGame();
+    }
 
     public void Start()
     {
