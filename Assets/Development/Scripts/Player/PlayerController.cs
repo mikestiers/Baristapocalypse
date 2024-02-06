@@ -81,8 +81,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     {
         get
         {
-            if (HasPickup())    
-                return pickupLocation.GetChild(0).GetComponent<Pickup>();
+            if (HasPickup())
+                return pickup;
             return null;
         }
     }
@@ -615,7 +615,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public bool HasPickup()
     {
-        return this.pickup != null;
+        return pickup != null;
     }
 
     public Transform GetSpillTransform()
