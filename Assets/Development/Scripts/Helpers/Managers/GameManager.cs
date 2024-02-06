@@ -60,11 +60,6 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private CustomerManager customerManager;
 
     // Difficulty Settings
-
-    [SerializeField] public DifficultySO[] Difficulties; //In Customer Manager for now move to Game Manager
-
-    public DifficultySettings difficultySettings; //will move to GameManager when gamemanager is owki, change references to GameManager aswell
-
     public DifficultySO currentDifficulty;
 
     public MoneySystem moneySystem;
@@ -360,25 +355,7 @@ public class GameManager : NetworkBehaviour
         isGamePaused.Value = false;
 
     }
-    public void SetCurrentDifficultyTo(string difficulty)
-    {
-        switch (difficulty)
-        {
-            case "Easy":
-                currentDifficulty = Difficulties[0];
-                break;
-
-            case "Medium":
-                currentDifficulty = Difficulties[1];
-                break;
-
-            case "Hard":
-                currentDifficulty = Difficulties[2];
-                break;
-
-        }
-
-    }
+   
 
     // Quick Random Events
 
@@ -535,13 +512,8 @@ public class GameManager : NetworkBehaviour
 
     public void InitializeDifficultyMoney(int numberOfPlayers)
     {
-        SetCurrentDifficultyTo(GameValueHolder.Instance.DifficultyString);
-
-        difficultySettings = new DifficultySettings(currentDifficulty, numberOfPlayers);
-
-        difficultySettings.SetAmountOfPlayers(numberOfPlayers); // setdifficulty based on amount of players
-
-        moneySystem = new MoneySystem(difficultySettings.GetMoneyToPass());
+        GameValueHolder.Instance.difficultySettings.SetAmountOfPlayers(numberOfPlayers);
+        moneySystem = new MoneySystem(GameValueHolder.Instance.difficultySettings.GetMoneyToPass());
     }
 
 }

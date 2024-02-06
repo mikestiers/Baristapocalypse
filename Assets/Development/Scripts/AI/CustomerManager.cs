@@ -112,8 +112,8 @@ public class CustomerManager : Singleton<CustomerManager>
         LineQueue = new CustomerLineQueuing(waitingQueuePostionList);
         barFloor = new CustomerBarFloor(Chairs);
 
-        customersLeftinWave = GameManager.Instance.difficultySettings.GetNumberofCustomersInwave();
-        WavesLeft = GameManager.Instance.difficultySettings.GetNumberOfWaves();
+        customersLeftinWave = GameValueHolder.Instance.difficultySettings.GetNumberofCustomersInwave();
+        WavesLeft = GameValueHolder.Instance.difficultySettings.GetNumberOfWaves();
 
         {
             //UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
@@ -123,8 +123,8 @@ public class CustomerManager : Singleton<CustomerManager>
 
         }
 
-        minDelay = GameManager.Instance.difficultySettings.GetMinDelay();
-        maxDelay = GameManager.Instance.difficultySettings.GetMaxDelay();
+        minDelay = GameValueHolder.Instance.difficultySettings.GetMinDelay();
+        maxDelay = GameValueHolder.Instance.difficultySettings.GetMaxDelay();
         
         float delay = UnityEngine.Random.Range(minDelay, maxDelay);
 
@@ -223,8 +223,8 @@ public class CustomerManager : Singleton<CustomerManager>
         if (WavesLeft <= 0) 
         {
             //currentServingState = ServingState.ShiftOver;
-            GameManager.Instance.difficultySettings.NextShift();
-            WavesLeft = GameManager.Instance.difficultySettings.GetNumberOfWaves();
+            GameValueHolder.Instance.difficultySettings.NextShift();
+            WavesLeft = GameValueHolder.Instance.difficultySettings.GetNumberOfWaves();
 
             //Shift Evaluation
             //UIManager.Instance.shift.text = ("Shift " + GameManager.Instance.difficultySettings.GetShift().ToString());
@@ -233,12 +233,12 @@ public class CustomerManager : Singleton<CustomerManager>
 
         if (GameManager.Instance.IsGamePlaying() == false) return;
 
-        customersLeftinWave = GameManager.Instance.difficultySettings.GetNumberofCustomersInwave();
+        customersLeftinWave = GameValueHolder.Instance.difficultySettings.GetNumberofCustomersInwave();
 
         //Trigger UI
         UIManager.Instance.SayGameMessage("Break Time!");
 
-        timer = GameManager.Instance.difficultySettings.GetTimeBetweenWaves();
+        timer = GameValueHolder.Instance.difficultySettings.GetTimeBetweenWaves();
         StartCoroutine(RestPeriod(timer));
 
     }
