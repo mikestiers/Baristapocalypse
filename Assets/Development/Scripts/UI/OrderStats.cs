@@ -340,25 +340,25 @@ public class OrderStats : MonoBehaviour
 
         if (GameManager.Instance.difficultySettings.GetDrinkThreshold() == 3)
         {
-            temperatureSegments[MapValue(temperatureTargetValue) - 1].GetComponent<Image>().color = targetSegmentRangeColor;
-            temperatureSegments[MapValue(temperatureTargetValue) + 1].GetComponent<Image>().color = targetSegmentRangeColor;
-            temperatureSegments[MapValue(temperatureTargetValue) - 1].SetActive(true);
-            temperatureSegments[MapValue(temperatureTargetValue) + 1].SetActive(true);
+            temperatureSegments[temperatureTargetValue - 1].GetComponent<Image>().color = targetSegmentRangeColor;
+            temperatureSegments[temperatureTargetValue + 1].GetComponent<Image>().color = targetSegmentRangeColor;
+            temperatureSegments[temperatureTargetValue - 1].SetActive(true);
+            temperatureSegments[temperatureTargetValue + 1].SetActive(true);
 
-            sweetnessSegments[MapValue(sweetnessTargetValue) - 1].GetComponent<Image>().color = targetSegmentRangeColor;
-            sweetnessSegments[MapValue(sweetnessTargetValue) + 1].GetComponent<Image>().color = targetSegmentRangeColor;
-            sweetnessSegments[MapValue(sweetnessTargetValue) - 1].SetActive(true);
-            sweetnessSegments[MapValue(sweetnessTargetValue) + 1].SetActive(true);
+            sweetnessSegments[sweetnessTargetValue - 1].GetComponent<Image>().color = targetSegmentRangeColor;
+            sweetnessSegments[sweetnessTargetValue + 1].GetComponent<Image>().color = targetSegmentRangeColor;
+            sweetnessSegments[sweetnessTargetValue - 1].SetActive(true);
+            sweetnessSegments[sweetnessTargetValue + 1].SetActive(true);
 
-            spicinessSegments[MapValue(spicinessTargetValue) - 1].GetComponent<Image>().color = targetSegmentRangeColor;
-            spicinessSegments[MapValue(spicinessTargetValue) + 1].GetComponent<Image>().color = targetSegmentRangeColor;
-            spicinessSegments[MapValue(spicinessTargetValue) - 1].SetActive(true);
-            spicinessSegments[MapValue(spicinessTargetValue) + 1].SetActive(true);
+            spicinessSegments[spicinessTargetValue - 1].GetComponent<Image>().color = targetSegmentRangeColor;
+            spicinessSegments[spicinessTargetValue + 1].GetComponent<Image>().color = targetSegmentRangeColor;
+            spicinessSegments[spicinessTargetValue - 1].SetActive(true);
+            spicinessSegments[spicinessTargetValue + 1].SetActive(true);
 
-            strengthSegments[MapValue(strengthTargetValue) - 1].GetComponent<Image>().color = targetSegmentRangeColor;
-            strengthSegments[MapValue(strengthTargetValue) + 1].GetComponent<Image>().color = targetSegmentRangeColor;
-            strengthSegments[MapValue(strengthTargetValue) - 1].SetActive(true);
-            strengthSegments[MapValue(strengthTargetValue) + 1].SetActive(true);
+            strengthSegments[strengthTargetValue - 1].GetComponent<Image>().color = targetSegmentRangeColor;
+            strengthSegments[strengthTargetValue + 1].GetComponent<Image>().color = targetSegmentRangeColor;
+            strengthSegments[strengthTargetValue - 1].SetActive(true);
+            strengthSegments[strengthTargetValue + 1].SetActive(true);
         }
     }
 
