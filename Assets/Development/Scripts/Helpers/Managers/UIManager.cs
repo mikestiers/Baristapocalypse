@@ -79,15 +79,6 @@ public class UIManager : Singleton<UIManager>
     public Text wavesleft;
     public Text shift;
 
-
-    [Header("Slider")]
-    public Slider musicSlider;
-    public Slider sfxSlider;
-    public Slider mainVolumeSlider;
-    public Slider voiceVolumeSlider;
-
-    public AudioMixer mixer;
-
     private void Start()
     {
         if (toGame)
@@ -122,7 +113,7 @@ public class UIManager : Singleton<UIManager>
     private void ReturnToGame()
     {
         timer.enabled = true;
-        score.enabled = true;
+        //score.enabled = true;
         ordersMenu.SetActive(true);
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;
@@ -193,6 +184,7 @@ public class UIManager : Singleton<UIManager>
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         audioSettings.SetActive(false);
+        mainMenu.SetActive(true);
     }
 
     //public void ShowCustomerUiOrder(CustomerBase customer)
@@ -289,29 +281,6 @@ public class UIManager : Singleton<UIManager>
         {
             tutorialMenu.SetActive(false);
         }
-    }
-    public void SetMusicVolume(float value)
-    {
-        //if (volSliderText)
-        //    volSliderText.text = value.ToString();
-
-        mixer.SetFloat("Music", musicSlider.value);
-
-    }
-
-    public void SetSFXVolume(float value)
-    {
-        mixer.SetFloat("SFX", sfxSlider.value);
-    }
-    
-    public void SetMainVolume(float value)
-    {
-        mixer.SetFloat("MainVolume", mainVolumeSlider.value);
-    }
-    
-    public void SetVoiceVolume(float value)
-    {
-        mixer.SetFloat("VoiceLines", voiceVolumeSlider.value);
     }
 
     public void ToggleBigTimer(bool IsOn)
