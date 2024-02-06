@@ -3424,7 +3424,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioClipRefsSO: {fileID: 11400000, guid: d130e19404f3b2940b08508d186373f0, type: 2}
-  sFXMixerGroup: {fileID: 0}
 --- !u!4 &709675213
 Transform:
   m_ObjectHideFlags: 0
@@ -5007,89 +5006,6 @@ Transform:
   - {fileID: 309042716}
   m_Father: {fileID: 2016252508}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1234031184
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1234031187}
-  - component: {fileID: 1234031186}
-  - component: {fileID: 1234031185}
-  m_Layer: 0
-  m_Name: GameManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1234031185
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1234031184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2285826840
-  AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
---- !u!114 &1234031186
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1234031184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1762f224c4c79e8449d394d6d17d440c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  randomEventList:
-  - {fileID: 0}
-  minRandomTime: 30
-  maxRandomTime: 60
-  isEventActive: 0
-  currentRandomEvent: {fileID: 0}
-  gamePlayingTimerMax: 360
-  player1Prefab: {fileID: 533563683556402451, guid: c431519c3e5173d4fac4acc61d044123, type: 3}
-  playerSpawnPoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  customerManager: {fileID: 413644686672339531, guid: 1925542a5a04bd1479636add0536451d, type: 3}
-  Difficulties:
-  - {fileID: 11400000, guid: ce19cfb68a8fece4b94a2a1daed623c3, type: 2}
-  - {fileID: 11400000, guid: 4c793529f6fc44047a837a458258252d, type: 2}
-  - {fileID: 11400000, guid: 4eebab211b1c69048894cbdef7bf4aa0, type: 2}
-  currentDifficulty: {fileID: 11400000, guid: c046f1ac6f225ac4ea155178afe460e0, type: 2}
-  difficultyString: 
-  iSEndGame: 0
-  hasInputManager: 0
---- !u!4 &1234031187
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1234031184}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1308168374
 GameObject:

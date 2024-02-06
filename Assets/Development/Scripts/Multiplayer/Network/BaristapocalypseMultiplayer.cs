@@ -27,8 +27,6 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     private NetworkList<PlayerData> playerDataNetworkList;
     public List<Color> playerColorList;
 
-    private bool isFoundDifficulty = false;
-
     private void Awake()
     {  
         Instance = this;
@@ -46,7 +44,11 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
             StartHost();
             Loader.LoadNetwork(Loader.Scene.T5M3_BUILD);
         }
-
+    }
+    // This should not be in Update() but difficultysettings are not available when the game starts for some reason
+    private bool isFoundDifficulty = false;
+    private void Update()
+    {
         if (GameManager.Instance.difficultySettings == null)
             return;
         if (!isFoundDifficulty)
@@ -54,9 +56,8 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
             isFoundDifficulty = true;
             ingredientListSO = GameManager.Instance.difficultySettings.allIngredientsList;
         }
-    }
-    // This should not be in Update() but difficultysettings are not available when the game starts for some reason
 
+    }
 
     private void PlayerDataNetworkList_OnListChanged(NetworkListEvent<PlayerData> changeEvent)
     {

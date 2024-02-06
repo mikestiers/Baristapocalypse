@@ -226,7 +226,7 @@ public class MainMenuManager : MonoBehaviour
 
     public void SetDifficulty(string Difficulty)
     {
-        GameManager.Instance.SetCurrentDifficultyTo(Difficulty);
+        GameValueHolder.Instance.DifficultyString = Difficulty;
     }
 
     private void SetInteractableButtons(Button[] buttons, bool interactable)
