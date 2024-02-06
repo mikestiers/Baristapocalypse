@@ -534,7 +534,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             if (ingredientRb != null)
             {
                 ingredientRb.isKinematic = false;
-                ingredientRb.AddForce(transform.forward * ingredientThrowForce, ForceMode.Impulse);
+                ingredientRb.AddForce(transform.forward * ingredientThrowForce, ForceMode.Force);
+                ingredientRb.useGravity = true;
             }
             ingredientIndicatorText.SetText("");
             RemoveIngredientInListAtIndex(i);
