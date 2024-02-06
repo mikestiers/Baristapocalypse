@@ -5,7 +5,7 @@ using UnityEngine.ProBuilder;
 
 public class DifficultySettings
 {
-    
+
     private DifficultySO currentDifficulty;
 
     private float timeBetweenWaves;
@@ -113,7 +113,7 @@ public class DifficultySettings
     {
         Shift++;
 
-        if(Shift > MaxShift) 
+        if (Shift > MaxShift)
         {
             //Trigger End Game
             GameManager.Instance.iSEndGame = true;
@@ -188,10 +188,10 @@ public class DifficultySettings
 
     public float GetMinDelay()
     {
-        return minDelay;    
+        return minDelay;
     }
 
-    public float GetMaxDelay() 
+    public float GetMaxDelay()
     {
         return maxDelay;
     }
@@ -216,7 +216,7 @@ public class DifficultySettings
         return minWaitTime;
     }
 
-    public float GetMaxWaitTime() 
+    public float GetMaxWaitTime()
     {
         return maxWaitTime;
     }
@@ -226,7 +226,7 @@ public class DifficultySettings
         return drinkThreshold;
     }
 
-    public int GetMoneyToPass() 
+    public int GetMoneyToPass()
     {
         return moneyToPass;
     }

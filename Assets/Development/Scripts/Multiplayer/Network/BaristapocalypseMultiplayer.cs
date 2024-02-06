@@ -27,6 +27,8 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     private NetworkList<PlayerData> playerDataNetworkList;
     public List<Color> playerColorList;
 
+    private bool isFoundDifficulty = false;
+
     private void Awake()
     {  
         Instance = this;
@@ -54,7 +56,11 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
         }
     }
     // This should not be in Update() but difficultysettings are not available when the game starts for some reason
+<<<<<<< Updated upstream
     private bool isFoundDifficulty = false;
+=======
+    
+>>>>>>> Stashed changes
     private void Update()
     {
         

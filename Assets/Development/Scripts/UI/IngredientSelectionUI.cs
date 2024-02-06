@@ -56,7 +56,11 @@ public class IngredientSelectionUI : BaseStation
     private void Update()
     {
         // This should not be in Update() but difficultysettings are not available when the game starts for some reason
+<<<<<<< Updated upstream
        
+=======
+        
+>>>>>>> Stashed changes
 
         if (!currentStationInteraction)
             return;
