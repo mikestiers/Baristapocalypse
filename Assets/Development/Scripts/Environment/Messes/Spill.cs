@@ -20,11 +20,28 @@ public class Spill : NetworkBehaviour
         
     }
 
-    public void Interact(PlayerController player)
+    public void Interact(PlayerController pickupItem)
     {
+        InteractServerRpc(pickupItem.GetNetworkObject());
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    public void InteractServerRpc(NetworkObjectReference pickupNetworkObjectReference)
+    {
+        InteractClientRpc(pickupNetworkObjectReference);
+    }
+
+    [ClientRpc]
+    private void InteractClientRpc(NetworkObjectReference pickupNetworkObjectReference)
+    {
+
+        pickupNetworkObjectReference.TryGet(out NetworkObject playerPickupNetworkObject);
+        
+        PlayerController player = playerPickupNetworkObject.GetComponent<PlayerController>();
+        
         if (player.HasPickup())
         {
-            if (player.Pickup.attributes.Contains(Pickup.PickupAttribute.CleansUpSpills))
+            if (player.Pickup.attributes.Contains(Pickup.PickupAttribute.CleansUpSpills)) 
             {
                 if (cleaningProgress < totalProgress)
                 {
@@ -34,7 +51,7 @@ public class Spill : NetworkBehaviour
                 if (cleaningProgress >= totalProgress)
                 {
                     Destroy(gameObject);
-                }
+                } 
             }
         }
     }
@@ -63,10 +80,8 @@ public class Spill : NetworkBehaviour
         messObjectParent = messObjectComponet;
 
         messObjectComponet.SetSpill(this);
-        Debug.Log($"Before SetSpill - Position: {messObjectComponet.GetSpillTransform().position}, Rotation: {messObjectComponet.GetSpillTransform().rotation}");
-
         _spillSpawnPoint.SetSpawnPointTransform(messObjectComponet.GetSpillTransform());
-        Debug.Log($"After SetSpill - Position: {messObjectComponet.GetSpillTransform().position}, Rotation: {messObjectComponet.GetSpillTransform().rotation}");
+        
     }
     
     

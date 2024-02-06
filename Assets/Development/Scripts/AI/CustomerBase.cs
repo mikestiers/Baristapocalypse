@@ -168,8 +168,6 @@ public class CustomerBase : Base
         if (agent.remainingDistance < distThreshold)
         {
             Destroy(gameObject);
-            Debug.Log("this is our disappearing customer issue"); // if you see this, the customer probably disappeared and the review didn't show.  something about being close to the entrance causes the player to destroy on leaving
-            //UIManager.Instance.RemoveCustomerUiOrder(this);
         }
     }
 
@@ -182,6 +180,7 @@ public class CustomerBase : Base
         if (orderTimer >= customerLeaveTime)
         {
             CustomerManager.Instance.customerLeaveIncrease();
+            GameManager.Instance.moneySystem.ResetStreak();
             CustomerLeave();
 
             Debug.LogWarning("Unhappy Customer");
@@ -278,7 +277,7 @@ public class CustomerBase : Base
         else if (GetCustomerState() == CustomerState.Insit && player.GetIngredient().CompareTag("CoffeeCup"))
         {
             player.GetIngredient().SetIngredientParent(this);
-            JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
+            JustGotHandedCoffee();
             player.RemoveIngredientInListByReference(player.GetIngredient());
             CustomerManager.Instance.customerServedIncrease();
 
@@ -406,9 +405,21 @@ public class CustomerBase : Base
         moving = true;
     }
 
-    public void JustGotHandedCoffee(CoffeeAttributes coffee)
+    public void JustGotHandedCoffee()
     {
-        CustomerReviewManager.Instance.ShowCustomerReview(this);
+        JustGotHandedCoffeeServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void JustGotHandedCoffeeServerRpc()
+    {
+        JustGotHandedCoffeeClientRpc();
+    }
+
+    [ClientRpc]
+    private void JustGotHandedCoffeeClientRpc()
+    {
+        CustomerReviewManager.Instance.CustomerReviewEvent(this);
         StopOrderTimer();
         CustomerLeave();
     }

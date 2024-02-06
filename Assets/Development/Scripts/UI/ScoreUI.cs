@@ -27,6 +27,17 @@ public class ScoreUI : MonoBehaviour
         SetMoneyBarPercentage(passPercentage);
     }
 
+    public void UpdateStreak()
+    {
+        streakText.gameObject.SetActive(true);
+        streakText.text = ("Perfect Drink x") + GameManager.Instance.moneySystem.currentStreakCount;
+    }
+
+    public void DeactivateStreak()
+    {
+        streakText.gameObject.SetActive(false);
+    }
+
     public void SetMoneyBarPercentage(float percentFill)
     {
         moneyBar.fillAmount = percentFill;

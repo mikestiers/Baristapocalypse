@@ -59,6 +59,7 @@ public class MainMenuManager : MonoBehaviour
 
     public void Start()
     {
+        Time.timeScale = 1f;
         MainmenuCamera.Priority = 1;
 
         if (ExitGame)

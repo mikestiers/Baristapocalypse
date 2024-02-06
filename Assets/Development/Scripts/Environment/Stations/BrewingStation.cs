@@ -47,7 +47,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     protected virtual void RaiseBrewingDone()
     {
-        currentOrder.State = Order.OrderState.Finished;
+        currentOrder.State = Order.OrderState.BeingDelivered;
         OnBrewingDone?.Invoke(this, EventArgs.Empty);
     }
 
