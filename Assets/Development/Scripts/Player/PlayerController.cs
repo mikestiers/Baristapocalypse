@@ -130,7 +130,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         //Set variables if null
         if (moveSpeed <= 0) moveSpeed = 10.0f;
         if (jumpForce <= 0) jumpForce = 200.0f;
-        if (dashForce <= 0) dashForce = 4000f;
+        if (dashForce <= 0) dashForce = 100.0f;
         if (dashTime <= 0) dashTime = 0.1f;
         if (dashCooldownTime <= 0) dashCooldownTime = 1.0f;
         if (ingredientThrowForce <= 0) ingredientThrowForce = 10f;
@@ -405,7 +405,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         while (Time.time < startTime + dashTime)
         {
-            rb.AddForce(moveDirection * dashForce * Time.deltaTime, ForceMode.Acceleration);
+            rb.AddForce(moveDirection * dashForce * Time.deltaTime, ForceMode.Impulse);
             anim.SetBool("isDashing", isDashing);
             yield return null;
         }
