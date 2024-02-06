@@ -197,66 +197,6 @@ public class UIManager : Singleton<UIManager>
         audioSettings.SetActive(false);
     }
 
-    //public void ShowCustomerUiOrder(CustomerBase customer)
-    //{
-    //    orderStats = Instantiate(ordersUiPrefab, ordersPanel).GetComponent<OrderStats>();
-    //    orderStats.Initialize(customer);
-    //}
-
-    /*public void ShowCustomerReview(CustomerBase customer)
-    {
-        // This can be better by moving customer review script to the customer object
-        foreach (Transform t in ordersPanel)
-        {
-            OrderStats o = t.GetComponent<OrderStats>();
-            if (o != null)
-            {
-                if (o.GetOrderOwner() == customer)
-                {
-                    Transform customerReviewTransform = t.gameObject.transform.Find("CustomerReview");
-                    Text customerReviewText = customerReviewTransform.gameObject.GetComponent<Text>();
-                    customerReview = customerReviewTransform.GetComponentInParent<CustomerReview>();
-                    customerReview.GenerateReview(customer);
-                    customerReviewText.text = customerReview.ReviewText;
-                    UpdateStarRating(customerReview.ReviewScore);
-                    customerReviewTransform.gameObject.SetActive(true);
-                    return;
-                }
-                else
-                {
-                    Debug.Log($"Customer Order UI not found for {customer.customerNumber}");
-                }
-            }
-        }
-    }*/
-
-    public void RemoveCustomerUiOrder(CustomerBase customer)
-    {
-        foreach (Transform t in ordersPanel)
-        {
-            OrderStats o = t.GetComponent<OrderStats>();
-            if (o != null)
-            {
-                if (o.GetOrderOwner() == customer)
-                {
-                    Destroy(t.gameObject);
-                    return;
-                }
-                else if (o.GetOrderOwner().customerNumber == customer.customerNumber)
-                {
-                    // This exists because pickups are cloned, so the connection to the order prefab is lost
-                    // Just search for the customer based on their number in case owner is lost
-                    Destroy(t.gameObject);
-                    return;
-                }
-                else
-                {
-                    Debug.Log($"Customer Order UI not found for {customer.customerNumber}");
-                }
-            }
-        }
-    }
-
     public void UpdateStarRating(int reviewScore)
     {
         Transform starRating = customerReview.transform.Find("CustomerReview/StarRating");
