@@ -187,6 +187,7 @@ public class UIManager : Singleton<UIManager>
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         audioSettings.SetActive(false);
+        mainMenu.SetActive(true);
     }
 
     //public void ShowCustomerUiOrder(CustomerBase customer)
