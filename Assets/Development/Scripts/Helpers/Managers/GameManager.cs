@@ -72,6 +72,8 @@ public class GameManager : NetworkBehaviour
     //bool for endgame -> please update code
     public bool iSEndGame = false;
 
+    public bool tutorial = false;
+
     private void Awake()
     {
         Instance = this;

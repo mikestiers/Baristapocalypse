@@ -20,6 +20,8 @@ public class UIManager : Singleton<UIManager>
     public Button closePause;
     public Button restartGame;
     public Button closeAudioSettings;
+    public Button closeTutorial;
+    public Button tutorialModeOnOff;
 
     [Header("Menu")]
     public GameObject mainMenu;
@@ -58,7 +60,7 @@ public class UIManager : Singleton<UIManager>
     public Transform ordersPanel;
     public GameObject ordersUiPrefab;
     private OrderStats orderStats;
-    
+
     [Header("Customer Review")]
     private CustomerReview customerReview;
     public GameObject starPrefab;
@@ -103,19 +105,15 @@ public class UIManager : Singleton<UIManager>
             restartGame.onClick.AddListener(RestartGame);
         if (closeAudioSettings)
             closeAudioSettings.onClick.AddListener(CloseAudioSettings);
-
-
-        //if (volSlider)
-        //{
-        //    volSlider.onValueChanged.AddListener((value) => OnSliderValueChanged(value));
-        //    if (volSliderText)
-        //        volSliderText.text = volSlider.value.ToString();
-        //}
+        if (closeTutorial)
+            closeTutorial.onClick.AddListener(CloseTutorial);
+        if (tutorialModeOnOff)
+            tutorialModeOnOff.onClick.AddListener(ToggleTutorialMode);
     }
+
     private void ReturnToGame()
     {
         timer.enabled = true;
-        //score.enabled = true;
         ordersMenu.SetActive(true);
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;
@@ -123,12 +121,8 @@ public class UIManager : Singleton<UIManager>
 
     private void RestartGame()
     {
-        //Reset score timer
-        //ScoreTimerManager.Instance.ResetTimerScore();
-
         Time.timeScale = 1f;
         gameOverMenu.SetActive(false);
-        //GameManager.Instance.gameState = GameState.RUNNING;
         SceneManager.LoadScene(activeGameScene);
     }
 
@@ -156,8 +150,8 @@ public class UIManager : Singleton<UIManager>
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         // Moved Reset game function above scene change due to it not being called if scene swapped beforehand
-        SceneHelper.Instance.ResetGame();        
-        SceneManager.LoadScene(mainMenuScene); 
+        SceneHelper.Instance.ResetGame();
+        SceneManager.LoadScene(mainMenuScene);
         timer.enabled = false;
         score.enabled = false;
         ordersMenu.SetActive(false);
@@ -169,11 +163,11 @@ public class UIManager : Singleton<UIManager>
     private void QuitGame()
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
-        #else
+#else
             Application.Quit();
-        #endif
+#endif
     }
 
     private void ShowSettingsMenu()
@@ -190,64 +184,11 @@ public class UIManager : Singleton<UIManager>
         mainMenu.SetActive(true);
     }
 
-    //public void ShowCustomerUiOrder(CustomerBase customer)
-    //{
-    //    orderStats = Instantiate(ordersUiPrefab, ordersPanel).GetComponent<OrderStats>();
-    //    orderStats.Initialize(customer);
-    //}
-
-    /*public void ShowCustomerReview(CustomerBase customer)
+    private void CloseTutorial()
     {
-        // This can be better by moving customer review script to the customer object
-        foreach (Transform t in ordersPanel)
-        {
-            OrderStats o = t.GetComponent<OrderStats>();
-            if (o != null)
-            {
-                if (o.GetOrderOwner() == customer)
-                {
-                    Transform customerReviewTransform = t.gameObject.transform.Find("CustomerReview");
-                    Text customerReviewText = customerReviewTransform.gameObject.GetComponent<Text>();
-                    customerReview = customerReviewTransform.GetComponentInParent<CustomerReview>();
-                    customerReview.GenerateReview(customer);
-                    customerReviewText.text = customerReview.ReviewText;
-                    UpdateStarRating(customerReview.ReviewScore);
-                    customerReviewTransform.gameObject.SetActive(true);
-                    return;
-                }
-                else
-                {
-                    Debug.Log($"Customer Order UI not found for {customer.customerNumber}");
-                }
-            }
-        }
-    }*/
-
-    public void RemoveCustomerUiOrder(CustomerBase customer)
-    {
-        foreach (Transform t in ordersPanel)
-        {
-            OrderStats o = t.GetComponent<OrderStats>();
-            if (o != null)
-            {
-                if (o.GetOrderOwner() == customer)
-                {
-                    Destroy(t.gameObject);
-                    return;
-                }
-                else if (o.GetOrderOwner().customerNumber == customer.customerNumber)
-                {
-                    // This exists because pickups are cloned, so the connection to the order prefab is lost
-                    // Just search for the customer based on their number in case owner is lost
-                    Destroy(t.gameObject);
-                    return;
-                }
-                else
-                {
-                    Debug.Log($"Customer Order UI not found for {customer.customerNumber}");
-                }
-            }
-        }
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+        tutorialMenu.SetActive(false);
+        //mainMenu.SetActive(true);
     }
 
     public void UpdateStarRating(int reviewScore)
@@ -273,9 +214,6 @@ public class UIManager : Singleton<UIManager>
 
     private void Update()
     {
-       //timer.text = ScoreTimerManager.Instance.timeRemaining.ToString("n2");
-       //score.text = ScoreTimerManager.Instance.score.ToString();
-
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             tutorialMenu.SetActive(true);
@@ -324,4 +262,9 @@ public class UIManager : Singleton<UIManager>
         shiftEvaluationUI.GetComponent<ShiftEvaluationUI>().Evaluate();
     }
 
+    private void ToggleTutorialMode()
+    {
+        tutorialModeOnOff.GetComponentInChildren<Text>().text = GameManager.Instance.tutorial ? "Tutorial Mode?: On" : "Tutorial Mode: Off";
+        GameManager.Instance.tutorial = !GameManager.Instance.tutorial;
+    }
 }
