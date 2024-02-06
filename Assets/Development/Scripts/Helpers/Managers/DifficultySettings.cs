@@ -29,9 +29,10 @@ public class DifficultySettings
     public IngredientListSO spicinessIngredientList { get; set; }
     public IngredientListSO allIngredientsList { get; set; }
 
-    public DifficultySettings()
+    public DifficultySettings(DifficultySO currentDifficulty)
     {
         playerCount = 1;
+        this.currentDifficulty = currentDifficulty;
         /*
         switch (currentDifficulty.difficultyString)
         {
@@ -62,7 +63,7 @@ public class DifficultySettings
 
         }
         */
-
+        UpdateDifficulty();
     }
 
     private void UpdateDifficulty()
