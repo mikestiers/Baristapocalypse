@@ -755,6 +755,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public void OnBrewingStationEmpty()
     {
+        if (OrderManager.Instance.brewingStations[currentBrewingStation].ingredientSOList.Count > 0)
+        {
+            AISupervisor.Instance.SupervisorMessageToDisplay("I'm taking that out of your tips!");
+            GameManager.Instance.moneySystem.AdjustMoneyByAmount(10, false);
+        }
         OrderManager.Instance.brewingStations[currentBrewingStation].Empty();
         OrderManager.Instance.orderStats[currentBrewingStation].ResetAll();
     }

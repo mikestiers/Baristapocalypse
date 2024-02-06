@@ -168,8 +168,6 @@ public class CustomerBase : Base
         if (agent.remainingDistance < distThreshold)
         {
             Destroy(gameObject);
-            Debug.Log("this is our disappearing customer issue"); // if you see this, the customer probably disappeared and the review didn't show.  something about being close to the entrance causes the player to destroy on leaving
-            //UIManager.Instance.RemoveCustomerUiOrder(this);
         }
     }
 
