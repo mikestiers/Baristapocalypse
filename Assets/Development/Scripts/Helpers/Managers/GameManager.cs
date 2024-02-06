@@ -69,13 +69,27 @@ public class GameManager : NetworkBehaviour
 
     public MoneySystem moneySystem;
 
+    public string difficultyString;
+
     //bool for endgame -> please update code
     public bool iSEndGame = false;
 
+    //bool for input manager;
+    public bool hasInputManager = false;
+
     private void Awake()
     {
-        Instance = this;
- 
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
+
         playerReadyDictionary = new Dictionary<ulong, bool>();
         playerPauseDictionary = new Dictionary<ulong, bool>();
     }
@@ -84,22 +98,19 @@ public class GameManager : NetworkBehaviour
     {
         Application.targetFrameRate = maxFrameRate;
 
-        if (InputManager.Instance)
-        {
-            InputManager.Instance.PauseEvent += InputManager_PauseEvent;
-            InputManager.Instance.InteractEvent += InputManager_OnInteractEvent;
-        }
-
         OnRandomEventTriggered += HandleRandomEvent;
-        
+
         SetRandomEventTimes();
 
         // debug for random event times (to be deleted)
         Debug.LogWarning("Current difficulty " + currentDifficulty.difficultyString);
         for (int i = 0; i < randomEventTimes.Count; i++)
         {
-            Debug.LogWarning("random Time"+ i + " " + randomEventTimes[i]);
-        }       
+            Debug.LogWarning("random Time" + i + " " + randomEventTimes[i]);
+        }
+
+        difficultySettings = new DifficultySettings();
+        difficultyString = "Easy";
     }
 
     public override void OnDestroy()
@@ -109,7 +120,8 @@ public class GameManager : NetworkBehaviour
 
     private void InputManager_OnInteractEvent()
     {
-        if (gameState.Value == GameState.WaitingToStart) 
+        Debug.Log("Player Activated");
+        if (gameState.Value == GameState.WaitingToStart && SceneManager.GetActiveScene().buildIndex == 2)
         {
             //gameState = GameState.CountdownToStart;
             //OnGameStateChanged?.Invoke(this, EventArgs.Empty);
@@ -148,17 +160,17 @@ public class GameManager : NetworkBehaviour
         playerReadyDictionary[serverRpcParams.Receive.SenderClientId] = true;
 
         bool allClientsReady = true;
-        foreach(ulong clientId in NetworkManager.Singleton.ConnectedClientsIds) 
-        { 
-            if (!playerReadyDictionary.ContainsKey(clientId) || !playerReadyDictionary[clientId] ) 
-            { 
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            if (!playerReadyDictionary.ContainsKey(clientId) || !playerReadyDictionary[clientId])
+            {
                 // This Player Is not ready
                 allClientsReady = false;
                 break;
             }
         }
 
-        if (allClientsReady) 
+        if (allClientsReady)
         {
             gameState.Value = GameState.CountdownToStart;
         }
@@ -180,59 +192,74 @@ public class GameManager : NetworkBehaviour
 
         }
 
-        switch (gameState.Value) 
-        { 
-            case GameState.WaitingToStart:
-                break;
-
-            case GameState.CountdownToStart:
-                countdownToStartTimer.Value -= Time.deltaTime;
-                if (countdownToStartTimer.Value < 0f)
-                {
-                    gameState.Value = GameState.GamePlaying;
-                    gamePlayingTimer.Value = gamePlayingTimerMax;
-                    CustomerManager test = Instantiate(customerManager);
-                    test.GetComponent<NetworkObject>().Spawn(true);
-
-                    GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-                    int numberOfPlayers = (players.Length - Mathf.FloorToInt(players.Length * 0.5f));
-
-
-                    UpdateClientRpc(numberOfPlayers);
-                }
-                break;
-
-            case GameState.GamePlaying:
-                if (iSEndGame == true) gameState.Value = GameState.GameOver;
-
-                timeSinceStart += Time.deltaTime;
-
-                if (currentDifficulty != null)
-                {
-                    // Adjust the difficulty based on time passed
-                    foreach (float randomEventTime in randomEventTimes)
+        if (SceneManager.GetActiveScene().buildIndex == 2)
+        {
+            switch (gameState.Value)
+            {
+                case GameState.WaitingToStart:
+                    if (!hasInputManager)
                     {
-                        if (timeSinceStart > randomEventTime)
+                        hasInputManager = true;
+
+                        if (InputManager.Instance)
                         {
-                            TriggerRandomEvent();
+                            InputManager.Instance.PauseEvent += InputManager_PauseEvent;
+                            InputManager.Instance.InteractEvent += InputManager_OnInteractEvent;
                         }
                     }
-                }
-                /*
-                gamePlayingTimer.Value -= Time.deltaTime;
-                if (gamePlayingTimer.Value < 0f)
-                {
-                    gameState.Value = GameState.GameOver;
-                    //OnGameStateChanged?.Invoke(this, EventArgs.Empty);
-                }
 
-                */
+                    break;
 
-                break;
+                case GameState.CountdownToStart:
+                    countdownToStartTimer.Value -= Time.deltaTime;
+                    if (countdownToStartTimer.Value < 0f)
+                    {
+                        gameState.Value = GameState.GamePlaying;
+                        gamePlayingTimer.Value = gamePlayingTimerMax;
+                        CustomerManager test = Instantiate(customerManager);
+                        test.GetComponent<NetworkObject>().Spawn(true);
 
-            case GameState.GameOver:
-                break; 
+                        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+                        int numberOfPlayers = (players.Length - Mathf.FloorToInt(players.Length * 0.5f));
+
+                        UpdateClientRpc(numberOfPlayers);
+                    }
+                    break;
+
+                case GameState.GamePlaying:
+                    if (iSEndGame == true) gameState.Value = GameState.GameOver;
+
+                    timeSinceStart += Time.deltaTime;
+
+                    if (currentDifficulty != null)
+                    {
+                        // Adjust the difficulty based on time passed
+                        foreach (float randomEventTime in randomEventTimes)
+                        {
+                            if (timeSinceStart > randomEventTime)
+                            {
+                                TriggerRandomEvent();
+                            }
+                        }
+                    }
+                    /*
+                    gamePlayingTimer.Value -= Time.deltaTime;
+                    if (gamePlayingTimer.Value < 0f)
+                    {
+                        gameState.Value = GameState.GameOver;
+                        //OnGameStateChanged?.Invoke(this, EventArgs.Empty);
+                    }
+
+                    */
+
+                    break;
+
+                case GameState.GameOver:
+                    break;
+            }
         }
+        else if (gameState.Value != GameState.WaitingToStart) gameState.Value = GameState.WaitingToStart;
+
 
         //Debug.Log("autoTestGamePausedState" + autoTestGamePausedState);
     }
@@ -252,7 +279,7 @@ public class GameManager : NetworkBehaviour
         return gameState.Value == GameState.GamePlaying;
     }
 
-    public bool IsCountdownToStartActive() 
+    public bool IsCountdownToStartActive()
     {
         return gameState.Value == GameState.CountdownToStart;
     }
@@ -290,7 +317,7 @@ public class GameManager : NetworkBehaviour
 
     private void isGamePaused_OnValueChanged(bool previousValue, bool newValue)
     {
-        if (isGamePaused.Value) 
+        if (isGamePaused.Value)
         {
             Time.timeScale = 0f;
             OnMultiplayerGamePaused?.Invoke(this, EventArgs.Empty);
@@ -304,7 +331,7 @@ public class GameManager : NetworkBehaviour
 
     private void SceneManager_OnLoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
     {
-        foreach(ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
             Transform playerTransform = Instantiate(player1Prefab, playerSpawnPoints[(int)clientId]);
             playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
@@ -314,7 +341,7 @@ public class GameManager : NetworkBehaviour
     private void TogglePauseGame()
     {
         isLocalGamePaused = !isLocalGamePaused;
-        if (isLocalGamePaused) 
+        if (isLocalGamePaused)
         {
             PauseGameServerRpc();
 
@@ -360,20 +387,27 @@ public class GameManager : NetworkBehaviour
         isGamePaused.Value = false;
 
     }
+
     public void SetCurrentDifficultyTo(string difficulty)
     {
         switch (difficulty)
         {
             case "Easy":
+                difficultyString = "Easy";
                 currentDifficulty = Difficulties[0];
+                difficultySettings.SetDifficulty(currentDifficulty);
                 break;
 
             case "Medium":
+                difficultyString = "Medium";
                 currentDifficulty = Difficulties[1];
+                difficultySettings.SetDifficulty(currentDifficulty);
                 break;
 
             case "Hard":
+                difficultyString = "Hard";
                 currentDifficulty = Difficulties[2];
+                difficultySettings.SetDifficulty(currentDifficulty);
                 break;
 
         }
@@ -524,7 +558,7 @@ public class GameManager : NetworkBehaviour
         isEventActive = true;
         randomEvent.SetEventBool(true);
         randomEvent.ActivateDeactivateEvent();
-       
+
     }
 
     [ClientRpc]
@@ -535,11 +569,8 @@ public class GameManager : NetworkBehaviour
 
     public void InitializeDifficultyMoney(int numberOfPlayers)
     {
-        SetCurrentDifficultyTo(GameValueHolder.Instance.DifficultyString);
-
-        difficultySettings = new DifficultySettings(currentDifficulty, numberOfPlayers);
-
-        difficultySettings.SetAmountOfPlayers(numberOfPlayers); // setdifficulty based on amount of players
+        SetCurrentDifficultyTo(difficultyString);
+        difficultySettings.SetAmountOfPlayers(numberOfPlayers); // setdifficulty based on amount of players & Updates difficulty
 
         moneySystem = new MoneySystem(difficultySettings.GetMoneyToPass());
     }
