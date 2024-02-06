@@ -5,7 +5,7 @@ using UnityEngine.ProBuilder;
 
 public class DifficultySettings
 {
-    
+
     private DifficultySO currentDifficulty;
 
     private float timeBetweenWaves;
@@ -23,48 +23,15 @@ public class DifficultySettings
     private float maxWaitTime;
     private float drinkThreshold;
     private int moneyToPass;
-    public IngredientListSO temperatureIngredientList { get; }
-    public IngredientListSO sweetnessIngredientList { get; }
-    public IngredientListSO strengthIngredientList { get; }
-    public IngredientListSO spicinessIngredientList { get; }
-    public IngredientListSO allIngredientsList { get; }
+    public IngredientListSO temperatureIngredientList { get; set; }
+    public IngredientListSO sweetnessIngredientList { get; set; }
+    public IngredientListSO strengthIngredientList { get; set; }
+    public IngredientListSO spicinessIngredientList { get; set; }
+    public IngredientListSO allIngredientsList { get; set; }
 
-    public DifficultySettings(DifficultySO chosenDifficulty, int InitplayerCount)
+    public DifficultySettings()
     {
-
-        currentDifficulty = chosenDifficulty;
-
-        minDelay = chosenDifficulty.minCustomerSpawnDelay -Mathf.FloorToInt(InitplayerCount *6);
-        maxDelay = chosenDifficulty.maxCustomerSpawnDelay - Mathf.FloorToInt(InitplayerCount * 6);
-
-        timeBetweenWaves += chosenDifficulty.timeBetweenWaves;
-
-        numberOfWaves = chosenDifficulty.InitialnumberOfWaves;
-        numberOfCustomersInWave = chosenDifficulty.numberOfCustomersInWave + Mathf.FloorToInt(InitplayerCount * chosenDifficulty.rateOfIncreaseBasedOnPlayerCount);
-
-        playerCount = InitplayerCount;
-
-        chanceToMess = chosenDifficulty.chanceToMess;
-
-        loiterMessEverySec = chosenDifficulty.loiterMessEverySec;
-
-        chanceToLoiter = chosenDifficulty.chanceToLoiter;
-
-        minWaitTime = chosenDifficulty.minWaitTime;
-        maxWaitTime = chosenDifficulty.maxWaitTime;
-
-        drinkThreshold = chosenDifficulty.drinkThreshold;
-
-        temperatureIngredientList = chosenDifficulty.temperatureIngredientList;
-        sweetnessIngredientList = chosenDifficulty.sweetnessIngredientList;
-        strengthIngredientList = chosenDifficulty.strengthIngredientList;
-        spicinessIngredientList = chosenDifficulty.spicinessIngredientList;
-        allIngredientsList = chosenDifficulty.allIngredientsList;
-
-        moneyToPass = chosenDifficulty.moneyToPass;
-
-        if (moneyToPass < 100) moneyToPass = 100;
-
+        playerCount = 1;
         /*
         switch (currentDifficulty.difficultyString)
         {
@@ -98,11 +65,55 @@ public class DifficultySettings
 
     }
 
+    private void UpdateDifficulty()
+    {
+        minDelay = currentDifficulty.minCustomerSpawnDelay - Mathf.FloorToInt(playerCount * 6);
+        maxDelay = currentDifficulty.maxCustomerSpawnDelay - Mathf.FloorToInt(playerCount * 6);
+
+        timeBetweenWaves += currentDifficulty.timeBetweenWaves;
+
+        numberOfWaves = currentDifficulty.InitialnumberOfWaves;
+        numberOfCustomersInWave = currentDifficulty.numberOfCustomersInWave + Mathf.FloorToInt(playerCount * currentDifficulty.rateOfIncreaseBasedOnPlayerCount);
+
+        chanceToMess = currentDifficulty.chanceToMess;
+
+        loiterMessEverySec = currentDifficulty.loiterMessEverySec;
+
+        chanceToLoiter = currentDifficulty.chanceToLoiter;
+
+        minWaitTime = currentDifficulty.minWaitTime;
+        maxWaitTime = currentDifficulty.maxWaitTime;
+
+        drinkThreshold = currentDifficulty.drinkThreshold;
+
+        temperatureIngredientList = currentDifficulty.temperatureIngredientList;
+        sweetnessIngredientList = currentDifficulty.sweetnessIngredientList;
+        strengthIngredientList = currentDifficulty.strengthIngredientList;
+        spicinessIngredientList = currentDifficulty.spicinessIngredientList;
+
+        moneyToPass = currentDifficulty.moneyToPass;
+
+        if (moneyToPass < 100) moneyToPass = 100;
+
+    }
+
+    public void SetDifficulty(DifficultySO choosenDiff)
+    {
+        currentDifficulty = choosenDiff;
+        UpdateDifficulty();
+    }
+
+    public void SetAmountOfPlayers(int playeramount)
+    {
+        playerCount = playeramount;
+        UpdateDifficulty();
+    }
+
     public void NextShift()
     {
         Shift++;
 
-        if(Shift > MaxShift) 
+        if (Shift > MaxShift)
         {
             //Trigger End Game
             GameManager.Instance.iSEndGame = true;
@@ -177,17 +188,12 @@ public class DifficultySettings
 
     public float GetMinDelay()
     {
-        return minDelay;    
+        return minDelay;
     }
 
-    public float GetMaxDelay() 
+    public float GetMaxDelay()
     {
         return maxDelay;
-    }
-
-    public void SetAmountOfPlayers(int playeramount)
-    {
-       playerCount = playeramount;
     }
 
     public float GetChanceToMess()
@@ -210,7 +216,7 @@ public class DifficultySettings
         return minWaitTime;
     }
 
-    public float GetMaxWaitTime() 
+    public float GetMaxWaitTime()
     {
         return maxWaitTime;
     }
@@ -220,7 +226,7 @@ public class DifficultySettings
         return drinkThreshold;
     }
 
-    public int GetMoneyToPass() 
+    public int GetMoneyToPass()
     {
         return moneyToPass;
     }
