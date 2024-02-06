@@ -79,14 +79,6 @@ public class UIManager : Singleton<UIManager>
     public Text wavesleft;
     public Text shift;
 
-
-    [Header("Slider")]
-    public Slider musicSlider;
-    public Slider sfxSlider;
-    public Slider mainVolumeSlider;
-    public Slider voiceVolumeSlider;
-
-    public AudioMixer mixer;
     [SerializeField] private LevelLoader levelLoader;
 
     private void Start()
@@ -123,7 +115,7 @@ public class UIManager : Singleton<UIManager>
     private void ReturnToGame()
     {
         timer.enabled = true;
-        score.enabled = true;
+        //score.enabled = true;
         ordersMenu.SetActive(true);
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;
@@ -197,6 +189,66 @@ public class UIManager : Singleton<UIManager>
         audioSettings.SetActive(false);
     }
 
+    //public void ShowCustomerUiOrder(CustomerBase customer)
+    //{
+    //    orderStats = Instantiate(ordersUiPrefab, ordersPanel).GetComponent<OrderStats>();
+    //    orderStats.Initialize(customer);
+    //}
+
+    /*public void ShowCustomerReview(CustomerBase customer)
+    {
+        // This can be better by moving customer review script to the customer object
+        foreach (Transform t in ordersPanel)
+        {
+            OrderStats o = t.GetComponent<OrderStats>();
+            if (o != null)
+            {
+                if (o.GetOrderOwner() == customer)
+                {
+                    Transform customerReviewTransform = t.gameObject.transform.Find("CustomerReview");
+                    Text customerReviewText = customerReviewTransform.gameObject.GetComponent<Text>();
+                    customerReview = customerReviewTransform.GetComponentInParent<CustomerReview>();
+                    customerReview.GenerateReview(customer);
+                    customerReviewText.text = customerReview.ReviewText;
+                    UpdateStarRating(customerReview.ReviewScore);
+                    customerReviewTransform.gameObject.SetActive(true);
+                    return;
+                }
+                else
+                {
+                    Debug.Log($"Customer Order UI not found for {customer.customerNumber}");
+                }
+            }
+        }
+    }*/
+
+    public void RemoveCustomerUiOrder(CustomerBase customer)
+    {
+        foreach (Transform t in ordersPanel)
+        {
+            OrderStats o = t.GetComponent<OrderStats>();
+            if (o != null)
+            {
+                if (o.GetOrderOwner() == customer)
+                {
+                    Destroy(t.gameObject);
+                    return;
+                }
+                else if (o.GetOrderOwner().customerNumber == customer.customerNumber)
+                {
+                    // This exists because pickups are cloned, so the connection to the order prefab is lost
+                    // Just search for the customer based on their number in case owner is lost
+                    Destroy(t.gameObject);
+                    return;
+                }
+                else
+                {
+                    Debug.Log($"Customer Order UI not found for {customer.customerNumber}");
+                }
+            }
+        }
+    }
+
     public void UpdateStarRating(int reviewScore)
     {
         Transform starRating = customerReview.transform.Find("CustomerReview/StarRating");
@@ -231,29 +283,6 @@ public class UIManager : Singleton<UIManager>
         {
             tutorialMenu.SetActive(false);
         }
-    }
-    public void SetMusicVolume(float value)
-    {
-        //if (volSliderText)
-        //    volSliderText.text = value.ToString();
-
-        mixer.SetFloat("Music", musicSlider.value);
-
-    }
-
-    public void SetSFXVolume(float value)
-    {
-        mixer.SetFloat("SFX", sfxSlider.value);
-    }
-    
-    public void SetMainVolume(float value)
-    {
-        mixer.SetFloat("MainVolume", mainVolumeSlider.value);
-    }
-    
-    public void SetVoiceVolume(float value)
-    {
-        mixer.SetFloat("VoiceLines", voiceVolumeSlider.value);
     }
 
     public void ToggleBigTimer(bool IsOn)

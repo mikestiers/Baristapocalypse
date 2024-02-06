@@ -56,6 +56,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject PlayMenuTab;
 
     [SerializeField] private LevelLoader levelLoader;
+
     public void Start()
     {
         Time.timeScale = 1f;
