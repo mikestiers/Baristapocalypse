@@ -2,14 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TutorialUI : MonoBehaviour
 {
+    public Button tutorialModeOnOff;
+
     private void Start()
     {
         //GameManager.Instance.OnGameStateChanged += GameManager_OnGameStateChanged;
         GameManager.Instance.OnLocalPlayerReadyChanged += GameManager_OnLocalPlayerReadyChanged;
-
+        
         Show();
     }
 
@@ -20,14 +23,6 @@ public class TutorialUI : MonoBehaviour
             Hide();
         }
     }
-
-    //private void GameManager_OnGameStateChanged(object sender, EventArgs e)
-    //{
-    //    if (GameManager.Instance.IsCountdownToStartActive())
-    //    {
-    //        Hide();
-    //    }
-    //}
 
     private void Show()
     {

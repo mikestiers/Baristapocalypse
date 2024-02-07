@@ -20,6 +20,8 @@ public class UIManager : Singleton<UIManager>
     public Button closePause;
     public Button restartGame;
     public Button closeAudioSettings;
+    public Button closeTutorial;
+    public Button tutorialModeOnOff;
 
     [Header("Menu")]
     public GameObject mainMenu;
@@ -103,19 +105,16 @@ public class UIManager : Singleton<UIManager>
             restartGame.onClick.AddListener(RestartGame);
         if (closeAudioSettings)
             closeAudioSettings.onClick.AddListener(CloseAudioSettings);
+        if (tutorialModeOnOff)
+            tutorialModeOnOff.onClick.AddListener(ToggleTutorialMode);
+        if (closeTutorial)
+            closeTutorial.onClick.AddListener(CloseTutorial);
 
-
-        //if (volSlider)
-        //{
-        //    volSlider.onValueChanged.AddListener((value) => OnSliderValueChanged(value));
-        //    if (volSliderText)
-        //        volSliderText.text = volSlider.value.ToString();
-        //}
+        tutorialModeOnOff.GetComponentInChildren<Text>().text = TutorialManager.Instance.tutorialEnabled ? "Tutorial Mode: On" : "Tutorial Mode: Off";
     }
     private void ReturnToGame()
     {
         timer.enabled = true;
-        //score.enabled = true;
         ordersMenu.SetActive(true);
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;
@@ -123,9 +122,6 @@ public class UIManager : Singleton<UIManager>
 
     private void RestartGame()
     {
-        //Reset score timer
-        //ScoreTimerManager.Instance.ResetTimerScore();
-
         Time.timeScale = 1f;
         gameOverMenu.SetActive(false);
         //GameManager.Instance.gameState = GameState.RUNNING;
@@ -189,39 +185,6 @@ public class UIManager : Singleton<UIManager>
         audioSettings.SetActive(false);
         mainMenu.SetActive(true);
     }
-
-    //public void ShowCustomerUiOrder(CustomerBase customer)
-    //{
-    //    orderStats = Instantiate(ordersUiPrefab, ordersPanel).GetComponent<OrderStats>();
-    //    orderStats.Initialize(customer);
-    //}
-
-    /*public void ShowCustomerReview(CustomerBase customer)
-    {
-        // This can be better by moving customer review script to the customer object
-        foreach (Transform t in ordersPanel)
-        {
-            OrderStats o = t.GetComponent<OrderStats>();
-            if (o != null)
-            {
-                if (o.GetOrderOwner() == customer)
-                {
-                    Transform customerReviewTransform = t.gameObject.transform.Find("CustomerReview");
-                    Text customerReviewText = customerReviewTransform.gameObject.GetComponent<Text>();
-                    customerReview = customerReviewTransform.GetComponentInParent<CustomerReview>();
-                    customerReview.GenerateReview(customer);
-                    customerReviewText.text = customerReview.ReviewText;
-                    UpdateStarRating(customerReview.ReviewScore);
-                    customerReviewTransform.gameObject.SetActive(true);
-                    return;
-                }
-                else
-                {
-                    Debug.Log($"Customer Order UI not found for {customer.customerNumber}");
-                }
-            }
-        }
-    }*/
 
     public void RemoveCustomerUiOrder(CustomerBase customer)
     {
@@ -322,6 +285,19 @@ public class UIManager : Singleton<UIManager>
     public void ShowShiftEvaluation()
     {
         shiftEvaluationUI.GetComponent<ShiftEvaluationUI>().Evaluate();
+    }
+
+    private void CloseTutorial()
+    {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+        tutorialMenu.SetActive(false);
+        mainMenu.SetActive(true);
+    }
+
+        private void ToggleTutorialMode()
+    {
+        tutorialModeOnOff.GetComponentInChildren<Text>().text = TutorialManager.Instance.tutorialEnabled ? "Tutorial Mode: Off" : "Tutorial Mode: On";
+        TutorialManager.Instance.tutorialEnabled = !TutorialManager.Instance.tutorialEnabled;
     }
 
 }
