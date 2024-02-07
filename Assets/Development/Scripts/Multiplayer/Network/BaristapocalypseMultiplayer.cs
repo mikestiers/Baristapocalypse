@@ -44,20 +44,10 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
             StartHost();
             Loader.LoadNetwork(Loader.Scene.T5M3_BUILD);
         }
-    }
-    // This should not be in Update() but difficultysettings are not available when the game starts for some reason
-    private bool isFoundDifficulty = false;
-    private void Update()
-    {
-        if (GameManager.Instance.difficultySettings == null)
-            return;
-        if (!isFoundDifficulty)
-        {
-            isFoundDifficulty = true;
-            ingredientListSO = GameManager.Instance.difficultySettings.allIngredientsList;
-        }
 
+        ingredientListSO = GameValueHolder.Instance.difficultySettings.allIngredientsList;
     }
+    // This should not be in Update() but difficultysettings are not available when the game starts for some reaso
 
     private void PlayerDataNetworkList_OnListChanged(NetworkListEvent<PlayerData> changeEvent)
     {

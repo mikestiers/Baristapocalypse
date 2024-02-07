@@ -27,28 +27,20 @@ public class IngredientSelectionUI : BaseStation
         ingredientListIndex = 0;
         
         ingredientButtons = buttonsRoot.GetComponentsInChildren<Button>();
-    }
-
-    private void Update()
-    {
-        // This should not be in Update() but difficultysettings are not available when the game starts for some reason
-        
-        if (GameManager.Instance.difficultySettings == null)
-            return;
 
         switch (ingredientStationType)
         {
             case IngredientStationType.Temperature:
-                ingredientList = GameManager.Instance.difficultySettings.temperatureIngredientList;
+                ingredientList = GameValueHolder.Instance.difficultySettings.temperatureIngredientList;
                 break;
             case IngredientStationType.Sweetness:
-                ingredientList = GameManager.Instance.difficultySettings.sweetnessIngredientList;
+                ingredientList = GameValueHolder.Instance.difficultySettings.sweetnessIngredientList;
                 break;
             case IngredientStationType.Strength:
-                ingredientList = GameManager.Instance.difficultySettings.strengthIngredientList;
+                ingredientList = GameValueHolder.Instance.difficultySettings.strengthIngredientList;
                 break;
             case IngredientStationType.Spiciness:
-                ingredientList = GameManager.Instance.difficultySettings.spicinessIngredientList;
+                ingredientList = GameValueHolder.Instance.difficultySettings.spicinessIngredientList;
                 break;
             default:
                 Debug.LogError("Ingredient Station Type not set");
@@ -56,6 +48,13 @@ public class IngredientSelectionUI : BaseStation
         }
 
         RebuildButtonUI();
+    }
+
+    private void Update()
+    {
+        // This should not be in Update() but difficultysettings are not available when the game starts for some reason
+
+       
 
         if (!currentStationInteraction)
             return;

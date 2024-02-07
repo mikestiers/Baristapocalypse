@@ -338,7 +338,7 @@ public class OrderStats : MonoBehaviour
         Color targetSegmentRangeColor = Color.green;
         targetSegmentRangeColor.a = 1.0f;
 
-        if (GameManager.Instance.difficultySettings.GetDrinkThreshold() == 3)
+        if (GameValueHolder.Instance.difficultySettings.GetDrinkThreshold() == 3)
         {
             temperatureSegments[temperatureTargetValue - 1].GetComponent<Image>().color = targetSegmentRangeColor;
             temperatureSegments[temperatureTargetValue + 1].GetComponent<Image>().color = targetSegmentRangeColor;
