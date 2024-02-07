@@ -64,4 +64,16 @@ public class RadioStation : BaseStation
         MainAudio.Play();
     }
     
+    public void EventOn() 
+    {
+        MainAudio.clip = BrokenSound;
+        MainAudio.Play();
+    }
+
+    public void EventOff() 
+    {
+        GameManager.Instance.isEventActive = false;
+        MainAudio.clip = Audios[AudioIndex];
+        MainAudio.Play();
+    }
 }
