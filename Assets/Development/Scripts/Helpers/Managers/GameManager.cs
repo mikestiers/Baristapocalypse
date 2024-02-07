@@ -491,16 +491,40 @@ public class GameManager : NetworkBehaviour
     public void ActivateEvent(RandomEventBase randomEvent)
     {
         isEventActive = true;
-        randomEvent.SetEventBool(true);
-        randomEvent.ActivateDeactivateEvent();
+        if (randomEvent.GetComponent<GravityStorm>()) 
+        {
+            randomEvent.SetEventBool(true);
+            randomEvent.ActivateDeactivateEvent();
+        }
+        else if (randomEvent.GetComponent<WifiStation>()) 
+        {
+            randomEvent.gameObject.GetComponent<WifiStation>().WifiEventIsStarting();
+        }
+        else if (randomEvent.GetComponent<RadioStation>()) 
+        {
+            randomEvent.gameObject.GetComponent<RadioStation>().EventOn();
+        }
+        
         //OnPlayerDeactivateEvent?.Invoke(this, EventArgs.Empty);
     }
 
     public void DeactivateEvent(RandomEventBase randomEvent)
     {
-        isEventActive = true;
-        randomEvent.SetEventBool(true);
-        randomEvent.ActivateDeactivateEvent();
+        isEventActive = false;
+        if (randomEvent.GetComponent<GravityStorm>()) 
+        {
+            randomEvent.SetEventBool(true);
+            randomEvent.ActivateDeactivateEvent();
+        }
+        else if (randomEvent.GetComponent<WifiStation>()) 
+        {
+            randomEvent.gameObject.GetComponent<WifiStation>().WifiEventIsDone();
+        }
+        else if (randomEvent.GetComponent<RadioStation>()) 
+        {
+            randomEvent.gameObject.GetComponent<RadioStation>().EventOff();
+        }
+        
        
     }
 
