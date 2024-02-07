@@ -66,7 +66,7 @@ public class CustomerBase : Base
         SetCustomerStateServerRpc(CustomerState.Init);
         SetCustomerVisualIdentifiers();
 
-        customerLeaveTime = Random.Range(GameManager.Instance.difficultySettings.GetMinWaitTime(), GameManager.Instance.difficultySettings.GetMaxWaitTime());
+        customerLeaveTime = Random.Range(GameValueHolder.Instance.difficultySettings.GetMinWaitTime(), GameValueHolder.Instance.difficultySettings.GetMaxWaitTime());
 
         agent = GetComponent<NavMeshAgent>();
         exit = CustomerManager.Instance.GetExit();
@@ -201,7 +201,7 @@ public class CustomerBase : Base
     
 
         // To be implmented or removed
-        if(messTime >= GameManager.Instance.difficultySettings.GetLoiterMessEverySec())
+        if(messTime >= GameValueHolder.Instance.difficultySettings.GetLoiterMessEverySec())
         {
             CreateMess();
             RestartMessTimer();
@@ -375,8 +375,8 @@ public class CustomerBase : Base
 
     public virtual void CustomerLeave()
     {
-        if (Random.Range(0, 100) <= GameManager.Instance.difficultySettings.GetChanceToMess()) CreateMess();
-        if (Random.Range(0, 100) < GameManager.Instance.difficultySettings.GetChanceToLoiter())
+        if (Random.Range(0, 100) <= GameValueHolder.Instance.difficultySettings.GetChanceToMess()) CreateMess();
+        if (Random.Range(0, 100) < GameValueHolder.Instance.difficultySettings.GetChanceToLoiter())
         {
             SetCustomerStateServerRpc(CustomerState.Loitering);
             messTime = 0f;

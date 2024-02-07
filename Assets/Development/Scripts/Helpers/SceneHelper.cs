@@ -57,7 +57,7 @@ public class SceneHelper : MonoBehaviour
         Debug.Log("Reset Game Function Called");
         ShutdownAndDestroy<NetworkManager>();
         FindObjectOfType<CustomerManager>()?.ResetSingleton();
-        FindObjectOfType<GameValueHolder>()?.ResetSingleton();
+        //FindObjectOfType<GameValueHolder>()?.ResetSingleton();
         FindObjectOfType<ScoreTimerManager>()?.ResetSingleton();
         DestroyIfExists<CustomerReviewManager>();
         DestroyIfExists<LobbyManager>();
