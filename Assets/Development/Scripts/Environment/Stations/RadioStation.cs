@@ -16,6 +16,7 @@ public class RadioStation : BaseStation
     public override void Interact(PlayerController player)
     {
         ChangeSongDownServerRpc();
+        EventOff();
     }
 
     public override void InteractAlt(PlayerController player)

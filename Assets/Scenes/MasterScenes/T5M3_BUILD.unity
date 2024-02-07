@@ -13466,6 +13466,10 @@ PrefabInstance:
       propertyPath: MainAudio
       value: 
       objectReference: {fileID: 1944063226}
+    - target: {fileID: 1797054837799654982, guid: 43fcf7eed79c2f94abf7a4d73cf79761, type: 3}
+      propertyPath: BrokenSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 6139dbe5288e8844c9ed2d6c3c5470cd, type: 3}
     - target: {fileID: 8246325954397199029, guid: 43fcf7eed79c2f94abf7a4d73cf79761, type: 3}
       propertyPath: m_Material
       value: 
@@ -13519,7 +13523,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ef1f6a2be6759b4cae547b59e2cb086, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <RandomEventSO>k__BackingField: {fileID: 0}
+  <RandomEventSO>k__BackingField: {fileID: 11400000, guid: cf01872d880ccd648865bf92d35959f4, type: 2}
   radioStation: {fileID: 874483915}
 --- !u!114 &874483915 stripped
 MonoBehaviour:
@@ -15256,8 +15260,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   randomEventList:
-  - {fileID: 7814057552642909236}
   - {fileID: 1324941040}
+  - {fileID: 874483913}
+  - {fileID: 7814057552642909232}
   minRandomTime: 30
   maxRandomTime: 60
   isEventActive: 0
@@ -22594,12 +22599,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7126d497d80391d4285d385e5fa7f644, type: 3}
---- !u!4 &7814057552642909233 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7814057552984198586, guid: 7126d497d80391d4285d385e5fa7f644, type: 3}
-  m_PrefabInstance: {fileID: 7814057552642909231}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &7814057552642909236 stripped
+--- !u!114 &7814057552642909232 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7814057552642909236, guid: 7126d497d80391d4285d385e5fa7f644, type: 3}
   m_PrefabInstance: {fileID: 7814057552642909231}
@@ -22610,6 +22610,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 788dd54d7e8690044a575b8fae203592, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &7814057552642909233 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7814057552984198586, guid: 7126d497d80391d4285d385e5fa7f644, type: 3}
+  m_PrefabInstance: {fileID: 7814057552642909231}
+  m_PrefabAsset: {fileID: 0}
 --- !u!222 &7819108322492265105
 CanvasRenderer:
   m_ObjectHideFlags: 0
