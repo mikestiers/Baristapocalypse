@@ -130,8 +130,6 @@ public class CustomerBase : Base
     {
         // To be implmented or removed
         if (makingAMess == true) SetCustomerStateServerRpc(CustomerState.Loitering);
-
-
     }
 
     private void UpdateOrdering()

@@ -105,10 +105,12 @@ public class UIManager : Singleton<UIManager>
             restartGame.onClick.AddListener(RestartGame);
         if (closeAudioSettings)
             closeAudioSettings.onClick.AddListener(CloseAudioSettings);
-        if (closeTutorial)
-            closeTutorial.onClick.AddListener(CloseTutorial);
         if (tutorialModeOnOff)
             tutorialModeOnOff.onClick.AddListener(ToggleTutorialMode);
+        if (closeTutorial)
+            closeTutorial.onClick.AddListener(CloseTutorial);
+
+        tutorialModeOnOff.GetComponentInChildren<Text>().text = TutorialManager.Instance.tutorialEnabled ? "Tutorial Mode: On" : "Tutorial Mode: Off";
     }
 
     private void ReturnToGame()
@@ -188,7 +190,7 @@ public class UIManager : Singleton<UIManager>
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         tutorialMenu.SetActive(false);
-        //mainMenu.SetActive(true);
+        mainMenu.SetActive(true);
     }
 
     public void UpdateStarRating(int reviewScore)
@@ -264,7 +266,7 @@ public class UIManager : Singleton<UIManager>
 
     private void ToggleTutorialMode()
     {
-        tutorialModeOnOff.GetComponentInChildren<Text>().text = GameManager.Instance.tutorial ? "Tutorial Mode?: On" : "Tutorial Mode: Off";
-        GameManager.Instance.tutorial = !GameManager.Instance.tutorial;
+        tutorialModeOnOff.GetComponentInChildren<Text>().text = TutorialManager.Instance.tutorialEnabled ? "Tutorial Mode: Off" : "Tutorial Mode: On";
+        TutorialManager.Instance.tutorialEnabled = !TutorialManager.Instance.tutorialEnabled;
     }
 }

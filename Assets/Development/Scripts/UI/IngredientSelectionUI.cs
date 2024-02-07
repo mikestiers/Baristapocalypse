@@ -21,6 +21,7 @@ public class IngredientSelectionUI : BaseStation
     private int ingredientListIndex;
     private IngredientSO currentIngredient;
     private bool canSelectIngredient = false;
+    public bool isInUse = false;
 
     private void Start()
     {
@@ -126,6 +127,7 @@ public class IngredientSelectionUI : BaseStation
             if (player.IsLocalPlayer)
             {
                 Show(ingredientMenu);
+                isInUse = true;
             }
             
         }
@@ -143,6 +145,7 @@ public class IngredientSelectionUI : BaseStation
                 // Hide UI ingredient menu
                 EventSystem.current.SetSelectedGameObject(null);
                 StartCoroutine(CloseMenu());
+                isInUse = false;
             }
         }
     }

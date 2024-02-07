@@ -30,8 +30,6 @@ public class AISupervisor : NetworkBehaviour
     {
         Instance = this;
         OnFeedbackMessageReceived += HandleFeedbackMessage;
-        if (GameManager.Instance.tutorial)
-            continueButton.SetActive(true);
     }
 
     public override void OnDestroy()
@@ -77,6 +75,10 @@ public class AISupervisor : NetworkBehaviour
     private void SupervisorFeedback(string feedbackMessage)
     {
         supervisorMessageText.text = feedbackMessage;
+        if (TutorialManager.Instance.tutorialEnabled)
+            continueButton.SetActive(true);
+        else
+            continueButton.SetActive(false);
         StartCoroutine(MoveFeedback());
     }
 
@@ -93,7 +95,7 @@ public class AISupervisor : NetworkBehaviour
             yield return null;
         }
 
-        if (GameManager.Instance.tutorial)
+        if (TutorialManager.Instance.tutorialEnabled)
             OnTutorialMessageReceived?.Invoke();
 
         StartCoroutine(ShowElements());
