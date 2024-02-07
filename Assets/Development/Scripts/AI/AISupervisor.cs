@@ -14,13 +14,17 @@ public class AISupervisor : NetworkBehaviour
     [SerializeField] private float transitionSpeed;
     [SerializeField] private float popOutReviewTime;
     [SerializeField] private RectTransform startFeedbackWindowTransform;
-
+    [SerializeField] private GameObject continueButton;
+    
     [SerializeField] private Vector2 startpos;
     [SerializeField] private Vector2 finalpos;
 
     // Event to receive Supervisor Message
     public delegate void FeedbackMessageHandler(string feedbackMessage);
     public static event FeedbackMessageHandler OnFeedbackMessageReceived;
+
+    public delegate void TutorialMessageHandler();
+    public event TutorialMessageHandler OnTutorialMessageReceived;
 
     private void Awake()
     {
@@ -71,6 +75,10 @@ public class AISupervisor : NetworkBehaviour
     private void SupervisorFeedback(string feedbackMessage)
     {
         supervisorMessageText.text = feedbackMessage;
+        if (TutorialManager.Instance.tutorialEnabled)
+            continueButton.SetActive(true);
+        else
+            continueButton.SetActive(false);
         StartCoroutine(MoveFeedback());
     }
 
@@ -87,13 +95,15 @@ public class AISupervisor : NetworkBehaviour
             yield return null;
         }
 
+        if (TutorialManager.Instance.tutorialEnabled)
+            OnTutorialMessageReceived?.Invoke();
+
         StartCoroutine(ShowElements());
     }
 
     private IEnumerator ShowElements()
     {
         yield return new WaitForSeconds(popOutReviewTime);
-
         StartCoroutine(MoveBackEP());
     }
 

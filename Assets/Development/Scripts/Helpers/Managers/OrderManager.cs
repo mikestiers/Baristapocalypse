@@ -37,6 +37,11 @@ public class OrderManager : Singleton<OrderManager>
         TryStartOrder();
     }
 
+    public Order GetFirstOrder()
+    {
+        return orders.FirstOrDefault();
+    }
+
     public void TryStartOrder()
     {
         bool availableStationFound = false;
