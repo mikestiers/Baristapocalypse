@@ -54,15 +54,18 @@ public class TutorialManager : Singleton<TutorialManager>
 
     public void MakeFirstBrew()
     {
-        if (OrderManager.Instance.GetFirstOrder().State == null)
+        Debug.Log(OrderManager.Instance.GetFirstOrder());
+        if (OrderManager.Instance.GetFirstOrder() == null)
             return;
+
+        Debug.Log("Can make first brew");
+        Debug.Log(OrderManager.Instance.GetFirstOrder().State);
+        if (OrderManager.Instance.GetFirstOrder().State == Order.OrderState.Brewing)
         {
-            if (OrderManager.Instance.GetFirstOrder().State == Order.OrderState.Brewing)
-            {
-                AISupervisor.Instance.SupervisorMessageToDisplay("Ok....Pretty neat ingredient stations. Wonder what those do");
-                firstBrewStarted = true;
-            }
+            AISupervisor.Instance.SupervisorMessageToDisplay("Ok....Pretty neat ingredient stations. Wonder what those do");
+            firstBrewStarted = true;
         }
+        
     }
 
     public void MakeFirstIngredientSelection()
