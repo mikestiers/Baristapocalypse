@@ -42,16 +42,16 @@ public class GameOverUI : MonoBehaviour
     private void ComputeEndGameStats()
     {
         int currentRatings = Mathf.FloorToInt(GameManager.Instance.moneySystem.GetAverageReviewrating());
-        bool iSWin = (GameManager.Instance.moneySystem.GetCurrentMoney() >= GameManager.Instance.difficultySettings.GetMoneyToPass());
+        bool iSWin = (GameManager.Instance.moneySystem.GetCurrentMoney() >= GameValueHolder.Instance.difficultySettings.GetMoneyToPass());
 
         customersServedValue.text = CustomerManager.Instance.GetCustomerServed().ToString();
         customersLeaveValue.text = CustomerManager.Instance.GetCustomerLeave().ToString();
         tipsAcquiredValue.text = (("$") + GameManager.Instance.moneySystem.GetCurrentMoney().ToString());
-        tipsNeededValue.text = (("S") + GameManager.Instance.difficultySettings.GetMoneyToPass().ToString());
+        tipsNeededValue.text = (("S") + GameValueHolder.Instance.difficultySettings.GetMoneyToPass().ToString());
 
         string difference = iSWin ? "+" : " ";
 
-        tipsDifferenceValue.text = difference + (GameManager.Instance.moneySystem.GetCurrentMoney() - GameManager.Instance.difficultySettings.GetMoneyToPass()).ToString();
+        tipsDifferenceValue.text = difference + (GameManager.Instance.moneySystem.GetCurrentMoney() - GameValueHolder.Instance.difficultySettings.GetMoneyToPass()).ToString();
         tipsDifferenceValue.color = iSWin ? Color.green : Color.red;
 
         TipsDiffernceText.text = iSWin ? "Extra Tips" : "Tips Short";

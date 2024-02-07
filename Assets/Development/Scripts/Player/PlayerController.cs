@@ -10,6 +10,7 @@ using UnityEngine.SceneManagement;
 using Unity.Services.Lobbies.Models;
 using Cinemachine;
 using System.Linq;
+using static AISupervisor;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObjectParent, ISpill
@@ -76,6 +77,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public PlayerColorChoice playerVisual;
 
+    private bool tutorialMessageActive = false;
+
     [HideInInspector]
     public Pickup Pickup
     {
@@ -130,7 +133,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         //Set variables if null
         if (moveSpeed <= 0) moveSpeed = 10.0f;
         if (jumpForce <= 0) jumpForce = 200.0f;
-        if (dashForce <= 0) dashForce = 4000f;
+        if (dashForce <= 0) dashForce = 100.0f;
         if (dashTime <= 0) dashTime = 0.1f;
         if (dashCooldownTime <= 0) dashCooldownTime = 1.0f;
         if (ingredientThrowForce <= 0) ingredientThrowForce = 10f;
@@ -161,6 +164,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.DebugConsoleEvent += ShowDebugConsole;
         inputManager.BrewingStationSelectEvent += OnChangeBrewingStationSelect;
         inputManager.BrewingStationEmptyEvent += OnBrewingStationEmpty;
+        AISupervisor.Instance.OnTutorialMessageReceived += TutorialMessage;
     }
 
     private void OnDisable()
@@ -173,6 +177,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.DebugConsoleEvent -= ShowDebugConsole;
         inputManager.BrewingStationSelectEvent -= OnChangeBrewingStationSelect;
         inputManager.BrewingStationEmptyEvent -= OnBrewingStationEmpty;
+        AISupervisor.Instance.OnTutorialMessageReceived -= TutorialMessage;
     }
 
     private void Update()
@@ -336,7 +341,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         //rb.MovePosition(rb.position + curMoveInput);
     }
 
-
     public void Interact()
     {
         if (SceneManager.GetActiveScene().name == Loader.Scene.CharacterSelectScene.ToString()) return;
@@ -352,6 +356,13 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
             selectedCustomer.Interact(this);
         }
+
+        if (tutorialMessageActive)
+        {
+            tutorialMessageActive = false;
+            Time.timeScale = 1.0f;
+        }
+
     }
 
     public void InteractAlt()
@@ -405,7 +416,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         while (Time.time < startTime + dashTime)
         {
-            rb.AddForce(moveDirection * dashForce * Time.deltaTime, ForceMode.Acceleration);
+            rb.AddForce(moveDirection * dashForce * Time.deltaTime, ForceMode.Impulse);
             anim.SetBool("isDashing", isDashing);
             yield return null;
         }
@@ -534,7 +545,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             if (ingredientRb != null)
             {
                 ingredientRb.isKinematic = false;
-                ingredientRb.AddForce(transform.forward * ingredientThrowForce, ForceMode.Impulse);
+                ingredientRb.AddForce(transform.forward * ingredientThrowForce, ForceMode.Force);
+                ingredientRb.useGravity = true;
             }
             ingredientIndicatorText.SetText("");
             RemoveIngredientInListAtIndex(i);
@@ -757,7 +769,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     {
         if (OrderManager.Instance.brewingStations[currentBrewingStation].ingredientSOList.Count > 0)
         {
-            AISupervisor.Instance.SupervisorMessageToDisplay("I'm taking that out of your tips!");
+            AISupervisor.Instance.SupervisorMessageToDisplay("Throwing away product? I'm taking that out of your tips!");
             GameManager.Instance.moneySystem.AdjustMoneyByAmount(10, false);
         }
         OrderManager.Instance.brewingStations[currentBrewingStation].Empty();
@@ -807,5 +819,12 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
+    }
+
+    private void TutorialMessage()
+    {
+        tutorialMessageActive = true;
+        if (tutorialMessageActive)
+            Time.timeScale = 0f;
     }
 }
