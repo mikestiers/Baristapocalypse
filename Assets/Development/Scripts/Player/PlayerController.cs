@@ -468,7 +468,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         int count = 0;
         foreach(Ingredient i in ingredientsList)
         {
-            if(i.GetIngredientSO().objectTag == "Milk")
+            if(i.GetIngredientSO().objectTag == "CoffeeCup")
             {
                 count++;
             }
