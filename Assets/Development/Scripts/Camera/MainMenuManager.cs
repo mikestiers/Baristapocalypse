@@ -20,6 +20,7 @@ public class MainMenuManager : MonoBehaviour
     private Button[] MainMenuButtons;
     [SerializeField] private Button StartGame;
     [SerializeField] private Button Settings;
+    [SerializeField] private Button Credits;
     [SerializeField] private Button QuitGame;
 
     [Header("Quit Menu")]
@@ -80,6 +81,9 @@ public class MainMenuManager : MonoBehaviour
 
         if (Settings)
             Settings.onClick.AddListener(SettingsScreen);
+
+        if (Credits)
+            Credits.onClick.AddListener(CreditsScreen);
 
         if (MainMenuFromSelection)
             MainMenuFromSelection.onClick.AddListener(ReturnFromSelection);
@@ -156,6 +160,22 @@ public class MainMenuManager : MonoBehaviour
             SetInteractableButtons(PlayerSelectionButtons, false);
         }
     }
+
+    void CreditsScreen()
+    {
+        if (MainmenuCamera.Priority == 1)
+        {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+            MainmenuCamera.Priority = 0;
+            SettingsCamera.Priority = 1;
+            EventSystem.current.SetSelectedGameObject(FullScreenGO.gameObject);
+            SetInteractableButtons(MainMenuButtons, false);
+            SetInteractableButtons(SettingsMenuButtons, true);
+            SetInteractableSliders(SettingsMenuSliders, true);
+            SetInteractableButtons(PlayerSelectionButtons, false);
+        }
+    }
+
     void PlayerSelect()
     {
         if (MainmenuCamera.Priority == 1)
