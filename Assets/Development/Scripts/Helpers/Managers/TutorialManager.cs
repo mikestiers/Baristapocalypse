@@ -54,12 +54,9 @@ public class TutorialManager : Singleton<TutorialManager>
 
     public void MakeFirstBrew()
     {
-        Debug.Log(OrderManager.Instance.GetFirstOrder());
         if (OrderManager.Instance.GetFirstOrder() == null)
             return;
 
-        Debug.Log("Can make first brew");
-        Debug.Log(OrderManager.Instance.GetFirstOrder().State);
         if (OrderManager.Instance.GetFirstOrder().State == Order.OrderState.Brewing)
         {
             AISupervisor.Instance.SupervisorMessageToDisplay("Ok....Pretty neat ingredient stations. Wonder what those do");
@@ -73,7 +70,6 @@ public class TutorialManager : Singleton<TutorialManager>
         BrewingStation[] brewingStations = FindObjectsOfType<BrewingStation>();
         foreach (BrewingStation brewingStation in brewingStations)
         {
-            Debug.Log($"BrewingIngredients: {brewingStation.ingredientSOList.Count}");
             if (brewingStation.ingredientSOList.Count == 1)
             {
                 AISupervisor.Instance.SupervisorMessageToDisplay("That better be the right ingredient! Now add the next!");
@@ -88,7 +84,6 @@ public class TutorialManager : Singleton<TutorialManager>
         BrewingStation[] brewingStations = FindObjectsOfType<BrewingStation>();
         foreach (BrewingStation brewingStation in brewingStations)
         {
-            Debug.Log($"BrewingIngredients: {brewingStation.ingredientSOList.Count}");
             if (brewingStation.ingredientSOList.Count == 2)
             {
                 AISupervisor.Instance.SupervisorMessageToDisplay("Don't mess this up! Add more!");
@@ -103,7 +98,6 @@ public class TutorialManager : Singleton<TutorialManager>
         BrewingStation[] brewingStations = FindObjectsOfType<BrewingStation>();
         foreach (BrewingStation brewingStation in brewingStations)
         {
-            Debug.Log($"BrewingIngredients: {brewingStation.ingredientSOList.Count}");
             if (brewingStation.ingredientSOList.Count == 3)
             {
                 AISupervisor.Instance.SupervisorMessageToDisplay("MOAR INGREDIENTS");
