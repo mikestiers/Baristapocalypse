@@ -714,7 +714,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
             Debug.Log("hello im a customer and im trying to be picked up");
             pickup.GetNavMeshAgent().enabled = false;
-            pickup.GetCustomer().SetCustomerStateServerRpc(CustomerBase.CustomerState.PickedUp);
+            pickup.GetCustomer().SetCustomerState(CustomerBase.CustomerState.PickedUp);
 
             pickup.SetPickupObjectParent(this);
 
