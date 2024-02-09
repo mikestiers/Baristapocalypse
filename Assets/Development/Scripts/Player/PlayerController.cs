@@ -167,7 +167,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.DebugConsoleEvent += ShowDebugConsole;
         inputManager.BrewingStationSelectEvent += OnChangeBrewingStationSelect;
         inputManager.BrewingStationEmptyEvent += OnBrewingStationEmpty;
-        AISupervisor.Instance.OnTutorialMessageReceived += TutorialMessage;
+        if (AISupervisor.Instance) {
+            AISupervisor.Instance.OnTutorialMessageReceived += TutorialMessage;
+        }
+        
     }
 
     private void OnDisable()
@@ -180,7 +183,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.DebugConsoleEvent -= ShowDebugConsole;
         inputManager.BrewingStationSelectEvent -= OnChangeBrewingStationSelect;
         inputManager.BrewingStationEmptyEvent -= OnBrewingStationEmpty;
-        AISupervisor.Instance.OnTutorialMessageReceived -= TutorialMessage;
+        if (AISupervisor.Instance)
+        {
+            AISupervisor.Instance.OnTutorialMessageReceived -= TutorialMessage;
+        }
     }
 
     private void Update()
