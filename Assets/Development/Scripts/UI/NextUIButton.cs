@@ -7,6 +7,8 @@ public class NextUIButton : MonoBehaviour
 {
     [SerializeField] private GameObject nextSelectedButton;
     [SerializeField] private GameObject uiSwitchTargetbutton;
+    [SerializeField] private GameObject uiToActive;
+    [SerializeField] private GameObject uiToDeactive;
 
     public void MoveSelectedUiObject()
     {
@@ -18,5 +20,17 @@ public class NextUIButton : MonoBehaviour
         nextSelectedButton = currentGameObject;
         MoveSelectedUiObject();
     }
-   
+
+    public void DeactiveCurrentUi(GameObject currentUI)
+    {
+        uiToDeactive = currentUI;
+        uiToDeactive.SetActive(false);
+    }
+
+    public void ActiveNextUI(GameObject NextUI)
+    {
+        uiToActive = NextUI;
+        uiToActive.SetActive(true);
+    }
+    
 }
