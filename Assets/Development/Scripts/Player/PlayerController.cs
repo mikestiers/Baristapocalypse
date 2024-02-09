@@ -20,8 +20,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     [Header("Player Attributes")]
     [SerializeField] private float moveSpeed;
+    [SerializeField] private float gravityMoveSpeed;
     [SerializeField] private float jumpForce;
     [SerializeField] private float ingredientThrowForce;
+    public List<GameObject> bootsParticles = new List<GameObject>();
 
     [Header("Ground Check")]
     [SerializeField] private LayerMask isGroundLayer;
@@ -132,6 +134,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         //Set variables if null
         if (moveSpeed <= 0) moveSpeed = 10.0f;
+        if (gravityMoveSpeed <= 0) gravityMoveSpeed = 4.0f;
         if (jumpForce <= 0) jumpForce = 200.0f;
         if (dashForce <= 0) dashForce = 100.0f;
         if (dashTime <= 0) dashTime = 0.1f;
@@ -192,8 +195,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         // Ground Check
         IsGrounded();
         // player movement
-        if(movementToggle)
+        if(movementToggle && !GameManager.Instance.isEventActive)
             Move(moveSpeed);
+        else if (movementToggle && GameManager.Instance.isEventActive)
+            Move(gravityMoveSpeed);
 
         if (!movementToggle)
         {
