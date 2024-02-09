@@ -9,9 +9,22 @@ public class GravityStorm : RandomEventBase
     public float driftSpeed = 0.1f;
     public float rotationSpeed = 1.0f;
     public float collisionBoxSize = 5.0f;
+    public GameObject gravityButton;
+    public Material gravityButtonMaterial;
 
     private Vector3[] objectVelocities;
     private Rigidbody[] objectRigidbodies;
+
+    private void Awake()
+    {
+        foreach (GameObject bootParticle in PlayerController.Instance.bootsParticles)
+        {
+            bootParticle.SetActive(GameManager.Instance.isEventActive);
+        }
+
+        gravityButton.GetComponent<MeshRenderer>().material = gravityButtonMaterial;
+    }
+
 
     private void Start()
     {

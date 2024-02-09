@@ -73,7 +73,9 @@ public class GameManager : NetworkBehaviour
  
         playerReadyDictionary = new Dictionary<ulong, bool>();
         playerPauseDictionary = new Dictionary<ulong, bool>();
+        currentDifficulty = GameValueHolder.Instance.currentDifficulty;
     }
+
 
     private void Start()
     {
@@ -207,7 +209,7 @@ public class GameManager : NetworkBehaviour
                     // Adjust the difficulty based on time passed
                     foreach (float randomEventTime in randomEventTimes)
                     {
-                        if (timeSinceStart > randomEventTime)
+                        if (timeSinceStart > randomEventTime && timeSinceStart < (randomEventTime + 1.0f))
                         {
                             TriggerRandomEvent();
                         }
