@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class OrderStats : MonoBehaviour
 {
-    [Header("Customer Order")]
+    [Header("UI Objects")]
     [SerializeField] public GameObject customerInfoRoot;
     [SerializeField] public Text customerNumberText;
     [SerializeField] public Text customerNameText;
@@ -19,10 +19,6 @@ public class OrderStats : MonoBehaviour
     [SerializeField] public GameObject sweetnessTargetAttributeSelector;
     [SerializeField] public GameObject spicinessTargetAttributeSelector;
     [SerializeField] public GameObject strengthTargetAttributeSelector;
-    [SerializeField] public GameObject temperatureTargetSegment;
-    [SerializeField] public GameObject sweetnessTargetSegment;
-    [SerializeField] public GameObject spicinessTargetSegment;
-    [SerializeField] public GameObject strengthTargetSegment;
     [SerializeField] public GameObject temperaturePotentialAttributeSelector;
     [SerializeField] public GameObject sweetnessPotentialAttributeSelector;
     [SerializeField] public GameObject spicinessPotentialAttributeSelector;
@@ -35,14 +31,17 @@ public class OrderStats : MonoBehaviour
     [SerializeField] public Sprite OrderTargetSuccessPolygon;
     [SerializeField] public Sprite OrderTargetSuccessRectangle;
     [SerializeField] public Sprite TransparentSegment;  
-
-
-    [SerializeField] public List<PlayerController> currentPlayers;
     [SerializeField] public Image resetMachineImage;
-    [SerializeField] public bool orderInProgress { get; set; }
-    [SerializeField] private CustomerBase orderOwner;
+
+    [Header("Associated Brewing Station")]
     [SerializeField] public BrewingStation brewingStation;
 
+    [Header("Private State Values")]
+    [SerializeField] private CustomerBase orderOwner;
+    [SerializeField] private GameObject temperatureTargetSegment;
+    [SerializeField] private GameObject sweetnessTargetSegment;
+    [SerializeField] private GameObject spicinessTargetSegment;
+    [SerializeField] private GameObject strengthTargetSegment;
     [SerializeField] private int temperatureTargetValue;
     [SerializeField] private int sweetnessTargetValue;
     [SerializeField] private int spicinessTargetValue;
@@ -55,6 +54,9 @@ public class OrderStats : MonoBehaviour
     [SerializeField] private int sweetnessCumulativeValue;
     [SerializeField] private int spicinessCumulativeValue;
     [SerializeField] private int strengthCumulativeValue;
+
+    public bool orderInProgress { get; set; }
+    public List<PlayerController> currentPlayers;
 
 
     private void OnEnable()
@@ -301,100 +303,161 @@ public class OrderStats : MonoBehaviour
 
     private void SetTargetSegments()
     {
-        temperatureTargetSegment = temperatureSegments[temperatureTargetValue];
-        if (temperatureTargetValue == MapValue(temperaturePotentialValue))
-            if (MapValue(temperatureTargetValue) == 0)
-                temperatureTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessPolygon;
+        if (GameValueHolder.Instance.difficultySettings.GetDrinkThreshold() == 1)
+        {
+            temperatureTargetSegment = temperatureSegments[temperatureTargetValue];
+            Sprite temperatureTargetSprite;
+            if (temperatureTargetValue == MapValue(temperaturePotentialValue))
+                temperatureTargetSprite = temperatureTargetValue == 7 ? OrderTargetSuccessPolygon : OrderTargetSuccessRectangle;
             else
-                temperatureTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
-        else
-            temperatureTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
-        temperatureTargetSegment.SetActive(true);
+                temperatureTargetSprite = temperatureTargetValue == 7 ? OrderTargetEmptyPolygon : OrderTargetEmptyRectangle;
 
-        sweetnessTargetSegment = sweetnessSegments[sweetnessTargetValue];
-        if (sweetnessTargetValue == MapValue(sweetnessPotentialValue))
-            if (MapValue(sweetnessTargetValue) == 0)
-                sweetnessTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessPolygon;
+            temperatureTargetSegment.GetComponent<Image>().sprite = temperatureTargetSprite;
+            temperatureTargetSegment.SetActive(true);
+
+            sweetnessTargetSegment = sweetnessSegments[sweetnessTargetValue];
+            Sprite sweetnessTargetSprite;
+            if (sweetnessTargetValue == MapValue(sweetnessPotentialValue))
+                sweetnessTargetSprite = sweetnessTargetValue == 7 ? OrderTargetSuccessPolygon : OrderTargetSuccessRectangle;
             else
-                sweetnessTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
-        else
-            sweetnessTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
-        sweetnessTargetSegment.SetActive(true);
+                sweetnessTargetSprite = sweetnessTargetValue == 7 ? OrderTargetEmptyPolygon : OrderTargetEmptyRectangle;
 
-        spicinessTargetSegment = spicinessSegments[spicinessTargetValue];
-        if (spicinessTargetValue == MapValue(spicinessPotentialValue))
-            if (MapValue(spicinessTargetValue) == 0)
-                spicinessTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessPolygon;
+            sweetnessTargetSegment.GetComponent<Image>().sprite = sweetnessTargetSprite;
+            sweetnessTargetSegment.SetActive(true);
+
+            spicinessTargetSegment = spicinessSegments[spicinessTargetValue];
+            Sprite spicinessTargetSprite;
+            if (spicinessTargetValue == MapValue(spicinessPotentialValue))
+                spicinessTargetSprite = spicinessTargetValue == 7 ? OrderTargetSuccessPolygon : OrderTargetSuccessRectangle;
             else
-                spicinessTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
-        else
-            spicinessTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
-        spicinessTargetSegment.SetActive(true);
+                spicinessTargetSprite = spicinessTargetValue == 7 ? OrderTargetEmptyPolygon : OrderTargetEmptyRectangle;
 
-        strengthTargetSegment = strengthSegments[strengthTargetValue];
-        if (strengthTargetValue == MapValue(strengthPotentialValue))
-            if (MapValue(strengthTargetValue) == 0)
-                strengthTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessPolygon;
+            spicinessTargetSegment.GetComponent<Image>().sprite = spicinessTargetSprite;
+            spicinessTargetSegment.SetActive(true);
+
+            strengthTargetSegment = strengthSegments[strengthTargetValue];
+            Sprite strengthTargetSprite;
+            if (strengthTargetValue == MapValue(strengthPotentialValue))
+                strengthTargetSprite = strengthTargetValue == 7 ? OrderTargetSuccessPolygon : OrderTargetSuccessRectangle;
             else
-            strengthTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
-        else
-            strengthTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
-        strengthTargetSegment.SetActive(true);
+                strengthTargetSprite = strengthTargetValue == 7 ? OrderTargetEmptyPolygon : OrderTargetEmptyRectangle;
 
+            strengthTargetSegment.GetComponent<Image>().sprite = strengthTargetSprite;
+            strengthTargetSegment.SetActive(true);
+
+            //sweetnessTargetSegment = sweetnessSegments[sweetnessTargetValue];
+            //if (sweetnessTargetValue == MapValue(sweetnessPotentialValue))
+            //    if (sweetnessTargetValue == 7)
+            //        sweetnessTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessPolygon;
+            //    else
+            //        sweetnessTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //else
+            //    if (sweetnessTargetValue == 7)
+            //    sweetnessTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyPolygon;
+            //else
+            //    sweetnessTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //sweetnessTargetSegment.SetActive(true);
+
+            //spicinessTargetSegment = spicinessSegments[spicinessTargetValue];
+            //if (spicinessTargetValue == MapValue(spicinessPotentialValue))
+            //    if (spicinessTargetValue == 7)
+            //        spicinessTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessPolygon;
+            //    else
+            //        spicinessTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //else
+            //    if (spicinessTargetValue == 7)
+            //    spicinessTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyPolygon;
+            //else
+            //    spicinessTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //spicinessTargetSegment.SetActive(true);
+
+            //strengthTargetSegment = strengthSegments[strengthTargetValue];
+            //if (strengthTargetValue == MapValue(strengthPotentialValue))
+            //    if (strengthTargetValue == 7)
+            //        strengthTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessPolygon;
+            //    else
+            //        strengthTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //else
+            //    if (strengthTargetValue == 7)
+            //    strengthTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyPolygon;
+            //else
+            //    strengthTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //strengthTargetSegment.SetActive(true);
+        }
 
         //difficulty range
         if (GameValueHolder.Instance.difficultySettings.GetDrinkThreshold() == 3)
         {
-            if (Math.Abs(temperatureTargetValue - MapValue(temperaturePotentialValue)) <= 1)
+            bool temperatureTargetIs6To8 = temperatureTargetValue == 6 || temperatureTargetValue == 7 || temperatureTargetValue == 8;
+            bool isTemperatureWithinTargetRange = Math.Abs(temperatureTargetValue - MapValue(temperaturePotentialValue)) <= 1;
+            Sprite temperaturePolygonSprite = isTemperatureWithinTargetRange ? OrderTargetSuccessPolygon : OrderTargetEmptyPolygon;
+            Sprite temperaturerectangleSprite = isTemperatureWithinTargetRange ? OrderTargetSuccessRectangle : OrderTargetEmptyRectangle;
+
+            if (temperatureTargetIs6To8)
             {
-                temperatureTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
-                temperatureSegments[temperatureTargetValue - 1].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
-                temperatureSegments[temperatureTargetValue + 1].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+                temperatureSegments[temperatureTargetValue].GetComponent<Image>().sprite = temperatureTargetValue == 7 ? temperaturePolygonSprite : temperaturerectangleSprite;
+                temperatureSegments[temperatureTargetValue - 1].GetComponent<Image>().sprite = temperatureTargetValue == 8 ? temperaturePolygonSprite : temperaturerectangleSprite;
+                temperatureSegments[temperatureTargetValue + 1].GetComponent<Image>().sprite = temperatureTargetValue == 6 ? temperaturePolygonSprite : temperaturerectangleSprite;
             }
             else
             {
-                temperatureTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
-                temperatureSegments[temperatureTargetValue - 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
-                temperatureSegments[temperatureTargetValue + 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+                temperatureSegments[temperatureTargetValue - 1].GetComponent<Image>().sprite = temperaturerectangleSprite;
+                temperatureSegments[temperatureTargetValue].GetComponent<Image>().sprite = temperaturerectangleSprite;
+                temperatureSegments[temperatureTargetValue + 1].GetComponent<Image>().sprite = temperaturerectangleSprite;
             }
 
-            if (Math.Abs(sweetnessTargetValue - MapValue(sweetnessPotentialValue)) <= 1)
+            bool sweetnessTargetIs6To8 = sweetnessTargetValue == 6 || sweetnessTargetValue == 7 || sweetnessTargetValue == 8;
+            bool isSweetnessWithinTargetRange = Math.Abs(sweetnessTargetValue - MapValue(sweetnessPotentialValue)) <= 1;
+            Sprite sweetnessPolygonSprite = isSweetnessWithinTargetRange ? OrderTargetSuccessPolygon : OrderTargetEmptyPolygon;
+            Sprite sweetnessrectangleSprite = isSweetnessWithinTargetRange ? OrderTargetSuccessRectangle : OrderTargetEmptyRectangle;
+
+            if (sweetnessTargetIs6To8)
             {
-                sweetnessTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
-                sweetnessSegments[sweetnessTargetValue - 1].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
-                sweetnessSegments[sweetnessTargetValue + 1].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+                sweetnessSegments[sweetnessTargetValue].GetComponent<Image>().sprite = sweetnessTargetValue == 7 ? sweetnessPolygonSprite : sweetnessrectangleSprite;
+                sweetnessSegments[sweetnessTargetValue - 1].GetComponent<Image>().sprite = sweetnessTargetValue == 8 ? sweetnessPolygonSprite : sweetnessrectangleSprite;
+                sweetnessSegments[sweetnessTargetValue +  1].GetComponent<Image>().sprite = sweetnessTargetValue == 6 ? sweetnessPolygonSprite : sweetnessrectangleSprite;
             }
             else
             {
-                sweetnessTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
-                sweetnessSegments[sweetnessTargetValue - 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
-                sweetnessSegments[sweetnessTargetValue + 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+                sweetnessSegments[sweetnessTargetValue - 1].GetComponent<Image>().sprite = sweetnessrectangleSprite;
+                sweetnessSegments[sweetnessTargetValue].GetComponent<Image>().sprite = sweetnessrectangleSprite;
+                sweetnessSegments[sweetnessTargetValue + 1].GetComponent<Image>().sprite = sweetnessrectangleSprite;
             }
 
-            if (Math.Abs(spicinessTargetValue - MapValue(spicinessPotentialValue)) <= 1)
+            bool spicinessTargetIs6To8 = spicinessTargetValue == 6 || spicinessTargetValue == 7 || spicinessTargetValue == 8;
+            bool isSpicinessWithinTargetRange = Math.Abs(spicinessTargetValue - MapValue(spicinessPotentialValue)) <= 1;
+            Sprite spicinessPolygonSprite = isSpicinessWithinTargetRange ? OrderTargetSuccessPolygon : OrderTargetEmptyPolygon;
+            Sprite spicinessRectangleSprite = isSpicinessWithinTargetRange ? OrderTargetSuccessRectangle : OrderTargetEmptyRectangle;
+
+            if (spicinessTargetIs6To8)
             {
-                spicinessTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
-                spicinessSegments[spicinessTargetValue - 1].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
-                spicinessSegments[spicinessTargetValue + 1].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+                spicinessSegments[spicinessTargetValue].GetComponent<Image>().sprite = spicinessTargetValue == 7 ? spicinessPolygonSprite : spicinessRectangleSprite;
+                spicinessSegments[spicinessTargetValue - 1].GetComponent<Image>().sprite = spicinessTargetValue == 8 ? spicinessPolygonSprite : spicinessRectangleSprite;
+                spicinessSegments[spicinessTargetValue + 1].GetComponent<Image>().sprite = spicinessTargetValue == 6 ? spicinessPolygonSprite : spicinessRectangleSprite;
             }
             else
             {
-                spicinessTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
-                spicinessSegments[spicinessTargetValue - 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
-                spicinessSegments[spicinessTargetValue + 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+                spicinessSegments[spicinessTargetValue - 1].GetComponent<Image>().sprite = spicinessRectangleSprite;
+                spicinessSegments[spicinessTargetValue].GetComponent<Image>().sprite = spicinessRectangleSprite;
+                spicinessSegments[spicinessTargetValue + 1].GetComponent<Image>().sprite = spicinessRectangleSprite;
             }
 
-            if (Math.Abs(strengthTargetValue - MapValue(strengthPotentialValue)) <= 1)
+            bool strengthTargetIs6To8 = strengthTargetValue == 6 || strengthTargetValue == 7 || strengthTargetValue == 8;
+            bool isStrengthWithinTargetRange = Math.Abs(strengthTargetValue - MapValue(strengthPotentialValue)) <= 1;
+            Sprite strengthPolygonSprite = isStrengthWithinTargetRange ? OrderTargetSuccessPolygon : OrderTargetEmptyPolygon;
+            Sprite strengthRectangleSprite = isStrengthWithinTargetRange ? OrderTargetSuccessRectangle : OrderTargetEmptyRectangle;
+
+            if (strengthTargetIs6To8)
             {
-                strengthTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
-                strengthSegments[strengthTargetValue - 1].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
-                strengthSegments[strengthTargetValue + 1].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+                strengthSegments[strengthTargetValue].GetComponent<Image>().sprite = strengthTargetValue == 7 ? strengthPolygonSprite : strengthRectangleSprite;
+                strengthSegments[strengthTargetValue - 1].GetComponent<Image>().sprite = strengthTargetValue == 8 ? strengthPolygonSprite : strengthRectangleSprite;
+                strengthSegments[strengthTargetValue + 1].GetComponent<Image>().sprite = strengthTargetValue == 6 ? strengthPolygonSprite : strengthRectangleSprite;
             }
             else
             {
-                strengthTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
-                strengthSegments[strengthTargetValue - 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
-                strengthSegments[strengthTargetValue + 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+                strengthSegments[strengthTargetValue - 1].GetComponent<Image>().sprite = strengthRectangleSprite;
+                strengthSegments[strengthTargetValue].GetComponent<Image>().sprite = strengthRectangleSprite;
+                strengthSegments[strengthTargetValue + 1].GetComponent<Image>().sprite = strengthRectangleSprite;
             }
 
             temperatureSegments[temperatureTargetValue].SetActive(true);
@@ -413,20 +476,119 @@ public class OrderStats : MonoBehaviour
             strengthSegments[strengthTargetValue - 1].SetActive(true);
             strengthSegments[strengthTargetValue + 1].SetActive(true);
 
-            //temperatureSegments[temperatureTargetValue - 1].SetActive(true);
-            //temperatureSegments[temperatureTargetValue + 1].SetActive(true);
-            //sweetnessSegments[sweetnessTargetValue - 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
-            //sweetnessSegments[sweetnessTargetValue + 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
-            //sweetnessSegments[sweetnessTargetValue - 1].SetActive(true);
-            //sweetnessSegments[sweetnessTargetValue + 1].SetActive(true);
-            //spicinessSegments[spicinessTargetValue - 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
-            //spicinessSegments[spicinessTargetValue + 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
-            //spicinessSegments[spicinessTargetValue - 1].SetActive(true);
-            //spicinessSegments[spicinessTargetValue + 1].SetActive(true);
-            //strengthSegments[strengthTargetValue - 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
-            //strengthSegments[strengthTargetValue + 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
-            //strengthSegments[strengthTargetValue - 1].SetActive(true);
-            //strengthSegments[strengthTargetValue + 1].SetActive(true);  
+            //if (Math.Abs(temperatureTargetValue - MapValue(temperaturePotentialValue)) <= 1)
+            //{
+            //    if (temperatureTargetValue == 7)
+            //    {
+            //        temperatureTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessPolygon;
+            //        temperatureSegments[temperatureTargetValue - 1].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //        temperatureSegments[temperatureTargetValue + 1].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //    }
+            //    if (temperatureTargetValue == 6)
+            //    {
+            //        temperatureTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //        temperatureSegments[temperatureTargetValue + 1].GetComponent<Image>().sprite = OrderTargetSuccessPolygon;
+            //        temperatureSegments[temperatureTargetValue - 1].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //    }
+            //    if (temperatureTargetValue == 8)
+            //    {
+            //        temperatureTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //        temperatureSegments[temperatureTargetValue - 1].GetComponent<Image>().sprite = OrderTargetSuccessPolygon;
+            //        temperatureSegments[temperatureTargetValue + 1].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //    }
+            //}
+            //else
+            //{
+            //    if (temperatureTargetValue == 7)
+            //    {
+            //        temperatureTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyPolygon;
+            //        temperatureSegments[temperatureTargetValue - 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //        temperatureSegments[temperatureTargetValue + 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //    }
+            //    else if (temperatureTargetValue == 6)
+            //    {
+            //        temperatureTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //        temperatureSegments[temperatureTargetValue + 1].GetComponent<Image>().sprite = OrderTargetEmptyPolygon;
+            //        temperatureSegments[temperatureTargetValue - 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //    }
+            //    else if (temperatureTargetValue == 8)
+            //    {
+            //        temperatureTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //        temperatureSegments[temperatureTargetValue - 1].GetComponent<Image>().sprite = OrderTargetEmptyPolygon;
+            //        temperatureSegments[temperatureTargetValue + 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //    }
+            //    else
+            //    {
+            //        temperatureTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //        temperatureSegments[temperatureTargetValue - 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //        temperatureSegments[temperatureTargetValue + 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //    }
+            //}
+
+            //if (Math.Abs(sweetnessTargetValue - MapValue(sweetnessPotentialValue)) <= 1)
+            //{
+            //    sweetnessTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //    sweetnessSegments[sweetnessTargetValue - 1].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //    sweetnessSegments[sweetnessTargetValue + 1].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //}
+            //else
+            //{
+            //    sweetnessTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //    sweetnessSegments[sweetnessTargetValue - 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //    sweetnessSegments[sweetnessTargetValue + 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //}
+
+            //if (Math.Abs(spicinessTargetValue - MapValue(spicinessPotentialValue)) <= 1)
+            //{
+            //    spicinessTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //    spicinessSegments[spicinessTargetValue - 1].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //    spicinessSegments[spicinessTargetValue + 1].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //}
+            //else
+            //{
+            //    spicinessTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //    spicinessSegments[spicinessTargetValue - 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //    spicinessSegments[spicinessTargetValue + 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //}
+
+            //if (Math.Abs(strengthTargetValue - MapValue(strengthPotentialValue)) <= 1)
+            //{
+            //    strengthTargetSegment.GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //    strengthSegments[strengthTargetValue - 1].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //    strengthSegments[strengthTargetValue + 1].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //}
+            //else
+            //{
+            //    strengthTargetSegment.GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //    strengthSegments[strengthTargetValue - 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //    strengthSegments[strengthTargetValue + 1].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //}
+
+            //bool isTemperatureWithinTargetRange = Math.Abs(temperatureTargetValue - MapValue(temperaturePotentialValue)) <= 1;
+            //if (isTemperatureWithinTargetRange && (temperatureTargetValue == 6 || temperatureTargetValue == 7 || temperatureTargetValue == 8))
+            //{
+            //    temperatureSegments[7].GetComponent<Image>().sprite = OrderTargetSuccessPolygon;
+            //    temperatureSegments[6].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //    temperatureSegments[8].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //}
+            //else if (isTemperatureWithinTargetRange && !(temperatureTargetValue == 6 || temperatureTargetValue == 7 || temperatureTargetValue == 8))
+            //{
+            //    temperatureSegments[7].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //    temperatureSegments[6].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //    temperatureSegments[8].GetComponent<Image>().sprite = OrderTargetSuccessRectangle;
+            //}
+            //else if (!isTemperatureWithinTargetRange && (temperatureTargetValue == 6 || temperatureTargetValue == 7 || temperatureTargetValue == 8))
+            //{
+            //    temperatureSegments[7].GetComponent<Image>().sprite = OrderTargetEmptyPolygon;
+            //    temperatureSegments[6].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //    temperatureSegments[8].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //}
+            //else if (!isTemperatureWithinTargetRange && !(temperatureTargetValue == 6 || temperatureTargetValue == 7 || temperatureTargetValue == 8))
+            //{
+            //    temperatureSegments[7].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //    temperatureSegments[6].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //    temperatureSegments[8].GetComponent<Image>().sprite = OrderTargetEmptyRectangle;
+            //}
         }
     }
 
