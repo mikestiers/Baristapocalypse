@@ -9,14 +9,14 @@ public class TutorialManager : Singleton<TutorialManager>
     public bool tutorialEnabled;
     public bool firstOrderTaken;
     public bool firstBrewStarted;
-    public bool firstIngredientSelection;
-    public bool secondIngredientSelection;
-    public bool thirdIngredientSelection;
+    public bool firstIngredientSelected;
+    public bool secondIngredientSelected;
+    public bool thirdIngredientSelected;
+    public bool fourthIngredientSelected;
     public bool firstDrinkReady;
     public bool firstDrinkDelivered;
-    public bool customerServed;
-    public bool customerLeftReview;
-    public bool addIngredient;
+
+    // not implemented yet
     public bool drinkThreshold;
     public bool loitering;
     public bool gravityStorm;
@@ -25,106 +25,55 @@ public class TutorialManager : Singleton<TutorialManager>
 
     public void Start()
     {
-        StartCoroutine(WaitAndExecute(12));
+        if (BaristapocalypseMultiplayer.playMultiplayer)
+        {
+            tutorialEnabled = false;
+            Destroy(this);
+        }
     }
 
-    IEnumerator WaitAndExecute(int seconds)
-    {
-        yield return new WaitForSeconds(seconds);
-        TakeFirstOrder();
-    }
-
-    public void Update()
-    {
-        if (!firstBrewStarted) MakeFirstBrew();
-        if (!firstIngredientSelection) MakeFirstIngredientSelection();
-        if (!secondIngredientSelection) MakeSecondIngredientSelection();
-        if (!thirdIngredientSelection) MakeThirdIngredientSelection();
-        if (!firstDrinkReady) FirstDrinkReady();
-        
-        // When the task to set order state = finished is complete this week, continue...
-        //if (!firstDrinkDelivered) FirstDrinkDelivered();
-    }
-
-    void TakeFirstOrder()
+    public void TakeFirstOrder()
     {
         AISupervisor.Instance.SupervisorMessageToDisplay("Customer! Wait at the counter and take their order!");
         firstOrderTaken = true;
     }
 
-    public void MakeFirstBrew()
+    public void StartFirstBrew(Order order)
     {
-        Debug.Log(OrderManager.Instance.GetFirstOrder());
-        if (OrderManager.Instance.GetFirstOrder() == null)
-            return;
-
-        Debug.Log("Can make first brew");
-        Debug.Log(OrderManager.Instance.GetFirstOrder().State);
-        if (OrderManager.Instance.GetFirstOrder().State == Order.OrderState.Brewing)
-        {
-            AISupervisor.Instance.SupervisorMessageToDisplay("Ok....Pretty neat ingredient stations. Wonder what those do");
-            firstBrewStarted = true;
-        }
-        
+        Debug.Log($"cusorder: {order.coffeeAttributes.GetSweetness()}");
+        AISupervisor.Instance.SupervisorMessageToDisplay($"Look at their drink order. They want {order.coffeeAttributes.GetSweetness()} sweetness");
+        AISupervisor.Instance.SupervisorMessageToDisplay($"Go over to the sweetener station and pick the right ingredient");
+        firstBrewStarted = true;
     }
 
-    public void MakeFirstIngredientSelection()
+    public void MadeFirstIngredientSelection()
     {
-        BrewingStation[] brewingStations = FindObjectsOfType<BrewingStation>();
-        foreach (BrewingStation brewingStation in brewingStations)
-        {
-            Debug.Log($"BrewingIngredients: {brewingStation.ingredientSOList.Count}");
-            if (brewingStation.ingredientSOList.Count == 1)
-            {
-                AISupervisor.Instance.SupervisorMessageToDisplay("That better be the right ingredient! Now add the next!");
-                firstIngredientSelection = true;
-                return;
-            }
-        }
+        AISupervisor.Instance.SupervisorMessageToDisplay("Your ingredient was added to the brewing station. Now add more");
+        firstIngredientSelected = true;
     }
 
-    public void MakeSecondIngredientSelection()
+    public void MadeSecondIngredientSelection()
     {
-        BrewingStation[] brewingStations = FindObjectsOfType<BrewingStation>();
-        foreach (BrewingStation brewingStation in brewingStations)
-        {
-            Debug.Log($"BrewingIngredients: {brewingStation.ingredientSOList.Count}");
-            if (brewingStation.ingredientSOList.Count == 2)
-            {
-                AISupervisor.Instance.SupervisorMessageToDisplay("Don't mess this up! Add more!");
-                secondIngredientSelection = true;
-                return;
-            }
-        }
+        AISupervisor.Instance.SupervisorMessageToDisplay("Excellent. They need 4 ingredients. Add from another ingredient station");
+        secondIngredientSelected = true;
     }
 
-    public void MakeThirdIngredientSelection()
+    public void MadeThirdIngredientSelection()
     {
-        BrewingStation[] brewingStations = FindObjectsOfType<BrewingStation>();
-        foreach (BrewingStation brewingStation in brewingStations)
-        {
-            Debug.Log($"BrewingIngredients: {brewingStation.ingredientSOList.Count}");
-            if (brewingStation.ingredientSOList.Count == 3)
-            {
-                AISupervisor.Instance.SupervisorMessageToDisplay("MOAR INGREDIENTS");
-                thirdIngredientSelection = true;
-                return;
-            }
-        }
+        AISupervisor.Instance.SupervisorMessageToDisplay("One more ingredient type to go");
+        thirdIngredientSelected = true;
+    }
+
+    public void MadeFourthIngredientSelection()
+    {
+        AISupervisor.Instance.SupervisorMessageToDisplay("Go activate the brewing station and see how you did");
+        fourthIngredientSelected = true;
     }
 
     public void FirstDrinkReady()
     {
-        BrewingStation[] brewingStations = FindObjectsOfType<BrewingStation>();
-        foreach (BrewingStation brewingStation in brewingStations)
-        {
-            if (brewingStation.ingredientSOList.Count == 4)
-            {
-                AISupervisor.Instance.SupervisorMessageToDisplay("Grab the drink! Bring it to the customer!");
-                firstDrinkReady = true;
-                return;
-            }
-        }
+        AISupervisor.Instance.SupervisorMessageToDisplay("Bring it to the customer!");
+        firstDrinkReady = true;
     }
 
     public void FirstDrinkDelivered()

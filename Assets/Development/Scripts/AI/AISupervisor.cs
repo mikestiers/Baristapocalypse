@@ -95,6 +95,7 @@ public class AISupervisor : NetworkBehaviour
             yield return null;
         }
 
+        // Pauses the game and allows for the player to read the message and continue when ready
         if (TutorialManager.Instance.tutorialEnabled)
             OnTutorialMessageReceived?.Invoke();
 

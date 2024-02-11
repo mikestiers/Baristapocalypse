@@ -9,7 +9,7 @@ public class Order: MonoBehaviour
     private string Name;
     private List<IngredientSO> ingredientList;
     private Tuple<int, int, int, int> attributes;
-    private CoffeeAttributes coffeeAttributes;
+    public CoffeeAttributes coffeeAttributes;
     private BrewingStation assignedBrewingStation;
     public OrderState State { get; set; }
 

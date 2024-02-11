@@ -111,6 +111,18 @@ public class IngredientSelectionUI : BaseStation
         {
             OrderManager.Instance.brewingStations[player.currentBrewingStation].AddIngredientToListSO(BaristapocalypseMultiplayer.Instance.GetIngredientSOIndex(currentIngredient));
             OrderManager.Instance.orderStats[player.currentBrewingStation].SetCumulativeToPotential();
+
+            if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstIngredientSelected)
+                TutorialManager.Instance.MadeFirstIngredientSelection();
+
+            else if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.secondIngredientSelected)
+                TutorialManager.Instance.MadeSecondIngredientSelection();
+
+            else if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.thirdIngredientSelected)
+                TutorialManager.Instance.MadeThirdIngredientSelection();
+
+            else if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.fourthIngredientSelected)
+                TutorialManager.Instance.MadeFourthIngredientSelection();
         }
         StartCoroutine(CloseMenu());
     }

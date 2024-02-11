@@ -76,6 +76,9 @@ public class CustomerReviewManager : NetworkBehaviour
 
     private void CustomerReviewDisplay()
     {
+        if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstDrinkDelivered)
+            TutorialManager.Instance.FirstDrinkDelivered();
+
         if (reviewInProgress == false)
         {
             customerReviewText.text = customerReview.GetComponent<CustomerReview>().ReviewText;
