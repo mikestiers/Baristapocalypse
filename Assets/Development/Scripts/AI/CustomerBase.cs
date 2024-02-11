@@ -34,7 +34,7 @@ public class CustomerBase : Base
     public Order order;
 
     [Header("State Related")]
-    public NetworkVariable<CustomerState> currentState = new NetworkVariable<CustomerState>(CustomerState.Init);
+    public CustomerState currentState;
     public float? orderTimer = null;
     public float? messTime = null;
     public float customerLeaveTime;
@@ -63,14 +63,10 @@ public class CustomerBase : Base
 
     public virtual void Start()
     {
-        if (IsOwner)
-        {
-            SetCustomerState(CustomerState.Init);
-        }
-        
+        SetCustomerStateServerRpc(CustomerState.Init);
         SetCustomerVisualIdentifiers();
 
-        customerLeaveTime = Random.Range(GameValueHolder.Instance.difficultySettings.GetMinWaitTime(), GameValueHolder.Instance.difficultySettings.GetMaxWaitTime());
+        customerLeaveTime = Random.Range(GameManager.Instance.difficultySettings.GetMinWaitTime(), GameManager.Instance.difficultySettings.GetMaxWaitTime());
 
         agent = GetComponent<NavMeshAgent>();
         exit = CustomerManager.Instance.GetExit();
@@ -81,14 +77,13 @@ public class CustomerBase : Base
 
     public virtual void Update()
     {
-        if(!IsOwner) return;    
         if (orderTimer != null)
             orderTimer += Time.deltaTime;
 
         if (messTime != null)
             messTime += Time.deltaTime; 
 
-        switch (currentState.Value)
+        switch (currentState)
         {
             case CustomerState.Wandering:
                 UpdateWandering();
@@ -134,9 +129,10 @@ public class CustomerBase : Base
     private void UpdateWaiting()
     {
         // To be implmented or removed
-        if (makingAMess == true) SetCustomerState(CustomerState.Loitering);
-    }
+        if (makingAMess == true) SetCustomerStateServerRpc(CustomerState.Loitering);
 
+
+    }
     private void UpdateOrdering()
     {
         if (orderTimer == null)
@@ -153,11 +149,11 @@ public class CustomerBase : Base
             agent.isStopped = true;
             if (frontofLine == true)
             {
-                SetCustomerState(CustomerState.Ordering);
+                SetCustomerStateServerRpc(CustomerState.Ordering);
             }
             else
             {
-                SetCustomerState(CustomerState.Waiting);
+                SetCustomerStateServerRpc(CustomerState.Waiting);
             }
 
             moving = false;
@@ -171,6 +167,8 @@ public class CustomerBase : Base
         if (agent.remainingDistance < distThreshold)
         {
             Destroy(gameObject);
+            Debug.Log("this is our disappearing customer issue"); // if you see this, the customer probably disappeared and the review didn't show.  something about being close to the entrance causes the player to destroy on leaving
+            //UIManager.Instance.RemoveCustomerUiOrder(this);
         }
     }
 
@@ -182,8 +180,7 @@ public class CustomerBase : Base
         orderBeingServed = true;
         if (orderTimer >= customerLeaveTime)
         {
-            CustomerManager.Instance.customerLeaveIncrease();
-            GameManager.Instance.moneySystem.ResetStreak();
+            CustomerManager.Instance.customerLeaveIncrease();         
             CustomerLeave();
 
             Debug.LogWarning("Unhappy Customer");
@@ -200,13 +197,13 @@ public class CustomerBase : Base
     {
         if (leaving == true)
         {
-            SetCustomerState(CustomerState.Leaving);
+            SetCustomerStateServerRpc(CustomerState.Leaving);
             agent.SetDestination(exit.position);
         }
     
 
         // To be implmented or removed
-        if(messTime >= GameValueHolder.Instance.difficultySettings.GetLoiterMessEverySec())
+        if(messTime >= GameManager.Instance.difficultySettings.GetLoiterMessEverySec())
         {
             CreateMess();
             RestartMessTimer();
@@ -269,9 +266,8 @@ public class CustomerBase : Base
         // Take customer order
         if (GetCustomerState() == CustomerState.Ordering)
         {
-            OrderManager.Instance.SpawnOrder(this);
-            if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstBrewStarted)
-                TutorialManager.Instance.StartFirstBrew(order);
+            Order order = new Order();
+            order.Initialize(this);
             LeaveLineServerRpc();
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
             interactParticle.Play();
@@ -281,7 +277,7 @@ public class CustomerBase : Base
         else if (GetCustomerState() == CustomerState.Insit && player.GetIngredient().CompareTag("CoffeeCup"))
         {
             player.GetIngredient().SetIngredientParent(this);
-            JustGotHandedCoffee();
+            JustGotHandedCoffee(this.GetIngredient().GetComponent<CoffeeAttributes>());
             player.RemoveIngredientInListByReference(player.GetIngredient());
             CustomerManager.Instance.customerServedIncrease();
 
@@ -291,7 +287,7 @@ public class CustomerBase : Base
 
         if(makingAMess == true)
         {
-            SetCustomerState(CustomerState.Leaving);
+            SetCustomerStateServerRpc(CustomerState.Leaving);
             agent.SetDestination(exit.position);
             makingAMess = false;
             leaving = true;
@@ -306,13 +302,16 @@ public class CustomerBase : Base
     [ServerRpc(RequireOwnership = false)]
     private void LeaveLineServerRpc()
     {
+        Debug.Log("serverrpc");
         LeaveLineClientRpc();
     }
 
     [ClientRpc]
     private void LeaveLineClientRpc()
     {
+        Debug.Log("customer leaving");
         CustomerManager.Instance.Leaveline();
+       
     }
 
     // CUSTOMER STATE METHODS
@@ -320,19 +319,20 @@ public class CustomerBase : Base
     // thse methods.  Do not set the state like customerstate = "Leaving"
     public CustomerState GetCustomerState()
     {
-        return currentState.Value;
+        return currentState;
     }
 
-    public void SetCustomerState(CustomerState customerState)
+    //Maybe dont need, can try to get rid of it later
+    [ServerRpc(RequireOwnership = false)]
+    public void SetCustomerStateServerRpc(CustomerState newState)
     {
-        if (!IsOwner) return;
-        SetCustomerStateServerRpc(customerState);
+        SetCustomerStateClientRpc(newState);
     }
 
-    [ServerRpc]
-    private void SetCustomerStateServerRpc(CustomerState customerState)
+    [ClientRpc]
+    public void SetCustomerStateClientRpc(CustomerState newState)
     {
-        currentState.Value = customerState;
+        currentState = newState;
     }
 
     // CUSTOMER IDENTIFICATION METHODS
@@ -348,7 +348,8 @@ public class CustomerBase : Base
         customerNumberText.text = customerNumber.ToString();
         customerNameText.text = customerName;
         customerDialogue.SetActive(false);
-        customerNumberCanvas.enabled = false; 
+        customerNumberCanvas.enabled = false;
+       
     }
 
     public void DisplayCustomerVisualIdentifiers()
@@ -376,17 +377,19 @@ public class CustomerBase : Base
 
     public virtual void CustomerLeave()
     {
-        if (Random.Range(0, 100) <= GameValueHolder.Instance.difficultySettings.GetChanceToMess()) CreateMess();
-        if (Random.Range(0, 100) < GameValueHolder.Instance.difficultySettings.GetChanceToLoiter())
+        //OrderManager.Instance.FinishOrder(order);
+
+        if (Random.Range(0, 100) <= GameManager.Instance.difficultySettings.GetChanceToMess()) CreateMess();
+        if (Random.Range(0, 100) < GameManager.Instance.difficultySettings.GetChanceToLoiter())
         {
-            SetCustomerState(CustomerState.Loitering);
+            SetCustomerStateServerRpc(CustomerState.Loitering);
             messTime = 0f;
             makingAMess = true;
             moving = false;
         }
         else
         {
-            SetCustomerState(CustomerState.Leaving);
+            SetCustomerStateServerRpc(CustomerState.Leaving);
             agent.SetDestination(exit.position);
 
 
@@ -394,33 +397,21 @@ public class CustomerBase : Base
             //UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
             //if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
         }
+        
     }
 
     public void Walkto(Vector3 Spot)
     {
         if (agent.isStopped) agent.isStopped = false;
         agent.SetDestination(Spot);
-        SetCustomerState(CustomerState.Moving);
+        SetCustomerStateServerRpc(CustomerState.Moving);
         moving = true;
     }
 
-    public void JustGotHandedCoffee()
+    public void JustGotHandedCoffee(CoffeeAttributes coffee)
     {
-        if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstDrinkDelivered)
-            TutorialManager.Instance.FirstDrinkDelivered();
-        JustGotHandedCoffeeServerRpc();
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void JustGotHandedCoffeeServerRpc()
-    {
-        JustGotHandedCoffeeClientRpc();
-    }
-
-    [ClientRpc]
-    private void JustGotHandedCoffeeClientRpc()
-    {
-        CustomerReviewManager.Instance.CustomerReviewEvent(this);
+        CustomerReviewManager.Instance.ShowCustomerReview(this);
+        OrderManager.Instance.FinishOrder(order);
         StopOrderTimer();
         CustomerLeave();
     }
@@ -428,13 +419,13 @@ public class CustomerBase : Base
     void HeadDetach()
     {
         detachedHead.Initialize();
-        SetCustomerState(CustomerState.Dead);
+        SetCustomerStateServerRpc(CustomerState.Dead);
         StartCoroutine(DeadTimer());
     }
 
     public void Dead()
     {
-        SetCustomerState(CustomerState.Dead);
+        SetCustomerStateServerRpc(CustomerState.Dead);
         StartCoroutine(DeadTimer());
     }
 

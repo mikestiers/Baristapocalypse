@@ -1,25 +1,25 @@
 using System;
 using System.Collections.Generic;
-using Unity.Netcode;
 using UnityEngine;
 
-public class Order: NetworkBehaviour
+public class Order: MonoBehaviour
 {
     public CustomerBase customer;
     private int number;
     private string Name;
     private List<IngredientSO> ingredientList;
     private Tuple<int, int, int, int> attributes;
-    public CoffeeAttributes coffeeAttributes;
+    private CoffeeAttributes coffeeAttributes;
     private BrewingStation assignedBrewingStation;
-    public NetworkVariable<OrderState> orderState = new NetworkVariable<OrderState>(OrderState.Waiting);
+    public OrderState State { get; set; }
 
     public enum OrderState
     {
         Waiting,
         Brewing,
-        BeingDelivered,
-        Delivered
+        Finished,
+        InQueue,
+        OutOfTime
     }
 
     public void Initialize(CustomerBase customerOrder)
@@ -28,17 +28,7 @@ public class Order: NetworkBehaviour
         Name = customer.customerName;
         number = customer.customerNumber;
         coffeeAttributes = customer.coffeeAttributes;
-        orderState.Value = OrderState.Waiting;
+        State = OrderState.Waiting;
         OrderManager.Instance.AddOrder(this);
-    }
-
-    public void SetOrderState(OrderState _orderState)
-    {
-        orderState.Value = _orderState;
-    }
-
-    public OrderState GetOrderState()
-    {
-        return orderState.Value;
     }
 }
