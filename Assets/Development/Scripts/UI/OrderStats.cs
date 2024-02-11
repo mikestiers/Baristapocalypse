@@ -78,6 +78,12 @@ public class OrderStats : MonoBehaviour
         if (orderInProgress == true)
         {
             UpdateTimer();
+
+            if (orderTimer.value <= 0.01f)
+            {
+                Debug.Log("wokin");
+                orderInProgress = false;
+            }
         }
     }
 
@@ -134,6 +140,7 @@ public class OrderStats : MonoBehaviour
     {
         if (orderOwner.GetCustomerState() != CustomerBase.CustomerState.Leaving)
             orderTimer.value = (orderOwner.customerLeaveTime - orderOwner.orderTimer.Value) / orderOwner.customerLeaveTime;
+
     }
 
     public List<PlayerController> GetActivePlayers()

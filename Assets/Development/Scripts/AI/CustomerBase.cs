@@ -133,7 +133,6 @@ public class CustomerBase : Base
 
 
     }
-
     private void UpdateOrdering()
     {
         if (orderTimer == null)
@@ -181,7 +180,7 @@ public class CustomerBase : Base
         orderBeingServed = true;
         if (orderTimer >= customerLeaveTime)
         {
-            CustomerManager.Instance.customerLeaveIncrease();
+            CustomerManager.Instance.customerLeaveIncrease();         
             CustomerLeave();
 
             Debug.LogWarning("Unhappy Customer");
@@ -378,6 +377,8 @@ public class CustomerBase : Base
 
     public virtual void CustomerLeave()
     {
+        //OrderManager.Instance.FinishOrder(order);
+
         if (Random.Range(0, 100) <= GameManager.Instance.difficultySettings.GetChanceToMess()) CreateMess();
         if (Random.Range(0, 100) < GameManager.Instance.difficultySettings.GetChanceToLoiter())
         {
@@ -396,6 +397,7 @@ public class CustomerBase : Base
             //UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
             //if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
         }
+        
     }
 
     public void Walkto(Vector3 Spot)
@@ -409,6 +411,7 @@ public class CustomerBase : Base
     public void JustGotHandedCoffee(CoffeeAttributes coffee)
     {
         CustomerReviewManager.Instance.ShowCustomerReview(this);
+        OrderManager.Instance.FinishOrder(order);
         StopOrderTimer();
         CustomerLeave();
     }

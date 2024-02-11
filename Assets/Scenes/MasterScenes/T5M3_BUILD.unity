@@ -2522,6 +2522,11 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 1243222267}
+--- !u!224 &343782230 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5442374189369190790, guid: 85bf6facf14cdf14aa7b09668cf4dd3a, type: 3}
+  m_PrefabInstance: {fileID: 824060473}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &346700245
 GameObject:
   m_ObjectHideFlags: 0
@@ -10830,7 +10835,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1119708939, guid: 85bf6facf14cdf14aa7b09668cf4dd3a, type: 3}
       propertyPath: m_RootOrder
-      value: 21
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 1226674157, guid: 85bf6facf14cdf14aa7b09668cf4dd3a, type: 3}
       propertyPath: m_IsActive
@@ -13927,6 +13932,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1073394028}
   - component: {fileID: 1073394029}
+  - component: {fileID: 1073394030}
   m_Layer: 0
   m_Name: OrderManager
   m_TagString: Untagged
@@ -13961,12 +13967,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4968f3464b9a1d04395a43d8e9fce9f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timers: []
+  orders: []
+  orderQueue: []
   brewingStations:
   - {fileID: 1819764978}
   - {fileID: 828276134}
   orderStats:
   - {fileID: 1527180619}
   - {fileID: 567439079}
+  amountOfOrders: 0
+  ordersInQueue: 0
+  slider: {fileID: 2734779604996516792, guid: 1de7d7134a12b934e8b97d6ac80cda8d, type: 3}
+  sliderLocation: {fileID: 1781664832}
+--- !u!114 &1073394030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1073394027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 3502024253
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &1074448658
 GameObject:
   m_ObjectHideFlags: 0
@@ -15894,7 +15923,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-8402
+  m_Name: pb_Mesh-129496
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -18420,7 +18449,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-8416
+  m_Name: pb_Mesh-129510
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -18583,6 +18612,69 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3940924465142878138, guid: 362d13b06f9add647a5fb8184705949f, type: 3}
   m_PrefabInstance: {fileID: 1693155154}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1781664831
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1781664832}
+  - component: {fileID: 1781664833}
+  m_Layer: 5
+  m_Name: QueueTimers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1781664832
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781664831}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 343782230}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -126.1, y: 302.2}
+  m_SizeDelta: {x: 100, y: 64}
+  m_Pivot: {x: 0, y: 0}
+--- !u!114 &1781664833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781664831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: -170
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &1806924590
 GameObject:
   m_ObjectHideFlags: 0
@@ -20849,7 +20941,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 53240911520133870, guid: a6c9643515eff9a438ab123144e4acd7, type: 3}
       propertyPath: m_RootOrder
-      value: 22
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 53240911520133870, guid: a6c9643515eff9a438ab123144e4acd7, type: 3}
       propertyPath: m_LocalScale.x

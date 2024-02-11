@@ -48,12 +48,18 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     protected virtual void RaiseBrewingDone()
     {
         currentOrder.State = Order.OrderState.Finished;
-        OnBrewingDone?.Invoke(this, EventArgs.Empty);
+        
     }
 
     protected virtual void RaiseBrewingEmpty()
     {
         OnBrewingEmpty?.Invoke(this, EventArgs.Empty);
+    }
+    
+    protected virtual void CustomerOrderTimeExpired()
+    {
+        currentOrder.State = Order.OrderState.OutOfTime;
+        OnBrewingDone?.Invoke(this, EventArgs.Empty);
     }
 
     //private void OnEnable()
@@ -117,7 +123,19 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
                 SpawnCoffeeDrinkServerRpc();   
                 BrewingDoneServerRpc();   
             }
+
+
         }
+
+        if (!availableForOrder)
+        {
+            if (currentOrder.customer.orderTimer >= currentOrder.customer.customerLeaveTime)
+            {
+                CustomerOrderTimeExpiredRpc();
+            }
+        }
+
+
         if (minigameTiming)
         {
             minigameTimer += Time.deltaTime;
@@ -169,12 +187,21 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         RaiseBrewingDone();
         ingredientSOList.Clear();
         isBrewing = false;
-        availableForOrder = true;
 
         //setup minigame
         minigameTiming = true;
         minigameTimer = 0;
         sweetSpotPosition = UnityEngine.Random.Range(minSweetSpotPosition, maxSweetSpotPosition);
+    }
+
+    private void CustomerOrderTimeExpiredRpc()
+    {
+        CustomerOrderTimeExpired();
+        ingredientSOList.Clear();
+        isBrewing = false;
+        availableForOrder = true;
+
+        OrderManager.Instance.FinishOrder(currentOrder);
     }
 
     public override void Interact(PlayerController player)

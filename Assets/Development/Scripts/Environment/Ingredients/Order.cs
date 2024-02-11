@@ -17,7 +17,9 @@ public class Order: MonoBehaviour
     {
         Waiting,
         Brewing,
-        Finished
+        Finished,
+        InQueue,
+        OutOfTime
     }
 
     public void Initialize(CustomerBase customerOrder)
