@@ -269,8 +269,7 @@ public class CustomerBase : Base
         // Take customer order
         if (GetCustomerState() == CustomerState.Ordering)
         {
-            Order order = new Order();
-            order.Initialize(this);
+            OrderManager.Instance.SpawnOrder(this);
             if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstBrewStarted)
                 TutorialManager.Instance.StartFirstBrew(order);
             LeaveLineServerRpc();
