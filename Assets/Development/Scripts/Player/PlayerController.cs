@@ -167,7 +167,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.DebugConsoleEvent += ShowDebugConsole;
         inputManager.BrewingStationSelectEvent += OnChangeBrewingStationSelect;
         inputManager.BrewingStationEmptyEvent += OnBrewingStationEmpty;
-        AISupervisor.Instance.OnTutorialMessageReceived += TutorialMessage;
+        if (AISupervisor.Instance) {
+            AISupervisor.Instance.OnTutorialMessageReceived += TutorialMessage;
+        }
+        
     }
 
     private void OnDisable()
@@ -180,7 +183,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.DebugConsoleEvent -= ShowDebugConsole;
         inputManager.BrewingStationSelectEvent -= OnChangeBrewingStationSelect;
         inputManager.BrewingStationEmptyEvent -= OnBrewingStationEmpty;
-        AISupervisor.Instance.OnTutorialMessageReceived -= TutorialMessage;
+        if (AISupervisor.Instance)
+        {
+            AISupervisor.Instance.OnTutorialMessageReceived -= TutorialMessage;
+        }
     }
 
     private void Update()
@@ -708,7 +714,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
             Debug.Log("hello im a customer and im trying to be picked up");
             pickup.GetNavMeshAgent().enabled = false;
-            pickup.GetCustomer().SetCustomerStateServerRpc(CustomerBase.CustomerState.PickedUp);
+            pickup.GetCustomer().SetCustomerState(CustomerBase.CustomerState.PickedUp);
 
             pickup.SetPickupObjectParent(this);
 
