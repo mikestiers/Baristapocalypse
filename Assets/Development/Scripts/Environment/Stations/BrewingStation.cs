@@ -240,6 +240,10 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
                 minigameTimingNormalized = 0f,
                 sweetSpotPosition = sweetSpotPosition
             });
+
+            if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstDrinkReady)
+                TutorialManager.Instance.FirstDrinkReady();
+
             GetIngredient().SetIngredientParent(player);
         }
         if (minigameTimer >= maxMinigameTimer)

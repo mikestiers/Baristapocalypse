@@ -287,6 +287,9 @@ public class CustomerManager : Singleton<CustomerManager>
     {
         yield return new WaitForSeconds(1f);
 
+        if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstOrderTaken)
+            TutorialManager.Instance.TakeFirstOrder();
+
         if (LineQueue.CanAddCustomer() == true)
         {
             LineQueue.AddCustomer(customersOutsideList[0]);

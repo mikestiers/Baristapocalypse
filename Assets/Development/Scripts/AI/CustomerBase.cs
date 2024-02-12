@@ -266,6 +266,8 @@ public class CustomerBase : Base
         {
             Order order = new Order();
             order.Initialize(this);
+            if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstBrewStarted)
+                TutorialManager.Instance.StartFirstBrew(order);
             LeaveLineServerRpc();
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
             interactParticle.Play();
@@ -405,6 +407,8 @@ public class CustomerBase : Base
 
     public void JustGotHandedCoffee()
     {
+        if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstDrinkDelivered)
+            TutorialManager.Instance.FirstDrinkDelivered();
         JustGotHandedCoffeeServerRpc();
     }
 

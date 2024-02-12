@@ -105,7 +105,9 @@ public class UIManager : Singleton<UIManager>
             restartGame.onClick.AddListener(RestartGame);
         if (closeAudioSettings)
             closeAudioSettings.onClick.AddListener(CloseAudioSettings);
-        if (tutorialModeOnOff)
+        if (BaristapocalypseMultiplayer.playMultiplayer)
+            tutorialModeOnOff.gameObject.SetActive(false);
+        else if (tutorialModeOnOff)
             tutorialModeOnOff.onClick.AddListener(ToggleTutorialMode);
         if (closeTutorial)
             closeTutorial.onClick.AddListener(CloseTutorial);
@@ -294,7 +296,7 @@ public class UIManager : Singleton<UIManager>
         mainMenu.SetActive(true);
     }
 
-        private void ToggleTutorialMode()
+    private void ToggleTutorialMode()
     {
         tutorialModeOnOff.GetComponentInChildren<Text>().text = TutorialManager.Instance.tutorialEnabled ? "Tutorial Mode: Off" : "Tutorial Mode: On";
         TutorialManager.Instance.tutorialEnabled = !TutorialManager.Instance.tutorialEnabled;

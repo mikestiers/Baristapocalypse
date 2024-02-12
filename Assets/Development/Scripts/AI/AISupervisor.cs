@@ -95,6 +95,7 @@ public class AISupervisor : NetworkBehaviour
             yield return null;
         }
 
+        // Pauses the game and allows for the player to read the message and continue when ready
         if (TutorialManager.Instance.tutorialEnabled)
             OnTutorialMessageReceived?.Invoke();
 
@@ -103,7 +104,8 @@ public class AISupervisor : NetworkBehaviour
 
     private IEnumerator ShowElements()
     {
-        yield return new WaitForSeconds(popOutReviewTime);
+        // 0f wait time if tutorial is enabled because tutorials prompt to continue
+        yield return new WaitForSeconds(TutorialManager.Instance.tutorialEnabled ? 0f : popOutReviewTime);
         StartCoroutine(MoveBackEP());
     }
 
