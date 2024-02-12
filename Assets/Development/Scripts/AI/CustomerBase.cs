@@ -329,6 +329,7 @@ public class CustomerBase : Base
 
     public void SetCustomerState(CustomerState customerState)
     {
+        if (!IsOwner) return;
         SetCustomerStateServerRpc(customerState);
     }
 

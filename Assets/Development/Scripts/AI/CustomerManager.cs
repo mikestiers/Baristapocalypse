@@ -130,8 +130,10 @@ public class CustomerManager : Singleton<CustomerManager>
 
         if(initCustomerSpawnDelay < 8f) initCustomerSpawnDelay = 8f;
 
-
-        StartCoroutine(NewCustomer(initCustomerSpawnDelay)); // change this to intial delay
+        if (IsOwner)
+        {
+            StartCoroutine(NewCustomer(initCustomerSpawnDelay)); // change this to intial delay
+        }
 
         currentServingState = ServingState.CurrentlyServing;
         IsServing = true;
