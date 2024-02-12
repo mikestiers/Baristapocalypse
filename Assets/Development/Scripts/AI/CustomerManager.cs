@@ -190,12 +190,10 @@ public class CustomerManager : Singleton<CustomerManager>
     {
         yield return new WaitForSeconds(delayS);
 
-        int randomCustomer = UnityEngine.Random.Range(0, customerNames.Count);
         //while(gameObject is playin) set timer
         if (customerPrefab != null)
         {
-            SpawnCustomerClientRpc();
-            GiveCustomerNameClientRpc(randomCustomer);
+            SpawnCustomer();
             StartCoroutine(CustomerEnterStore());
             customersInStore++;
             customersLeftinWave--;
@@ -277,12 +275,6 @@ public class CustomerManager : Singleton<CustomerManager>
         }
     }
 
-    [ClientRpc]
-    public void SpawnCustomerClientRpc()
-    {
-        SpawnCustomer();
-    }
-
     public IEnumerator CustomerEnterStore()
     {
         yield return new WaitForSeconds(1f);
@@ -313,30 +305,37 @@ public class CustomerManager : Singleton<CustomerManager>
 
     private void SpawnCustomer()
     {
-        newcustomer = Instantiate(customerPrefab, barEntrance.transform.position, Quaternion.identity);
+        //newcustomer = Instantiate(customerPrefab, barEntrance.transform.position, Quaternion.identity);
 
         // Ensure that the spawned object is spawned on the network
-        newcustomer.Spawn();
+        //newcustomer.Spawn();
 
-        customersOutsideList.Add(newcustomer.GetComponent<CustomerBase>());
+        //customersOutsideList.Add(newcustomer.GetComponent<CustomerBase>());
 
-        customerNumber += 1;
-
+        //customerNumber += 1;
+        SpawnCustomerServerRpc();
     }
 
-    [ClientRpc]
-    public void GiveCustomerNameClientRpc(int randomCustomer)
+    [ServerRpc(RequireOwnership = false)]
+    private void SpawnCustomerServerRpc()
     {
-        // Assign customer number and choose a random name from the list.  If list becomes empty, no names are assigned
-        // We have 25 names so far (the names of everyone on the team), but we can add more
+        Transform newCustomerTransform = Instantiate(customerPrefab.transform, barEntrance.transform.position, Quaternion.identity);
 
-        newcustomer.GetComponent<CustomerBase>().customerNumber = customerNumber;
-        if (customerNames.Count >= 1)
+        NetworkObject newCustomer = newCustomerTransform.GetComponent<NetworkObject>();  
+        CustomerBase newCustomerBase = newCustomer.GetComponent<CustomerBase>();
+
+        customersOutsideList.Add(newCustomerBase);
+        customerNumber += 1;
+
+        newCustomerBase.customerNumber = customerNumber;
+        if(customerNames.Count >= 1)
         {
-            //int randomCustomer = UnityEngine.Random.Range(0, customerNames.Count);
-            newcustomer.GetComponent<CustomerBase>().SetCustomerName(customerNames[randomCustomer]);
-            customerNames.RemoveAt(randomCustomer);
+            int randomCustomerNameIndex = UnityEngine.Random.Range(0, customerNames.Count);
+            newCustomerBase.SetCustomerName(customerNames[randomCustomerNameIndex]);
+            customerNames.RemoveAt(randomCustomerNameIndex);
         }
+
+        newCustomer.Spawn(true);
     }
 
     public int TotalCustomers()

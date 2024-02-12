@@ -63,7 +63,11 @@ public class CustomerBase : Base
 
     public virtual void Start()
     {
-        SetCustomerState(CustomerState.Init);
+        if (IsOwner)
+        {
+            SetCustomerState(CustomerState.Init);
+        }
+        
         SetCustomerVisualIdentifiers();
 
         customerLeaveTime = Random.Range(GameValueHolder.Instance.difficultySettings.GetMinWaitTime(), GameValueHolder.Instance.difficultySettings.GetMaxWaitTime());
@@ -77,6 +81,7 @@ public class CustomerBase : Base
 
     public virtual void Update()
     {
+        if(!IsOwner) return;    
         if (orderTimer != null)
             orderTimer += Time.deltaTime;
 
@@ -324,6 +329,12 @@ public class CustomerBase : Base
 
     public void SetCustomerState(CustomerState customerState)
     {
+        SetCustomerStateServerRpc(customerState);
+    }
+
+    [ServerRpc]
+    private void SetCustomerStateServerRpc(CustomerState customerState)
+    {
         currentState.Value = customerState;
     }
 
@@ -340,8 +351,7 @@ public class CustomerBase : Base
         customerNumberText.text = customerNumber.ToString();
         customerNameText.text = customerName;
         customerDialogue.SetActive(false);
-        customerNumberCanvas.enabled = false;
-       
+        customerNumberCanvas.enabled = false; 
     }
 
     public void DisplayCustomerVisualIdentifiers()
