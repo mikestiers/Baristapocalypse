@@ -307,16 +307,13 @@ public class CustomerBase : Base
     [ServerRpc(RequireOwnership = false)]
     private void LeaveLineServerRpc()
     {
-        Debug.Log("serverrpc");
         LeaveLineClientRpc();
     }
 
     [ClientRpc]
     private void LeaveLineClientRpc()
     {
-        Debug.Log("customer leaving");
         CustomerManager.Instance.Leaveline();
-       
     }
 
     // CUSTOMER STATE METHODS

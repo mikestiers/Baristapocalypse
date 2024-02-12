@@ -14734,6 +14734,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1073394028}
   - component: {fileID: 1073394029}
+  - component: {fileID: 1073394030}
   m_Layer: 0
   m_Name: OrderManager
   m_TagString: Untagged
@@ -14774,6 +14775,22 @@ MonoBehaviour:
   orderStats:
   - {fileID: 1527180619}
   - {fileID: 567439079}
+--- !u!114 &1073394030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1073394027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 3502024253
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &1074448658
 GameObject:
   m_ObjectHideFlags: 0
@@ -19875,14 +19892,12 @@ MonoBehaviour:
   tutorialEnabled: 0
   firstOrderTaken: 0
   firstBrewStarted: 0
-  firstIngredientSelection: 0
-  secondIngredientSelection: 0
-  thirdIngredientSelection: 0
+  firstIngredientSelected: 0
+  secondIngredientSelected: 0
+  thirdIngredientSelected: 0
+  fourthIngredientSelected: 0
   firstDrinkReady: 0
   firstDrinkDelivered: 0
-  customerServed: 0
-  customerLeftReview: 0
-  addIngredient: 0
   drinkThreshold: 0
   loitering: 0
   gravityStorm: 0
