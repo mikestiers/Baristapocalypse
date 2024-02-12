@@ -31,7 +31,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     [SerializeField] private BrewingRecipeSO brewingRecipeSO;
     private bool isBrewing;
     public bool availableForOrder = true;
-    private float minigameTimer;
+    private NetworkVariable<float> minigameTimer = new NetworkVariable<float>(0f);
     private bool minigameTiming = false;
     private float maxMinigameTimer = 4.0f;
     private float minSweetSpotPosition = 0.1f;
@@ -88,6 +88,16 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     public override void OnNetworkSpawn()
     {
         brewingTimer.OnValueChanged += BrewingTimer_OnValueChanged;
+        minigameTimer.OnValueChanged += MinigameTimer_OnValueChanged;
+    }
+
+    private void MinigameTimer_OnValueChanged(float previousValue, float newValue)
+    {
+        OnMinigameTimingStarted?.Invoke(this, new IHasMinigameTiming.OnMinigameTimingEventArgs
+        {
+            minigameTimingNormalized = (float)minigameTimer.Value / maxMinigameTimer,
+            sweetSpotPosition = sweetSpotPosition
+        });
     }
 
     private void BrewingTimer_OnValueChanged(float previousValue, float newValue)
@@ -101,7 +111,6 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     private void Update()
     {
-
         PrintHeldIngredientList(); // putting this here until we have a way to show activity in the station
 
         if (!IsServer)
@@ -120,12 +129,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         }
         if (minigameTiming)
         {
-            minigameTimer += Time.deltaTime;
-            OnMinigameTimingStarted?.Invoke(this, new IHasMinigameTiming.OnMinigameTimingEventArgs
-            {
-                minigameTimingNormalized = (float)minigameTimer / maxMinigameTimer,
-                sweetSpotPosition = sweetSpotPosition
-            });
+            minigameTimer.Value += Time.deltaTime;
         }
     }
 
@@ -136,17 +140,16 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         order.State = Order.OrderState.Brewing;
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [ServerRpc]
     private void SpawnCoffeeDrinkServerRpc()
     {
+        Ingredient.SpawnIngredient(brewingRecipeSO.output, this);
         SpawnCoffeeDrinkClientRpc();
     }
 
     [ClientRpc]
     private void SpawnCoffeeDrinkClientRpc()
     {
-        Ingredient.SpawnIngredient(brewingRecipeSO.output, this);
-
         CoffeeAttributes coffeeAttributes = this.GetIngredient().GetComponent<CoffeeAttributes>();
         foreach (IngredientSO ingredient in ingredientSOList)
         {
@@ -166,67 +169,56 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     [ClientRpc]
     private void BrewingDoneClientRpc()
     {
-        RaiseBrewingDone();
+        //RaiseBrewingDone();
         ingredientSOList.Clear();
         isBrewing = false;
         availableForOrder = true;
 
         //setup minigame
         minigameTiming = true;
-        minigameTimer = 0;
+        minigameTimer.Value = 0f;
         sweetSpotPosition = UnityEngine.Random.Range(minSweetSpotPosition, maxSweetSpotPosition);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void MinigameDoneServerRpc()
+    {
+        MinigameDoneClientRpc();
+    }
+
+    [ClientRpc]
+    private void MinigameDoneClientRpc()
+    {
+        minigameTiming = false;
+        minigameTimer.Value = 0f;
     }
 
     public override void Interact(PlayerController player)
     {
-        if (!HasIngredient())
+        if (!player.IsLocalPlayer)
         {
-            if (player.GetNumberOfIngredients() >= 1)
-            {
-                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
-                interactParticle.Play();
-
-                foreach (Ingredient i in player.GetIngredientsList())
-                {
-                    if (TryAddIngredient(i.GetIngredientSO()))
-                    {
-                        AddIngredientToListSOServerRpc(BaristapocalypseMultiplayer.Instance.GetIngredientSOIndex(player.GetIngredient().GetIngredientSO()));
-
-                        player.RemoveIngredientInListByReference(i);
-                        Ingredient.DestroyIngredient(i);
-
-                        InteractLogicPlaceObjectOnBrewingServerRpc();
-
-                        break;
-                    }
-                }
-            }
+            Debug.LogWarning("me local player");
+            return;
         }
-        else
-        {
-            if (HasIngredient() && !minigameTiming)
-            {
-                GetIngredient().SetIngredientParent(player);
-            }
-        }
-
         // Start brewing for ingredients in the machine.  This is for adding directly from stations instead of player hands
         if (ingredientSOList.Count >= numIngredientsNeeded)
-            InteractLogicPlaceObjectOnBrewingServerRpc();
+        {
+            InteractLogicPlaceObjectOnBrewing();
+        }
 
         if (minigameTiming)
         {
-            float timingPressed = Mathf.Abs((minigameTimer / maxMinigameTimer) - sweetSpotPosition);
+            float timingPressed = Mathf.Abs((minigameTimer.Value / maxMinigameTimer) - sweetSpotPosition);
             bool minigameResult = false;
             if (timingPressed <= 0.1f)
             {
                 minigameResult = true;
             }
-            else if ((minigameTimer / maxMinigameTimer) < sweetSpotPosition)
+            else if ((minigameTimer.Value / maxMinigameTimer) < sweetSpotPosition)
             {
                 minigameResult = false;
             }
-            else if ((minigameTimer / maxMinigameTimer) > sweetSpotPosition)
+            else if ((minigameTimer.Value / maxMinigameTimer) > sweetSpotPosition)
             {
                 minigameResult = false;
             }
@@ -234,21 +226,16 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             {
                 this.GetIngredient().GetComponent<CoffeeAttributes>().SetIsMinigamePerfect(minigameResult);
             }
-            minigameTiming = false;
-            OnMinigameTimingStarted?.Invoke(this, new IHasMinigameTiming.OnMinigameTimingEventArgs
-            {
-                minigameTimingNormalized = 0f,
-                sweetSpotPosition = sweetSpotPosition
-            });
+            MinigameDoneServerRpc();
 
             if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstDrinkReady)
                 TutorialManager.Instance.FirstDrinkReady();
 
             GetIngredient().SetIngredientParent(player);
         }
-        if (minigameTimer >= maxMinigameTimer)
+        if (minigameTimer.Value >= maxMinigameTimer)
         {
-            minigameTiming = false;
+            MinigameDoneServerRpc();
             GetIngredient().SetIngredientParent(player);
         }
         PrintHeldIngredientList();
