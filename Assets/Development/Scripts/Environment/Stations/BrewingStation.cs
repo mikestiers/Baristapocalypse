@@ -36,7 +36,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     private float maxMinigameTimer = 4.0f;
     private float minSweetSpotPosition = 0.1f;
     private float maxSweetSpotPosition = 0.9f;
-    private float sweetSpotPosition;
+    private NetworkVariable<float> sweetSpotPosition = new NetworkVariable<float>();
 
     public delegate void OnBrewingDoneHandler(object sender, EventArgs e);
     public event OnBrewingDoneHandler OnBrewingDone;
@@ -96,7 +96,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         OnMinigameTimingStarted?.Invoke(this, new IHasMinigameTiming.OnMinigameTimingEventArgs
         {
             minigameTimingNormalized = (float)minigameTimer.Value / maxMinigameTimer,
-            sweetSpotPosition = sweetSpotPosition
+            sweetSpotPosition = sweetSpotPosition.Value
         });
     }
 
@@ -163,13 +163,14 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     [ServerRpc(RequireOwnership = false)]
     private void BrewingDoneServerRpc()
     {
+        //RaiseBrewingDone();
+        sweetSpotPosition.Value = UnityEngine.Random.Range(minSweetSpotPosition, maxSweetSpotPosition);
         BrewingDoneClientRpc();
     }
     
     [ClientRpc]
     private void BrewingDoneClientRpc()
     {
-        //RaiseBrewingDone();
         ingredientSOList.Clear();
         isBrewing = false;
         availableForOrder = true;
@@ -177,12 +178,12 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         //setup minigame
         minigameTiming = true;
         minigameTimer.Value = 0f;
-        sweetSpotPosition = UnityEngine.Random.Range(minSweetSpotPosition, maxSweetSpotPosition);
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void MinigameDoneServerRpc()
     {
+        minigameTimer.Value = 0f;
         MinigameDoneClientRpc();
     }
 
@@ -190,7 +191,6 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     private void MinigameDoneClientRpc()
     {
         minigameTiming = false;
-        minigameTimer.Value = 0f;
     }
 
     public override void Interact(PlayerController player)
@@ -208,17 +208,17 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
         if (minigameTiming)
         {
-            float timingPressed = Mathf.Abs((minigameTimer.Value / maxMinigameTimer) - sweetSpotPosition);
+            float timingPressed = Mathf.Abs((minigameTimer.Value/ maxMinigameTimer) - sweetSpotPosition.Value);
             bool minigameResult = false;
             if (timingPressed <= 0.1f)
             {
                 minigameResult = true;
             }
-            else if ((minigameTimer.Value / maxMinigameTimer) < sweetSpotPosition)
+            else if ((minigameTimer.Value / maxMinigameTimer) < sweetSpotPosition.Value)
             {
                 minigameResult = false;
             }
-            else if ((minigameTimer.Value / maxMinigameTimer) > sweetSpotPosition)
+            else if ((minigameTimer.Value / maxMinigameTimer) > sweetSpotPosition.Value)
             {
                 minigameResult = false;
             }
