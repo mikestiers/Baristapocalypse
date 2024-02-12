@@ -47,7 +47,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     protected virtual void RaiseBrewingDone()
     {
-        currentOrder.State = Order.OrderState.BeingDelivered;
+        currentOrder.SetOrderState(Order.OrderState.BeingDelivered);
         OnBrewingDone?.Invoke(this, EventArgs.Empty);
     }
 
@@ -137,7 +137,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     {
         currentOrder = order;
         availableForOrder = false;
-        order.State = Order.OrderState.Brewing;
+        order.SetOrderState(Order.OrderState.Brewing);
     }
 
     [ServerRpc]
@@ -163,11 +163,11 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     [ServerRpc(RequireOwnership = false)]
     private void BrewingDoneServerRpc()
     {
-        //RaiseBrewingDone();
         sweetSpotPosition.Value = UnityEngine.Random.Range(minSweetSpotPosition, maxSweetSpotPosition);
         BrewingDoneClientRpc();
+        RaiseBrewingDone();
     }
-    
+
     [ClientRpc]
     private void BrewingDoneClientRpc()
     {

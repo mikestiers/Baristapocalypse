@@ -15,7 +15,7 @@ public class OrderManager : Singleton<OrderManager>
 
     private void Update()
     {
-        if (orders.Any(order => order.State == Order.OrderState.Waiting))
+        if (orders.Any(order => order.GetOrderState() == Order.OrderState.Waiting))
             TryStartOrder();
     }
 
@@ -28,7 +28,7 @@ public class OrderManager : Singleton<OrderManager>
     public void FinishOrder(Order order)
     {
         // orders.Remove(order);
-        order.State = Order.OrderState.Delivered;
+        order.SetOrderState(Order.OrderState.Delivered);
         TryStartOrder();
     }
 
@@ -72,11 +72,11 @@ public class OrderManager : Singleton<OrderManager>
         {
             foreach (Order order in orders)
             {
-                if (order.State == Order.OrderState.Waiting)
+                if (order.GetOrderState() == Order.OrderState.Waiting)
                 {
                     Debug.Log("FirstOrder: " + order.customer.customerName);
                     StartOrder(order);
-                    order.State = Order.OrderState.Brewing;
+                    order.SetOrderState(Order.OrderState.Brewing);
                     return;
                 }
             }
