@@ -6,6 +6,7 @@ using UnityEngine.Audio;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using System.Collections;
+using System;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -30,6 +31,7 @@ public class UIManager : Singleton<UIManager>
     public GameObject pauseMenu;
     public GameObject tutorialMenu;
     public GameObject ordersMenu;
+    public GameObject playerReadyMenu;
 
     [Header("Text")]
     public Text timer;
@@ -112,12 +114,14 @@ public class UIManager : Singleton<UIManager>
         if (closeTutorial)
             closeTutorial.onClick.AddListener(CloseTutorial);
 
+        closeTutorial.GetComponentInChildren<Text>().text = GameManager.Instance.IsGamePlaying() ? "Close" : "Ready";
         tutorialModeOnOff.GetComponentInChildren<Text>().text = TutorialManager.Instance.tutorialEnabled ? "Tutorial Mode: On" : "Tutorial Mode: Off";
     }
     private void ReturnToGame()
     {
         timer.enabled = true;
         ordersMenu.SetActive(true);
+        tutorialMenu.SetActive(false);
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;
     }
@@ -292,8 +296,14 @@ public class UIManager : Singleton<UIManager>
     private void CloseTutorial()
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
-        tutorialMenu.SetActive(false);
-        mainMenu.SetActive(true);
+        if (!GameManager.Instance.IsLocalPlayerReady())
+        {
+            GameManager.Instance.SetLocalPlayerReady();
+            closeTutorial.GetComponentInChildren<Text>().text = "Close";
+            ReturnToGame();
+            return;
+        }
+        ShowPause();
     }
 
     private void ToggleTutorialMode()

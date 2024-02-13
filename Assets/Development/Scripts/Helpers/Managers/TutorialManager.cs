@@ -40,8 +40,8 @@ public class TutorialManager : Singleton<TutorialManager>
 
     public void StartFirstBrew(Order order)
     {
-        Debug.Log($"cusorder: {order.coffeeAttributes.GetSweetness()}");
-        AISupervisor.Instance.SupervisorMessageToDisplay($"Look at their drink order. They want {order.coffeeAttributes.GetSweetness()} sweetness");
+        //Debug.Log($"cusorder: {order.coffeeAttributes.GetSweetness()}");
+        AISupervisor.Instance.SupervisorMessageToDisplay($"Look at their drink order");// They want {order.coffeeAttributes.GetSweetness()} sweetness");
         AISupervisor.Instance.SupervisorMessageToDisplay($"Go over to the sweetener station and pick the right ingredient");
         firstBrewStarted = true;
     }
