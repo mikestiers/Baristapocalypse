@@ -41,6 +41,7 @@ public class GravityStation : MonoBehaviour
     {
 
         GameManager.Instance.isEventActive = false;
+        GameManager.Instance.isGravityStorm = false;
         RandomEventBase randomEvent = GameManager.Instance.currentRandomEvent;
 
         // Stop physics simulation for each object

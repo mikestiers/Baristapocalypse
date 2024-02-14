@@ -17,6 +17,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private float minRandomTime = 1f;
     [SerializeField] private float maxRandomTime = 2f;
     [HideInInspector] public bool isEventActive = false;
+    [HideInInspector] public bool isGravityStorm = false;
     [HideInInspector] public RandomEventBase currentRandomEvent;
     // Event to trigger events
     public delegate void RandomEventHandler();
@@ -427,19 +428,6 @@ public class GameManager : NetworkBehaviour
                 }
                 break;
         }
-        //switch (difficulty)
-        //{
-        //    case "Easy":
-        //        startTime = UnityEngine.Random.Range(timeWindow * 0.9f, timeWindow * 1.3f);
-        //        break;
-        //    case "Medium":
-        //        startTime = UnityEngine.Random.Range(timeWindow * 0.6f, timeWindow * 1.5f);
-        //        break;
-        //    case "Hard":
-        //        startTime = UnityEngine.Random.Range(timeWindow * 0.5f, timeWindow * 1.7f);
-        //        break;
-        //}
-
         return startTime;
     }
 
@@ -473,7 +461,6 @@ public class GameManager : NetworkBehaviour
         if (randomEventList.Count > 0)
         {
             int randomIndex = UnityEngine.Random.Range(0, randomEventList.Count);
-            Debug.Log("GetRandomEvent  " + randomIndex);
             return randomEventList[randomIndex];
         }
 
@@ -491,6 +478,7 @@ public class GameManager : NetworkBehaviour
         isEventActive = true;
         if (randomEvent.GetComponent<GravityStorm>()) 
         {
+            isGravityStorm = true;
             randomEvent.SetEventBool(true);
             randomEvent.ActivateDeactivateEvent();
         }
@@ -502,8 +490,7 @@ public class GameManager : NetworkBehaviour
         {
             randomEvent.gameObject.GetComponent<RadioStation>().EventOn();
         }
-        
-        //OnPlayerDeactivateEvent?.Invoke(this, EventArgs.Empty);
+
     }
 
     public void DeactivateEvent(RandomEventBase randomEvent)
@@ -511,7 +498,8 @@ public class GameManager : NetworkBehaviour
         isEventActive = false;
         if (randomEvent.GetComponent<GravityStorm>()) 
         {
-            randomEvent.SetEventBool(true);
+            isGravityStorm = false;
+            randomEvent.SetEventBool(false);
             randomEvent.ActivateDeactivateEvent();
         }
         else if (randomEvent.GetComponent<WifiStation>()) 
