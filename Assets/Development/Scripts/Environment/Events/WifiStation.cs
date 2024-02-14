@@ -22,11 +22,11 @@ public class WifiStation : RandomEventBase
 
     public void WifiEventIsStarting() 
     {
-        
         iseventover = false;
         Debug.Log("Wifi event is Starting");
         ChangeColorBasedOnEvent();
     }
+
     void ChangeColorBasedOnEvent()
     {
         Renderer renderer = GetComponent<Renderer>();
