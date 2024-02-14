@@ -84,7 +84,6 @@ public class GameManager : NetworkBehaviour
         if (InputManager.Instance)
         {
             InputManager.Instance.PauseEvent += InputManager_PauseEvent;
-            InputManager.Instance.InteractEvent += InputManager_OnInteractEvent;
         }
 
         OnRandomEventTriggered += HandleRandomEvent;
@@ -102,19 +101,6 @@ public class GameManager : NetworkBehaviour
     public override void OnDestroy()
     {
         OnRandomEventTriggered -= HandleRandomEvent;
-    }
-
-    private void InputManager_OnInteractEvent()
-    {
-        if (gameState.Value == GameState.WaitingToStart) 
-        {
-            //gameState = GameState.CountdownToStart;
-            //OnGameStateChanged?.Invoke(this, EventArgs.Empty);
-            isLocalPlayerReady = true;
-            OnLocalPlayerReadyChanged?.Invoke(this, EventArgs.Empty);
-
-            SetPlayerReadyServerRpc();
-        }
     }
 
     public override void OnNetworkSpawn()
@@ -272,6 +258,16 @@ public class GameManager : NetworkBehaviour
     public bool IsLocalPlayerReady()
     {
         return isLocalPlayerReady;
+    }
+
+    public void SetLocalPlayerReady()
+    {
+        if (gameState.Value == GameState.WaitingToStart)
+        {
+            isLocalPlayerReady = true;
+            OnLocalPlayerReadyChanged?.Invoke(this, EventArgs.Empty);
+            SetPlayerReadyServerRpc();
+        }
     }
 
     private void InputManager_PauseEvent(object sender, EventArgs e)
