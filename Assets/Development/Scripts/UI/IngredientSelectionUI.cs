@@ -16,6 +16,7 @@ public class IngredientSelectionUI : BaseStation
     [SerializeField] private GameObject ingredientMenu;
     public GameObject buttonsRoot;
     [SerializeField] private Button[] ingredientButtons;
+    [SerializeField] private GameObject[] selectedBGImages;
     public IngredientStationType ingredientStationType;
     public IngredientListSO ingredientList;
     private int ingredientListIndex;
@@ -49,6 +50,7 @@ public class IngredientSelectionUI : BaseStation
         }
 
         RebuildButtonUI();
+
     }
 
     private void Update()
@@ -79,11 +81,18 @@ public class IngredientSelectionUI : BaseStation
             {
                 for (int i = 0; i < ingredientButtons.Length; i++)
                 {
+                    foreach (GameObject backGroundobj in selectedBGImages)
+                    {
+                        backGroundobj.SetActive(false);
+                    }
+
                     if (targetObj == ingredientButtons[i].gameObject)
                     {
+                        selectedBGImages[i].SetActive(true);
                         ingredientListIndex = i;
                         currentIngredient = ingredientList.ingredientSOList[ingredientListIndex];
                         CalculateIngredients(currentIngredient);
+
                         break;
                     }
                 }
@@ -184,9 +193,12 @@ public class IngredientSelectionUI : BaseStation
         // Select first igredient if not playing with mouse
         if (!Cursor.visible)
         {
-            Debug.Log("Cursor.visible " + Cursor.visible);
             EventSystem.current.firstSelectedGameObject = ingredientButtons[0].gameObject;
             SetDefaultSelected(ingredientButtons[0].gameObject);
+        }
+        else if (Cursor.visible) 
+        {
+            // Fix bug where BG select image does not trigger at the start of the game
         }
 
     }
