@@ -69,12 +69,17 @@ public class IngredientSelectionUI : BaseStation
             List<RaycastResult> raycastResultList = new List<RaycastResult>();
             EventSystem.current.RaycastAll(pointerEventData, raycastResultList);
 
+            GameObject hoveredObj = raycastResultList.Count > 0 ? raycastResultList[0].gameObject : null;
             GameObject selectedObj = EventSystem.current.currentSelectedGameObject;
-            if (selectedObj != null)
+
+            // Playing with controller or mouse?
+            GameObject targetObj = selectedObj != null ? selectedObj : hoveredObj;
+
+            if (targetObj != null)
             {
                 for (int i = 0; i < ingredientButtons.Length; i++)
                 {
-                    if (selectedObj == ingredientButtons[i].gameObject)
+                    if (targetObj == ingredientButtons[i].gameObject)
                     {
                         ingredientListIndex = i;
                         currentIngredient = ingredientList.ingredientSOList[ingredientListIndex];
@@ -175,8 +180,15 @@ public class IngredientSelectionUI : BaseStation
         canSelectIngredient = true;
         currentStationInteraction = true;
         obj.SetActive(true);
-        EventSystem.current.firstSelectedGameObject = ingredientButtons[0].gameObject;
-        SetDefaultSelected(ingredientButtons[0].gameObject);
+
+        // Select first igredient if not playing with mouse
+        if (!Cursor.visible)
+        {
+            Debug.Log("Cursor.visible " + Cursor.visible);
+            EventSystem.current.firstSelectedGameObject = ingredientButtons[0].gameObject;
+            SetDefaultSelected(ingredientButtons[0].gameObject);
+        }
+
     }
 
     private void CalculateIngredients(IngredientSO currentIngredient)
