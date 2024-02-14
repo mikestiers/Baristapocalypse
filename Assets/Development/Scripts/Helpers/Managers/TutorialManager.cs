@@ -38,10 +38,10 @@ public class TutorialManager : Singleton<TutorialManager>
         firstOrderTaken = true;
     }
 
-    public void StartFirstBrew(Order order)
+    public void StartFirstBrew(OrderInfo order)
     {
-        Debug.Log($"cusorder: {order.coffeeAttributes.GetSweetness()}");
-        AISupervisor.Instance.SupervisorMessageToDisplay($"Look at their drink order. They want {order.coffeeAttributes.GetSweetness()} sweetness");
+        //Debug.Log($"cusorder: {order.coffeeAttributes.GetSweetness()}");
+        AISupervisor.Instance.SupervisorMessageToDisplay($"Look at their drink order. They want {order.coffeeAttributesSweetness} sweetness");
         AISupervisor.Instance.SupervisorMessageToDisplay($"Go over to the sweetener station and pick the right ingredient");
         firstBrewStarted = true;
     }

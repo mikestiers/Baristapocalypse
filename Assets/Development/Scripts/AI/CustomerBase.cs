@@ -31,7 +31,7 @@ public class CustomerBase : Base
 
     [Header("Coffee Attributes")]
     public CoffeeAttributes coffeeAttributes;
-    public Order order;
+    public OrderInfo order;
 
     [Header("State Related")]
     public NetworkVariable<CustomerState> currentState = new NetworkVariable<CustomerState>(CustomerState.Init);
@@ -451,7 +451,7 @@ public class CustomerBase : Base
         return customerNumber;
     }
 
-    public void SetOrder(Order order)
+    public void SetOrder(OrderInfo order)
     {
         this.order = order;
     }
