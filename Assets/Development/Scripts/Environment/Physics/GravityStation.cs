@@ -44,20 +44,28 @@ public class GravityStation : MonoBehaviour
         GameManager.Instance.isGravityStorm = false;
         RandomEventBase randomEvent = GameManager.Instance.currentRandomEvent;
 
-        // Stop physics simulation for each object
-        foreach (var obj in randomEvent.gameObject.GetComponent<GravityStorm>().objectsToMove)
+        GravityStorm gravityStorm = randomEvent.gameObject.GetComponent<GravityStorm>();
+        if (gravityStorm != null)
         {
-            Rigidbody objRigidbody = obj.GetComponent<Rigidbody>();
-            if (objRigidbody != null)
+            gravityStorm.ConvertListToArray();
+
+            // Stop physics simulation for each object
+            foreach (var obj in gravityStorm.objectsToMove)
             {
-                objRigidbody.useGravity = true;
-                //objRigidbody.Sleep();
+                Rigidbody objRigidbody = obj.GetComponent<Rigidbody>();
+                if (objRigidbody != null)
+                {
+                    objRigidbody.useGravity = true;
+                    //objRigidbody.Sleep();
+                }
             }
         }
+        
         if (!randomEvent.GetNetworkObject().IsSpawned)
         {
             randomEvent.GetNetworkObject().Spawn(); 
         }
+
         Debug.LogWarning("DeactivateRandomEvent " + randomEvent.name);
         gravityButton.GetComponent<MeshRenderer>().material = originalMaterial;
         randomEvent.SetEventBool(false);
