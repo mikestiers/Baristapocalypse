@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1763563068929088639}
   - component: {fileID: 8266898293702492615}
   m_Layer: 6
-  m_Name: SelectedExcelsior
+  m_Name: Selected3
   m_TagString: Ingredient_UI_Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 1.668, y: -0.0097}
-  m_SizeDelta: {x: 192.0224, y: 48.6937}
+  m_SizeDelta: {x: 196.24, y: 49.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1763563068929088639
 CanvasRenderer:
@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f33cb3231f09eac44be1d6ddce8d37f6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b49bb7a3993fedb48b330af9dc1a1df8, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -120,7 +120,7 @@ GameObject:
   - component: {fileID: 5462651980097684339}
   - component: {fileID: 3988896322987434266}
   m_Layer: 6
-  m_Name: SelectedKopiLuwak
+  m_Name: Selected5
   m_TagString: Ingredient_UI_Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -144,7 +144,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0.548, y: -1.48}
-  m_SizeDelta: {x: 192.0224, y: 48.6937}
+  m_SizeDelta: {x: 196.24, y: 49.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5462651980097684339
 CanvasRenderer:
@@ -174,7 +174,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f33cb3231f09eac44be1d6ddce8d37f6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b49bb7a3993fedb48b330af9dc1a1df8, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -434,6 +434,7 @@ GameObject:
   - component: {fileID: 3940924464659589388}
   - component: {fileID: 3940924464659589389}
   - component: {fileID: 3940924464659589378}
+  - component: {fileID: 1347508476}
   m_Layer: 6
   m_Name: MoonMaple
   m_TagString: Ingredient_UI_Button
@@ -519,7 +520,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 3
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 1, g: 0.47058824, b: 0, a: 1}
@@ -556,6 +557,26 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!95 &1347508476
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3940924464659589376}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 222b61eb513a8b248b7514028d131c4e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &3940924465016200436
 GameObject:
   m_ObjectHideFlags: 0
@@ -576,7 +597,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3940924465016200435
 RectTransform:
   m_ObjectHideFlags: 0
@@ -703,6 +724,7 @@ GameObject:
   - component: {fileID: 3940924465142878086}
   - component: {fileID: 3940924465142878087}
   - component: {fileID: 3940924465142878084}
+  - component: {fileID: 1774239948}
   m_Layer: 6
   m_Name: Sugar
   m_TagString: Ingredient_UI_Button
@@ -788,7 +810,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 3
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 1, g: 0.47088063, b: 0, a: 1}
@@ -825,6 +847,26 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!95 &1774239948
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3940924465142878138}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 222b61eb513a8b248b7514028d131c4e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &3940924465213092091
 GameObject:
   m_ObjectHideFlags: 0
@@ -1010,7 +1052,13 @@ MonoBehaviour:
   ingredientMenu: {fileID: 3940924465016200436}
   buttonsRoot: {fileID: 3940924465213092091}
   ingredientButtons: []
-  selectedBGImages: []
+  selectedBGImages:
+  - {fileID: 8820762324735661507}
+  - {fileID: 6182428258291635555}
+  - {fileID: 435374061704272855}
+  - {fileID: 7907153269607781421}
+  - {fileID: 3555757975477467370}
+  - {fileID: 7751381464300008261}
   ingredientStationType: 1
   ingredientList: {fileID: 0}
   isInUse: 0
@@ -1186,6 +1234,7 @@ GameObject:
   - component: {fileID: 3940924465624879711}
   - component: {fileID: 3940924465624879708}
   - component: {fileID: 3940924465624879709}
+  - component: {fileID: 2056381436}
   m_Layer: 6
   m_Name: Gobstopper
   m_TagString: Ingredient_UI_Button
@@ -1271,7 +1320,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 3
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 1, g: 0.47058824, b: 0, a: 1}
@@ -1308,6 +1357,26 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!95 &2056381436
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3940924465624879699}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 222b61eb513a8b248b7514028d131c4e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &3940924465799076190
 GameObject:
   m_ObjectHideFlags: 0
@@ -1320,6 +1389,7 @@ GameObject:
   - component: {fileID: 3940924465799076186}
   - component: {fileID: 3940924465799076187}
   - component: {fileID: 3940924465799076184}
+  - component: {fileID: 623563174}
   m_Layer: 6
   m_Name: GalaxyGummy
   m_TagString: Ingredient_UI_Button
@@ -1405,7 +1475,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 3
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 1, g: 0.47058824, b: 0, a: 1}
@@ -1442,6 +1512,26 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!95 &623563174
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3940924465799076190}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 222b61eb513a8b248b7514028d131c4e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &3940924465842840704
 GameObject:
   m_ObjectHideFlags: 0
@@ -1534,6 +1624,7 @@ GameObject:
   - component: {fileID: 3940924465915931134}
   - component: {fileID: 3940924465915931135}
   - component: {fileID: 3940924465915931132}
+  - component: {fileID: 2094970579}
   m_Layer: 6
   m_Name: MochaMiel
   m_TagString: Ingredient_UI_Button
@@ -1619,7 +1710,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 3
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 1, g: 0.47058824, b: 0, a: 1}
@@ -1656,6 +1747,26 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!95 &2094970579
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3940924465915931122}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 222b61eb513a8b248b7514028d131c4e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &3940924465950911863
 GameObject:
   m_ObjectHideFlags: 0
@@ -1668,6 +1779,7 @@ GameObject:
   - component: {fileID: 3940924465950911859}
   - component: {fileID: 3940924465950911856}
   - component: {fileID: 3940924465950911857}
+  - component: {fileID: 34398346}
   m_Layer: 6
   m_Name: Molasses
   m_TagString: Ingredient_UI_Button
@@ -1753,7 +1865,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 3
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 1, g: 0.47058824, b: 0, a: 1}
@@ -1790,6 +1902,26 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!95 &34398346
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3940924465950911863}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 222b61eb513a8b248b7514028d131c4e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &5080327576041297807
 GameObject:
   m_ObjectHideFlags: 0
@@ -1879,8 +2011,8 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5451298144228273976}
-  m_LocalRotation: {x: -0, y: 0.078029685, z: -0, w: -0.9969511}
-  m_LocalPosition: {x: 0, y: 0, z: -0.18145669}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1895,7 +2027,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -5.2523403, y: 0.0940001}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5522873205942412983
@@ -1942,7 +2074,7 @@ GameObject:
   - component: {fileID: 4991823656849028269}
   - component: {fileID: 829342512380669539}
   m_Layer: 6
-  m_Name: SelectedCosmicCacao
+  m_Name: Selected2
   m_TagString: Ingredient_UI_Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1966,7 +2098,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0.546, y: -0.0097}
-  m_SizeDelta: {x: 192.0224, y: 48.6937}
+  m_SizeDelta: {x: 196.24, y: 49.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4991823656849028269
 CanvasRenderer:
@@ -1996,7 +2128,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f33cb3231f09eac44be1d6ddce8d37f6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b49bb7a3993fedb48b330af9dc1a1df8, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2018,7 +2150,7 @@ GameObject:
   - component: {fileID: 9139540641549751118}
   - component: {fileID: 3307854920999504515}
   m_Layer: 6
-  m_Name: SelectedUndefined
+  m_Name: Selected6
   m_TagString: Ingredient_UI_Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2042,7 +2174,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 1.668, y: -1.48}
-  m_SizeDelta: {x: 192.0224, y: 48.6937}
+  m_SizeDelta: {x: 196.24, y: 49.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9139540641549751118
 CanvasRenderer:
@@ -2072,7 +2204,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f33cb3231f09eac44be1d6ddce8d37f6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b49bb7a3993fedb48b330af9dc1a1df8, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2094,7 +2226,7 @@ GameObject:
   - component: {fileID: 6318707437552698120}
   - component: {fileID: 5142165896194468426}
   m_Layer: 6
-  m_Name: SelectedRobusta
+  m_Name: Selected4
   m_TagString: Ingredient_UI_Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2118,7 +2250,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -0.576, y: -1.48}
-  m_SizeDelta: {x: 192.0224, y: 48.6937}
+  m_SizeDelta: {x: 196.24, y: 49.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6318707437552698120
 CanvasRenderer:
@@ -2148,7 +2280,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f33cb3231f09eac44be1d6ddce8d37f6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b49bb7a3993fedb48b330af9dc1a1df8, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6764,7 +6896,7 @@ GameObject:
   - component: {fileID: 2690750986465526816}
   - component: {fileID: 3696802406617301578}
   m_Layer: 6
-  m_Name: SelectedArabica
+  m_Name: Selected1
   m_TagString: Ingredient_UI_Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6788,7 +6920,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -0.579, y: -0.0097}
-  m_SizeDelta: {x: 192.0224, y: 48.6937}
+  m_SizeDelta: {x: 196.24, y: 49.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2690750986465526816
 CanvasRenderer:
@@ -6818,7 +6950,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f33cb3231f09eac44be1d6ddce8d37f6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b49bb7a3993fedb48b330af9dc1a1df8, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
