@@ -451,6 +451,10 @@ public class CustomerBase : Base
         return customerNumber;
     }
 
+    public void SetOrder(Order order)
+    {
+        this.order = order;
+    }
 
     private void Reorder()
     {

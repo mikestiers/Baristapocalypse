@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.Netcode;
 
-public class OrderStats : MonoBehaviour
+public class OrderStats : NetworkBehaviour
 {
     [Header("UI Objects")]
     [SerializeField] public GameObject customerInfoRoot;

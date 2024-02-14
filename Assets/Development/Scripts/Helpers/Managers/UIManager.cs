@@ -188,33 +188,6 @@ public class UIManager : Singleton<UIManager>
         mainMenu.SetActive(true);
     }
 
-    public void RemoveCustomerUiOrder(CustomerBase customer)
-    {
-        foreach (Transform t in ordersPanel)
-        {
-            OrderStats o = t.GetComponent<OrderStats>();
-            if (o != null)
-            {
-                if (o.GetOrderOwner() == customer)
-                {
-                    Destroy(t.gameObject);
-                    return;
-                }
-                else if (o.GetOrderOwner().customerNumber == customer.customerNumber)
-                {
-                    // This exists because pickups are cloned, so the connection to the order prefab is lost
-                    // Just search for the customer based on their number in case owner is lost
-                    Destroy(t.gameObject);
-                    return;
-                }
-                else
-                {
-                    Debug.Log($"Customer Order UI not found for {customer.customerNumber}");
-                }
-            }
-        }
-    }
-
     public void UpdateStarRating(int reviewScore)
     {
         Transform starRating = customerReview.transform.Find("CustomerReview/StarRating");
