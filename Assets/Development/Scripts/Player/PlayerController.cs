@@ -833,7 +833,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         Vector2 mouseDelta = Mouse.current.delta.ReadValue();
 
         // Check if any button on the controller is pressed or the stick is moved
-        if (Gamepad.current.allControls.Any(control => control.IsPressed()))
+        if (Gamepad.current.allControls.Any(control => control.IsPressed() && control != Gamepad.current.leftStick))
         {
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
