@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
+using System.Globalization;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CircleSync : MonoBehaviour
 {
@@ -11,6 +14,10 @@ public class CircleSync : MonoBehaviour
     public Camera Camera;
     public LayerMask LayerMask;
 
+    private void Start()
+    {
+            Camera = FindObjectOfType<Camera>();   
+    }
     void Update()
     {
         var dir = Camera.transform.position - transform.position;
