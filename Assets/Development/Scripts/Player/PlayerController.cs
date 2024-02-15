@@ -201,9 +201,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         // Ground Check
         IsGrounded();
         // player movement
-        if(movementToggle && !GameManager.Instance.isEventActive)
+
+        // Gravity Storm Effect on player
+        if(movementToggle && !GameManager.Instance.isGravityStorm)
             Move(moveSpeed);
-        else if (movementToggle && GameManager.Instance.isEventActive)
+        else if (movementToggle && GameManager.Instance.isGravityStorm)
             Move(gravityMoveSpeed);
 
         if (!movementToggle)
