@@ -45,6 +45,9 @@ public class UIManager : Singleton<UIManager>
     public TextMeshProUGUI streakText;
     public TextMeshProUGUI gameMessage;
 
+    [Header("Tutorial Image")]
+    public Image tutorialImage;
+
     [Header("GameMessageHolder")]
     public GameObject gameMessageContainer;
 
@@ -117,6 +120,21 @@ public class UIManager : Singleton<UIManager>
         closeTutorial.GetComponentInChildren<Text>().text = GameManager.Instance.IsGamePlaying() ? "Close" : "Ready";
         tutorialModeOnOff.GetComponentInChildren<Text>().text = TutorialManager.Instance.tutorialEnabled ? "Tutorial Mode: On" : "Tutorial Mode: Off";
     }
+    private void OnEnable()
+    {
+        PlayerController.OnInputChanged += InputUpdated;
+    }
+
+    private void OnDisable()
+    {
+        PlayerController.OnInputChanged -= InputUpdated;
+    }
+
+    private void InputUpdated(InputImagesSO inputImagesSO)
+    {
+        tutorialImage.sprite = inputImagesSO.tutorialImage;
+    }
+
     private void ReturnToGame()
     {
         timer.enabled = true;

@@ -19,11 +19,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [HideInInspector] public static PlayerController Instance { get; private set; }
 
     [Header("Player Attributes")]
+    public List<GameObject> bootsParticles = new List<GameObject>();
     [SerializeField] private float moveSpeed;
     [SerializeField] private float gravityMoveSpeed;
     [SerializeField] private float jumpForce;
     [SerializeField] private float ingredientThrowForce;
-    public List<GameObject> bootsParticles = new List<GameObject>();
 
     [Header("Ground Check")]
     [SerializeField] private LayerMask isGroundLayer;
@@ -33,7 +33,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] private float dashTime;
     [SerializeField] private float dashCooldownTime;
     private bool isDashing = false;
-
     private bool isGrounded;
 
     [Header("Interactables")]
@@ -61,6 +60,16 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     private Vector3 curMoveInput;
     private Vector3 moveDir;
     private Vector3 moveDirection;
+
+    [Header("Input Configuration")]
+    public InputDevice inputDevice = InputDevice.KeyboardMouse;
+    public InputImagesSO inputImagesSOXbox;
+    public InputImagesSO inputImagesSODualSense;
+    public InputImagesSO inputImagesSOKeyboardMouse;
+    private InputImagesSO inputImagesSO;
+    //public delegate void InputUpdateHandler(InputImagesSO inputImagesSO);
+    public static event Action<InputImagesSO> OnInputChanged;
+
     public float rotationSpeed;
 
     [Header("Mess Data")]
@@ -70,15 +79,14 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] private MessSO spillPrefab;
     [SerializeField] private Transform spillSpawnPoint;
     [SerializeField] private Spill spill;
+
     [Header("Pickups")]
     [SerializeField] public Transform pickupLocation;
-    public float pickupThrowForce;
     [SerializeField] private Pickup pickup;
+    public float pickupThrowForce;
 
     private CinemachineVirtualCamera virtualCamera;
-
     public PlayerColorChoice playerVisual;
-
     private bool tutorialMessageActive = false;
 
     [HideInInspector]
@@ -105,7 +113,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     [Header("Other Components")]
     [SerializeField] private InputManager inputManager;
-
+    
     // UI player ingrerdien indicator
     [SerializeField] private TextMeshPro ingredientIndicatorText;
     private string currentIndicator;
@@ -127,6 +135,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
             virtualCamera.Follow = gameObject.transform;
         }
+
+        inputImagesSO = inputImagesSOKeyboardMouse;
 
         //Get components
         rb = GetComponent<Rigidbody>();
@@ -299,7 +309,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             //Hide(visualGameObject);
         }
 
-        HandleCursorVisibility();
+        // Check if the inputDevice has changed
+        ChangePlayerControlsReferences();
 
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward, Color.green);
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward * customerInteractDistance, Color.red);
@@ -812,7 +823,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
     }
 
-    private void HandleCursorVisibility()
+    private void ChangePlayerControlsReferences()
     {
         // Check if a controller is being used
         bool usingController = Gamepad.current != null;
@@ -822,15 +833,30 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         Vector2 mouseDelta = Mouse.current.delta.ReadValue();
 
         // Check if any button on the controller is pressed or the stick is moved
-        if (Gamepad.current.allControls.Any(control => control.IsPressed() && control != Gamepad.current.leftStick))
+        if (Gamepad.current.allControls.Any(control => control.IsPressed()))
         {
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
+            if (Gamepad.current.name.Contains("DualSense"))
+            {
+                inputDevice = InputDevice.DualSense;
+                inputImagesSO = inputImagesSODualSense;
+                OnInputChanged?.Invoke(inputImagesSO);
+            }
+            else // Assume generic xbox if not dualsense or keyboard/mouse.
+            {
+                inputDevice = InputDevice.Xbox;
+                inputImagesSO = inputImagesSOXbox;
+                OnInputChanged?.Invoke(inputImagesSO);
+            }
         }
         else if (mouseDelta.magnitude > mouseMoveThreshold)
         {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
+            inputDevice = InputDevice.KeyboardMouse;
+            inputImagesSO = inputImagesSOKeyboardMouse;
+            OnInputChanged?.Invoke(inputImagesSO);
         }
     }
 
@@ -839,5 +865,13 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         tutorialMessageActive = true;
         if (tutorialMessageActive)
             Time.timeScale = 0f;
+    }
+
+    public enum InputDevice
+    {
+        None,
+        DualSense,
+        Xbox,
+        KeyboardMouse
     }
 }

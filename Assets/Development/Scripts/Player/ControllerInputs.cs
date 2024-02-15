@@ -384,7 +384,7 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""dee886d5-a323-4257-a796-ed79a7335554"",
-                    ""path"": ""<Keyboard>/q"",
+                    ""path"": ""<Keyboard>/1"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
@@ -395,7 +395,7 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""cfb19027-1ed0-4e0d-871d-7d7c0d54b106"",
-                    ""path"": ""<Keyboard>/e"",
+                    ""path"": ""<Keyboard>/2"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
@@ -417,7 +417,7 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""15e405db-5c78-4816-b590-35793fbb58c5"",
-                    ""path"": ""<Keyboard>/z"",
+                    ""path"": ""<Keyboard>/x"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -987,7 +987,6 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
         m_Player_DebugConsole = m_Player.FindAction("DebugConsole", throwIfNotFound: true);
         m_Player_BrewingStationSelect = m_Player.FindAction("BrewingStationSelect", throwIfNotFound: true);
         m_Player_BrewingStationEmpty = m_Player.FindAction("BrewingStationEmpty", throwIfNotFound: true);
-        
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
