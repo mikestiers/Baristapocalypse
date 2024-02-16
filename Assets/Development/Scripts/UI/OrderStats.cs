@@ -102,8 +102,8 @@ public class OrderStats : MonoBehaviour
     private void InputUpdated(InputImagesSO inputImagesSO)
     {
         resetMachineImage.sprite = inputImagesSO.brewingStationEmpty;
-        //previousMachineImage.sprite = inputImagesSO.brewingStationSelectLeft;
-        //nextMachineImage.sprite = inputImagesSO.brewingStationSelectRight;
+        previousMachineImage.sprite = inputImagesSO.brewingStationSelectLeft;
+        nextMachineImage.sprite = inputImagesSO.brewingStationSelectRight;
     }
 
     public int MapValue(int originalValue)

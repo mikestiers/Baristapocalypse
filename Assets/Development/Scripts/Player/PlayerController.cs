@@ -113,7 +113,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     [Header("Other Components")]
     [SerializeField] private InputManager inputManager;
-    
+
     // UI player ingrerdien indicator
     [SerializeField] private TextMeshPro ingredientIndicatorText;
     private string currentIndicator;
@@ -172,15 +172,16 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         //inputManager.JumpEvent += OnJump;
         inputManager.DashEvent += OnDash;
         inputManager.ThrowEvent += OnThrow;
-        inputManager.InteractEvent += Interact ;
+        inputManager.InteractEvent += Interact;
         inputManager.InteractAltEvent += InteractAlt;
         inputManager.DebugConsoleEvent += ShowDebugConsole;
         inputManager.BrewingStationSelectEvent += OnChangeBrewingStationSelect;
         inputManager.BrewingStationEmptyEvent += OnBrewingStationEmpty;
-        if (AISupervisor.Instance) {
+        if (AISupervisor.Instance)
+        {
             AISupervisor.Instance.OnTutorialMessageReceived += TutorialMessage;
         }
-        
+
     }
 
     private void OnDisable()
@@ -213,7 +214,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         // player movement
 
         // Gravity Storm Effect on player
-        if(movementToggle && !GameManager.Instance.isGravityStorm)
+        if (movementToggle && !GameManager.Instance.isGravityStorm)
             Move(moveSpeed);
         else if (movementToggle && GameManager.Instance.isGravityStorm)
             Move(gravityMoveSpeed);
@@ -400,10 +401,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
     }
 
-   //public void OnJump()
-   //{
-   //    // Jump logic if we want jumping
-   //}
+    //public void OnJump()
+    //{
+    //    // Jump logic if we want jumping
+    //}
 
     public void OnDash()
     {
@@ -412,23 +413,23 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         if (movementToggle)
             StartCoroutine(Dash());
-       // SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
-       //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
+        // SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
+        //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
 
         if (GetNumberOfIngredients() > 0)
         {
-           if (CheckIfHoldingLiquid() > 0)//stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
-           {
-               if (spillPrefab != null)
-               {
-                 Spill.PlayerCreateSpill(spillPrefab, this);
-               }
-               else
-               {
-                   Debug.Log("MessSO is null");
-               }
-               ThrowIngredient();
-           }
+            if (CheckIfHoldingLiquid() > 0)//stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
+            {
+                if (spillPrefab != null)
+                {
+                    Spill.PlayerCreateSpill(spillPrefab, this);
+                }
+                else
+                {
+                    Debug.Log("MessSO is null");
+                }
+                ThrowIngredient();
+            }
         }
         else return;
     }
@@ -453,7 +454,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public void OnThrow()
     {
-        if(!IsLocalPlayer) return;
+        if (!IsLocalPlayer) return;
         if (HasPickup())
         {
             ThrowPickup();
@@ -480,7 +481,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     {
         UpdateNumberOfIngredients();
         return numberOfIngredientsHeld;
-    } 
+    }
 
     public void UpdateNumberOfIngredients()
     {
@@ -490,9 +491,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     public int CheckIfHoldingLiquid()
     {
         int count = 0;
-        foreach(Ingredient i in ingredientsList)
+        foreach (Ingredient i in ingredientsList)
         {
-            if(i.GetIngredientSO().objectTag == "CoffeeCup")
+            if (i.GetIngredientSO().objectTag == "CoffeeCup")
             {
                 count++;
             }
@@ -502,11 +503,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public Transform GetNextHoldPoint()
     {
-        if(GetNumberOfIngredients() > GetMaxIngredients())
+        if (GetNumberOfIngredients() > GetMaxIngredients())
         {
             return null;
         }
-        Debug.Log("getting hold points " + (numberOfIngredientsHeld-1));
+        Debug.Log("getting hold points " + (numberOfIngredientsHeld - 1));
         return ingredientHoldPoints[GetNumberOfIngredients() - 1];
     }
 
@@ -517,7 +518,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public void SetIngredient(Ingredient ingredient)
     {
-        if(GetNumberOfIngredients() < GetMaxIngredients())
+        if (GetNumberOfIngredients() < GetMaxIngredients())
         {
             ingredientsList.Add(ingredient);
             GetNumberOfIngredients();
@@ -581,10 +582,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     {
         if (HasPickup())
             return;
-        if(GetNumberOfIngredients() >= GetMaxIngredients())
+        if (GetNumberOfIngredients() >= GetMaxIngredients())
         {
             Debug.Log("max ingredients spawned!");
-            return; 
+            return;
         }
 
         Ingredient.DestroyIngredient(floorIngredient);
@@ -733,7 +734,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
             pickup.DisablePickupColliders(pickup);
 
-            if(pickup.GetCustomer().inLine == true)
+            if (pickup.GetCustomer().inLine == true)
             {
                 int _CustomerPos = pickup.GetCustomer().currentPosInLine;
                 CustomerManager.Instance.LineQueue.RemoveCustomerInPos(_CustomerPos);
@@ -815,9 +816,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
     {
-        if(clientId == OwnerClientId && HasIngredient()) // HasIngredient 
+        if (clientId == OwnerClientId && HasIngredient()) // HasIngredient 
         {
-            for(int i=0; i<ingredientsList.Count; i++) {
+            for (int i = 0; i < ingredientsList.Count; i++)
+            {
                 Ingredient.DestroyIngredient(ingredientsList[i]);
             }
         }
