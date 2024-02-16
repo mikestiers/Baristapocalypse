@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor.U2D;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class OrderStats : MonoBehaviour
@@ -32,6 +35,8 @@ public class OrderStats : MonoBehaviour
     [SerializeField] public Sprite OrderTargetSuccessRectangle;
     [SerializeField] public Sprite TransparentSegment;  
     [SerializeField] public Image resetMachineImage;
+    [SerializeField] public Image previousMachineImage;
+    [SerializeField] public Image nextMachineImage;
 
     [Header("Associated Brewing Station")]
     [SerializeField] public BrewingStation brewingStation;
@@ -60,14 +65,14 @@ public class OrderStats : MonoBehaviour
 
     private void OnEnable()
     {
-        //OrderManager.Instance.OnOrderUpdated += SetOrderInfo;
+        PlayerController.OnInputChanged += InputUpdated;
         brewingStation.OnBrewingEmpty += OrderCompleted;
         brewingStation.OnBrewingDone += OrderCompleted;
     }
 
     private void OnDisable()
     {
-        //OrderManager.Instance.OnOrderUpdated -= SetOrderInfo;
+        PlayerController.OnInputChanged -= InputUpdated;
         brewingStation.OnBrewingEmpty -= OrderCompleted;
         brewingStation.OnBrewingDone -= OrderCompleted;
     }
@@ -92,6 +97,13 @@ public class OrderStats : MonoBehaviour
             SetTargetSegment(spicinessSegments, spicinessTargetValue, spicinessPotentialValue);
             SetTargetSegment(strengthSegments, strengthTargetValue, strengthPotentialValue);
         }
+    }
+
+    private void InputUpdated(InputImagesSO inputImagesSO)
+    {
+        resetMachineImage.sprite = inputImagesSO.brewingStationEmpty;
+        previousMachineImage.sprite = inputImagesSO.brewingStationSelectLeft;
+        nextMachineImage.sprite = inputImagesSO.brewingStationSelectRight;
     }
 
     public int MapValue(int originalValue)
