@@ -43,20 +43,11 @@ public class CleanupBot : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        
+        _currentState = BotState.Roam;
 
         if (path.Length <= 0)
         {
             path = GameObject.FindGameObjectsWithTag("Node");
-        }
-
-        if (_currentState == BotState.Cleanup)
-        {
-            target = GameObject.FindGameObjectWithTag("Mess");
-
-            if (target)
-                agent.SetDestination(target.transform.position);
-
         }
 
         if (distToNextNode <= 0)
@@ -68,6 +59,17 @@ public class CleanupBot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        target = GameObject.FindGameObjectWithTag("Mess");
+
+        if(target)
+        {
+              _currentState = BotState.Cleanup;
+        }
+        else
+        {
+              _currentState = BotState.Roam;
+        }
+      
         if (_currentState == BotState.Roam)
         {
 
@@ -85,7 +87,7 @@ public class CleanupBot : MonoBehaviour
 
 
         }
-        if (_currentState == BotState.Cleanup)
+        else if (_currentState == BotState.Cleanup)
         {
             if (target.gameObject.tag == "Node")
             {
@@ -107,6 +109,14 @@ public class CleanupBot : MonoBehaviour
         if (distToMess < distance)
         {
             _currentState = BotState.Cleanup;
+        }
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject == GameObject.FindGameObjectWithTag("Mess").gameObject)
+        {
+            Destroy(other.gameObject);
         }
     }
 }
