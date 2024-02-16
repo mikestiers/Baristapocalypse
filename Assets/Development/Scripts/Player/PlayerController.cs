@@ -311,7 +311,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
 
         // Check if the inputDevice has changed
-        ChangePlayerControlsReferences();
+        ChangePlayerControlsReferenceImages();
 
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward, Color.green);
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward * customerInteractDistance, Color.red);
@@ -825,12 +825,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
     }
 
-    private void ChangePlayerControlsReferences()
+    private void ChangePlayerControlsReferenceImages()
     {
-        // Check if a controller is being used
-        bool usingController = Gamepad.current != null;
-        if (!usingController) { return; }
-
         float mouseMoveThreshold = 0.1f;
         Vector2 mouseDelta = Mouse.current.delta.ReadValue();
 
