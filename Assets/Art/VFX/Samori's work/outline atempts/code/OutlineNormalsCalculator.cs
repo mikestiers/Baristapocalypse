@@ -4,8 +4,7 @@ using UnityEngine;
 // Require a mesh filter component
 // This script, unfortunately, does not support skinned meshes
 [RequireComponent(typeof(MeshFilter))]
-public class OutlineNormalsCalculator : MonoBehaviour
-{
+public class OutlineNormalsCalculator : MonoBehaviour {
     // Store these outline normals in the specified UV/Texcoord channel
     // This corresponds to the TEXCOORD_ semantics in HLSL
     [SerializeField] private int storeInTexcoordChannel = 1;
@@ -13,16 +12,14 @@ public class OutlineNormalsCalculator : MonoBehaviour
     [SerializeField] private float cospatialVertexDistance = 0.01f;
 
     // This class holds the accumulated normal for merged, or cospatial, vertices
-    private class CospatialVertex
-    {
+    private class CospatialVertex {
         public Vector3 position;
         public Vector3 accumulatedNormal;
     }
 
     // We'll run the algorithm in the start function
     // It would be better to run this in the editor at compile time, but that's another video
-    private void Start()
-    {
+    private void Start() {
         // Get the mesh
         Mesh mesh = GetComponent<MeshFilter>().mesh;
 
@@ -42,8 +39,7 @@ public class OutlineNormalsCalculator : MonoBehaviour
         // Unity stores triangles as three vertex indices, so for every three entries there is one triangle
         int numTriangles = triangles.Length / 3;
         // For each triangle
-        for (int t = 0; t < numTriangles; t++)
-        {
+        for(int t = 0; t < numTriangles; t++) {
             // Get the three vertex indices making up this triangle
             int vertexStart = t * 3;
             int v1Index = triangles[vertexStart];
@@ -58,8 +54,7 @@ public class OutlineNormalsCalculator : MonoBehaviour
         }
 
         // For each vertex
-        for (int v = 0; v < outlineNormals.Length; v++)
-        {
+        for(int v = 0; v < outlineNormals.Length; v++) {
             // Find the cospacial registry index for this vertex
             int cvIndex = cospacialVertexIndices[v];
             // Get the cospatial data object
@@ -73,21 +68,15 @@ public class OutlineNormalsCalculator : MonoBehaviour
         mesh.SetUVs(storeInTexcoordChannel, outlineNormals);
     }
 
-    private void FindCospatialVertices(Vector3[] vertices, int[] indices, List<CospatialVertex> registry)
-    {
+    private void FindCospatialVertices(Vector3[] vertices, int[] indices, List<CospatialVertex> registry) {
         // For each vertex
-        for (int v = 0; v < vertices.Length; v++)
-        {
-            if (SearchForPreviouslyRegisteredCV(vertices[v], registry, out int index))
-            {
+        for(int v = 0; v < vertices.Length; v++) {
+            if(SearchForPreviouslyRegisteredCV(vertices[v], registry, out int index)) {
                 // If this vertex is cospatial with another, then register the data index
                 indices[v] = index;
-            }
-            else
-            {
+            } else {
                 // If this vertex is unique, create a new cospacial vertex data object
-                var cospatialEntry = new CospatialVertex()
-                {
+                var cospatialEntry = new CospatialVertex() {
                     position = vertices[v],
                     accumulatedNormal = Vector3.zero,
                 };
@@ -98,14 +87,11 @@ public class OutlineNormalsCalculator : MonoBehaviour
         }
     }
 
-    private bool SearchForPreviouslyRegisteredCV(Vector3 position, List<CospatialVertex> registry, out int index)
-    {
+    private bool SearchForPreviouslyRegisteredCV(Vector3 position, List<CospatialVertex> registry, out int index) {
         // For each registry entry
-        for (int i = 0; i < registry.Count; i++)
-        {
+        for(int i = 0; i < registry.Count; i++) {
             // If the vertex is close enough, consider it cospatial
-            if (Vector3.Distance(registry[i].position, position) <= cospatialVertexDistance)
-            {
+            if(Vector3.Distance(registry[i].position, position) <= cospatialVertexDistance) {
                 index = i;
                 return true;
             }
@@ -114,8 +100,7 @@ public class OutlineNormalsCalculator : MonoBehaviour
         return false;
     }
 
-    private void ComputeNormalAndWeights(Vector3 a, Vector3 b, Vector3 c, out Vector3 normal, out Vector3 weights)
-    {
+    private void ComputeNormalAndWeights(Vector3 a, Vector3 b, Vector3 c, out Vector3 normal, out Vector3 weights) {
         // The normal of a triangle is the normal of a plane containing the triangle
         // We can calculate this by constructing two vectors on the plane and taking their cross product
         // Unity's triangles are wound clockwise, so taking the cross product this way will produce a normal
@@ -126,8 +111,7 @@ public class OutlineNormalsCalculator : MonoBehaviour
         weights = new Vector3(Vector3.Angle(b - a, c - a), Vector3.Angle(c - b, a - b), Vector3.Angle(a - c, b - c));
     }
 
-    private void AddWeightedNormal(Vector3 weightedNormal, int vertexIndex, int[] cvIndices, List<CospatialVertex> cvRegistry)
-    {
+    private void AddWeightedNormal(Vector3 weightedNormal, int vertexIndex, int[] cvIndices, List<CospatialVertex> cvRegistry) {
         // Find the cospatial vertex data index
         int cvIndex = cvIndices[vertexIndex];
         // Add the weighted normal

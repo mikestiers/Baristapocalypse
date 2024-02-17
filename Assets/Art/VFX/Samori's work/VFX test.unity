@@ -123,6 +123,25 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &40726779 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5508661418087602024, guid: bbc6ae028c642f84b90d03e82a1440fd, type: 3}
+  m_PrefabInstance: {fileID: 1977937320}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &40726783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 40726779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e252d05e111a1d45953e556090eb3b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  storeInTexcoordChannel: 1
+  cospatialVertexDistance: 0.01
 --- !u!1001 &116865527
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -136,7 +155,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c1f2cb9e37cdd974ab78ed2124bcdebf, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.611605
+      value: -2.51
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c1f2cb9e37cdd974ab78ed2124bcdebf, type: 3}
       propertyPath: m_LocalPosition.y
@@ -144,7 +163,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c1f2cb9e37cdd974ab78ed2124bcdebf, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.7020439
+      value: 0.93
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c1f2cb9e37cdd974ab78ed2124bcdebf, type: 3}
       propertyPath: m_LocalRotation.w
@@ -424,7 +443,6 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
-  - {fileID: 2100000, guid: 9c19383877041bf4683c6f6f6091a12c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -733,7 +751,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 533563683556402451, guid: c431519c3e5173d4fac4acc61d044123, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -7.82
+      value: -2.31
       objectReference: {fileID: 0}
     - target: {fileID: 533563683556402451, guid: c431519c3e5173d4fac4acc61d044123, type: 3}
       propertyPath: m_LocalRotation.w
@@ -769,7 +787,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 533563683556402463, guid: c431519c3e5173d4fac4acc61d044123, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1024751596296165092, guid: c431519c3e5173d4fac4acc61d044123, type: 3}
       propertyPath: m_Enabled
@@ -789,7 +807,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3262559838419356327, guid: c431519c3e5173d4fac4acc61d044123, type: 3}
       propertyPath: m_Materials.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3262559838419356327, guid: c431519c3e5173d4fac4acc61d044123, type: 3}
       propertyPath: m_Materials.Array.data[1]
@@ -797,7 +815,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: f8b02dc4b99f0bb43b412987379f1ede, type: 2}
     - target: {fileID: 7318658187558776767, guid: c431519c3e5173d4fac4acc61d044123, type: 3}
       propertyPath: m_Layer
-      value: 12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7986785780233720865, guid: c431519c3e5173d4fac4acc61d044123, type: 3}
       propertyPath: m_LocalScale.x
@@ -1307,6 +1325,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 12
       objectReference: {fileID: 0}
+    - target: {fileID: 6301184794892793533, guid: bbc6ae028c642f84b90d03e82a1440fd, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6301184794892793533, guid: bbc6ae028c642f84b90d03e82a1440fd, type: 3}
+      propertyPath: m_Materials.Array.data[3]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9c19383877041bf4683c6f6f6091a12c, type: 2}
     - target: {fileID: 7328240650680940546, guid: bbc6ae028c642f84b90d03e82a1440fd, type: 3}
       propertyPath: m_Name
       value: BeanStation
