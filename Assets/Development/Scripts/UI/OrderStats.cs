@@ -79,11 +79,11 @@ public class OrderStats : MonoBehaviour
         {
             UpdateTimer();
 
-            if (orderTimer.value <= 0.01f)
-            {
-                Debug.Log("wokin");
-                orderInProgress = false;
-            }
+            //if (orderTimer.value <= 0.01f)
+            //{
+            //    Debug.Log("wokin");
+            //    orderInProgress = false;
+            //}
         }
     }
 

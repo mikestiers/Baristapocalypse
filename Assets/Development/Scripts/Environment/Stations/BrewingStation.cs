@@ -48,7 +48,6 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     protected virtual void RaiseBrewingDone()
     {
         currentOrder.State = Order.OrderState.Finished;
-        
     }
 
     protected virtual void RaiseBrewingEmpty()
@@ -60,6 +59,9 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     {
         currentOrder.State = Order.OrderState.OutOfTime;
         OnBrewingDone?.Invoke(this, EventArgs.Empty);
+
+        resetStation();
+        OrderManager.Instance.FinishOrder(currentOrder);
     }
 
     //private void OnEnable()
@@ -81,6 +83,13 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     {
         RaiseBrewingEmpty();
         Empty();
+    }
+
+    private void resetStation()
+    {
+        isBrewing = false;
+        availableForOrder = true;
+        ingredientSOList.Clear();
     }
 
     private void Awake()
@@ -121,16 +130,15 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             if (brewingTimer.Value >= 0)
             {
                 SpawnCoffeeDrinkServerRpc();   
-                BrewingDoneServerRpc();   
+                BrewingDoneServerRpc();
             }
-
-
         }
 
         if (!availableForOrder)
         {
-            if (currentOrder.customer.orderTimer >= currentOrder.customer.customerLeaveTime)
+            if (currentOrder.customer.GetCustomerState() == CustomerBase.CustomerState.Leaving)
             {
+                Debug.Log("Wokin");
                 CustomerOrderTimeExpiredRpc();
             }
         }
@@ -197,11 +205,6 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     private void CustomerOrderTimeExpiredRpc()
     {
         CustomerOrderTimeExpired();
-        ingredientSOList.Clear();
-        isBrewing = false;
-        availableForOrder = true;
-
-        OrderManager.Instance.FinishOrder(currentOrder);
     }
 
     public override void Interact(PlayerController player)
