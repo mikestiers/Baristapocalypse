@@ -33,9 +33,18 @@ public class OrderManager : Singleton<OrderManager>
 
         if (orderQueue.Count >= 1)
         {
-            for (int i = 0; i < timers.Count; i++)
+            for (int i = 0; i < orderQueue.Count; i++)
+            {
                 timers[i].value = (orderQueue[i].customer.customerLeaveTime - orderQueue[i].customer.orderTimer.Value) / orderQueue[i].customer.customerLeaveTime;
+
+                if (timers[i].value <= 0)
+                {
+                    Destroy(timers[i].gameObject);
+                    timers.Remove(timers[i]);
+                }
+            }
         }
+
 
     }
 
@@ -51,8 +60,6 @@ public class OrderManager : Singleton<OrderManager>
             newTimer.value = (order.customer.customerLeaveTime - order.customer.orderTimer.Value) / order.customer.customerLeaveTime;
             timers.Add(newTimer);
             Debug.Log("TESTIN" + newTimer.value);
-
-            //ordersInQueue++;
         }
 
         TryStartOrder();
@@ -67,14 +74,11 @@ public class OrderManager : Singleton<OrderManager>
 
     public void FinishOrder(Order order)
     {
-        Debug.Log("HELYO");
-
         orders.Remove(order);
 
         if (orderQueue.Count >= 1)
         {
             GetNextOrder();
-            TryStartOrder();
         }
         
         amountOfOrders--;
