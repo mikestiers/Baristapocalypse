@@ -12,30 +12,39 @@ public class GravityStation : MonoBehaviour
 
     private Mouse mouse = Mouse.current;
 
-    private void Start()
-    {
-       
-        //GameManager.Instance.OnPlayerDeactivateEvent += GameManager_OnPlayerDeactivateEvent;
-    }
 
-    // this is temporary, the player will interact with this and hold a button to deactivate the gravity Storm
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.GetComponent<PlayerController>())
         {
-            if (mouse.leftButton.wasPressedThisFrame) 
-            { 
-                 DeactivateRandomEvent();
-            }
-            //gravityField.SetActive(true);
-            //GameManager_OnPlayerDeactivateEvent(this, EventArgs.Empty);
+            InputManager.Instance.InteractEvent += HandleInteract;
         }
     }
 
-    private void GameManager_OnPlayerDeactivateEvent(object sender, EventArgs e)
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.GetComponent<PlayerController>())
+        {
+            InputManager.Instance.InteractEvent -= HandleInteract;
+        }
+    }
+
+    private void HandleInteract()
     {
         DeactivateRandomEvent();
     }
+
+    //// this is temporary, the player will interact with this and hold a button to deactivate the gravity Storm
+    //private void OnTriggerStay(Collider other)
+    //{
+    //    if (other.GetComponent<PlayerController>())
+    //    {
+    //        if (mouse.leftButton.wasPressedThisFrame) 
+    //        { 
+    //             DeactivateRandomEvent();
+    //        }
+    //    }
+    //}
 
     private void DeactivateRandomEvent()
     {
