@@ -6,6 +6,8 @@ using UnityEngine.Audio;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using System.Collections;
+using System;
+using UnityEngine.EventSystems;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -30,6 +32,7 @@ public class UIManager : Singleton<UIManager>
     public GameObject pauseMenu;
     public GameObject tutorialMenu;
     public GameObject ordersMenu;
+    public GameObject playerReadyMenu;
 
     [Header("Text")]
     public Text timer;
@@ -42,6 +45,9 @@ public class UIManager : Singleton<UIManager>
     public TextMeshProUGUI currencyText;
     public TextMeshProUGUI streakText;
     public TextMeshProUGUI gameMessage;
+
+    [Header("Tutorial Image")]
+    public Image tutorialImage;
 
     [Header("GameMessageHolder")]
     public GameObject gameMessageContainer;
@@ -112,12 +118,31 @@ public class UIManager : Singleton<UIManager>
         if (closeTutorial)
             closeTutorial.onClick.AddListener(CloseTutorial);
 
+        closeTutorial.GetComponentInChildren<Text>().text = GameManager.Instance.IsGamePlaying() ? "Close" : "Ready";
         tutorialModeOnOff.GetComponentInChildren<Text>().text = TutorialManager.Instance.tutorialEnabled ? "Tutorial Mode: On" : "Tutorial Mode: Off";
+
+        EventSystem.current.SetSelectedGameObject(null);
     }
+    private void OnEnable()
+    {
+        PlayerController.OnInputChanged += InputUpdated;
+    }
+
+    private void OnDisable()
+    {
+        PlayerController.OnInputChanged -= InputUpdated;
+    }
+
+    private void InputUpdated(InputImagesSO inputImagesSO)
+    {
+        tutorialImage.sprite = inputImagesSO.tutorialImage;
+    }
+
     private void ReturnToGame()
     {
         timer.enabled = true;
         ordersMenu.SetActive(true);
+        tutorialMenu.SetActive(false);
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;
     }
@@ -292,8 +317,14 @@ public class UIManager : Singleton<UIManager>
     private void CloseTutorial()
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
-        tutorialMenu.SetActive(false);
-        mainMenu.SetActive(true);
+        if (!GameManager.Instance.IsLocalPlayerReady())
+        {
+            GameManager.Instance.SetLocalPlayerReady();
+            closeTutorial.GetComponentInChildren<Text>().text = "Close";
+            ReturnToGame();
+            return;
+        }
+        ShowPause();
     }
 
     private void ToggleTutorialMode()

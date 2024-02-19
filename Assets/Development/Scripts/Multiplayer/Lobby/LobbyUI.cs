@@ -19,7 +19,8 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private Button createPublicLobbyButton;
     [SerializeField] private Button backButton;
 
-    [SerializeField] private TMP_Dropdown _dropdown;
+    [SerializeField] private TMP_Dropdown dropdownPlayers;
+    private int selectedMaxPlayers;
     [Header("Input Field")] [SerializeField]
     private TMP_InputField lobbyNameInputField;
 
@@ -32,7 +33,7 @@ public class LobbyUI : MonoBehaviour
 
     private void Awake()
     {
-        int selectedMaxPlayers = int.Parse(_dropdown.options[_dropdown.value].text);
+        selectedMaxPlayers = int.Parse(dropdownPlayers.options[dropdownPlayers.value].text);
         if (hostLobbyButton)
         {
             hostLobbyButton.onClick.AddListener(() =>
@@ -55,11 +56,16 @@ public class LobbyUI : MonoBehaviour
             });
         }
 
+        if (dropdownPlayers)
+        {
+            dropdownPlayers.onValueChanged.AddListener(OnDropdownValueChanged);
+        }
+
         if (createPrivateLobbyButton)
         {
             createPrivateLobbyButton.onClick.AddListener(() =>
             {
-                LobbyManager.Instance.CreateLobby(lobbyNameInputField.text, true,selectedMaxPlayers);
+                LobbyManager.Instance.CreateLobby(lobbyNameInputField.text, true, selectedMaxPlayers);
             });
         }
 
@@ -67,11 +73,17 @@ public class LobbyUI : MonoBehaviour
         {
             createPublicLobbyButton.onClick.AddListener(() =>
             {
-                LobbyManager.Instance.CreateLobby(lobbyNameInputField.text, false,selectedMaxPlayers);
+                LobbyManager.Instance.CreateLobby(lobbyNameInputField.text, false, selectedMaxPlayers);
             });
         }
 
         lobbyTemplate.gameObject.SetActive(false);
+    }
+
+    private void OnDropdownValueChanged(int numPlayers)
+    {
+        selectedMaxPlayers = int.Parse(dropdownPlayers.options[dropdownPlayers.value].text);
+        Debug.Log("Max players " + selectedMaxPlayers);
     }
 
     private void Start()

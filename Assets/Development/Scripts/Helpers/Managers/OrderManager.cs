@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 
 public class OrderManager : Singleton<OrderManager>
 {
-    private List<Order> orders = new List<Order>();
+    [SerializeField] private List<Order> orders = new List<Order>();
     public delegate void OrderUpdateHandler(Order order);
     public event OrderUpdateHandler OnOrderUpdated;
     public BrewingStation[] brewingStations; // Assign in inspector, do not find in active game
@@ -15,8 +16,14 @@ public class OrderManager : Singleton<OrderManager>
 
     private void Update()
     {
-        if (orders.Any(order => order.State == Order.OrderState.Waiting))
+        if (orders.Any(order => order.GetOrderState() == Order.OrderState.Waiting))
             TryStartOrder();
+    }
+
+    public void SpawnOrder(CustomerBase customer)
+    {
+        Order order = new Order();
+        order.Initialize(customer);
     }
 
     public void AddOrder(Order order)
@@ -28,7 +35,7 @@ public class OrderManager : Singleton<OrderManager>
     public void FinishOrder(Order order)
     {
         // orders.Remove(order);
-        order.State = Order.OrderState.Delivered;
+        order.SetOrderState(Order.OrderState.Delivered);
         TryStartOrder();
     }
 
@@ -43,6 +50,18 @@ public class OrderManager : Singleton<OrderManager>
     }
 
     public void TryStartOrder()
+    {
+        TryStartOrderServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void TryStartOrderServerRpc()
+    {
+        TryStartOrderClientRpc();
+    }
+
+    [ClientRpc]
+    private void TryStartOrderClientRpc()
     {
         bool availableStationFound = false;
 
@@ -72,11 +91,11 @@ public class OrderManager : Singleton<OrderManager>
         {
             foreach (Order order in orders)
             {
-                if (order.State == Order.OrderState.Waiting)
+                if (order.GetOrderState() == Order.OrderState.Waiting)
                 {
                     Debug.Log("FirstOrder: " + order.customer.customerName);
                     StartOrder(order);
-                    order.State = Order.OrderState.Brewing;
+                    order.SetOrderState(Order.OrderState.Brewing);
                     return;
                 }
             }
@@ -88,5 +107,10 @@ public class OrderManager : Singleton<OrderManager>
         //OnOrderUpdated?.Invoke(order);
         availableBrewingStation.SetOrder(order);
         associatedOrderStats.SetOrderInfo(order);
+    }
+
+    public Order GetOrderFromListByIndex(int index)
+    {
+        return orders[index];
     }
 }
