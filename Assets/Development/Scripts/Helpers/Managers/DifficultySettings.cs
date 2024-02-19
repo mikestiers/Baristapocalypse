@@ -15,7 +15,7 @@ public class DifficultySettings
     private float minDelay;
     private float maxDelay;
     private int playerCount;
-    private int MaxShift = 5; //do determine end of game
+    public int MaxShift;
     private float chanceToMess;
     private float loiterMessEverySec;
     private float chanceToLoiter;
@@ -32,37 +32,6 @@ public class DifficultySettings
     public DifficultySettings()
     {
         playerCount = 1;
-        /*
-        switch (currentDifficulty.difficultyString)
-        {
-            case "Easy":
-                numberOfCustomersInWave = chosenDifficulty.InitialnumberOfWaves + Mathf.FloorToInt(InitplayerCount * 1.5f);
-                minDelay = 8.0f;
-                maxDelay = 15.0f;
-                numberOfWaves = 3;
-
-                break;
-
-            case "Medium":
-                numberOfCustomersInWave = chosenDifficulty.InitialnumberOfWaves + (InitplayerCount * 2);
-               
-                minDelay = 6.0f;
-                maxDelay = 10.0f;
-                numberOfWaves = 3;
-
-                break;
-
-            case "Hard":
-                numberOfCustomersInWave = chosenDifficulty.InitialnumberOfWaves + (InitplayerCount * 3);
-                
-                minDelay = 6.0f;
-                maxDelay = 8.0f;
-                numberOfWaves = 4;
-                break;
-
-        }
-        */
-
     }
 
     private void UpdateDifficulty()
@@ -70,10 +39,11 @@ public class DifficultySettings
         minDelay = currentDifficulty.minCustomerSpawnDelay - Mathf.FloorToInt(playerCount * 6);
         maxDelay = currentDifficulty.maxCustomerSpawnDelay - Mathf.FloorToInt(playerCount * 6);
 
-        timeBetweenWaves += currentDifficulty.timeBetweenWaves;
+        timeBetweenWaves = currentDifficulty.timeBetweenWaves;
 
         numberOfWaves = currentDifficulty.InitialnumberOfWaves;
         numberOfCustomersInWave = currentDifficulty.numberOfCustomersInWave + Mathf.FloorToInt(playerCount * currentDifficulty.rateOfIncreaseBasedOnPlayerCount);
+        MaxShift = currentDifficulty.maxShift;
 
         chanceToMess = currentDifficulty.chanceToMess;
 
@@ -95,8 +65,6 @@ public class DifficultySettings
 
         moneyToPass = currentDifficulty.moneyToPass;
 
-        if (moneyToPass < 100) moneyToPass = 100;
-
     }
 
     public void SetDifficulty(DifficultySO choosenDiff)
@@ -113,9 +81,8 @@ public class DifficultySettings
 
     public void NextShift()
     {
-        Shift++;
-
-        if (Shift > MaxShift)
+        Debug.Log("Shift: " + Shift);
+        if (Shift == MaxShift)
         {
             //Trigger End Game
             GameManager.Instance.iSEndGame = true;
@@ -123,11 +90,16 @@ public class DifficultySettings
 
             return;
         }
+        else
+        {
+            Debug.Log("Shift: " + Shift);
+            Shift++;
+        }
 
         minDelay = currentDifficulty.minCustomerSpawnDelay;
         maxDelay = currentDifficulty.maxCustomerSpawnDelay;
 
-        numberOfWaves = currentDifficulty.InitialnumberOfWaves + Mathf.FloorToInt(Shift * currentDifficulty.RateOfIncreaseInNumberOfWaves);
+        numberOfWaves = currentDifficulty.InitialnumberOfWaves; // + Mathf.FloorToInt(Shift * currentDifficulty.RateOfIncreaseInNumberOfWaves);
     }
 
     public int GetShift()
@@ -135,42 +107,43 @@ public class DifficultySettings
         return Shift;
     }
 
-    public void NextWave()
-    {
-        numberOfWaves--;
+    //nothing is calling this
+    //public void NextWave()
+    //{
+    //    numberOfWaves--;
 
-        //decreasing the amount of delay between customers spawning
-        minDelay -= currentDifficulty.rateOFDecresedDelayOfCustomerSpawn;
-        maxDelay -= currentDifficulty.rateOFDecresedDelayOfCustomerSpawn;
+    //    //decreasing the amount of delay between customers spawning
+    //    minDelay -= currentDifficulty.rateOFDecresedDelayOfCustomerSpawn;
+    //    maxDelay -= currentDifficulty.rateOFDecresedDelayOfCustomerSpawn;
 
-        //adjusting amount of customers based on wave numbers /// increasing amount of customers every wave
-        /*
-        switch (difficultyLevel)
-        {
-            case 0:
-                //easy
-                numberOfCustomersInWave += (5 + (2 * playerCount));
+    //    //adjusting amount of customers based on wave numbers /// increasing amount of customers every wave
+    //    /*
+    //    switch (difficultyLevel)
+    //    {
+    //        case 0:
+    //            //easy
+    //            numberOfCustomersInWave += (5 + (2 * playerCount));
 
-                break; 
+    //            break; 
 
-            case 1:
-                //medium
-                numberOfCustomersInWave += (5 + (4 * playerCount));
+    //        case 1:
+    //            //medium
+    //            numberOfCustomersInWave += (5 + (4 * playerCount));
 
-                break;
+    //            break;
 
-            case 2:
-                //hard
-                numberOfCustomersInWave += (5 + (4 * playerCount));
+    //        case 2:
+    //            //hard
+    //            numberOfCustomersInWave += (5 + (4 * playerCount));
 
-                break;
+    //            break;
 
-        }
-        */
-        numberOfCustomersInWave += Mathf.FloorToInt(currentDifficulty.RateOfIncreaseInNumberOfWaves + (playerCount * currentDifficulty.rateOfIncreaseBasedOnPlayerCount));
+    //    }
+    //    */
+    //    numberOfCustomersInWave += Mathf.FloorToInt(currentDifficulty.RateOfIncreaseInNumberOfWaves + (playerCount * currentDifficulty.rateOfIncreaseBasedOnPlayerCount));
 
 
-    }
+    //}
 
 
     public int GetNumberOfWaves()
