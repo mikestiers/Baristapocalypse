@@ -827,6 +827,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     private void ChangePlayerControlsReferenceImages()
     {
+        // Check if a controller is being used
+        bool usingController = Gamepad.current != null;
+        if (!usingController) { return; }
+
         float mouseMoveThreshold = 0.1f;
         Vector2 mouseDelta = Mouse.current.delta.ReadValue();
 
