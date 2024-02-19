@@ -134,12 +134,19 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             }
         }
 
+
+
         if (!availableForOrder)
         {
-            if (currentOrder.customer.GetCustomerState() == CustomerBase.CustomerState.Leaving)
+            if (currentOrder.customer.noOrderTimeLeft)
             {
                 Debug.Log("Wokin");
                 CustomerOrderTimeExpiredRpc();
+            }
+
+            if (currentOrder.customer.orderReceived)
+            {
+                resetStation();
             }
         }
 
