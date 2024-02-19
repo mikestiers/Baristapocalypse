@@ -17,14 +17,8 @@ public class OrderManager : Singleton<OrderManager>
     OrderStats associatedOrderStats;
 
     // TEST//
-    public int amountOfOrders;
     public Slider slider;
     public Transform sliderLocation;
-
-    private void Start()
-    {
-        amountOfOrders = 0;
-    }
 
     private void Update()
     {
@@ -50,8 +44,11 @@ public class OrderManager : Singleton<OrderManager>
 
     public void AddOrder(Order order)
     {
-        if (amountOfOrders < 2)
+        if (orders.Count < 2 && orderQueue.Count <= 0)
+        {
             orders.Add(order);
+            Debug.Log("WOKIN2");
+        }
 
         else
         {
@@ -63,13 +60,12 @@ public class OrderManager : Singleton<OrderManager>
         }
 
         TryStartOrder();
-        amountOfOrders++;
     }
 
     public void TakeOrderFromQueue()
     {
-        orders.Add(orderQueue[0]);
-        orderQueue.Remove(orderQueue[0]);
+            orders.Add(orderQueue[0]);
+            orderQueue.Remove(orderQueue[0]);
     }
 
     public void FinishOrder(Order order)
@@ -80,8 +76,8 @@ public class OrderManager : Singleton<OrderManager>
         {
             GetNextOrder();
         }
-        
-        amountOfOrders--;
+
+        TryStartOrder();
     }
 
     public void GetNextOrder()
@@ -94,7 +90,7 @@ public class OrderManager : Singleton<OrderManager>
 
         // Removes finished order and places a new order from OrderQueue list //
         TakeOrderFromQueue();
-        TryStartOrder();
+
     }
 
     public void TryStartOrder()

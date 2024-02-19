@@ -17,6 +17,8 @@ public class CustomerBase : Base
     public bool inLine;
     public bool leaving = false;
     public bool makingAMess = false;
+    public bool noOrderTimeLeft = false;
+    public bool orderReceived = false;
     public bool moving;
     public float distThreshold;
     public GameObject[] Line;
@@ -180,7 +182,8 @@ public class CustomerBase : Base
         orderBeingServed = true;
         if (orderTimer >= customerLeaveTime)
         {
-            CustomerManager.Instance.customerLeaveIncrease();         
+            CustomerManager.Instance.customerLeaveIncrease();
+            noOrderTimeLeft = true;
             CustomerLeave();
 
             Debug.LogWarning("Unhappy Customer");
@@ -412,8 +415,11 @@ public class CustomerBase : Base
     {
         CustomerReviewManager.Instance.ShowCustomerReview(this);
         OrderManager.Instance.FinishOrder(order);
+
         StopOrderTimer();
         CustomerLeave();
+        
+        orderReceived = true;
     }
 
     void HeadDetach()
@@ -453,6 +459,7 @@ public class CustomerBase : Base
     public void StartOrderTimer()
     {
         orderTimer = 0f;
+        
     }
 
     public void StopOrderTimer()
