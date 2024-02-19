@@ -13,6 +13,7 @@ public class DifficultySO : ScriptableObject
     public int InitialnumberOfWaves;
     public float RateOfIncreaseInNumberOfWaves; //0.0f ,weird number for medium, 0.5f
     public float targetBudget;
+    public int maxShift;
 
     [Header("Number of Customers Per Wave")]
     public int numberOfCustomersInWave;
