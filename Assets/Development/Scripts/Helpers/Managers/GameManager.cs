@@ -9,12 +9,15 @@ using System.Collections;
 public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance { get; private set; }
+    //Frame rate cap
+    private const int maxFrameRate = 60;
 
     // Quick Time Events
     [SerializeField] private List<RandomEventBase> randomEventList;
     [SerializeField] private float minRandomTime = 1f;
     [SerializeField] private float maxRandomTime = 2f;
     [HideInInspector] public bool isEventActive = false;
+    [HideInInspector] public bool isGravityStorm = false;
     [HideInInspector] public RandomEventBase currentRandomEvent;
     // Event to trigger events
     public delegate void RandomEventHandler();
@@ -58,11 +61,6 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private CustomerManager customerManager;
 
     // Difficulty Settings
-
-    [SerializeField] public DifficultySO[] Difficulties; //In Customer Manager for now move to Game Manager
-
-    public DifficultySettings difficultySettings; //will move to GameManager when gamemanager is owki, change references to GameManager aswell
-
     public DifficultySO currentDifficulty;
 
     public MoneySystem moneySystem;
@@ -76,14 +74,17 @@ public class GameManager : NetworkBehaviour
  
         playerReadyDictionary = new Dictionary<ulong, bool>();
         playerPauseDictionary = new Dictionary<ulong, bool>();
+        currentDifficulty = GameValueHolder.Instance.currentDifficulty;
     }
+
 
     private void Start()
     {
+        Application.targetFrameRate = maxFrameRate;
+
         if (InputManager.Instance)
         {
             InputManager.Instance.PauseEvent += InputManager_PauseEvent;
-            InputManager.Instance.InteractEvent += InputManager_OnInteractEvent;
         }
 
         OnRandomEventTriggered += HandleRandomEvent;
@@ -101,19 +102,6 @@ public class GameManager : NetworkBehaviour
     public override void OnDestroy()
     {
         OnRandomEventTriggered -= HandleRandomEvent;
-    }
-
-    private void InputManager_OnInteractEvent()
-    {
-        if (gameState.Value == GameState.WaitingToStart) 
-        {
-            //gameState = GameState.CountdownToStart;
-            //OnGameStateChanged?.Invoke(this, EventArgs.Empty);
-            isLocalPlayerReady = true;
-            OnLocalPlayerReadyChanged?.Invoke(this, EventArgs.Empty);
-
-            SetPlayerReadyServerRpc();
-        }
     }
 
     public override void OnNetworkSpawn()
@@ -208,7 +196,7 @@ public class GameManager : NetworkBehaviour
                     // Adjust the difficulty based on time passed
                     foreach (float randomEventTime in randomEventTimes)
                     {
-                        if (timeSinceStart > randomEventTime)
+                        if (timeSinceStart > randomEventTime && timeSinceStart < (randomEventTime + 1.0f))
                         {
                             TriggerRandomEvent();
                         }
@@ -271,6 +259,16 @@ public class GameManager : NetworkBehaviour
     public bool IsLocalPlayerReady()
     {
         return isLocalPlayerReady;
+    }
+
+    public void SetLocalPlayerReady()
+    {
+        if (gameState.Value == GameState.WaitingToStart)
+        {
+            isLocalPlayerReady = true;
+            OnLocalPlayerReadyChanged?.Invoke(this, EventArgs.Empty);
+            SetPlayerReadyServerRpc();
+        }
     }
 
     private void InputManager_PauseEvent(object sender, EventArgs e)
@@ -356,25 +354,7 @@ public class GameManager : NetworkBehaviour
         isGamePaused.Value = false;
 
     }
-    public void SetCurrentDifficultyTo(string difficulty)
-    {
-        switch (difficulty)
-        {
-            case "Easy":
-                currentDifficulty = Difficulties[0];
-                break;
-
-            case "Medium":
-                currentDifficulty = Difficulties[1];
-                break;
-
-            case "Hard":
-                currentDifficulty = Difficulties[2];
-                break;
-
-        }
-
-    }
+   
 
     // Quick Random Events
 
@@ -448,19 +428,6 @@ public class GameManager : NetworkBehaviour
                 }
                 break;
         }
-        //switch (difficulty)
-        //{
-        //    case "Easy":
-        //        startTime = UnityEngine.Random.Range(timeWindow * 0.9f, timeWindow * 1.3f);
-        //        break;
-        //    case "Medium":
-        //        startTime = UnityEngine.Random.Range(timeWindow * 0.6f, timeWindow * 1.5f);
-        //        break;
-        //    case "Hard":
-        //        startTime = UnityEngine.Random.Range(timeWindow * 0.5f, timeWindow * 1.7f);
-        //        break;
-        //}
-
         return startTime;
     }
 
@@ -494,7 +461,6 @@ public class GameManager : NetworkBehaviour
         if (randomEventList.Count > 0)
         {
             int randomIndex = UnityEngine.Random.Range(0, randomEventList.Count);
-            Debug.Log("GetRandomEvent  " + randomIndex);
             return randomEventList[randomIndex];
         }
 
@@ -510,16 +476,41 @@ public class GameManager : NetworkBehaviour
     public void ActivateEvent(RandomEventBase randomEvent)
     {
         isEventActive = true;
-        randomEvent.SetEventBool(true);
-        randomEvent.ActivateDeactivateEvent();
-        //OnPlayerDeactivateEvent?.Invoke(this, EventArgs.Empty);
+        if (randomEvent.GetComponent<GravityStorm>()) 
+        {
+            isGravityStorm = true;
+            randomEvent.SetEventBool(true);
+            randomEvent.ActivateDeactivateEvent();
+        }
+        else if (randomEvent.GetComponent<WifiStation>()) 
+        {
+            randomEvent.gameObject.GetComponent<WifiStation>().WifiEventIsStarting();
+        }
+        else if (randomEvent.GetComponent<RadioStation>()) 
+        {
+            randomEvent.gameObject.GetComponent<RadioStation>().EventOn();
+        }
+
     }
 
     public void DeactivateEvent(RandomEventBase randomEvent)
     {
-        isEventActive = true;
-        randomEvent.SetEventBool(true);
-        randomEvent.ActivateDeactivateEvent();
+        isEventActive = false;
+        if (randomEvent.GetComponent<GravityStorm>()) 
+        {
+            isGravityStorm = false;
+            randomEvent.SetEventBool(false);
+            randomEvent.ActivateDeactivateEvent();
+        }
+        else if (randomEvent.GetComponent<WifiStation>()) 
+        {
+            randomEvent.gameObject.GetComponent<WifiStation>().WifiEventIsDone();
+        }
+        else if (randomEvent.GetComponent<RadioStation>()) 
+        {
+            randomEvent.gameObject.GetComponent<RadioStation>().EventOff();
+        }
+        
        
     }
 
@@ -531,13 +522,8 @@ public class GameManager : NetworkBehaviour
 
     public void InitializeDifficultyMoney(int numberOfPlayers)
     {
-        SetCurrentDifficultyTo(GameValueHolder.Instance.DifficultyString);
-
-        difficultySettings = new DifficultySettings(currentDifficulty, numberOfPlayers);
-
-        difficultySettings.SetAmountOfPlayers(numberOfPlayers); // setdifficulty based on amount of players
-
-        moneySystem = new MoneySystem(difficultySettings.GetMoneyToPass());
+        GameValueHolder.Instance.difficultySettings.SetAmountOfPlayers(numberOfPlayers);
+        moneySystem = new MoneySystem(GameValueHolder.Instance.difficultySettings.GetMoneyToPass());
     }
 
 }

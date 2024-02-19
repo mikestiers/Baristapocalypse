@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AISupervisor : NetworkBehaviour
 {
@@ -14,13 +15,17 @@ public class AISupervisor : NetworkBehaviour
     [SerializeField] private float transitionSpeed;
     [SerializeField] private float popOutReviewTime;
     [SerializeField] private RectTransform startFeedbackWindowTransform;
-
+    [SerializeField] private GameObject continueButton;
+    
     [SerializeField] private Vector2 startpos;
     [SerializeField] private Vector2 finalpos;
 
     // Event to receive Supervisor Message
     public delegate void FeedbackMessageHandler(string feedbackMessage);
     public static event FeedbackMessageHandler OnFeedbackMessageReceived;
+
+    public delegate void TutorialMessageHandler();
+    public event TutorialMessageHandler OnTutorialMessageReceived;
 
     private void Awake()
     {
@@ -31,6 +36,16 @@ public class AISupervisor : NetworkBehaviour
     public override void OnDestroy()
     {
         OnFeedbackMessageReceived -= HandleFeedbackMessage;
+    }
+
+    private void OnEnable()
+    {
+        PlayerController.OnInputChanged += InputUpdated;
+    }
+
+    private void OnDisable()
+    {
+        PlayerController.OnInputChanged -= InputUpdated;
     }
 
     void Update()
@@ -44,6 +59,11 @@ public class AISupervisor : NetworkBehaviour
         {
             SupervisorMessageToDisplayEvent(stringTest);
         }
+    }
+
+    private void InputUpdated(InputImagesSO inputImagesSO)
+    {
+        continueButton.GetComponentInChildren<Image>().sprite = inputImagesSO.interact;
     }
 
     private void HandleFeedbackMessage(string feedbackMessage)
@@ -71,6 +91,10 @@ public class AISupervisor : NetworkBehaviour
     private void SupervisorFeedback(string feedbackMessage)
     {
         supervisorMessageText.text = feedbackMessage;
+        if (TutorialManager.Instance.tutorialEnabled)
+            continueButton.SetActive(true);
+        else
+            continueButton.SetActive(false);
         StartCoroutine(MoveFeedback());
     }
 
@@ -87,13 +111,17 @@ public class AISupervisor : NetworkBehaviour
             yield return null;
         }
 
+        // Pauses the game and allows for the player to read the message and continue when ready
+        if (TutorialManager.Instance.tutorialEnabled)
+            OnTutorialMessageReceived?.Invoke();
+
         StartCoroutine(ShowElements());
     }
 
     private IEnumerator ShowElements()
     {
-        yield return new WaitForSeconds(popOutReviewTime);
-
+        // 0f wait time if tutorial is enabled because tutorials prompt to continue
+        yield return new WaitForSeconds(TutorialManager.Instance.tutorialEnabled ? 0f : popOutReviewTime);
         StartCoroutine(MoveBackEP());
     }
 

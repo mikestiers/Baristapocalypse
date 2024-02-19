@@ -9,6 +9,9 @@ public class SoundManager : Singleton<SoundManager>
     public AudioClipRefsSO audioClipRefsSO;
     List<AudioSource> currentAudioSources = new List<AudioSource>();
 
+    public AudioMixerGroup sFXMixerGroup;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,13 +24,14 @@ public class SoundManager : Singleton<SoundManager>
         {
             if (source.isPlaying)
             {
-                continue;
+                break;
             }
             source.PlayOneShot(clip);
             return;
         }
 
         AudioSource temp = gameObject.AddComponent<AudioSource>();
+        temp.outputAudioMixerGroup = sFXMixerGroup;
         currentAudioSources.Add(temp);
         temp.PlayOneShot(clip);
     }

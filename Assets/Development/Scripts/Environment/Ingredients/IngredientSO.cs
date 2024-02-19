@@ -11,5 +11,5 @@ public class IngredientSO : ScriptableObject
     public int sweetness;
     public int spiciness;
     public int strength;
-    //public Image icon;
+    public Sprite icon;
 }

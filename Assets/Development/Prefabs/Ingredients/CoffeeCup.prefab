@@ -14,6 +14,10 @@ GameObject:
   - component: {fileID: 2836561686098894126}
   - component: {fileID: -4106127745829604643}
   - component: {fileID: 6374168995082273562}
+  - component: {fileID: -6560428786259272825}
+  - component: {fileID: 5221142322341876153}
+  - component: {fileID: -4889675790830684860}
+  - component: {fileID: 75810354569402200}
   m_Layer: 3
   m_Name: CoffeeCup
   m_TagString: CoffeeCup
@@ -103,12 +107,82 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7498007070164729142}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 42d0bd083f916374aa4207c9d8c63929, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.5446683, y: 0.5783407, z: 0.37640655}
-  m_Center: {x: -0.002257526, y: -0.0033299625, z: 0.007196516}
+  m_Size: {x: 0.5446683, y: 0.6383843, z: 0.37640655}
+  m_Center: {x: -0.002257526, y: 0.23923847, z: 0.007196516}
+--- !u!54 &-6560428786259272825
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7498007070164729142}
+  serializedVersion: 2
+  m_Mass: 0.1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 1
+--- !u!114 &5221142322341876153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7498007070164729142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  InLocalSpace: 0
+  Interpolate: 1
+--- !u!114 &-4889675790830684860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7498007070164729142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &75810354569402200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7498007070164729142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: feb552e2fb8df924688c9663c2855e30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  messCup: {fileID: 7498007070164729142, guid: 35e5426150a03c241b2287beada45251, type: 3}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1001 &142025154607807471
 PrefabInstance:
   m_ObjectHideFlags: 0

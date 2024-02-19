@@ -9,12 +9,15 @@ public class RadioStation : BaseStation
     [SerializeField] private AudioClip[] Audios;
     [SerializeField] private AudioSource MainAudio;
     [SerializeField] private AudioClip ChangeSound;
+    [SerializeField] private AudioClip BrokenSound;
     [SerializeField] private ParticleSystem interactParticle; // NOte could be deleted later
+    [SerializeField] private GameObject eventLight;
     private int AudioIndex = 0;
 
     public override void Interact(PlayerController player)
     {
         ChangeSongDownServerRpc();
+        EventOff();
     }
 
     public override void InteractAlt(PlayerController player)
@@ -59,6 +62,21 @@ public class RadioStation : BaseStation
     {
         AudioIndex--;
         AudioIndex = (AudioIndex + Audios.Length) % Audios.Length; // should loop
+        MainAudio.clip = Audios[AudioIndex];
+        MainAudio.Play();
+    }
+    
+    public void EventOn() 
+    {
+        MainAudio.clip = BrokenSound;
+        MainAudio.Play();
+        eventLight.SetActive(true);
+    }
+
+    public void EventOff() 
+    {
+        eventLight.SetActive(false);
+        GameManager.Instance.isEventActive = false;
         MainAudio.clip = Audios[AudioIndex];
         MainAudio.Play();
     }

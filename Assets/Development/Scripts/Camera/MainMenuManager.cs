@@ -14,54 +14,57 @@ public class MainMenuManager : MonoBehaviour
     public CinemachineVirtualCamera MainmenuCamera;
     public CinemachineVirtualCamera SettingsCamera;
     public CinemachineVirtualCamera PlayerSelectionCamera;
-    public CinemachineVirtualCamera QuitGameCamera;
+    public CinemachineVirtualCamera CreditsCamera;
 
     [Header("Main Menu")]
+    public Button StartGame;
+    public Button Settings;
+    public Button Credits;
+    public Button QuitGame;
     private Button[] MainMenuButtons;
-    [SerializeField] private Button StartGame;
-    [SerializeField] private Button Settings;
-    [SerializeField] private Button QuitGame;
-
-    [Header("Quit Menu")]
-    private Button[] QuitMenuButtons;
-    [SerializeField] private Button ExitGame;
-    [SerializeField] private Button MainMenuFromQuit;
 
     [Header("Player Menu")]
+    public Button singlePlayerButton;
+    public Button multiplayerButton;
+    public Button EasyButton;
+    public Button MediumButton;
+    public Button HardButton;
+    public Button MainMenuFromSelection;
     private Button[] PlayerSelectionButtons;
-    [SerializeField] private Button singlePlayerButton;
-    [SerializeField] private Button multiplayerButton;
-    [SerializeField] private Button MainMenuFromSelection;
 
     [Header("Settings Menu")]
+    public Button MainMenuFromSettings;
+    public Button FullScreenButton;
+    public Button WindowModeButton;
+    public GameObject FullScreenGO;
+    public GameObject WindowModeGO;
     private Button[] SettingsMenuButtons;
     private Slider[] SettingsMenuSliders;
-    [SerializeField] private Button MainMenuFromSettings;
-    [SerializeField] private Button FullScreenButton;
-    [SerializeField] private Button WindowModeButton;
-    [SerializeField] private GameObject FullScreenGO;
-    [SerializeField] private GameObject WindowModeGO;
-    [SerializeField] private Resolution[] resolutions;
-    [SerializeField] private Dropdown resoultionDropDown;
 
-    [Header("Difficulty Modes")]
-    [SerializeField] private Button EasyButton;
-    [SerializeField] private Button MediumButton;
-    [SerializeField] private Button HardButton;
+    [Header("Credits Menu")]
+    public Button MainMenuFromCredits;
+    public TMPro.TextMeshProUGUI creditsText;
+    private Button[] CreditsMenuButtons;
 
     [Header("Menu Tabs")]
-    [SerializeField] private GameObject SettingsMenuTab;
-    [SerializeField] private GameObject MainMenuTab;
-    [SerializeField] private GameObject ExitMenuTab;
-    [SerializeField] private GameObject PlayMenuTab;
+    public GameObject SettingsMenuTab;
+    public GameObject MainMenuTab;
+    public GameObject PlayMenuTab;
+    public GameObject CreditsMenuTab;
 
     [SerializeField] private LevelLoader levelLoader;
+    private void Awake()
+    {
+        SceneHelper.Instance.ResetGame();
+    }
+
     public void Start()
     {
+        Time.timeScale = 1f;
         MainmenuCamera.Priority = 1;
 
-        if (ExitGame)
-            ExitGame.onClick.AddListener(closeGame);
+        if (QuitGame)
+            QuitGame.onClick.AddListener(closeGame);
 
         if (singlePlayerButton)
             singlePlayerButton.onClick.AddListener(PlayScene_SinglePlayer);
@@ -74,6 +77,12 @@ public class MainMenuManager : MonoBehaviour
 
         if (Settings)
             Settings.onClick.AddListener(SettingsScreen);
+
+        if (Credits)
+            Credits.onClick.AddListener(CreditsScreen);
+
+        if (MainMenuFromCredits)
+            MainMenuFromCredits.onClick.AddListener(ReturnFromCredits);
 
         if (MainMenuFromSelection)
             MainMenuFromSelection.onClick.AddListener(ReturnFromSelection);
@@ -96,15 +105,18 @@ public class MainMenuManager : MonoBehaviour
         if (HardButton)
             HardButton.onClick.AddListener(() => SetDifficulty("Hard"));
 
-        MainMenuButtons = MainmenuCamera.GetComponentsInChildren<Button>();
+        MainMenuButtons = MainMenuTab.GetComponentsInChildren<Button>();
         SettingsMenuButtons = SettingsMenuTab.GetComponentsInChildren<Button>();
         SettingsMenuSliders = SettingsMenuTab.GetComponentsInChildren<Slider>();
         PlayerSelectionButtons = PlayMenuTab.GetComponentsInChildren<Button>();
+        CreditsMenuButtons = CreditsMenuTab.GetComponentsInChildren<Button>();
 
         SetInteractableButtons(MainMenuButtons, true);
         SetInteractableButtons(SettingsMenuButtons, false);
         SetInteractableSliders(SettingsMenuSliders, false);
         SetInteractableButtons(PlayerSelectionButtons, false);
+        SetInteractableButtons(CreditsMenuButtons, false);
+        
     }
 
     void ReturnFromSettings() 
@@ -119,11 +131,12 @@ public class MainMenuManager : MonoBehaviour
             SetInteractableButtons(SettingsMenuButtons, false);
             SetInteractableSliders(SettingsMenuSliders, false);
             SetInteractableButtons(PlayerSelectionButtons, false);
+            SetInteractableButtons(CreditsMenuButtons, false);
         }
     }
     void ReturnFromSelection() 
     { 
-        if(PlayerSelectionCamera.Priority ==1) 
+        if(PlayerSelectionCamera.Priority == 1) 
         {
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
             PlayerSelectionCamera.Priority= 0;
@@ -133,8 +146,26 @@ public class MainMenuManager : MonoBehaviour
             SetInteractableButtons(SettingsMenuButtons, false);
             SetInteractableSliders(SettingsMenuSliders, false);
             SetInteractableButtons(PlayerSelectionButtons, false);
+            SetInteractableButtons(CreditsMenuButtons, false);
         }
     }
+
+    void ReturnFromCredits()
+    {
+        if (CreditsCamera.Priority == 1)
+        {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+            CreditsCamera.Priority = 0;
+            MainmenuCamera.Priority = 1;
+            EventSystem.current.SetSelectedGameObject(StartGame.gameObject);
+            SetInteractableButtons(MainMenuButtons, true);
+            SetInteractableButtons(SettingsMenuButtons, false);
+            SetInteractableSliders(SettingsMenuSliders, false);
+            SetInteractableButtons(PlayerSelectionButtons, false);
+            SetInteractableButtons(CreditsMenuButtons, false);
+        }
+    }
+
 
     void SettingsScreen() 
     { 
@@ -148,8 +179,26 @@ public class MainMenuManager : MonoBehaviour
             SetInteractableButtons(SettingsMenuButtons, true);
             SetInteractableSliders(SettingsMenuSliders, true);
             SetInteractableButtons(PlayerSelectionButtons, false);
+            SetInteractableButtons(CreditsMenuButtons, false);
         }
     }
+
+    void CreditsScreen()
+    {
+        if (MainmenuCamera.Priority == 1)
+        {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+            MainmenuCamera.Priority = 0;
+            CreditsCamera.Priority = 1;
+            EventSystem.current.SetSelectedGameObject(FullScreenGO.gameObject);
+            SetInteractableButtons(MainMenuButtons, false);
+            SetInteractableButtons(SettingsMenuButtons, false);
+            SetInteractableSliders(SettingsMenuSliders, false);
+            SetInteractableButtons(PlayerSelectionButtons, false);
+            SetInteractableButtons(CreditsMenuButtons, true);
+        }
+    }
+
     void PlayerSelect()
     {
         if (MainmenuCamera.Priority == 1)
@@ -162,6 +211,7 @@ public class MainMenuManager : MonoBehaviour
             SetInteractableButtons(SettingsMenuButtons, false);
             SetInteractableSliders(SettingsMenuSliders, false);
             SetInteractableButtons(PlayerSelectionButtons, true);
+            SetInteractableButtons(CreditsMenuButtons, false);
         }
     }
 
@@ -169,7 +219,6 @@ public class MainMenuManager : MonoBehaviour
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         BaristapocalypseMultiplayer.playMultiplayer = true;
-        //SceneManager.LoadScene("LobbyScene");
         if (!levelLoader.isActiveAndEnabled)
         {
             levelLoader.gameObject.SetActive(true);
@@ -182,7 +231,6 @@ public class MainMenuManager : MonoBehaviour
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         BaristapocalypseMultiplayer.playMultiplayer = false;
-        //SceneManager.LoadScene("LobbyScene");
         if (!levelLoader.isActiveAndEnabled)
         {
             levelLoader.gameObject.SetActive(true);
@@ -215,16 +263,9 @@ public class MainMenuManager : MonoBehaviour
         Screen.fullScreen = false;       
     }
 
-   
-    public void SetREsolution(int resolutionIndex) 
-    {
-        Resolution resolution = resolutions[resolutionIndex];
-        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
-    }
-
     public void SetDifficulty(string Difficulty)
     {
-        GameValueHolder.Instance.DifficultyString = Difficulty;
+        GameValueHolder.Instance.SetCurrentDifficultyTo(Difficulty);
     }
 
     private void SetInteractableButtons(Button[] buttons, bool interactable)
@@ -232,6 +273,7 @@ public class MainMenuManager : MonoBehaviour
         foreach (Button button in buttons)
         {
             button.interactable = interactable;
+            Debug.Log($"Button {button.name} is interactable: {interactable}");
         }
     }
 

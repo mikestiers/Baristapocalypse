@@ -6,6 +6,8 @@ using UnityEngine.Audio;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using System.Collections;
+using System;
+using UnityEngine.EventSystems;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -20,6 +22,8 @@ public class UIManager : Singleton<UIManager>
     public Button closePause;
     public Button restartGame;
     public Button closeAudioSettings;
+    public Button closeTutorial;
+    public Button tutorialModeOnOff;
 
     [Header("Menu")]
     public GameObject mainMenu;
@@ -28,6 +32,7 @@ public class UIManager : Singleton<UIManager>
     public GameObject pauseMenu;
     public GameObject tutorialMenu;
     public GameObject ordersMenu;
+    public GameObject playerReadyMenu;
 
     [Header("Text")]
     public Text timer;
@@ -40,6 +45,9 @@ public class UIManager : Singleton<UIManager>
     public TextMeshProUGUI currencyText;
     public TextMeshProUGUI streakText;
     public TextMeshProUGUI gameMessage;
+
+    [Header("Tutorial Image")]
+    public Image tutorialImage;
 
     [Header("GameMessageHolder")]
     public GameObject gameMessageContainer;
@@ -79,14 +87,7 @@ public class UIManager : Singleton<UIManager>
     public Text wavesleft;
     public Text shift;
 
-
-    [Header("Slider")]
-    public Slider musicSlider;
-    public Slider sfxSlider;
-    public Slider mainVolumeSlider;
-    public Slider voiceVolumeSlider;
-
-    public AudioMixer mixer;
+    [SerializeField] private LevelLoader levelLoader;
 
     private void Start()
     {
@@ -110,29 +111,44 @@ public class UIManager : Singleton<UIManager>
             restartGame.onClick.AddListener(RestartGame);
         if (closeAudioSettings)
             closeAudioSettings.onClick.AddListener(CloseAudioSettings);
+        if (BaristapocalypseMultiplayer.playMultiplayer)
+            tutorialModeOnOff.gameObject.SetActive(false);
+        else if (tutorialModeOnOff)
+            tutorialModeOnOff.onClick.AddListener(ToggleTutorialMode);
+        if (closeTutorial)
+            closeTutorial.onClick.AddListener(CloseTutorial);
 
+        closeTutorial.GetComponentInChildren<Text>().text = GameManager.Instance.IsGamePlaying() ? "Close" : "Ready";
+        tutorialModeOnOff.GetComponentInChildren<Text>().text = TutorialManager.Instance.tutorialEnabled ? "Tutorial Mode: On" : "Tutorial Mode: Off";
 
-        //if (volSlider)
-        //{
-        //    volSlider.onValueChanged.AddListener((value) => OnSliderValueChanged(value));
-        //    if (volSliderText)
-        //        volSliderText.text = volSlider.value.ToString();
-        //}
+        EventSystem.current.SetSelectedGameObject(null);
     }
+    private void OnEnable()
+    {
+        PlayerController.OnInputChanged += InputUpdated;
+    }
+
+    private void OnDisable()
+    {
+        PlayerController.OnInputChanged -= InputUpdated;
+    }
+
+    private void InputUpdated(InputImagesSO inputImagesSO)
+    {
+        tutorialImage.sprite = inputImagesSO.tutorialImage;
+    }
+
     private void ReturnToGame()
     {
         timer.enabled = true;
-        score.enabled = true;
         ordersMenu.SetActive(true);
+        tutorialMenu.SetActive(false);
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;
     }
 
     private void RestartGame()
     {
-        //Reset score timer
-        //ScoreTimerManager.Instance.ResetTimerScore();
-
         Time.timeScale = 1f;
         gameOverMenu.SetActive(false);
         //GameManager.Instance.gameState = GameState.RUNNING;
@@ -162,14 +178,15 @@ public class UIManager : Singleton<UIManager>
     private void ShowMainMenu()
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+        // Moved Reset game function above scene change due to it not being called if scene swapped beforehand
+        //SceneHelper.Instance.ResetGame();        
         SceneManager.LoadScene(mainMenuScene); 
         timer.enabled = false;
-        score.enabled = false;
+        //score.enabled = false;
         ordersMenu.SetActive(false);
         pauseMenu.SetActive(false);
         gameOverMenu.SetActive(false);
         Time.timeScale = 1f;
-        SceneHelper.Instance.ResetGame();
     }
 
     private void QuitGame()
@@ -193,40 +210,8 @@ public class UIManager : Singleton<UIManager>
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         audioSettings.SetActive(false);
+        mainMenu.SetActive(true);
     }
-
-    //public void ShowCustomerUiOrder(CustomerBase customer)
-    //{
-    //    orderStats = Instantiate(ordersUiPrefab, ordersPanel).GetComponent<OrderStats>();
-    //    orderStats.Initialize(customer);
-    //}
-
-    /*public void ShowCustomerReview(CustomerBase customer)
-    {
-        // This can be better by moving customer review script to the customer object
-        foreach (Transform t in ordersPanel)
-        {
-            OrderStats o = t.GetComponent<OrderStats>();
-            if (o != null)
-            {
-                if (o.GetOrderOwner() == customer)
-                {
-                    Transform customerReviewTransform = t.gameObject.transform.Find("CustomerReview");
-                    Text customerReviewText = customerReviewTransform.gameObject.GetComponent<Text>();
-                    customerReview = customerReviewTransform.GetComponentInParent<CustomerReview>();
-                    customerReview.GenerateReview(customer);
-                    customerReviewText.text = customerReview.ReviewText;
-                    UpdateStarRating(customerReview.ReviewScore);
-                    customerReviewTransform.gameObject.SetActive(true);
-                    return;
-                }
-                else
-                {
-                    Debug.Log($"Customer Order UI not found for {customer.customerNumber}");
-                }
-            }
-        }
-    }*/
 
     public void RemoveCustomerUiOrder(CustomerBase customer)
     {
@@ -290,29 +275,6 @@ public class UIManager : Singleton<UIManager>
             tutorialMenu.SetActive(false);
         }
     }
-    public void SetMusicVolume(float value)
-    {
-        //if (volSliderText)
-        //    volSliderText.text = value.ToString();
-
-        mixer.SetFloat("Music", musicSlider.value);
-
-    }
-
-    public void SetSFXVolume(float value)
-    {
-        mixer.SetFloat("SFX", sfxSlider.value);
-    }
-    
-    public void SetMainVolume(float value)
-    {
-        mixer.SetFloat("MainVolume", mainVolumeSlider.value);
-    }
-    
-    public void SetVoiceVolume(float value)
-    {
-        mixer.SetFloat("VoiceLines", voiceVolumeSlider.value);
-    }
 
     public void ToggleBigTimer(bool IsOn)
     {
@@ -350,6 +312,25 @@ public class UIManager : Singleton<UIManager>
     public void ShowShiftEvaluation()
     {
         shiftEvaluationUI.GetComponent<ShiftEvaluationUI>().Evaluate();
+    }
+
+    private void CloseTutorial()
+    {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+        if (!GameManager.Instance.IsLocalPlayerReady())
+        {
+            GameManager.Instance.SetLocalPlayerReady();
+            closeTutorial.GetComponentInChildren<Text>().text = "Close";
+            ReturnToGame();
+            return;
+        }
+        ShowPause();
+    }
+
+    private void ToggleTutorialMode()
+    {
+        tutorialModeOnOff.GetComponentInChildren<Text>().text = TutorialManager.Instance.tutorialEnabled ? "Tutorial Mode: Off" : "Tutorial Mode: On";
+        TutorialManager.Instance.tutorialEnabled = !TutorialManager.Instance.tutorialEnabled;
     }
 
 }

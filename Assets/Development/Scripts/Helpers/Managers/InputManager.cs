@@ -44,9 +44,6 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
     {
         Instance = this;
         controllerInputs = new ControllerInputs();
-        //playerPauseDictionary = new Dictionary<ulong, bool>(); playerPauseDictionary = new Dictionary<ulong, bool>();
-
-
     }
 
     private void Start()
@@ -59,58 +56,6 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
     {
         controllerInputs.Player.Disable();
     }
-
-    //public void InitializePlayer(PlayerConfiguration pc)
-    //{
-    //    playerConfig = pc;
-    //    playerMesh.material = pc.PlayerMaterial;
-    //    playerConfig.Input.onActionTriggered += Input_onActionTriggered;
-    //}
-
-    //private void Input_onActionTriggered(InputAction.CallbackContext obj)
-    //{
-    //    // Move
-    //    if (obj.action.name == controllerInputs.Player.Move.name)
-    //    {
-    //        OnMove(obj);
-    //    }
-
-    //    // Interact
-    //    if (obj.action.name == controllerInputs.Player.Interact.name)
-    //    {
-    //        OnInteract(obj);
-    //    }
-
-    //    // InteractAlt
-    //    if (obj.action.name == controllerInputs.Player.InteractAlt.name)
-    //    {
-    //        OnInteractAlt(obj);
-    //    }
-
-    //    // Dash
-    //    if (obj.action.name == controllerInputs.Player.Dash.name)
-    //    {
-    //        OnDash(obj);
-    //    }
-
-    //    // Throw
-    //    if (obj.action.name == controllerInputs.Player.Throw.name)
-    //    {
-    //        OnThrow(obj);
-    //    }
-
-    //    // Jump
-    //    if (obj.action.name == controllerInputs.Player.Jump.name)
-    //    {
-    //        OnJump(obj);
-    //    }
-
-    //    // pause
-    //    if (obj.action.name == controllerInputs.Player.Pause.name)
-    //    {
-    //        OnPause(obj);
-    //    }
-    //}
 
     public void OnInteract(InputAction.CallbackContext context)
     {

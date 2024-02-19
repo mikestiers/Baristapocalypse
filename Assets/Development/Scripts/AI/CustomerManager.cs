@@ -112,8 +112,8 @@ public class CustomerManager : Singleton<CustomerManager>
         LineQueue = new CustomerLineQueuing(waitingQueuePostionList);
         barFloor = new CustomerBarFloor(Chairs);
 
-        customersLeftinWave = GameManager.Instance.difficultySettings.GetNumberofCustomersInwave();
-        WavesLeft = GameManager.Instance.difficultySettings.GetNumberOfWaves();
+        customersLeftinWave = GameValueHolder.Instance.difficultySettings.GetNumberofCustomersInwave();
+        WavesLeft = GameValueHolder.Instance.difficultySettings.GetNumberOfWaves();
 
         {
             //UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
@@ -123,15 +123,17 @@ public class CustomerManager : Singleton<CustomerManager>
 
         }
 
-        minDelay = GameManager.Instance.difficultySettings.GetMinDelay();
-        maxDelay = GameManager.Instance.difficultySettings.GetMaxDelay();
+        minDelay = GameValueHolder.Instance.difficultySettings.GetMinDelay();
+        maxDelay = GameValueHolder.Instance.difficultySettings.GetMaxDelay();
         
         float delay = UnityEngine.Random.Range(minDelay, maxDelay);
 
         if(initCustomerSpawnDelay < 8f) initCustomerSpawnDelay = 8f;
 
-
-        StartCoroutine(NewCustomer(initCustomerSpawnDelay)); // change this to intial delay
+        if (IsOwner)
+        {
+            StartCoroutine(NewCustomer(initCustomerSpawnDelay)); // change this to intial delay
+        }
 
         currentServingState = ServingState.CurrentlyServing;
         IsServing = true;
@@ -190,12 +192,10 @@ public class CustomerManager : Singleton<CustomerManager>
     {
         yield return new WaitForSeconds(delayS);
 
-        int randomCustomer = UnityEngine.Random.Range(0, customerNames.Count);
         //while(gameObject is playin) set timer
         if (customerPrefab != null)
         {
-            SpawnCustomerClientRpc();
-            GiveCustomerNameClientRpc(randomCustomer);
+            SpawnCustomer();
             StartCoroutine(CustomerEnterStore());
             customersInStore++;
             customersLeftinWave--;
@@ -223,8 +223,8 @@ public class CustomerManager : Singleton<CustomerManager>
         if (WavesLeft <= 0) 
         {
             //currentServingState = ServingState.ShiftOver;
-            GameManager.Instance.difficultySettings.NextShift();
-            WavesLeft = GameManager.Instance.difficultySettings.GetNumberOfWaves();
+            GameValueHolder.Instance.difficultySettings.NextShift();
+            WavesLeft = GameValueHolder.Instance.difficultySettings.GetNumberOfWaves();
 
             //Shift Evaluation
             //UIManager.Instance.shift.text = ("Shift " + GameManager.Instance.difficultySettings.GetShift().ToString());
@@ -233,12 +233,12 @@ public class CustomerManager : Singleton<CustomerManager>
 
         if (GameManager.Instance.IsGamePlaying() == false) return;
 
-        customersLeftinWave = GameManager.Instance.difficultySettings.GetNumberofCustomersInwave();
+        customersLeftinWave = GameValueHolder.Instance.difficultySettings.GetNumberofCustomersInwave();
 
         //Trigger UI
         UIManager.Instance.SayGameMessage("Break Time!");
 
-        timer = GameManager.Instance.difficultySettings.GetTimeBetweenWaves();
+        timer = GameValueHolder.Instance.difficultySettings.GetTimeBetweenWaves();
         StartCoroutine(RestPeriod(timer));
 
     }
@@ -277,15 +277,12 @@ public class CustomerManager : Singleton<CustomerManager>
         }
     }
 
-    [ClientRpc]
-    public void SpawnCustomerClientRpc()
-    {
-        SpawnCustomer();
-    }
-
     public IEnumerator CustomerEnterStore()
     {
         yield return new WaitForSeconds(1f);
+
+        if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstOrderTaken)
+            TutorialManager.Instance.TakeFirstOrder();
 
         if (LineQueue.CanAddCustomer() == true)
         {
@@ -310,30 +307,37 @@ public class CustomerManager : Singleton<CustomerManager>
 
     private void SpawnCustomer()
     {
-        newcustomer = Instantiate(customerPrefab, barEntrance.transform.position, Quaternion.identity);
+        //newcustomer = Instantiate(customerPrefab, barEntrance.transform.position, Quaternion.identity);
 
         // Ensure that the spawned object is spawned on the network
-        newcustomer.Spawn();
+        //newcustomer.Spawn();
 
-        customersOutsideList.Add(newcustomer.GetComponent<CustomerBase>());
+        //customersOutsideList.Add(newcustomer.GetComponent<CustomerBase>());
 
-        customerNumber += 1;
-
+        //customerNumber += 1;
+        SpawnCustomerServerRpc();
     }
 
-    [ClientRpc]
-    public void GiveCustomerNameClientRpc(int randomCustomer)
+    [ServerRpc(RequireOwnership = false)]
+    private void SpawnCustomerServerRpc()
     {
-        // Assign customer number and choose a random name from the list.  If list becomes empty, no names are assigned
-        // We have 25 names so far (the names of everyone on the team), but we can add more
+        Transform newCustomerTransform = Instantiate(customerPrefab.transform, barEntrance.transform.position, Quaternion.identity);
 
-        newcustomer.GetComponent<CustomerBase>().customerNumber = customerNumber;
-        if (customerNames.Count >= 1)
+        NetworkObject newCustomer = newCustomerTransform.GetComponent<NetworkObject>();  
+        CustomerBase newCustomerBase = newCustomer.GetComponent<CustomerBase>();
+
+        customersOutsideList.Add(newCustomerBase);
+        customerNumber += 1;
+
+        newCustomerBase.customerNumber = customerNumber;
+        if(customerNames.Count >= 1)
         {
-            //int randomCustomer = UnityEngine.Random.Range(0, customerNames.Count);
-            newcustomer.GetComponent<CustomerBase>().SetCustomerName(customerNames[randomCustomer]);
-            customerNames.RemoveAt(randomCustomer);
+            int randomCustomerNameIndex = UnityEngine.Random.Range(0, customerNames.Count);
+            newCustomerBase.SetCustomerName(customerNames[randomCustomerNameIndex]);
+            customerNames.RemoveAt(randomCustomerNameIndex);
         }
+
+        newCustomer.Spawn(true);
     }
 
     public int TotalCustomers()

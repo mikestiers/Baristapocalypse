@@ -40,10 +40,10 @@ public class CustomerRandomizer : NetworkBehaviour
 
         race = Races[customerIndex];
 
-        temperatureIngredientList = GameManager.Instance.difficultySettings.temperatureIngredientList;
-        sweetnessIngredientList = GameManager.Instance.difficultySettings.sweetnessIngredientList;
-        strengthIngredientList = GameManager.Instance.difficultySettings.strengthIngredientList;
-        spicinessIngredientList = GameManager.Instance.difficultySettings.spicinessIngredientList;
+        temperatureIngredientList = GameValueHolder.Instance.difficultySettings.temperatureIngredientList;
+        sweetnessIngredientList = GameValueHolder.Instance.difficultySettings.sweetnessIngredientList;
+        strengthIngredientList = GameValueHolder.Instance.difficultySettings.strengthIngredientList;
+        spicinessIngredientList = GameValueHolder.Instance.difficultySettings.spicinessIngredientList;
 
         IngredientSO temperatureIngredient = temperatureIngredientList.ingredientSOList[Random.Range(0, temperatureIngredientList.ingredientSOList.Count)];
         IngredientSO sweetnessIngredient = sweetnessIngredientList.ingredientSOList[Random.Range(0, sweetnessIngredientList.ingredientSOList.Count)];

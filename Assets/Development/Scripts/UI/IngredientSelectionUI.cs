@@ -16,66 +16,102 @@ public class IngredientSelectionUI : BaseStation
     [SerializeField] private GameObject ingredientMenu;
     public GameObject buttonsRoot;
     [SerializeField] private Button[] ingredientButtons;
-    //BrewingStation[] brewingStations;
+    [SerializeField] private GameObject[] selectedBGImages;
     public IngredientStationType ingredientStationType;
     public IngredientListSO ingredientList;
     private int ingredientListIndex;
     private IngredientSO currentIngredient;
+    private bool canSelectIngredient = false;
+    public bool isInUse = false;
 
     private void Start()
     {
         ingredientListIndex = 0;
         
         ingredientButtons = buttonsRoot.GetComponentsInChildren<Button>();
-        //brewingStations = UnityEngine.Object.FindObjectsOfType<BrewingStation>();
-    }
-
-    private void Update()
-    {
-        if (GameManager.Instance.difficultySettings == null)
-            return;
 
         switch (ingredientStationType)
         {
             case IngredientStationType.Temperature:
-                ingredientList = GameManager.Instance.difficultySettings.temperatureIngredientList;
+                ingredientList = GameValueHolder.Instance.difficultySettings.temperatureIngredientList;
                 break;
             case IngredientStationType.Sweetness:
-                ingredientList = GameManager.Instance.difficultySettings.sweetnessIngredientList;
+                ingredientList = GameValueHolder.Instance.difficultySettings.sweetnessIngredientList;
                 break;
             case IngredientStationType.Strength:
-                ingredientList = GameManager.Instance.difficultySettings.strengthIngredientList;
+                ingredientList = GameValueHolder.Instance.difficultySettings.strengthIngredientList;
                 break;
             case IngredientStationType.Spiciness:
-                ingredientList = GameManager.Instance.difficultySettings.spicinessIngredientList;
+                ingredientList = GameValueHolder.Instance.difficultySettings.spicinessIngredientList;
                 break;
             default:
                 Debug.LogError("Ingredient Station Type not set");
                 break;
         }
 
+        RebuildButtonUI();
+
+    }
+
+    private void Update()
+    {
+        // This should not be in Update() but difficultysettings are not available when the game starts for some reason
+
+       
+
         if (!currentStationInteraction)
             return;
 
-        // Detect the name of the button that the cursor is hovering over
-        PointerEventData pointerEventData = new PointerEventData(EventSystem.current);
-        pointerEventData.position = Input.mousePosition;
-
-        List<RaycastResult> raycastResultList = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(pointerEventData, raycastResultList);
-
-        GameObject selectedObj = EventSystem.current.currentSelectedGameObject;
-        if (selectedObj != null)
+        if (canSelectIngredient)
         {
-            for (int i = 0; i < ingredientButtons.Length; i++)
+            // Detect the name of the button that the cursor is hovering over
+            PointerEventData pointerEventData = new PointerEventData(EventSystem.current);
+            pointerEventData.position = Input.mousePosition;
+
+            List<RaycastResult> raycastResultList = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(pointerEventData, raycastResultList);
+
+            GameObject hoveredObj = raycastResultList.Count > 0 ? raycastResultList[0].gameObject : null;
+            GameObject selectedObj = EventSystem.current.currentSelectedGameObject;
+
+            // Playing with controller or mouse?
+            GameObject targetObj = selectedObj != null ? selectedObj : hoveredObj;
+
+            if (targetObj != null)
             {
-                if (selectedObj == ingredientButtons[i].gameObject)
+                for (int i = 0; i < ingredientButtons.Length; i++)
                 {
-                    ingredientListIndex = i;
-                    currentIngredient = ingredientList.ingredientSOList[ingredientListIndex];
-                    CalculateIngredients(currentIngredient);
-                    break;
+                    foreach (GameObject backGroundobj in selectedBGImages)
+                    {
+                        backGroundobj.SetActive(false);
+                    }
+
+                    if (targetObj == ingredientButtons[i].gameObject)
+                    {
+                        selectedBGImages[i].SetActive(true);
+                        ingredientListIndex = i;
+                        currentIngredient = ingredientList.ingredientSOList[ingredientListIndex];
+                        CalculateIngredients(currentIngredient);
+
+                        break;
+                    }
                 }
+            }
+        }
+    }
+
+    private void RebuildButtonUI()
+    {
+        for (int i = 0; i < ingredientButtons.Length; i++)
+        {
+            if (i >= ingredientList.ingredientSOList.Count)
+            {
+                ingredientButtons[i].GetComponent<Image>().sprite = null;
+            }
+            else
+            {
+                ingredientButtons[i].GetComponent<Image>().sprite = ingredientList.ingredientSOList[i].icon;
+                ingredientButtons[i].name = ingredientList.ingredientSOList[i].name;
             }
         }
     }
@@ -88,14 +124,19 @@ public class IngredientSelectionUI : BaseStation
         if (OrderManager.Instance.brewingStations[player.currentBrewingStation].TryAddIngredient(currentIngredient))
         {
             OrderManager.Instance.brewingStations[player.currentBrewingStation].AddIngredientToListSO(BaristapocalypseMultiplayer.Instance.GetIngredientSOIndex(currentIngredient));
-            OrderManager.Instance.orderStats[player.currentBrewingStation].temperatureSegments.cumulativeIngredientsValue = OrderManager.Instance.orderStats[player.currentBrewingStation].temperatureSegments.potentialIngredientValue;
-            OrderManager.Instance.orderStats[player.currentBrewingStation].sweetnessSegments.cumulativeIngredientsValue = OrderManager.Instance.orderStats[player.currentBrewingStation].sweetnessSegments.potentialIngredientValue;
-            OrderManager.Instance.orderStats[player.currentBrewingStation].spicinessSegments.cumulativeIngredientsValue = OrderManager.Instance.orderStats[player.currentBrewingStation].spicinessSegments.potentialIngredientValue;
-            OrderManager.Instance.orderStats[player.currentBrewingStation].strengthSegments.cumulativeIngredientsValue = OrderManager.Instance.orderStats[player.currentBrewingStation].strengthSegments.potentialIngredientValue;
-            OrderManager.Instance.orderStats[player.currentBrewingStation].SetSweetness();
-            OrderManager.Instance.orderStats[player.currentBrewingStation].SetTemperature();
-            OrderManager.Instance.orderStats[player.currentBrewingStation].SetSpiciness();
-            OrderManager.Instance.orderStats[player.currentBrewingStation].SetStrength();
+            OrderManager.Instance.orderStats[player.currentBrewingStation].SetCumulativeToPotential();
+
+            if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstIngredientSelected)
+                TutorialManager.Instance.MadeFirstIngredientSelection();
+
+            else if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.secondIngredientSelected)
+                TutorialManager.Instance.MadeSecondIngredientSelection();
+
+            else if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.thirdIngredientSelected)
+                TutorialManager.Instance.MadeThirdIngredientSelection();
+
+            else if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.fourthIngredientSelected)
+                TutorialManager.Instance.MadeFourthIngredientSelection();
         }
         StartCoroutine(CloseMenu());
     }
@@ -108,7 +149,12 @@ public class IngredientSelectionUI : BaseStation
             //player.movementToggle = false;
 
             //Display UI ingredient menu
-            Show(ingredientMenu);
+            if (player.IsLocalPlayer)
+            {
+                Show(ingredientMenu);
+                isInUse = true;
+            }
+            
         }
     }
 
@@ -116,11 +162,16 @@ public class IngredientSelectionUI : BaseStation
     {
         if (other.tag == "Player")
         {
+            player = other.GetComponent<PlayerController>();
             player.movementToggle = true;
 
-            // Hide UI ingredient menu
-            EventSystem.current.SetSelectedGameObject(null);
-            StartCoroutine(CloseMenu());
+            if (player.IsLocalPlayer)
+            {
+                // Hide UI ingredient menu
+                EventSystem.current.SetSelectedGameObject(null);
+                StartCoroutine(CloseMenu());
+                isInUse = false;
+            }
         }
     }
 
@@ -135,36 +186,35 @@ public class IngredientSelectionUI : BaseStation
 
     private void Show(GameObject obj)
     {
+        canSelectIngredient = true;
         currentStationInteraction = true;
         obj.SetActive(true);
-        EventSystem.current.firstSelectedGameObject = ingredientButtons[0].gameObject;
-        SetDefaultSelected(ingredientButtons[0].gameObject);
+
+        // Select first igredient if not playing with mouse
+        if (!Cursor.visible)
+        {
+            EventSystem.current.firstSelectedGameObject = ingredientButtons[0].gameObject;
+            SetDefaultSelected(ingredientButtons[0].gameObject);
+        }
+        else if (Cursor.visible) 
+        {
+            // Fix bug where BG select image does not trigger at the start of the game
+        }
+
     }
 
     private void CalculateIngredients(IngredientSO currentIngredient)
     {
-        if (orderStatsRoot != null && orderStatsRoot.childCount > 0)
-        {
-            OrderManager.Instance.orderStats[player.currentBrewingStation].temperatureSegments.potentialIngredientValue = currentIngredient.temperature + OrderManager.Instance.orderStats[player.currentBrewingStation].temperatureSegments.cumulativeIngredientsValue;
-            OrderManager.Instance.orderStats[player.currentBrewingStation].sweetnessSegments.potentialIngredientValue = currentIngredient.sweetness + OrderManager.Instance.orderStats[player.currentBrewingStation].sweetnessSegments.cumulativeIngredientsValue;
-            OrderManager.Instance.orderStats[player.currentBrewingStation].spicinessSegments.potentialIngredientValue = currentIngredient.spiciness + OrderManager.Instance.orderStats[player.currentBrewingStation].spicinessSegments.cumulativeIngredientsValue;
-            OrderManager.Instance.orderStats[player.currentBrewingStation].strengthSegments.potentialIngredientValue = currentIngredient.strength + OrderManager.Instance.orderStats[player.currentBrewingStation].strengthSegments.cumulativeIngredientsValue;
-            OrderManager.Instance.orderStats[player.currentBrewingStation].SetPotentialSweetness();
-            OrderManager.Instance.orderStats[player.currentBrewingStation].SetPotentialTemperature();
-            OrderManager.Instance.orderStats[player.currentBrewingStation].SetPotentialSpiciness();
-            OrderManager.Instance.orderStats[player.currentBrewingStation].SetPotentialStrength();
-        }
+        OrderManager.Instance.orderStats[player.currentBrewingStation].HoverIngredient(currentIngredient);
     }
 
     IEnumerator CloseMenu()
     {
+        canSelectIngredient = false;
         ingredientMenu.GetComponent<Animator>().Play("Ingredient_UI_Shrink");
         yield return new WaitForSeconds(0.5f);
         Hide(ingredientMenu);
-        OrderManager.Instance.orderStats[player.currentBrewingStation].temperatureSegments.potentialIngredientValue = 0;
-        OrderManager.Instance.orderStats[player.currentBrewingStation].sweetnessSegments.potentialIngredientValue = 0;
-        OrderManager.Instance.orderStats[player.currentBrewingStation].spicinessSegments.potentialIngredientValue = 0;
-        OrderManager.Instance.orderStats[player.currentBrewingStation].strengthSegments.potentialIngredientValue = 0;
+        OrderManager.Instance.orderStats[player.currentBrewingStation].SetPotentialToCumulative();
         currentStationInteraction = false;
         player.movementToggle = true;
     }
