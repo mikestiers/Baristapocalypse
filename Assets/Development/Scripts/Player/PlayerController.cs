@@ -452,6 +452,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     }
 
+
     public void OnThrow()
     {
         if (!IsLocalPlayer) return;
@@ -746,7 +747,37 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
     }
 
+
+
     public void ThrowPickup()
+    {
+        ThrowPickupServerRpc();
+        //if (!HasPickup())
+        //    return;
+
+        //if (pickup.IsCustomer)
+        //{
+        //    Debug.Log("Customer dead");
+        //    pickup.GetCustomer().Dead();
+        //    pickup.AddRigidbody();
+        //}
+
+        //pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
+        //pickup.EnablePickupColliders(pickup);
+        //pickup.GetCollider().enabled = true;
+
+        //pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
+        //pickup.ClearPickupOnParent();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ThrowPickupServerRpc()
+    {
+        ThrowPickupClientRpc();
+    }
+
+    [ClientRpc]
+    private void ThrowPickupClientRpc()
     {
         if (!HasPickup())
             return;
@@ -755,18 +786,19 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
             Debug.Log("Customer dead");
             pickup.GetCustomer().Dead();
+            pickup.AddRigidbody();
         }
 
         pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
         pickup.EnablePickupColliders(pickup);
         pickup.GetCollider().enabled = true;
-        pickup.AddRigidbody();
+
         pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
         pickup.ClearPickupOnParent();
     }
 
-    // temp for debugging 
-    private void OnDrawGizmos()
+        // temp for debugging 
+        private void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position + transform.forward * 4, customersSphereCastRadius);
