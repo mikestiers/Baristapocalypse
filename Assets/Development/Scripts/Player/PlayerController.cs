@@ -39,11 +39,14 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] private LayerMask isStationLayer;
     [SerializeField] private LayerMask isIngredientLayer;
     [SerializeField] private LayerMask isCustomerLayer;
+   
     [SerializeField] private float stationsSphereCastRadius;
     [SerializeField] private float customersSphereCastRadius;
     [SerializeField] private float stationInteractDistance;
     [SerializeField] private float customerInteractDistance;
+    [SerializeField] private GameObject InteractzoneStart;
 
+    
     private BaseStation selectedStation;
     private Base selectedCustomer;
     public int currentBrewingStation = 0;
@@ -161,7 +164,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         interactableLayerMask = isStationLayer | isIngredientLayer | isMessLayer | isMopLayer | isCustomerLayer | isGravityAffectedLayer;
 
         RayCastOffset = new Vector3(0, 0.4f, 0);
-
         // Set color of the player based on color selection at the lobby
         PlayerData playerData = BaristapocalypseMultiplayer.Instance.GetPlayerDataFromClientId(OwnerClientId);
         playerVisual.SetPlayerColor(BaristapocalypseMultiplayer.Instance.GetPlayerColor(playerData.colorId));
@@ -226,22 +228,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             return;
         }
 
-        // Perform a single SphereCast to detect any interactable object.
-        if (Physics.SphereCast(transform.position + RayCastOffset, stationsSphereCastRadius, transform.forward, out RaycastHit hit, stationInteractDistance, interactableLayerMask))
+       
+        if (Physics.SphereCast(InteractzoneStart.transform.position + RayCastOffset, stationsSphereCastRadius, InteractzoneStart.transform.forward, out RaycastHit hit, 
+                stationInteractDistance, interactableLayerMask))
         {
-            // Logic for PickUp Interaction
-            if (hit.transform.TryGetComponent(out Pickup pickup))
-            {
-                if (mouse.rightButton.wasPressedThisFrame)
-                {
-                    DoPickup(pickup);
-                }
-                else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
-                {
-                    DoPickup(pickup);
-                }
-
-            }
             // Logic for Station Interaction
             if (hit.transform.TryGetComponent(out BaseStation baseStation))
             {
@@ -251,8 +241,32 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                     SetSelectedStation(baseStation);
                     Show(visualGameObject);
                 }
+                Debug.Log("Station hit");
             }
-            else if (hit.transform.TryGetComponent(out Spill spill))
+        }
+        else
+        {
+            // No interactable object hit, clear selected objects.
+            SetSelectedStation(null);
+        }
+        
+        // Perform a single SphereCast to detect any interactable object on the floor.
+        if (Physics.SphereCast(transform.position + RayCastOffset, stationsSphereCastRadius, transform.forward, out RaycastHit floorHit, stationInteractDistance, interactableLayerMask))
+        {
+            // Logic for PickUp Interaction
+            if (floorHit.transform.TryGetComponent(out Pickup pickup))
+            {
+                if (mouse.rightButton.wasPressedThisFrame)
+                {
+                    DoPickup(pickup);
+                }
+                else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
+                {
+                    DoPickup(pickup);
+                }
+            }
+            
+            else if (floorHit.transform.TryGetComponent(out Spill spill))
             {
                 if (mouse.leftButton.wasPressedThisFrame)
                 {
@@ -263,14 +277,14 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                     spill.Interact(this);
                 }
             }
-
+        
             // Logic for Ingredient on floor Interaction 
-            else if (hit.transform.TryGetComponent(out Ingredient ingredient))
+            else if (floorHit.transform.TryGetComponent(out Ingredient ingredient))
             {
                 if (GetNumberOfIngredients() <= GetMaxIngredients() && !HasPickup())
                 {
                     IngredientSO ingredientSORef = ingredient.GetIngredientSO();
-
+        
                     if (mouse.leftButton.wasPressedThisFrame)
                     {
                         GrabIngredientFromFloor(ingredient, ingredientSORef);
@@ -291,7 +305,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         // Customer Interaction Logic
         //if (Physics.Raycast(transform.position + RayCastOffset, transform.forward, out RaycastHit hitCustomer, customerInteractDistance, interactableLayerMask))
-        if (Physics.SphereCast(transform.position + RayCastOffset, customersSphereCastRadius, transform.forward, out RaycastHit hitCustomer, customerInteractDistance, interactableLayerMask))
+        if (Physics.SphereCast(InteractzoneStart.transform.position + RayCastOffset, customersSphereCastRadius, InteractzoneStart.transform.forward, out RaycastHit hitCustomer, customerInteractDistance, interactableLayerMask))
         {
             if (hitCustomer.transform.TryGetComponent(out Base customerBase))
             {
@@ -797,12 +811,15 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         pickup.ClearPickupOnParent();
     }
 
-        // temp for debugging 
-        private void OnDrawGizmos()
+
     {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position + transform.forward * 4, customersSphereCastRadius);
+       
+        //gizmos from InteractionStart
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(InteractzoneStart.transform.position + InteractzoneStart.transform.forward * stationInteractDistance, stationsSphereCastRadius);
+       
     }
+
 
     public void ShowDebugConsole()
     {
