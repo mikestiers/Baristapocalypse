@@ -7,9 +7,10 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Plate_M_Sweet_Shader
+  m_Name: Plate_M_Liquid_Shader 1
   m_Shader: {fileID: 4800000, guid: 933f24cde1e3f6a41818f56d729421ab, type: 3}
   m_ValidKeywords:
+  - _EMISSION
   - _HALFTONESHAPE_DOT
   - _METALLICSPECGLOSSMAP
   - _NORMALMAP
@@ -19,7 +20,7 @@ Material:
   - _TOON_SHADING_ON
   m_InvalidKeywords:
   - _STEPVIARAMPTEXTURE_ON
-  m_LightmapFlags: 4
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 2000
@@ -31,11 +32,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: c6d88994417c700469ef3b4a36d7b0fb, type: 3}
+        m_Texture: {fileID: 2800000, guid: f15f0840e2bf32c44b95b69fb2681666, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 5492f60ea8893ba498bb893c06777fba, type: 3}
+        m_Texture: {fileID: 2800000, guid: a399b743a7754d543b85f869392021a3, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CelCurveTexture:
@@ -63,7 +64,7 @@ Material:
         m_Scale: {x: 0, y: 0}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 2800000, guid: 676f0bae26572424c83140bebf25c9c4, type: 3}
+        m_Texture: {fileID: 2800000, guid: ed2125dd2bc64e04ea94dac9dea4e16a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FaceShadowMap:
@@ -107,11 +108,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: c6d88994417c700469ef3b4a36d7b0fb, type: 3}
+        m_Texture: {fileID: 2800000, guid: f15f0840e2bf32c44b95b69fb2681666, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
-        m_Texture: {fileID: 2800000, guid: 91f798fbd0cfcbb47862723cae422bf3, type: 3}
+        m_Texture: {fileID: 2800000, guid: cab75d649d73b2248b2958f8d59702c5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -316,7 +317,7 @@ Material:
     - _OutlineColor: {r: 0.21676229, g: 0, b: 0.254717, a: 1}
     - _OutlineDistancFade: {r: -63.190956, g: 5.7788925, b: 0, a: 0}
     - _RimColor: {r: 1, g: 0, b: 0.4791317, a: 1}
-    - _ShadowColor: {r: 0.1933407, g: 0, b: 0.24528301, a: 1}
+    - _ShadowColor: {r: 0.19333974, g: 0, b: 0.245282, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _SpherizeNormalOrigin: {r: 0, g: 0, b: 0, a: 1}
     - _UnityShadowColor: {r: 0.85023, g: 0.85034, b: 0.85045, a: 0.85056}
