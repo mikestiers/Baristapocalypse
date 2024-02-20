@@ -325,7 +325,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
 
         // Check if the inputDevice has changed
-        ChangePlayerControlsReferences();
+        ChangePlayerControlsReferenceImages();
 
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward, Color.green);
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward * customerInteractDistance, Color.red);
@@ -465,6 +465,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         anim.SetBool("isDashing", isDashing);
 
     }
+
 
     public void OnThrow()
     {
@@ -760,7 +761,37 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
     }
 
+
+
     public void ThrowPickup()
+    {
+        ThrowPickupServerRpc();
+        //if (!HasPickup())
+        //    return;
+
+        //if (pickup.IsCustomer)
+        //{
+        //    Debug.Log("Customer dead");
+        //    pickup.GetCustomer().Dead();
+        //    pickup.AddRigidbody();
+        //}
+
+        //pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
+        //pickup.EnablePickupColliders(pickup);
+        //pickup.GetCollider().enabled = true;
+
+        //pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
+        //pickup.ClearPickupOnParent();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ThrowPickupServerRpc()
+    {
+        ThrowPickupClientRpc();
+    }
+
+    [ClientRpc]
+    private void ThrowPickupClientRpc()
     {
         if (!HasPickup())
             return;
@@ -769,19 +800,18 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
             Debug.Log("Customer dead");
             pickup.GetCustomer().Dead();
+            pickup.AddRigidbody();
         }
 
         pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
         pickup.EnablePickupColliders(pickup);
         pickup.GetCollider().enabled = true;
-        pickup.AddRigidbody();
+
         pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
         pickup.ClearPickupOnParent();
     }
 
-    // temp for debugging 
-    
-    private void OnDrawGizmos()
+
     {
        
         //gizmos from InteractionStart
@@ -844,7 +874,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
     }
 
-    private void ChangePlayerControlsReferences()
+    private void ChangePlayerControlsReferenceImages()
     {
         // Check if a controller is being used
         bool usingController = Gamepad.current != null;

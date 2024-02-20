@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -160,10 +158,10 @@ public class OrderStats : MonoBehaviour
                 imageColor.a = 0.2f;
                 selectedByPlayerImage.SetActive(false);
                 customerInfoRoot.SetActive(false);
-                temperatureTargetValue = 0;
-                sweetnessTargetValue = 0;
-                spicinessTargetValue = 0;
-                strengthTargetValue = 0;
+                temperatureTargetValue = MapValue(0);
+                sweetnessTargetValue = MapValue(0);
+                spicinessTargetValue = MapValue(0);
+                strengthTargetValue = MapValue(0);
 
                 ResetAll();
                 orderOwner = null;
@@ -185,6 +183,13 @@ public class OrderStats : MonoBehaviour
     {
         if (orderOwner.GetCustomerState() != CustomerBase.CustomerState.Leaving)
             orderTimer.value = - (orderOwner.customerLeaveTime - orderOwner.orderTimer.Value) / orderOwner.customerLeaveTime;
+        else
+        {
+            brewingStation.Empty();
+            brewingStation.availableForOrder = true;
+            orderInProgress = false;
+            OrderInProgress();
+        }
     }
 
     public List<PlayerController> GetActivePlayers()

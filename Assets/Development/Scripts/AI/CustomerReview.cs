@@ -405,7 +405,7 @@ public class CustomerReview : MonoBehaviour
                 reviewText = "Acceptable I guess, could use a mopping once and a while.";
             else if (chosenScore <= 15)
                 reviewText = "Meh, could be cleaner tbh smh";
-            else if (chosenScore < 20)
+            else if (chosenScore == 20)
                 reviewText = "Nice and tidy. No complaints";
             else
                 reviewText = "Sparkling clean! Could see myself in the reflection of the floor!";
@@ -418,7 +418,7 @@ public class CustomerReview : MonoBehaviour
                 reviewText = "Hard to find a seat. No one seems to be leaving?";
             else if (chosenScore <= 15)
                 reviewText = "A very busy place but I managed to find a good seat!";
-            else if (chosenScore < 20)
+            else if (chosenScore == 20)
                 reviewText = "This place always has hundreds of people at the front but lots of room?? How?";
             else
                 reviewText = "Plenty of room to enjoy my morning brew! Nice work Milky Way!";
@@ -431,7 +431,7 @@ public class CustomerReview : MonoBehaviour
                 reviewText = "Took the hunk-a-junk forever just to make ONE drink for me...";
             else if (chosenScore <= 15)
                 reviewText = "These robots take so long! Aren't they supposed to be faster?";
-            else if (chosenScore < 20)
+            else if (chosenScore == 20)
                 reviewText = "Quick service, very in and out!";
             else
                 reviewText = "Wow! It's like they had it premade, just for meeee :)";
@@ -444,7 +444,7 @@ public class CustomerReview : MonoBehaviour
                 reviewText = "I mean I guess this is my drink?? Smells weird tho-";
             else if (chosenScore <= 15)
                 reviewText = "Tastes good, not a bad flavour.";
-            else if (chosenScore < 20)
+            else if (chosenScore == 20)
                 reviewText = "What a brilliant combination! They should make this a permanent menu item.";
             else
                 reviewText = "Exactly what I was looking for!! Perfect perfect perfect!!";

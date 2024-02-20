@@ -40,8 +40,8 @@ public class GravityStorm : RandomEventBase
 
     private void OnTriggerExit(Collider other)
     {
-       // apply logic to turn gravity back on in case of the object leaving the collider
-       // or we can add colliders around the collision box to prevent the objects to leave
+        // apply logic to turn gravity back on in case of the object leaving the collider
+        // or we can add colliders around the collision box to prevent the objects to leave
     }
 
     private void FindObjectsToMove()
@@ -53,6 +53,7 @@ public class GravityStorm : RandomEventBase
             Rigidbody rb = collider.GetComponent<Rigidbody>();
             if (rb != null)
             {
+                rb.useGravity = false;
                 rigidbodies.Add(rb);
             }
         }
@@ -75,6 +76,7 @@ public class GravityStorm : RandomEventBase
         for (int i = 0; i < objectsToMove.Length; i++)
         {
             Rigidbody rb = objectsToMove[i];
+
             if (rb != null)
             {
                 // Apply Brownian motion to the velocity
@@ -121,13 +123,26 @@ public class GravityStorm : RandomEventBase
         objectRigidbodies = new Rigidbody[objectsToMove.Length];
     }
 
-    public void HandleCollision(Vector3 collisionNormal)
+    // Change direction on collision with other objects
+    public void HandleCollision(Rigidbody collidedObject, Vector3 collisionNormal)
     {
-        // Change direction on collision with other objects
-        for (int i = 0; i < objectsToMoveList.Count; i++)
+        // Find the index of the collided object in the objectsToMove array
+        int index = -1;
+        for (int i = 0; i < objectsToMove.Length; i++)
         {
-            objectVelocities[i] = Vector3.Reflect(objectVelocities[i], collisionNormal);
+            if (objectsToMove[i] == collidedObject)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        if (index != -1)
+        {
+            Vector3 reflectedVelocity = Vector3.Reflect(objectVelocities[index], collisionNormal);
+            objectVelocities[index] = reflectedVelocity;
         }
     }
 
 }
+
