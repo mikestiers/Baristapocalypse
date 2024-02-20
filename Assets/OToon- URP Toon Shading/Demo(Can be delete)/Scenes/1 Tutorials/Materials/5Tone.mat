@@ -2,19 +2,14 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 8
+  serializedVersion: 6
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 5Tone
   m_Shader: {fileID: 4800000, guid: 933f24cde1e3f6a41818f56d729421ab, type: 3}
-  m_ValidKeywords:
-  - _HALFTONESHAPE_DOT
-  - _OUTLINE
-  - _TOON_SHADING_ON
-  m_InvalidKeywords:
-  - _STEPVIARAMPTEXTURE_ON
+  m_ShaderKeywords: _TOON_SHADING_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -59,10 +54,6 @@ Material:
         m_Scale: {x: 0, y: 0}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _FaceShadowMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -142,7 +133,6 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    m_Ints: []
     m_Floats:
     - _ActiveRenderFeature: 1
     - _AlphaClip: 0
@@ -161,16 +151,11 @@ Material:
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DiffuseStep: 0.04
-    - _DitherTexelSize: 1
-    - _DitherThreshold: 1
     - _DotSize: 0.7
     - _DotTilling: 30
     - _DstBlend: 0
     - _EnabledHairSpec: 0
     - _EnvironmentReflections: 1
-    - _FaceShadowMapEnabled: 0
-    - _FaceShadowMapPow: 0.2
-    - _FaceShadowSmoothness: 0.1
     - _Farthest_Distance: 100
     - _FlatGlitterEdgeSmoothness: 0
     - _FlatGlitterGlossness: 0
@@ -203,10 +188,7 @@ Material:
     - _HalfToneIncludeReceivedShadow: 0
     - _HalfToneShape: 0
     - _HalfToneUvMode: 0
-    - _HalftoneFadeDistance: 10
-    - _HalftoneFadeToColor: 0
     - _HalftoneNoiseClip: 0.8
-    - _HalftoneTilling: 8
     - _HatchDiffuseOffset: 0
     - _HatchDrawStrength: 1
     - _HatchLowerBound: 0.1
@@ -228,10 +210,10 @@ Material:
     - _NoiseStrength: 0.1
     - _OcclusionStrength: 1
     - _OutlineDepthOffset: 0
-    - _OutlineEnabled: 1
+    - _OutlineEnabled: 0
     - _OutlineMode: 0
     - _OutlineScale: 1
-    - _OutlineWidth: 8.65
+    - _OutlineWidth: 5
     - _Outline_Width: 0
     - _OverrideLightmapDir: 0
     - _Parallax: 0.02
@@ -244,7 +226,7 @@ Material:
     - _RimEnabled: 0
     - _RimLightAlign: 0.358
     - _RimLightSmoothness: 0.463
-    - _RimPower: 0.482
+    - _RimPower: 0.318
     - _SSOutlineDepthThredshold: 1
     - _SSOutlineNdotVThredshold: 0.2
     - _SSOutlineNormalThredshold: 0.305
@@ -268,14 +250,14 @@ Material:
     - _SpecularStepThreshold: 0.013
     - _SpherizeNormalEnabled: 0
     - _SrcBlend: 1
-    - _StencilComp: 3
+    - _StencilComp: 0
     - _StencilRef: 0
     - _StepViaRampTexture: 1
     - _Surface: 0
     - _TOON_SHADING: 1
     - _TextureBlendingMode: 0
     - _TextureImpact: 1
-    - _ToonBlending: 0.766
+    - _ToonBlending: 1
     - _ToonEnabled: 1
     - _UVSec: 0
     - _UnityShadowMode: 0
@@ -297,8 +279,6 @@ Material:
     - _ColorDimSteps: {r: 0.85023, g: 0.85034, b: 0.85045, a: 0.85056}
     - _ColorGradient: {r: 0.85023, g: 0.85034, b: 0.85045, a: 0.85056}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FaceFrontDirection: {r: 0, g: 0, b: 1, a: 0}
-    - _FaceRightDirection: {r: 1, g: 0, b: 0, a: 0}
     - _FlatGlitterColor: {r: 0.85023, g: 0.85034, b: 0.85045, a: 0.85056}
     - _FlatRimColor: {r: 0.85023, g: 0.85034, b: 0.85045, a: 0.85056}
     - _FlatSpecularColor: {r: 0.85023, g: 0.85034, b: 0.85045, a: 0.85056}
@@ -309,8 +289,7 @@ Material:
     - _HatchColor: {r: 0, g: 0, b: 0, a: 1}
     - _HatchingColor: {r: 0, g: 0, b: 0, a: 1}
     - _LightmapDirection: {r: 0, g: 1, b: 0, a: 0}
-    - _OutlineColor: {r: 0.5660378, g: 0.21847753, b: 0, a: 1}
-    - _OutlineDistancFade: {r: -25, g: 50, b: 0, a: 0}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _RimColor: {r: 0.80893326, g: 1, b: 0, a: 1}
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
