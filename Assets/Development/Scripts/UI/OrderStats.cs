@@ -58,8 +58,15 @@ public class OrderStats : MonoBehaviour
     [SerializeField] private int spicinessCumulativeValue;
     [SerializeField] private int strengthCumulativeValue;
 
+    public static OrderStats Instance { get; private set; }
+
     public bool orderInProgress { get; set; }
     public List<PlayerController> currentPlayers;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void OnEnable()
     {

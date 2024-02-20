@@ -121,7 +121,7 @@ public class IngredientSelectionUI : BaseStation
         EventSystem.current.SetSelectedGameObject(null);
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
         player.movementToggle = true;
-        if (OrderManager.Instance.brewingStations[player.currentBrewingStation].TryAddIngredient(currentIngredient))
+        if (OrderManager.Instance.brewingStations[player.currentBrewingStation].TryAddIngredient(currentIngredient) && OrderStats.Instance.orderInProgress)
         {
             OrderManager.Instance.brewingStations[player.currentBrewingStation].AddIngredientToListSO(BaristapocalypseMultiplayer.Instance.GetIngredientSOIndex(currentIngredient));
             OrderManager.Instance.orderStats[player.currentBrewingStation].SetCumulativeToPotential();
