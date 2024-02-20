@@ -809,10 +809,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
         pickup.ClearPickupOnParent();
-    }
-
-
-    {
        
         //gizmos from InteractionStart
         Gizmos.color = Color.red;
