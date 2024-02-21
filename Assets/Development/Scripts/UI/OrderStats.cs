@@ -188,11 +188,13 @@ public class OrderStats : NetworkBehaviour
     private void UpdateTimer()
     {
         if (orderOwner.GetCustomerState() != CustomerBase.CustomerState.Leaving)
-            orderTimer.value = - (orderOwner.customerLeaveTime - orderOwner.orderTimer.Value) / orderOwner.customerLeaveTime;
+        {
+            //orderTimer.value = - (orderOwner.customerLeaveTime - orderOwner.orderTimer.Value) / orderOwner.customerLeaveTime;
+        }
         else
         {
             brewingStation.Empty();
-            brewingStation.availableForOrder = true;
+            brewingStation.availableForOrder.Value = true;
             orderInProgress = false;
             OrderInProgress();
         }
