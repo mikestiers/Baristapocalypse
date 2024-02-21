@@ -130,7 +130,15 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
             inputImagesSO = inputImagesSOXbox;
-            inputDevice = InputDevice.DualSense;
+            inputDevice = InputDevice.Xbox;
+            OnInputChanged?.Invoke(inputImagesSO);
+        }
+        else // some other gamepad, just show xbox
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            inputImagesSO = inputImagesSOXbox;
+            inputDevice = InputDevice.Xbox;
             OnInputChanged?.Invoke(inputImagesSO);
         }
     }
