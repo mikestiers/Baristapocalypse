@@ -316,21 +316,24 @@ public class MainMenuManager : MonoBehaviour
             SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
         }
 
-        if(Gamepad.current.dpad.up.wasPressedThisFrame)
+        if (Gamepad.current != null)
         {
-            SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
-        }
-        else if (Gamepad.current.dpad.down.wasPressedThisFrame)
-        {
-            SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
-        }
-        else if (Gamepad.current.dpad.left.wasPressedThisFrame)
-        {
-            SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
-        }
-        else if (Gamepad.current.dpad.right.wasPressedThisFrame)
-        {
-            SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+            if (Gamepad.current.dpad.up.wasPressedThisFrame)
+            {
+                SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+            }
+            else if (Gamepad.current.dpad.down.wasPressedThisFrame)
+            {
+                SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+            }
+            else if (Gamepad.current.dpad.left.wasPressedThisFrame)
+            {
+                SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+            }
+            else if (Gamepad.current.dpad.right.wasPressedThisFrame)
+            {
+                SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+            }
         }
     }
 }
