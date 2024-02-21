@@ -612,6 +612,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             }
             ingredientIndicatorText.SetText("");
             RemoveIngredientInListAtIndex(i);
+            OnAnimationSwitch();
         }
     }
 

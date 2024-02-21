@@ -56,6 +56,13 @@ public class CustomerBase : Base
     public GameObject customerReviewPrefab;
     private GameObject customerReviewPanel;
 
+    // Animation interaction with brewing machine// dirty fix for when player controller is redone
+    public event Action animationSwitch;
+    private readonly int BP_Brista_PutDown_LowHash = Animator.StringToHash("BP_Brista_PutDown_Low");
+    private readonly int MovementHash = Animator.StringToHash("Movement");
+    private const float CrossFadeDuration = 0.1f;
+    private float animationWaitTime = 1.2f;
+
     public enum CustomerState
     {
         Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead
@@ -285,6 +292,8 @@ public class CustomerBase : Base
             player.RemoveIngredientInListByReference(player.GetIngredient());
             CustomerManager.Instance.customerServedIncrease();
 
+            DropCupAnimation(player);// Animation
+
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
             interactParticle.Play();
         }
@@ -504,5 +513,21 @@ public class CustomerBase : Base
     private void OnDestroy()
     {
        if(Application.isPlaying) CustomerManager.Instance.ReduceCustomerInStore();
+    }
+
+    private void DropCupAnimation(PlayerController player)
+    {
+        StartCoroutine(ResetAnimation(player));
+    }
+
+    private IEnumerator ResetAnimation(PlayerController player)
+    {
+        player.anim.CrossFadeInFixedTime(BP_Brista_PutDown_LowHash, CrossFadeDuration);
+        player.movementToggle = false;
+
+        yield return new WaitForSeconds(animationWaitTime);
+        player.movementToggle = true;
+        player.anim.CrossFadeInFixedTime(MovementHash, CrossFadeDuration);
+        animationSwitch?.Invoke();
     }
 }
