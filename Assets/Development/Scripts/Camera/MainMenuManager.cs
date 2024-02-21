@@ -16,6 +16,8 @@ public class MainMenuManager : MonoBehaviour
     public CinemachineVirtualCamera SettingsCamera;
     public CinemachineVirtualCamera PlayerSelectionCamera;
     public CinemachineVirtualCamera CreditsCamera;
+    [SerializeField] private Animator leftDoorAnimator;
+    [SerializeField] private Animator rightDoorAnimator;
 
     [Header("Main Menu")]
     public Button StartGame;
@@ -145,6 +147,8 @@ public class MainMenuManager : MonoBehaviour
         if(PlayerSelectionCamera.Priority == 1) 
         {
             SoundManager.Instance.PlayOneShot(backButtonPressedSound);
+            leftDoorAnimator.SetBool("isOpen", false);
+            rightDoorAnimator.SetBool("isOpen", false);
             PlayerSelectionCamera.Priority= 0;
             MainmenuCamera.Priority= 1;
             EventSystem.current.SetSelectedGameObject(StartGame.gameObject);
@@ -210,6 +214,8 @@ public class MainMenuManager : MonoBehaviour
         if (MainmenuCamera.Priority == 1)
         {
             SoundManager.Instance.PlayOneShot(nextButtonPressedSound);
+            leftDoorAnimator.SetBool("isOpen", true);
+            rightDoorAnimator.SetBool("isOpen", true);
             MainmenuCamera.Priority = 0;
             PlayerSelectionCamera.Priority = 1;
             EventSystem.current.SetSelectedGameObject(singlePlayerButton.gameObject);
