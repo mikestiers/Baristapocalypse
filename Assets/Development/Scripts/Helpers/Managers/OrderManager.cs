@@ -1,77 +1,129 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Profiling;
-
+using UnityEngine.UI;
 
 public class OrderManager : Singleton<OrderManager>
 {
-    [SerializeField] private List<OrderInfo> orders = new List<OrderInfo>();
-    [SerializeField] private Order orderPrefab;
-    public delegate void OrderUpdateHandler(OrderInfo order);
+    [SerializeField] private List<Order> orders = new List<Order>();
+    [SerializeField] private List<Slider> timers = new List<Slider>();
+    [SerializeField] private List<Order> orderQueue = new List<Order>();
+
+    public delegate void OrderUpdateHandler(Order order);
     public event OrderUpdateHandler OnOrderUpdated;
     public BrewingStation[] brewingStations; // Assign in inspector, do not find in active game
     public OrderStats[] orderStats; // Assign in inspector, do not find in active game
     BrewingStation availableBrewingStation;
     OrderStats associatedOrderStats;
 
+    // TEST 
+    public Slider slider;
+    public Transform sliderLocation;
+
     private void Update()
     {
-        if (orders.Any(order => order.GetOrderState() == OrderState.Waiting))
+        if (orders.Any(order => order.GetOrderState() == Order.OrderState.Waiting))
             TryStartOrder();
+
+        if (orderQueue.Count >= 1 && timers.Count >= 1)
+            UpdateQueueTimers();
+
+        
+     
     }
 
     public void SpawnOrder(CustomerBase customer)
     {
-        OrderInfo newOrder = new OrderInfo(customer);
-        customer.SetOrder(newOrder);
-
-        AddOrder(newOrder);
+        Order order = new Order();
+        order.Initialize(customer);
     }
 
-    public void AddOrder(OrderInfo order)
+    public void UpdateQueueTimers()
     {
-        AddOrderClientRpc(order);
+       for (int i = 0; i < orderQueue.Count; i++)
+       {
+            timers[i].value = -(orderQueue[i].customer.customerLeaveTime - orderQueue[i].customer.orderTimer.Value) / orderQueue[i].customer.customerLeaveTime;
+
+            if (timers[i].value >= 0)
+            {
+                Destroy(timers[i].gameObject);
+                timers.Remove(timers[i]);
+                return;
+            }
+       }
     }
 
-    [ClientRpc]
-    private void AddOrderClientRpc(OrderInfo order)
+    public void AddOrder(Order order)
     {
-        orders.Add(order);
-        TryStartOrderServerRpc();
-    }
+        if (orders.Count < 2 && orderQueue.Count <= 0)
+        {
+            orders.Add(order);
+            Debug.Log("WOKIN2");
+        }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void TryStartOrderServerRpc()
-    {
-        if (IsServer) { 
-            TryStartOrder();
+        else
+        {
+            orderQueue.Add(order);
+            var newTimer = Instantiate(slider, sliderLocation);
+            newTimer.value = order.customer.orderTimer.Value;
+            timers.Add(newTimer);
+            Debug.Log("TESTIN" + newTimer.value);
         }
     }
 
-    public void FinishOrder(OrderInfo order)
+    public void TakeOrderFromQueue()
     {
+        orders.Add(orderQueue[0]);
+        orderQueue.Remove(orderQueue[0]);
+    }
+    public void FinishOrder(Order order)
+    {
+        Debug.Log("WOKIN5");
+        // orders.Remove(order);
         orders.Remove(order);
-        order.SetOrderState(OrderState.Delivered);
+
+        if (orderQueue.Count >= 1)
+        {
+            GetNextOrder();
+        }
+
+        order.SetOrderState(Order.OrderState.Delivered);
         TryStartOrder();
     }
 
     public void GetNextOrder()
     {
-        TryStartOrder();
+        Destroy(timers[0].gameObject);
+        timers.Remove(timers[0]);
+
+        // Sets the next customer in queue's state to "waiting" //
+        orderQueue[0].SetOrderState(Order.OrderState.Waiting);
+
+        // Removes finished order and places a new order from OrderQueue list //
+        TakeOrderFromQueue();
     }
 
-    public OrderInfo GetFirstOrder()
+    public Order GetFirstOrder()
     {
         return orders.FirstOrDefault();
     }
 
     public void TryStartOrder()
     {
-        if (!IsServer) return;
+        TryStartOrderServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void TryStartOrderServerRpc()
+    {
+        TryStartOrderClientRpc();
+    }
+
+    [ClientRpc]
+    private void TryStartOrderClientRpc()
+    {
         bool availableStationFound = false;
 
         // We are doing this instead of finding the objects dynamically because
@@ -80,7 +132,7 @@ public class OrderManager : Singleton<OrderManager>
         for (int i = 0; i < brewingStations.Length; i++)
         {
             BrewingStation brewingStation = brewingStations[i];
-            if (brewingStation.availableForOrder.Value)
+            if (brewingStation.availableForOrder)
             {
                 availableStationFound = true;
                 availableBrewingStation = brewingStations[i];
@@ -89,31 +141,44 @@ public class OrderManager : Singleton<OrderManager>
             }
         }
 
+
         if (!availableStationFound)
         {
-            Debug.Log("All brewing stations are busy");
-            return;
+            foreach (Order order in orderQueue)
+            {
+                if (order.GetOrderState() == Order.OrderState.Waiting)
+                {
+                    Debug.Log(order.customer.customerName + "is in queue");
+                    order.SetOrderState(Order.OrderState.InQueue);
+                    return;
+                }
+            }
         }
 
         if (availableStationFound)
         {
-            foreach (OrderInfo order in orders)
+            foreach (Order order in orders)
             {
-                Debug.Log("Order " + order);
-                if (order.GetOrderState() == OrderState.Waiting)
+                if (order.GetOrderState() == Order.OrderState.Waiting)
                 {
+                    Debug.Log("FirstOrder: " + order.customer.customerName);
                     StartOrder(order);
-                    order.SetOrderState(OrderState.Brewing);
+                    order.SetOrderState(Order.OrderState.Brewing);
                     return;
                 }
             }
         }
     }
 
-    public void StartOrder(OrderInfo order)
+    public void StartOrder(Order order)
     {
         //OnOrderUpdated?.Invoke(order);
         availableBrewingStation.SetOrder(order);
         associatedOrderStats.SetOrderInfo(order);
+    }
+
+    public Order GetOrderFromListByIndex(int index)
+    {
+        return orders[index];
     }
 }

@@ -2,66 +2,45 @@ using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-using Unity.Collections;
 
-
-public enum OrderState
+public class Order: NetworkBehaviour
 {
-    Waiting,
-    Brewing,
-    BeingDelivered,
-    Delivered
-}
+    public CustomerBase customer;
+    private int number;
+    private string Name;
+    private List<IngredientSO> ingredientList;
+    private Tuple<int, int, int, int> attributes;
+    public CoffeeAttributes coffeeAttributes;
+    private BrewingStation assignedBrewingStation;
+    public NetworkVariable<OrderState> orderState = new NetworkVariable<OrderState>(OrderState.Waiting);
 
-public struct Order : INetworkSerializable, IEquatable<Order>
-{
-    public int number;
-    //public FixedString32Bytes orderName;
-    public int coffeeAttributesSweetness;
-    public int coffeeAttributesTemperature;
-    public int coffeeAttributesSpiciness;
-    public int coffeeAttributesStrength;
-    public OrderState orderState;
-
-
-    public Order(CustomerBase customerOrder)
+    public enum OrderState
     {
-       //orderName = new FixedString32Bytes(customerOrder.customerName);
-        number = customerOrder.customerNumber;
-        coffeeAttributesSweetness = customerOrder.coffeeAttributes.GetSweetness();
-        coffeeAttributesTemperature = customerOrder.coffeeAttributes.GetTemperature();
-        coffeeAttributesSpiciness = customerOrder.coffeeAttributes.GetSpiciness();
-        coffeeAttributesStrength = customerOrder.coffeeAttributes.GetStrength();
-        orderState = OrderState.Waiting;
+        Waiting,
+        Brewing,
+        BeingDelivered,
+        Delivered,
+        InQueue,
+        OutOfTime
+    }
+
+    public void Initialize(CustomerBase customerOrder)
+    {
+        customer = customerOrder; // probably shouldn't do this.  customer.order.customer.order.customer.order..
+        Name = customer.customerName;
+        number = customer.customerNumber;
+        coffeeAttributes = customer.coffeeAttributes;
+        orderState.Value = OrderState.Waiting;
+        OrderManager.Instance.AddOrder(this);
     }
 
     public void SetOrderState(OrderState _orderState)
     {
-        orderState = _orderState;
+        orderState.Value = _orderState;
     }
 
     public OrderState GetOrderState()
     {
-        return orderState;
-    }
-
-    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-    {
-        serializer.SerializeValue(ref number);
-       // serializer.SerializeValue(ref orderName);
-        serializer.SerializeValue(ref coffeeAttributesSpiciness);
-        serializer.SerializeValue(ref coffeeAttributesTemperature);
-        serializer.SerializeValue(ref coffeeAttributesSweetness);
-        serializer.SerializeValue(ref coffeeAttributesStrength);
-        serializer.SerializeValue(ref orderState);
-    }
-
-    public bool Equals(Order other)
-    {
-        if((number == other.number)) //&&(orderName == other.orderName))
-        {
-            return true;
-        }
-        return false;
+        return orderState.Value;
     }
 }

@@ -56,6 +56,15 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         OnBrewingEmpty?.Invoke(this, EventArgs.Empty);
     }
 
+    protected virtual void CustomerOrderTimeExpired()
+    {
+        currentOrder.SetOrderState(Order.OrderState.OutOfTime);
+        OnBrewingDone?.Invoke(this, EventArgs.Empty);
+
+        resetStation();
+        OrderManager.Instance.FinishOrder(currentOrder);
+    }
+
     //private void OnEnable()
     //{
     //    OrderManager.Instance.OnOrderUpdated += ProcessOrder;
@@ -83,6 +92,13 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         validIngredientTagList.Add("Milk");
         validIngredientTagList.Add("Sweetener");
         validIngredientTagList.Add("BioMatter");
+    }
+
+    private void resetStation()
+    {
+        isBrewing = false;
+        availableForOrder = true;
+        ingredientSOList.Clear();
     }
 
     public override void OnNetworkSpawn()
@@ -131,6 +147,21 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         {
             minigameTimer.Value += Time.deltaTime;
         }
+
+
+        if (!availableForOrder)
+        {
+            if (currentOrder.customer.noOrderTimeLeft)
+            {
+                Debug.Log("Wokin");
+                CustomerOrderTimeExpiredRpc();
+            }
+
+            if (currentOrder.customer.orderReceived)
+            {
+                resetStation();
+            }
+        }
     }
 
     public void SetOrder(OrderInfo order)
@@ -178,6 +209,11 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         //setup minigame
         minigameTiming = true;
         minigameTimer.Value = 0f;
+    }
+
+    private void CustomerOrderTimeExpiredRpc()
+    {
+        CustomerOrderTimeExpired();
     }
 
     [ServerRpc(RequireOwnership = false)]
