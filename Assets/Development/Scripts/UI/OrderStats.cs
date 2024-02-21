@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using Unity.Netcode;
 
-public class OrderStats : MonoBehaviour
+public class OrderStats : NetworkBehaviour
 {
     [Header("UI Objects")]
     [SerializeField] public GameObject customerInfoRoot;
@@ -116,17 +117,22 @@ public class OrderStats : MonoBehaviour
         OrderInProgress();
     }
 
-    public void SetOrderInfo(Order order)
+    public void SetOrderInfo(OrderInfo order)
     {
-        SetOrderOwner(order.customer);
+        SetOrderInfoClientRpc(order);
+    }
+
+    [ClientRpc]
+    private void SetOrderInfoClientRpc(OrderInfo order)
+    {
         customerInfoRoot.SetActive(true);
-        customerNumberText.text = order.customer.customerNumber.ToString();
-        customerNameText.text = order.customer.customerName;
-        orderTimer.value = order.customer.orderTimer.Value;
-        temperatureTargetValue = MapValue(order.customer.coffeeAttributes.GetTemperature());
-        sweetnessTargetValue = MapValue(order.customer.coffeeAttributes.GetSweetness());
-        spicinessTargetValue = MapValue(order.customer.coffeeAttributes.GetSpiciness());
-        strengthTargetValue = MapValue(order.customer.coffeeAttributes.GetStrength());
+        customerNumberText.text = order.number.ToString();
+        //customerNameText.text = order.orderName.ToString();
+        //orderTimer.value = order.customer.orderTimer.Value;
+        temperatureTargetValue = MapValue(order.coffeeAttributesTemperature);
+        sweetnessTargetValue = MapValue(order.coffeeAttributesSweetness);
+        spicinessTargetValue = MapValue(order.coffeeAttributesSpiciness);
+        strengthTargetValue = MapValue(order.coffeeAttributesStrength);
         ResetPotential();
         orderInProgress = true;
         SetTargetSegment(temperatureSegments, temperatureTargetValue, temperaturePotentialValue);
@@ -182,11 +188,13 @@ public class OrderStats : MonoBehaviour
     private void UpdateTimer()
     {
         if (orderOwner.GetCustomerState() != CustomerBase.CustomerState.Leaving)
-            orderTimer.value = - (orderOwner.customerLeaveTime - orderOwner.orderTimer.Value) / orderOwner.customerLeaveTime;
+        {
+            //orderTimer.value = - (orderOwner.customerLeaveTime - orderOwner.orderTimer.Value) / orderOwner.customerLeaveTime;
+        }
         else
         {
             brewingStation.Empty();
-            brewingStation.availableForOrder = true;
+            brewingStation.availableForOrder.Value = true;
             orderInProgress = false;
             OrderInProgress();
         }

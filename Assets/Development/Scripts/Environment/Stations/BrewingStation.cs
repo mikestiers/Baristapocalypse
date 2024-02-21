@@ -17,7 +17,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     [SerializeField] private ParticleSystem interactParticle;
 
     [Header("Order")]
-    private Order currentOrder;
+    private OrderInfo currentOrder;
 
     [Header("Ingredients")]
     [SerializeField] public List<IngredientSO> ingredientSOList = new List<IngredientSO>();
@@ -30,7 +30,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     private NetworkVariable<float> brewingTimer = new NetworkVariable<float>(0f);
     [SerializeField] private BrewingRecipeSO brewingRecipeSO;
     private bool isBrewing;
-    public bool availableForOrder = true;
+    public NetworkVariable<bool> availableForOrder = new NetworkVariable<bool>(true);
     private NetworkVariable<float> minigameTimer = new NetworkVariable<float>(0f);
     private bool minigameTiming = false;
     private float maxMinigameTimer = 4.0f;
@@ -47,7 +47,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     protected virtual void RaiseBrewingDone()
     {
-        currentOrder.SetOrderState(Order.OrderState.BeingDelivered);
+        currentOrder.SetOrderState(OrderState.BeingDelivered);
         OnBrewingDone?.Invoke(this, EventArgs.Empty);
     }
 
@@ -133,11 +133,11 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         }
     }
 
-    public void SetOrder(Order order)
+    public void SetOrder(OrderInfo order)
     {
         currentOrder = order;
-        availableForOrder = false;
-        order.SetOrderState(Order.OrderState.Brewing);
+        availableForOrder.Value = false;
+        order.SetOrderState(OrderState.Brewing);
     }
 
     [ServerRpc]
@@ -173,7 +173,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     {
         ingredientSOList.Clear();
         isBrewing = false;
-        availableForOrder = true;
+        availableForOrder.Value = true;
 
         //setup minigame
         minigameTiming = true;
