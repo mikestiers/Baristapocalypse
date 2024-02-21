@@ -31,7 +31,7 @@ public class Order: NetworkBehaviour
         number = customer.customerNumber;
         coffeeAttributes = customer.coffeeAttributes;
         orderState.Value = OrderState.Waiting;
-        OrderManager.Instance.AddOrder(this);
+        //OrderManager.Instance.AddOrder(this);
     }
 
     public void SetOrderState(OrderState _orderState)

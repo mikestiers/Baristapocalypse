@@ -8,13 +8,14 @@ using Unity.VisualScripting;
 [System.Serializable]
 public class OrderInfo : INetworkSerializable, IEquatable<OrderInfo>
 {
+    public CustomerBase customer;
     public int number;
     public FixedString32Bytes orderName;
     public int coffeeAttributesSweetness;
     public int coffeeAttributesTemperature;
     public int coffeeAttributesSpiciness;
     public int coffeeAttributesStrength;
-    public OrderState orderState;
+    public Order.OrderState orderState;
     public OrderInfo() { }
 
     public OrderInfo(CustomerBase customerOrder)
@@ -25,15 +26,15 @@ public class OrderInfo : INetworkSerializable, IEquatable<OrderInfo>
         coffeeAttributesTemperature = customerOrder.coffeeAttributes.GetTemperature();
         coffeeAttributesSpiciness = customerOrder.coffeeAttributes.GetSpiciness();
         coffeeAttributesStrength = customerOrder.coffeeAttributes.GetStrength();
-        orderState = OrderState.Waiting;
+        orderState = Order.OrderState.Waiting;
     }
 
-    public void SetOrderState(OrderState _orderState)
+    public void SetOrderState(Order.OrderState _orderState)
     {
         orderState = _orderState;
     }
 
-    public OrderState GetOrderState()
+    public Order.OrderState GetOrderState()
     {
         return orderState;
     }

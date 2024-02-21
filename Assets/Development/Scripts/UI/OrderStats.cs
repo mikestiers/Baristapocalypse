@@ -116,7 +116,7 @@ public class OrderStats : MonoBehaviour
         OrderInProgress();
     }
 
-    public void SetOrderInfo(Order order)
+    public void SetOrderInfo(OrderInfo order)
     {
         SetOrderOwner(order.customer);
         customerInfoRoot.SetActive(true);
@@ -189,7 +189,7 @@ public class OrderStats : MonoBehaviour
         {
             OrderManager.Instance.FinishOrder(orderOwner.order);
             brewingStation.Empty();
-            brewingStation.availableForOrder = true;
+            brewingStation.availableForOrder.Value = true;
             orderInProgress = false;
             OrderInProgress();
         }

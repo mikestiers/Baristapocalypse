@@ -47,7 +47,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     protected virtual void RaiseBrewingDone()
     {
-        currentOrder.SetOrderState(OrderState.BeingDelivered);
+        currentOrder.SetOrderState(Order.OrderState.BeingDelivered);
         OnBrewingDone?.Invoke(this, EventArgs.Empty);
     }
 
@@ -97,7 +97,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     private void resetStation()
     {
         isBrewing = false;
-        availableForOrder = true;
+        availableForOrder.Value = true;
         ingredientSOList.Clear();
     }
 
@@ -149,7 +149,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         }
 
 
-        if (!availableForOrder)
+        if (!availableForOrder.Value)
         {
             if (currentOrder.customer.noOrderTimeLeft)
             {
@@ -168,7 +168,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     {
         currentOrder = order;
         availableForOrder.Value = false;
-        order.SetOrderState(OrderState.Brewing);
+        order.SetOrderState(Order.OrderState.Brewing);
     }
 
     [ServerRpc]
