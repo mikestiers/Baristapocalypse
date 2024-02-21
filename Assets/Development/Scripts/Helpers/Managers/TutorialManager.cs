@@ -38,7 +38,7 @@ public class TutorialManager : Singleton<TutorialManager>
         firstOrderTaken = true;
     }
 
-    public void StartFirstBrew(Order order)
+    public void StartFirstBrew(OrderInfo order)
     {
         //Debug.Log($"cusorder: {order.coffeeAttributes.GetSweetness()}");
         AISupervisor.Instance.SupervisorMessageToDisplay($"Look at their drink order");// They want {order.coffeeAttributes.GetSweetness()} sweetness");
