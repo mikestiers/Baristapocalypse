@@ -3,30 +3,23 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using Unity.Collections;
+using Unity.VisualScripting;
 
-
-public enum OrderState
-{
-    Waiting,
-    Brewing,
-    BeingDelivered,
-    Delivered
-}
-
-public struct Order : INetworkSerializable, IEquatable<Order>
+[System.Serializable]
+public class OrderInfo : INetworkSerializable, IEquatable<OrderInfo>
 {
     public int number;
-    //public FixedString32Bytes orderName;
+    public FixedString32Bytes orderName;
     public int coffeeAttributesSweetness;
     public int coffeeAttributesTemperature;
     public int coffeeAttributesSpiciness;
     public int coffeeAttributesStrength;
     public OrderState orderState;
+    public OrderInfo() { }
 
-
-    public Order(CustomerBase customerOrder)
+    public OrderInfo(CustomerBase customerOrder)
     {
-       //orderName = new FixedString32Bytes(customerOrder.customerName);
+        orderName = new FixedString32Bytes(customerOrder.customerName);
         number = customerOrder.customerNumber;
         coffeeAttributesSweetness = customerOrder.coffeeAttributes.GetSweetness();
         coffeeAttributesTemperature = customerOrder.coffeeAttributes.GetTemperature();
@@ -48,7 +41,7 @@ public struct Order : INetworkSerializable, IEquatable<Order>
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         serializer.SerializeValue(ref number);
-       // serializer.SerializeValue(ref orderName);
+        serializer.SerializeValue(ref orderName);
         serializer.SerializeValue(ref coffeeAttributesSpiciness);
         serializer.SerializeValue(ref coffeeAttributesTemperature);
         serializer.SerializeValue(ref coffeeAttributesSweetness);
@@ -56,12 +49,13 @@ public struct Order : INetworkSerializable, IEquatable<Order>
         serializer.SerializeValue(ref orderState);
     }
 
-    public bool Equals(Order other)
+    public bool Equals(OrderInfo other)
     {
-        if((number == other.number)) //&&(orderName == other.orderName))
+        if ((number == other.number)) //&&(orderName == other.orderName))
         {
             return true;
         }
         return false;
     }
+
 }
