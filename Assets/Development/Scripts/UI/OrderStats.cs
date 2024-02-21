@@ -63,14 +63,14 @@ public class OrderStats : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerController.OnInputChanged += InputUpdated;
+        InputManager.OnInputChanged += InputUpdated;
         brewingStation.OnBrewingEmpty += OrderCompleted;
         brewingStation.OnBrewingDone += OrderCompleted;
     }
 
     private void OnDisable()
     {
-        PlayerController.OnInputChanged -= InputUpdated;
+        InputManager.OnInputChanged -= InputUpdated;
         brewingStation.OnBrewingEmpty -= OrderCompleted;
         brewingStation.OnBrewingDone -= OrderCompleted;
     }

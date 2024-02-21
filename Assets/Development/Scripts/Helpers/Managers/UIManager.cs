@@ -125,12 +125,12 @@ public class UIManager : Singleton<UIManager>
     }
     private void OnEnable()
     {
-        PlayerController.OnInputChanged += InputUpdated;
+        InputManager.OnInputChanged += InputUpdated;
     }
 
     private void OnDisable()
     {
-        PlayerController.OnInputChanged -= InputUpdated;
+        InputManager.OnInputChanged -= InputUpdated;
     }
 
     private void InputUpdated(InputImagesSO inputImagesSO)

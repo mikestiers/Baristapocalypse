@@ -293,38 +293,38 @@ public class MainMenuManager : MonoBehaviour
 
     private void Update()
     {
-        if (Keyboard.current.upArrowKey.wasPressedThisFrame)
-        {
-            SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
-        }
-        else if (Keyboard.current.downArrowKey.wasPressedThisFrame)
-        {
-            SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
-        }
-        else if (Keyboard.current.leftArrowKey.wasPressedThisFrame)
-        {
-            SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
-        }
-        else if (Keyboard.current.rightArrowKey.wasPressedThisFrame)
-        {
-            SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
-        }
+        //if (Keyboard.current.upArrowKey.wasPressedThisFrame)
+        //{
+        //    SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+        //}
+        //else if (Keyboard.current.downArrowKey.wasPressedThisFrame)
+        //{
+        //    SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+        //}
+        //else if (Keyboard.current.leftArrowKey.wasPressedThisFrame)
+        //{
+        //    SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+        //}
+        //else if (Keyboard.current.rightArrowKey.wasPressedThisFrame)
+        //{
+        //    SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+        //}
 
-        if(Gamepad.current.dpad.up.wasPressedThisFrame)
-        {
-            SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
-        }
-        else if (Gamepad.current.dpad.down.wasPressedThisFrame)
-        {
-            SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
-        }
-        else if (Gamepad.current.dpad.left.wasPressedThisFrame)
-        {
-            SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
-        }
-        else if (Gamepad.current.dpad.right.wasPressedThisFrame)
-        {
-            SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
-        }
+        //if(Gamepad.current.dpad.up.wasPressedThisFrame)
+        //{
+        //    SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+        //}
+        //else if (Gamepad.current.dpad.down.wasPressedThisFrame)
+        //{
+        //    SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+        //}
+        //else if (Gamepad.current.dpad.left.wasPressedThisFrame)
+        //{
+        //    SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+        //}
+        //else if (Gamepad.current.dpad.right.wasPressedThisFrame)
+        //{
+        //    SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+        //}
     }
 }

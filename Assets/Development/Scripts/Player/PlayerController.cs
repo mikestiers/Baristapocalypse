@@ -11,6 +11,7 @@ using Unity.Services.Lobbies.Models;
 using Cinemachine;
 using System.Linq;
 using static AISupervisor;
+using UnityEditor.ShaderGraph;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObjectParent, ISpill
@@ -63,16 +64,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     private Vector3 curMoveInput;
     private Vector3 moveDir;
     private Vector3 moveDirection;
-
-    [Header("Input Configuration")]
-    public InputDevice inputDevice = InputDevice.KeyboardMouse;
-    public InputImagesSO inputImagesSOXbox;
-    public InputImagesSO inputImagesSODualSense;
-    public InputImagesSO inputImagesSOKeyboardMouse;
-    private InputImagesSO inputImagesSO;
-    //public delegate void InputUpdateHandler(InputImagesSO inputImagesSO);
-    public static event Action<InputImagesSO> OnInputChanged;
-
     public float rotationSpeed;
 
     [Header("Mess Data")]
@@ -138,8 +129,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
             virtualCamera.Follow = gameObject.transform;
         }
-
-        inputImagesSO = inputImagesSOKeyboardMouse;
 
         //Get components
         rb = GetComponent<Rigidbody>();
@@ -325,7 +314,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
 
         // Check if the inputDevice has changed
-        ChangePlayerControlsReferenceImages();
+        //HandleMouseVisibility();
 
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward, Color.green);
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward * customerInteractDistance, Color.red);
@@ -870,55 +859,32 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
     }
 
-    private void ChangePlayerControlsReferenceImages()
-    {
-        // Check if a controller is being used
-        bool usingController = Gamepad.current != null;
-        if (!usingController) { return; }
+    //private void HandleMouseVisibility()
+    //{
+    //    // Check if a controller is being used
+    //    bool usingController = Gamepad.current != null;
+    //    if (!usingController) { return; }
 
-        float mouseMoveThreshold = 0.1f;
-        Vector2 mouseDelta = Mouse.current.delta.ReadValue();
+    //    float mouseMoveThreshold = 0.1f;
+    //    Vector2 mouseDelta = Mouse.current.delta.ReadValue();
 
-        // Check if any button on the controller is pressed or the stick is moved
-        if (Gamepad.current.allControls.Any(control => control.IsPressed() && control != Gamepad.current.leftStick))
-        {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-            if (Gamepad.current.name.Contains("DualSense"))
-            {
-                inputDevice = InputDevice.DualSense;
-                inputImagesSO = inputImagesSODualSense;
-                OnInputChanged?.Invoke(inputImagesSO);
-            }
-            else // Assume generic xbox if not dualsense or keyboard/mouse.
-            {
-                inputDevice = InputDevice.Xbox;
-                inputImagesSO = inputImagesSOXbox;
-                OnInputChanged?.Invoke(inputImagesSO);
-            }
-        }
-        else if (mouseDelta.magnitude > mouseMoveThreshold)
-        {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-            inputDevice = InputDevice.KeyboardMouse;
-            inputImagesSO = inputImagesSOKeyboardMouse;
-            OnInputChanged?.Invoke(inputImagesSO);
-        }
-    }
+    //    // Check if any button on the controller is pressed or the stick is moved
+    //    if (Gamepad.current.allControls.Any(control => control.IsPressed() && control != Gamepad.current.leftStick))
+    //    {
+    //        Cursor.visible = false;
+    //        Cursor.lockState = CursorLockMode.Locked;
+    //    }
+    //    else if (mouseDelta.magnitude > mouseMoveThreshold)
+    //    {
+    //        Cursor.visible = true;
+    //        Cursor.lockState = CursorLockMode.None;
+    //    }
+    //}
 
     private void TutorialMessage()
     {
         tutorialMessageActive = true;
         if (tutorialMessageActive)
             Time.timeScale = 0f;
-    }
-
-    public enum InputDevice
-    {
-        None,
-        DualSense,
-        Xbox,
-        KeyboardMouse
     }
 }
