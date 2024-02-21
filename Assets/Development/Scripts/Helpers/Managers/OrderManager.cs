@@ -36,8 +36,9 @@ public class OrderManager : Singleton<OrderManager>
 
     public void SpawnOrder(CustomerBase customer)
     {
-        Order order = new Order();
-        order.Initialize(customer);
+        OrderInfo order = new OrderInfo(customer);
+        customer.SetOrder(order);
+        AddOrder(order);
     }
 
     public void UpdateQueueTimers()
