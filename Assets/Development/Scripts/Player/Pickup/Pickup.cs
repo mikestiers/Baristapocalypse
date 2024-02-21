@@ -88,7 +88,7 @@ public class Pickup : NetworkBehaviour
         pickupNetworkObjectReference.TryGet(out NetworkObject pickupNetworkObject);
         Pickup pickupObject = pickupNetworkObject.GetComponent<Pickup>();
         
-        pickupObject.RemoveRigidBody();
+        //pickupObject.RemoveRigidBody();
         pickupObject.GetCollider().enabled = false;
 
     }

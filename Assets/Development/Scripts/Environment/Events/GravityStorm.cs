@@ -4,91 +4,111 @@ using UnityEngine;
 
 public class GravityStorm : RandomEventBase
 {
-    public GameObject[] objectsToMove;
-    public float alpha = 0.1f; // scale of Brownian motion
-    public float driftSpeed = 0.1f;
-    public float rotationSpeed = 1.0f;
-    public float collisionBoxSize = 5.0f;
-    public GameObject gravityButton;
-    public Material gravityButtonMaterial;
-
+    public Rigidbody[] objectsToMove;
+    public List<Rigidbody> objectsToMoveList = new List<Rigidbody>();
+    [SerializeField] private float alpha = 0.1f; // scale of Brownian motion
+    [SerializeField] private float driftSpeed = 0.1f;
+    [SerializeField] private float rotationSpeed = 1.0f;
+    [SerializeField] private float collisionBoxSize = 5.0f;
+    [SerializeField] private GameObject gravityButton;
+    [SerializeField] private Material gravityButtonMaterial;
+    [SerializeField] private LayerMask gravityMask;
+    [HideInInspector] public bool areObjectsDetected = false;
+    private Collider eventCollider;
     private Vector3[] objectVelocities;
     private Rigidbody[] objectRigidbodies;
 
     private void Awake()
     {
-        foreach (GameObject bootParticle in PlayerController.Instance.bootsParticles)
-        {
-            bootParticle.SetActive(GameManager.Instance.isEventActive);
-        }
-
+        eventCollider = GetComponent<Collider>();
         gravityButton.GetComponent<MeshRenderer>().material = gravityButtonMaterial;
     }
 
-
     private void Start()
     {
-        objectVelocities = new Vector3[objectsToMove.Length];
-        objectRigidbodies = new Rigidbody[objectsToMove.Length];
-
-        for (int i = 0; i < objectsToMove.Length; i++)
-        {
-            objectVelocities[i] = GenerateRandomVelocity();
-            objectRigidbodies[i] = objectsToMove[i].GetComponent<Rigidbody>();
-        }
+        FindObjectsToMove();
+        InitializeArrays();
     }
 
     private void OnTriggerStay(Collider other)
     {
         if (other.CompareTag("Mess"))
         {
-            for (int i = 0; i < objectsToMove.Length; i++)
+            MoveObject();
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        // apply logic to turn gravity back on in case of the object leaving the collider
+        // or we can add colliders around the collision box to prevent the objects to leave
+    }
+
+    private void FindObjectsToMove()
+    {
+        Collider[] colliders = Physics.OverlapBox(eventCollider.bounds.center, eventCollider.bounds.extents, Quaternion.identity, gravityMask);
+        List<Rigidbody> rigidbodies = new List<Rigidbody>();
+        foreach (Collider collider in colliders)
+        {
+            Rigidbody rb = collider.GetComponent<Rigidbody>();
+            if (rb != null)
             {
-                objectRigidbodies[i].useGravity = false;
-                MoveObject(objectsToMove[i].transform, objectRigidbodies[i], i);
+                rb.useGravity = false;
+                rigidbodies.Add(rb);
+            }
+        }
+        objectsToMove = rigidbodies.ToArray();
+    }
+
+    private void InitializeArrays()
+    {
+        objectVelocities = new Vector3[objectsToMove.Length];
+        objectRigidbodies = new Rigidbody[objectsToMove.Length];
+        for (int i = 0; i < objectsToMove.Length; i++)
+        {
+            objectRigidbodies[i] = objectsToMove[i];
+            objectVelocities[i] = Vector3.zero;
+        }
+    }
+
+    private void MoveObject()
+    {
+        for (int i = 0; i < objectsToMove.Length; i++)
+        {
+            Rigidbody rb = objectsToMove[i];
+
+            if (rb != null)
+            {
+                // Apply Brownian motion to the velocity
+                objectVelocities[i] += GenerateRandomVelocity() * Mathf.Sqrt(alpha);
+
+                // Apply drifting motion
+                Vector3 drift = objectVelocities[i] * driftSpeed * Time.deltaTime;
+
+                // Apply Brownian force
+                rb.AddForce(drift, ForceMode.VelocityChange);
+
+                // Cap rb max speed
+                float maxSpeed = 0.4f;
+                if (rb.velocity.magnitude > maxSpeed)
+                {
+                    rb.velocity = rb.velocity.normalized * maxSpeed;
+                }
+
+                // Apply torque for rotation
+                float torqueX = Random.Range(-1f, 1f) * rotationSpeed * Time.deltaTime;
+                float torqueY = Random.Range(-1f, 1f) * rotationSpeed * Time.deltaTime;
+                float torqueZ = Random.Range(-1f, 1f) * rotationSpeed * Time.deltaTime;
+
+                rb.AddTorque(new Vector3(torqueX, torqueY, torqueZ), ForceMode.VelocityChange);
+
+                Debug.Log($"Speed:  {rb.velocity.magnitude}");
             }
         }
     }
 
-    private void MoveObject(Transform objTransform, Rigidbody objRigidbody, int index)
-    {
-        // Apply Brownian motion to the velocity
-        objectVelocities[index] += GenerateRandomVelocity() * Mathf.Sqrt(alpha);
-
-        // Apply drifting motion
-        Vector3 drift = objectVelocities[index] * driftSpeed * Time.deltaTime;
-
-        // Apply Brownian force
-        objRigidbody.AddForce(drift, ForceMode.VelocityChange);
-
-        float maxSpeed = 0.4f; // cap rb max speed
-        if (objRigidbody.velocity.magnitude > maxSpeed)
-        {
-            objRigidbody.velocity = objRigidbody.velocity.normalized * maxSpeed;
-        }
-
-        // Apply torque for rotation
-        float torqueX = Random.Range(-1f, 1f) * rotationSpeed * Time.deltaTime;
-        float torqueY = Random.Range(-1f, 1f) * rotationSpeed * Time.deltaTime;
-        float torqueZ = Random.Range(-1f, 1f) * rotationSpeed * Time.deltaTime;
-
-        objRigidbody.AddTorque(new Vector3(torqueX, torqueY, torqueZ), ForceMode.VelocityChange);
-
-        Debug.Log($"Speed:  {objRigidbody.velocity.magnitude}");
-    }
-
     private Vector3 GenerateRandomVelocity()
     {
-        // Box-Muller transform for generating normally distributed random numbers
-        //float u1 = 1f - Random.value;
-        //float u2 = 1f - Random.value;
-        //float z0 = Mathf.Sqrt(-2f * Mathf.Log(u1)) * Mathf.Cos(2f * Mathf.PI * u2);
-        //float z1 = Mathf.Sqrt(-2f * Mathf.Log(u1)) * Mathf.Sin(2f * Mathf.PI * u2);
-
-        //float z2 = Random.Range(-1f, 1f);
-
-        //return new Vector3(z0, z1, z2);
-
         float brownianX = Random.Range(-1f, 1f);
         float brownianY = Random.Range(-1f, 1f);
         float brownianZ = Random.Range(-1f, 1f);
@@ -96,13 +116,33 @@ public class GravityStorm : RandomEventBase
         return new Vector3(brownianX, brownianY, brownianZ).normalized;
     }
 
-    public void HandleCollision(Vector3 collisionNormal)
+    public void ConvertListToArray()
     {
-        // Change direction on collision with other objects
+        objectsToMove = objectsToMoveList.ToArray();
+        objectVelocities = new Vector3[objectsToMove.Length];
+        objectRigidbodies = new Rigidbody[objectsToMove.Length];
+    }
+
+    // Change direction on collision with other objects
+    public void HandleCollision(Rigidbody collidedObject, Vector3 collisionNormal)
+    {
+        // Find the index of the collided object in the objectsToMove array
+        int index = -1;
         for (int i = 0; i < objectsToMove.Length; i++)
         {
-            objectVelocities[i] = Vector3.Reflect(objectVelocities[i], collisionNormal);
+            if (objectsToMove[i] == collidedObject)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        if (index != -1)
+        {
+            Vector3 reflectedVelocity = Vector3.Reflect(objectVelocities[index], collisionNormal);
+            objectVelocities[index] = reflectedVelocity;
         }
     }
 
 }
+

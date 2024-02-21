@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class OrderStats : MonoBehaviour
 {
-    [Header("Customer Order")]
+    [Header("UI Objects")]
     [SerializeField] public GameObject customerInfoRoot;
     [SerializeField] public Text customerNumberText;
     [SerializeField] public Text customerNameText;
@@ -19,21 +20,31 @@ public class OrderStats : MonoBehaviour
     [SerializeField] public GameObject sweetnessTargetAttributeSelector;
     [SerializeField] public GameObject spicinessTargetAttributeSelector;
     [SerializeField] public GameObject strengthTargetAttributeSelector;
-    [SerializeField] public GameObject temperatureTargetSegment;
-    [SerializeField] public GameObject sweetnessTargetSegment;
-    [SerializeField] public GameObject spicinessTargetSegment;
-    [SerializeField] public GameObject strengthTargetSegment;
     [SerializeField] public GameObject temperaturePotentialAttributeSelector;
     [SerializeField] public GameObject sweetnessPotentialAttributeSelector;
     [SerializeField] public GameObject spicinessPotentialAttributeSelector;
     [SerializeField] public GameObject strengthPotentialAttributeSelector;
     [SerializeField] public GameObject selectedByPlayerImage;
-    [SerializeField] public List<PlayerController> currentPlayers;
+    [SerializeField] public Sprite OrderSelectorEmpty;
+    [SerializeField] public Sprite OrderSelecctorSuccess;
+    [SerializeField] public Sprite OrderTargetEmptyPolygon;
+    [SerializeField] public Sprite OrderTargetEmptyRectangle;
+    [SerializeField] public Sprite OrderTargetSuccessPolygon;
+    [SerializeField] public Sprite OrderTargetSuccessRectangle;
+    [SerializeField] public Sprite TransparentSegment;  
     [SerializeField] public Image resetMachineImage;
-    [SerializeField] public bool orderInProgress { get; set; }
-    [SerializeField] private CustomerBase orderOwner;
+    [SerializeField] public Image previousMachineImage;
+    [SerializeField] public Image nextMachineImage;
+
+    [Header("Associated Brewing Station")]
     [SerializeField] public BrewingStation brewingStation;
 
+    [Header("Private State Values")]
+    [SerializeField] private CustomerBase orderOwner;
+    [SerializeField] private GameObject temperatureTargetSegment;
+    [SerializeField] private GameObject sweetnessTargetSegment;
+    [SerializeField] private GameObject spicinessTargetSegment;
+    [SerializeField] private GameObject strengthTargetSegment;
     [SerializeField] private int temperatureTargetValue;
     [SerializeField] private int sweetnessTargetValue;
     [SerializeField] private int spicinessTargetValue;
@@ -47,17 +58,19 @@ public class OrderStats : MonoBehaviour
     [SerializeField] private int spicinessCumulativeValue;
     [SerializeField] private int strengthCumulativeValue;
 
+    public bool orderInProgress { get; set; }
+    public List<PlayerController> currentPlayers;
 
     private void OnEnable()
     {
-        //OrderManager.Instance.OnOrderUpdated += SetOrderInfo;
+        PlayerController.OnInputChanged += InputUpdated;
         brewingStation.OnBrewingEmpty += OrderCompleted;
         brewingStation.OnBrewingDone += OrderCompleted;
     }
 
     private void OnDisable()
     {
-        //OrderManager.Instance.OnOrderUpdated -= SetOrderInfo;
+        PlayerController.OnInputChanged -= InputUpdated;
         brewingStation.OnBrewingEmpty -= OrderCompleted;
         brewingStation.OnBrewingDone -= OrderCompleted;
     }
@@ -70,6 +83,25 @@ public class OrderStats : MonoBehaviour
         ResetSegments(strengthSegments);
         orderInProgress = false;
         OrderInProgress();
+    }
+
+    private void Update()
+    {
+        if (orderInProgress == true)
+        {
+            UpdateTimer();
+            SetTargetSegment(temperatureSegments, temperatureTargetValue, temperaturePotentialValue);
+            SetTargetSegment(sweetnessSegments, sweetnessTargetValue, sweetnessPotentialValue);
+            SetTargetSegment(spicinessSegments, spicinessTargetValue, spicinessPotentialValue);
+            SetTargetSegment(strengthSegments, strengthTargetValue, strengthPotentialValue);
+        }
+    }
+
+    private void InputUpdated(InputImagesSO inputImagesSO)
+    {
+        resetMachineImage.sprite = inputImagesSO.brewingStationEmpty;
+        previousMachineImage.sprite = inputImagesSO.brewingStationSelectLeft;
+        nextMachineImage.sprite = inputImagesSO.brewingStationSelectRight;
     }
 
     public int MapValue(int originalValue)
@@ -97,17 +129,11 @@ public class OrderStats : MonoBehaviour
         strengthTargetValue = MapValue(order.customer.coffeeAttributes.GetStrength());
         ResetPotential();
         orderInProgress = true;
-        SetTargetSegments();
+        SetTargetSegment(temperatureSegments, temperatureTargetValue, temperaturePotentialValue);
+        SetTargetSegment(sweetnessSegments, sweetnessTargetValue, sweetnessPotentialValue);
+        SetTargetSegment(spicinessSegments, spicinessTargetValue, spicinessPotentialValue);
+        SetTargetSegment(strengthSegments, strengthTargetValue, strengthPotentialValue);
         OrderInProgress();
-    }
-
-    private void Update()
-    {
-        if (orderInProgress == true)
-        {
-            UpdateTimer();
-            SetTargetSegments();
-        }
     }
 
     public CustomerBase GetOrderOwner()
@@ -132,10 +158,10 @@ public class OrderStats : MonoBehaviour
                 imageColor.a = 0.2f;
                 selectedByPlayerImage.SetActive(false);
                 customerInfoRoot.SetActive(false);
-                temperatureTargetValue = 0;
-                sweetnessTargetValue = 0;
-                spicinessTargetValue = 0;
-                strengthTargetValue = 0;
+                temperatureTargetValue = MapValue(0);
+                sweetnessTargetValue = MapValue(0);
+                spicinessTargetValue = MapValue(0);
+                strengthTargetValue = MapValue(0);
 
                 ResetAll();
                 orderOwner = null;
@@ -146,12 +172,9 @@ public class OrderStats : MonoBehaviour
             }
             image.color = imageColor;
 
-            if (image.gameObject.name.Contains("Panel"))
+            if (image.gameObject.name.Contains("Panel")) // all segment panels should be transparent images by default
             {
-                Color tempcolor = image.GetComponentInParent<Image>().color;
-                tempcolor.a = 0.0f;
-                image.GetComponentInParent<Image>().color = tempcolor;
-                image.color = tempcolor;
+                image.sprite = TransparentSegment;
             }
         }
     }
@@ -159,7 +182,14 @@ public class OrderStats : MonoBehaviour
     private void UpdateTimer()
     {
         if (orderOwner.GetCustomerState() != CustomerBase.CustomerState.Leaving)
-            orderTimer.value = (orderOwner.customerLeaveTime - orderOwner.orderTimer.Value) / orderOwner.customerLeaveTime;
+            orderTimer.value = - (orderOwner.customerLeaveTime - orderOwner.orderTimer.Value) / orderOwner.customerLeaveTime;
+        else
+        {
+            brewingStation.Empty();
+            brewingStation.availableForOrder = true;
+            orderInProgress = false;
+            OrderInProgress();
+        }
     }
 
     public List<PlayerController> GetActivePlayers()
@@ -188,55 +218,40 @@ public class OrderStats : MonoBehaviour
     public void SetPotentialTemperature(int value)
     {
         temperaturePotentialValue = value;
-        SetPotentialSegment(temperaturePotentialAttributeSelector, temperatureSegments[MapValue(value)]);
+        SetPotentialSegment(temperaturePotentialAttributeSelector, temperatureSegments[MapValue(value)], temperaturePotentialValue, temperatureTargetValue);
     }
 
     public void SetPotentialSweetness(int value)
     {
         sweetnessPotentialValue = value;
-        SetPotentialSegment(sweetnessPotentialAttributeSelector, sweetnessSegments[MapValue(value)]);
+        SetPotentialSegment(sweetnessPotentialAttributeSelector, sweetnessSegments[MapValue(value)], sweetnessPotentialValue, sweetnessTargetValue);
     }
 
     public void SetPotentialSpiciness(int value)
     {
         spicinessPotentialValue = value;
-        SetPotentialSegment(spicinessPotentialAttributeSelector, spicinessSegments[MapValue(value)]);
+        SetPotentialSegment(spicinessPotentialAttributeSelector, spicinessSegments[MapValue(value)], spicinessPotentialValue, spicinessTargetValue);
     }
 
     public void SetPotentialStrength(int value)
     {   
         strengthPotentialValue = value;
-        SetPotentialSegment(strengthPotentialAttributeSelector, strengthSegments[MapValue(value)]);
+        SetPotentialSegment(strengthPotentialAttributeSelector, strengthSegments[MapValue(value)], strengthPotentialValue, strengthTargetValue);
     }
 
-    public void SetCumulativeTemperature(int value)
-    {
-        temperatureCumulativeValue = value;
-    }
+    public void SetCumulativeTemperature(int value) => temperatureCumulativeValue = value;
 
-    public void SetCumulativeSweetness(int value)
-    {
-        sweetnessCumulativeValue = value;
-    }
+    public void SetCumulativeSweetness(int value) => sweetnessCumulativeValue = value;
 
-    public void SetCumulativeSpiciness(int value)
-    {
-        spicinessCumulativeValue = value;
-    }
+    public void SetCumulativeSpiciness(int value) => spicinessCumulativeValue = value;
 
-    public void SetCumulativeStrength(int value)
-    {
-        strengthCumulativeValue = value;
-    }
+    public void SetCumulativeStrength(int value) => strengthCumulativeValue = value;
 
     public void ResetSegments(GameObject[] segments)
     {
         foreach (var segment in segments)
         {
-            Color segmentColor = segment.GetComponent<Image>().color;
-            segmentColor.a = 0.0f;
-            segment.GetComponent<Image>().color = segmentColor;
-            segment.SetActive(false);
+            segment.GetComponent<Image>().sprite = TransparentSegment;
         }
     }
 
@@ -248,10 +263,10 @@ public class OrderStats : MonoBehaviour
         ResetSegments(sweetnessSegments);
         ResetSegments(spicinessSegments);
         ResetSegments(strengthSegments);
-        ResetSegmentsColour(temperatureSegments);
-        ResetSegmentsColour(sweetnessSegments);
-        ResetSegmentsColour(spicinessSegments);
-        ResetSegmentsColour(strengthSegments);
+        ResetSegmentsImages(temperatureSegments);
+        ResetSegmentsImages(sweetnessSegments);
+        ResetSegmentsImages(spicinessSegments);
+        ResetSegmentsImages(strengthSegments);
     }
     private void ResetPotential()
     {
@@ -296,88 +311,76 @@ public class OrderStats : MonoBehaviour
         SetPotentialStrength(currentIngredient.strength + strengthCumulativeValue);
     }
 
-    private void SetTargetSegments()
+    private void SetTargetSegment(GameObject[] segments, int targetValue, int potentialValue)
     {
-        temperatureTargetSegment = temperatureSegments[temperatureTargetValue];
-        Color temperatureTargetSegmentColor = Color.green;
-        temperatureTargetSegmentColor.a = 1.0f;
-        temperatureTargetSegment.GetComponent<Image>().color = temperatureTargetSegmentColor;
-        temperatureTargetSegment.SetActive(true);
-        //temperatureTargetAttributeSelector.transform.SetParent(temperatureTargetSegment.transform);
-        temperatureTargetAttributeSelector.transform.position = temperatureTargetSegment.transform.position;
-        temperatureTargetAttributeSelector.SetActive(true);
+        // The zero (middle) segment of the orderstats has a different image so there are special cases
+        // for that sprite... polygonSprite vs rectangleSprite
+        
+        if (GameValueHolder.Instance.difficultySettings.GetDrinkThreshold() == 1)
+        {
+            GameObject targetSegment = segments[targetValue];
+            Sprite targetSprite;
+            if (targetValue == MapValue(potentialValue))
+                targetSprite = targetValue == 7 ? OrderTargetSuccessPolygon : OrderTargetSuccessRectangle;
+            else
+                targetSprite = targetValue == 7 ? OrderTargetEmptyPolygon : OrderTargetEmptyRectangle;
 
-        sweetnessTargetSegment = sweetnessSegments[sweetnessTargetValue];
-        Color sweetnessTargetSegmentColor = Color.green;
-        sweetnessTargetSegmentColor.a = 1.0f;
-        sweetnessTargetSegment.GetComponent<Image>().color = sweetnessTargetSegmentColor;
-        sweetnessTargetSegment.SetActive(true);
-        //sweetnessTargetAttributeSelector.transform.SetParent(sweetnessTargetSegment.transform);
-        sweetnessTargetAttributeSelector.transform.position = sweetnessTargetSegment.transform.position;
-        sweetnessTargetAttributeSelector.SetActive(true);
-
-        spicinessTargetSegment = spicinessSegments[spicinessTargetValue];
-        Color spicinessTargetSegmentColor = Color.green;
-        spicinessTargetSegmentColor.a = 1.0f;
-        spicinessTargetSegment.GetComponent<Image>().color = spicinessTargetSegmentColor;
-        spicinessTargetSegment.SetActive(true);
-        //spicinessTargetAttributeSelector.transform.SetParent(spicinessTargetSegment.transform);
-        spicinessTargetAttributeSelector.transform.position = spicinessTargetSegment.transform.position;
-        spicinessTargetAttributeSelector.SetActive(true);
-
-        strengthTargetSegment = strengthSegments[strengthTargetValue];
-        Color strengthTargetSegmentColor = Color.green;
-        strengthTargetSegmentColor.a = 1.0f;
-        strengthTargetSegment.GetComponent<Image>().color = strengthTargetSegmentColor;
-        strengthTargetSegment.SetActive(true);
-        //strengthTargetAttributeSelector.transform.SetParent(sweetnessTargetSegment.transform);
-        strengthTargetAttributeSelector.transform.position = sweetnessTargetSegment.transform.position;
-        strengthTargetAttributeSelector.SetActive(true);
+            targetSegment.GetComponent<Image>().sprite = targetSprite;
+            targetSegment.SetActive(true);
+        }
 
         //difficulty range
-        Color targetSegmentRangeColor = Color.green;
-        targetSegmentRangeColor.a = 1.0f;
-
         if (GameValueHolder.Instance.difficultySettings.GetDrinkThreshold() == 3)
         {
-            temperatureSegments[temperatureTargetValue - 1].GetComponent<Image>().color = targetSegmentRangeColor;
-            temperatureSegments[temperatureTargetValue + 1].GetComponent<Image>().color = targetSegmentRangeColor;
-            temperatureSegments[temperatureTargetValue - 1].SetActive(true);
-            temperatureSegments[temperatureTargetValue + 1].SetActive(true);
+            bool targetIs6To8 = targetValue == 6 || targetValue == 7 || targetValue == 8;
+            bool isWithinTargetRange = Math.Abs(targetValue - MapValue(potentialValue)) <= 1;
+            Sprite polygonSprite = isWithinTargetRange ? OrderTargetSuccessPolygon : OrderTargetEmptyPolygon;
+            Sprite rectangleSprite = isWithinTargetRange ? OrderTargetSuccessRectangle : OrderTargetEmptyRectangle;
 
-            sweetnessSegments[sweetnessTargetValue - 1].GetComponent<Image>().color = targetSegmentRangeColor;
-            sweetnessSegments[sweetnessTargetValue + 1].GetComponent<Image>().color = targetSegmentRangeColor;
-            sweetnessSegments[sweetnessTargetValue - 1].SetActive(true);
-            sweetnessSegments[sweetnessTargetValue + 1].SetActive(true);
+            if (targetIs6To8)
+            {
+                segments[targetValue].GetComponent<Image>().sprite = targetValue == 7 ? polygonSprite : rectangleSprite;
+                segments[targetValue - 1].GetComponent<Image>().sprite = targetValue == 8 ? polygonSprite : rectangleSprite;
+                segments[targetValue + 1].GetComponent<Image>().sprite = targetValue == 6 ? polygonSprite : rectangleSprite;
+            }
+            else
+            {
+                segments[targetValue - 1].GetComponent<Image>().sprite = rectangleSprite;
+                segments[targetValue].GetComponent<Image>().sprite = rectangleSprite;
+                segments[targetValue + 1].GetComponent<Image>().sprite = rectangleSprite;
+            }
 
-            spicinessSegments[spicinessTargetValue - 1].GetComponent<Image>().color = targetSegmentRangeColor;
-            spicinessSegments[spicinessTargetValue + 1].GetComponent<Image>().color = targetSegmentRangeColor;
-            spicinessSegments[spicinessTargetValue - 1].SetActive(true);
-            spicinessSegments[spicinessTargetValue + 1].SetActive(true);
-
-            strengthSegments[strengthTargetValue - 1].GetComponent<Image>().color = targetSegmentRangeColor;
-            strengthSegments[strengthTargetValue + 1].GetComponent<Image>().color = targetSegmentRangeColor;
-            strengthSegments[strengthTargetValue - 1].SetActive(true);
-            strengthSegments[strengthTargetValue + 1].SetActive(true);
+            segments[targetValue].SetActive(true);
+            segments[targetValue - 1].SetActive(true);
+            segments[targetValue + 1].SetActive(true);
         }
     }
 
-    public void ResetSegmentsColour(GameObject[] segments)
+    public void ResetSegmentsImages(GameObject[] segments)
     {
         // Reset all segments every time the segments are updated to clear any invalid colors
         foreach (var segment in segments)
         {
-            Color segmentColor = segment.GetComponent<Image>().color;
-            segmentColor.a = 0.0f;
+            segment.GetComponent<Image>().sprite = TransparentSegment;
             segment.SetActive(false);
         }
     }
 
-    private void SetPotentialSegment(GameObject ingredientPotentialAttributeSelector, GameObject potentialSegment)
+    private void SetPotentialSegment(GameObject ingredientPotentialAttributeSelector, GameObject potentialSegment, int potentialValue, int targetValue)
     {
+        if (targetValue == MapValue(potentialValue))
+            ingredientPotentialAttributeSelector.GetComponent<Image>().sprite = OrderSelecctorSuccess;
+        else
+            ingredientPotentialAttributeSelector.GetComponent<Image>().sprite = OrderSelectorEmpty;
+
+        // difficulty range
+        if (GameValueHolder.Instance.difficultySettings.GetDrinkThreshold() == 3)
+        {
+            if (Math.Abs(targetValue - MapValue(potentialValue)) <= 1)
+                ingredientPotentialAttributeSelector.GetComponent<Image>().sprite = OrderSelecctorSuccess;
+        }
         potentialSegment.SetActive(true);
         ingredientPotentialAttributeSelector.SetActive(true);
-        //ingredientPotentialAttributeSelector.transform.SetParent(potentialSegment.transform);
         ingredientPotentialAttributeSelector.transform.position = potentialSegment.transform.position;
     }
 }

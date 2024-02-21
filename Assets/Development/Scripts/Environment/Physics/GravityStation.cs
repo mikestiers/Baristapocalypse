@@ -12,51 +12,72 @@ public class GravityStation : MonoBehaviour
 
     private Mouse mouse = Mouse.current;
 
-    private void Start()
-    {
-       
-        //GameManager.Instance.OnPlayerDeactivateEvent += GameManager_OnPlayerDeactivateEvent;
-    }
 
-    // this is temporary, the player will interact with this and hold a button to deactivate the gravity Storm
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.GetComponent<PlayerController>())
         {
-            if (mouse.leftButton.wasPressedThisFrame) 
-            { 
-                 DeactivateRandomEvent();
-            }
-            //gravityField.SetActive(true);
-            //GameManager_OnPlayerDeactivateEvent(this, EventArgs.Empty);
+            InputManager.Instance.InteractEvent += HandleInteract;
         }
     }
 
-    private void GameManager_OnPlayerDeactivateEvent(object sender, EventArgs e)
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.GetComponent<PlayerController>())
+        {
+            InputManager.Instance.InteractEvent -= HandleInteract;
+        }
+    }
+
+    private void HandleInteract()
     {
         DeactivateRandomEvent();
     }
+
+    //// this is temporary, the player will interact with this and hold a button to deactivate the gravity Storm
+    //private void OnTriggerStay(Collider other)
+    //{
+    //    if (other.GetComponent<PlayerController>())
+    //    {
+    //        if (mouse.leftButton.wasPressedThisFrame) 
+    //        { 
+    //             DeactivateRandomEvent();
+    //        }
+    //    }
+    //}
 
     private void DeactivateRandomEvent()
     {
 
         GameManager.Instance.isEventActive = false;
+        GameManager.Instance.isGravityStorm = false;
         RandomEventBase randomEvent = GameManager.Instance.currentRandomEvent;
 
-        // Stop physics simulation for each object
-        foreach (var obj in randomEvent.gameObject.GetComponent<GravityStorm>().objectsToMove)
+        GravityStorm gravityStorm = randomEvent.gameObject.GetComponent<GravityStorm>();
+        if (gravityStorm != null)
         {
-            Rigidbody objRigidbody = obj.GetComponent<Rigidbody>();
-            if (objRigidbody != null)
+            gravityStorm.ConvertListToArray();
+
+            // Stop physics simulation for each object
+            foreach (var obj in gravityStorm.objectsToMove)
             {
-                objRigidbody.useGravity = true;
-                //objRigidbody.Sleep();
+                Rigidbody objRigidbody = obj.GetComponent<Rigidbody>();
+                Collider objCollider = obj.GetComponent<Collider>();
+
+                if (objRigidbody != null)
+                {
+                    objCollider.isTrigger = false;
+                    objRigidbody.useGravity = true;
+                    //objRigidbody.Sleep();
+                }
             }
         }
+
         if (!randomEvent.GetNetworkObject().IsSpawned)
         {
-            randomEvent.GetNetworkObject().Spawn(); 
+            randomEvent.GetNetworkObject().Spawn();
         }
+
         Debug.LogWarning("DeactivateRandomEvent " + randomEvent.name);
         gravityButton.GetComponent<MeshRenderer>().material = originalMaterial;
         randomEvent.SetEventBool(false);
@@ -69,3 +90,4 @@ public class GravityStation : MonoBehaviour
     }
 
 }
+

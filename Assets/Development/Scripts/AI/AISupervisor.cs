@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AISupervisor : NetworkBehaviour
 {
@@ -37,6 +38,16 @@ public class AISupervisor : NetworkBehaviour
         OnFeedbackMessageReceived -= HandleFeedbackMessage;
     }
 
+    private void OnEnable()
+    {
+        PlayerController.OnInputChanged += InputUpdated;
+    }
+
+    private void OnDisable()
+    {
+        PlayerController.OnInputChanged -= InputUpdated;
+    }
+
     void Update()
     {
         if (!IsServer)
@@ -48,6 +59,11 @@ public class AISupervisor : NetworkBehaviour
         {
             SupervisorMessageToDisplayEvent(stringTest);
         }
+    }
+
+    private void InputUpdated(InputImagesSO inputImagesSO)
+    {
+        continueButton.GetComponentInChildren<Image>().sprite = inputImagesSO.interact;
     }
 
     private void HandleFeedbackMessage(string feedbackMessage)
@@ -95,6 +111,7 @@ public class AISupervisor : NetworkBehaviour
             yield return null;
         }
 
+        // Pauses the game and allows for the player to read the message and continue when ready
         if (TutorialManager.Instance.tutorialEnabled)
             OnTutorialMessageReceived?.Invoke();
 
@@ -103,7 +120,8 @@ public class AISupervisor : NetworkBehaviour
 
     private IEnumerator ShowElements()
     {
-        yield return new WaitForSeconds(popOutReviewTime);
+        // 0f wait time if tutorial is enabled because tutorials prompt to continue
+        yield return new WaitForSeconds(TutorialManager.Instance.tutorialEnabled ? 0f : popOutReviewTime);
         StartCoroutine(MoveBackEP());
     }
 

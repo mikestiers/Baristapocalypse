@@ -34,7 +34,7 @@ public class CustomerBase : Base
     public Order order;
 
     [Header("State Related")]
-    public CustomerState currentState;
+    public NetworkVariable<CustomerState> currentState = new NetworkVariable<CustomerState>(CustomerState.Init);
     public float? orderTimer = null;
     public float? messTime = null;
     public float customerLeaveTime;
@@ -63,7 +63,11 @@ public class CustomerBase : Base
 
     public virtual void Start()
     {
-        SetCustomerStateServerRpc(CustomerState.Init);
+        if (IsOwner)
+        {
+            SetCustomerState(CustomerState.Init);
+        }
+        
         SetCustomerVisualIdentifiers();
 
         customerLeaveTime = Random.Range(GameValueHolder.Instance.difficultySettings.GetMinWaitTime(), GameValueHolder.Instance.difficultySettings.GetMaxWaitTime());
@@ -77,13 +81,14 @@ public class CustomerBase : Base
 
     public virtual void Update()
     {
+        if(!IsOwner) return;    
         if (orderTimer != null)
             orderTimer += Time.deltaTime;
 
         if (messTime != null)
             messTime += Time.deltaTime; 
 
-        switch (currentState)
+        switch (currentState.Value)
         {
             case CustomerState.Wandering:
                 UpdateWandering();
@@ -129,7 +134,7 @@ public class CustomerBase : Base
     private void UpdateWaiting()
     {
         // To be implmented or removed
-        if (makingAMess == true) SetCustomerStateServerRpc(CustomerState.Loitering);
+        if (makingAMess == true) SetCustomerState(CustomerState.Loitering);
     }
 
     private void UpdateOrdering()
@@ -148,11 +153,11 @@ public class CustomerBase : Base
             agent.isStopped = true;
             if (frontofLine == true)
             {
-                SetCustomerStateServerRpc(CustomerState.Ordering);
+                SetCustomerState(CustomerState.Ordering);
             }
             else
             {
-                SetCustomerStateServerRpc(CustomerState.Waiting);
+                SetCustomerState(CustomerState.Waiting);
             }
 
             moving = false;
@@ -195,7 +200,7 @@ public class CustomerBase : Base
     {
         if (leaving == true)
         {
-            SetCustomerStateServerRpc(CustomerState.Leaving);
+            SetCustomerState(CustomerState.Leaving);
             agent.SetDestination(exit.position);
         }
     
@@ -264,8 +269,9 @@ public class CustomerBase : Base
         // Take customer order
         if (GetCustomerState() == CustomerState.Ordering)
         {
-            Order order = new Order();
-            order.Initialize(this);
+            OrderManager.Instance.SpawnOrder(this);
+            if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstBrewStarted)
+                TutorialManager.Instance.StartFirstBrew(order);
             LeaveLineServerRpc();
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
             interactParticle.Play();
@@ -285,7 +291,7 @@ public class CustomerBase : Base
 
         if(makingAMess == true)
         {
-            SetCustomerStateServerRpc(CustomerState.Leaving);
+            SetCustomerState(CustomerState.Leaving);
             agent.SetDestination(exit.position);
             makingAMess = false;
             leaving = true;
@@ -300,16 +306,13 @@ public class CustomerBase : Base
     [ServerRpc(RequireOwnership = false)]
     private void LeaveLineServerRpc()
     {
-        Debug.Log("serverrpc");
         LeaveLineClientRpc();
     }
 
     [ClientRpc]
     private void LeaveLineClientRpc()
     {
-        Debug.Log("customer leaving");
         CustomerManager.Instance.Leaveline();
-       
     }
 
     // CUSTOMER STATE METHODS
@@ -317,20 +320,19 @@ public class CustomerBase : Base
     // thse methods.  Do not set the state like customerstate = "Leaving"
     public CustomerState GetCustomerState()
     {
-        return currentState;
+        return currentState.Value;
     }
 
-    //Maybe dont need, can try to get rid of it later
-    [ServerRpc(RequireOwnership = false)]
-    public void SetCustomerStateServerRpc(CustomerState newState)
+    public void SetCustomerState(CustomerState customerState)
     {
-        SetCustomerStateClientRpc(newState);
+        if (!IsOwner) return;
+        SetCustomerStateServerRpc(customerState);
     }
 
-    [ClientRpc]
-    public void SetCustomerStateClientRpc(CustomerState newState)
+    [ServerRpc]
+    private void SetCustomerStateServerRpc(CustomerState customerState)
     {
-        currentState = newState;
+        currentState.Value = customerState;
     }
 
     // CUSTOMER IDENTIFICATION METHODS
@@ -346,8 +348,7 @@ public class CustomerBase : Base
         customerNumberText.text = customerNumber.ToString();
         customerNameText.text = customerName;
         customerDialogue.SetActive(false);
-        customerNumberCanvas.enabled = false;
-       
+        customerNumberCanvas.enabled = false; 
     }
 
     public void DisplayCustomerVisualIdentifiers()
@@ -378,14 +379,14 @@ public class CustomerBase : Base
         if (Random.Range(0, 100) <= GameValueHolder.Instance.difficultySettings.GetChanceToMess()) CreateMess();
         if (Random.Range(0, 100) < GameValueHolder.Instance.difficultySettings.GetChanceToLoiter())
         {
-            SetCustomerStateServerRpc(CustomerState.Loitering);
+            SetCustomerState(CustomerState.Loitering);
             messTime = 0f;
             makingAMess = true;
             moving = false;
         }
         else
         {
-            SetCustomerStateServerRpc(CustomerState.Leaving);
+            SetCustomerState(CustomerState.Leaving);
             agent.SetDestination(exit.position);
 
 
@@ -399,12 +400,14 @@ public class CustomerBase : Base
     {
         if (agent.isStopped) agent.isStopped = false;
         agent.SetDestination(Spot);
-        SetCustomerStateServerRpc(CustomerState.Moving);
+        SetCustomerState(CustomerState.Moving);
         moving = true;
     }
 
     public void JustGotHandedCoffee()
     {
+        if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstDrinkDelivered)
+            TutorialManager.Instance.FirstDrinkDelivered();
         JustGotHandedCoffeeServerRpc();
     }
 
@@ -425,13 +428,13 @@ public class CustomerBase : Base
     void HeadDetach()
     {
         detachedHead.Initialize();
-        SetCustomerStateServerRpc(CustomerState.Dead);
+        SetCustomerState(CustomerState.Dead);
         StartCoroutine(DeadTimer());
     }
 
     public void Dead()
     {
-        SetCustomerStateServerRpc(CustomerState.Dead);
+        SetCustomerState(CustomerState.Dead);
         StartCoroutine(DeadTimer());
     }
 

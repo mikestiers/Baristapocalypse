@@ -1,17 +1,18 @@
 using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Order: MonoBehaviour
+public class Order: NetworkBehaviour
 {
     public CustomerBase customer;
     private int number;
     private string Name;
     private List<IngredientSO> ingredientList;
     private Tuple<int, int, int, int> attributes;
-    private CoffeeAttributes coffeeAttributes;
+    public CoffeeAttributes coffeeAttributes;
     private BrewingStation assignedBrewingStation;
-    public OrderState State { get; set; }
+    public NetworkVariable<OrderState> orderState = new NetworkVariable<OrderState>(OrderState.Waiting);
 
     public enum OrderState
     {
@@ -27,7 +28,17 @@ public class Order: MonoBehaviour
         Name = customer.customerName;
         number = customer.customerNumber;
         coffeeAttributes = customer.coffeeAttributes;
-        State = OrderState.Waiting;
+        orderState.Value = OrderState.Waiting;
         OrderManager.Instance.AddOrder(this);
+    }
+
+    public void SetOrderState(OrderState _orderState)
+    {
+        orderState.Value = _orderState;
+    }
+
+    public OrderState GetOrderState()
+    {
+        return orderState.Value;
     }
 }
