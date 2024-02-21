@@ -91,6 +91,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     // Animations
     private readonly int MovementWithCupHash = Animator.StringToHash("MovementWithCup");
     private readonly int MovementHash = Animator.StringToHash("Movement");
+    private readonly int BP_Barista_Floor_PickupHash = Animator.StringToHash("BP_Barista_Floor_Pickup");
+    
     private const float CrossFadeDuration = 0.1f;
 
     private CinemachineVirtualCamera virtualCamera;
@@ -335,6 +337,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         // Check if the inputDevice has changed
         ChangePlayerControlsReferenceImages();
 
+        Debug.LogWarning("HasPickup() " + HasPickup());
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward, Color.green);
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward * customerInteractDistance, Color.red);
     }
@@ -464,9 +467,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         while (Time.time < startTime + dashTime)
         {
             rb.AddForce(moveDirection * dashForce * Time.deltaTime, ForceMode.Impulse);
-            if (ingredientsList.Count > 0)
+            if (ingredientsList.Count > 0  || HasPickup())
             {
-                anim.SetBool("isDashinWithCup", isDashing);
+                anim.SetBool("isDashingWithCup", isDashing);
             }
             else
             {
@@ -476,10 +479,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
 
         yield return new WaitForSeconds(dashCooldownTime);
+
         isDashing = false;
-        if (ingredientsList.Count > 0)
+        if (ingredientsList.Count > 0 || HasPickup())
         {
-            anim.SetBool("isDashinWithCup", isDashing);
+            anim.SetBool("isDashingWithCup", isDashing);
         }
         else
         {
@@ -758,8 +762,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         if (pickupSo != null)
         {
-            pickup.SetPickupObjectParent(this);
-            pickup.DisablePickupColliders(pickup);
+            StartCoroutine(TrashPickUpAnimation(pickup)); // Play trash pick up and set trash parent
         }
 
         if (pickup.IsCustomer)
@@ -976,4 +979,18 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             anim.CrossFadeInFixedTime(MovementHash, CrossFadeDuration);
         }
     }
+
+    // Play trash pick up and set trash parent
+    private IEnumerator TrashPickUpAnimation(Pickup pickup)
+    {
+        anim.CrossFadeInFixedTime(BP_Barista_Floor_PickupHash, CrossFadeDuration);
+        movementToggle = false;
+
+        yield return new WaitForSeconds(1f); // hard coded while new player statemachine is dead
+
+        movementToggle = true;
+        pickup.SetPickupObjectParent(this);
+        pickup.DisablePickupColliders(pickup);
+    }
+
 }
