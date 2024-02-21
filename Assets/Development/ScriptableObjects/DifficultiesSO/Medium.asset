@@ -13,18 +13,19 @@ MonoBehaviour:
   m_Name: Medium
   m_EditorClassIdentifier: 
   difficultyString: Medium
-  timeBetweenWaves: 30
-  InitialnumberOfWaves: 3
-  RateOfIncreaseInNumberOfWaves: 0.3
-  targetBudget: 75
-  numberOfCustomersInWave: 15
-  rateOfIncreaseBasedOnPlayerCount: 3
+  timeBetweenWaves: 15
+  InitialnumberOfWaves: 1
+  RateOfIncreaseInNumberOfWaves: 1
+  targetBudget: 12
+  maxShift: 2
+  numberOfCustomersInWave: 2
+  rateOfIncreaseBasedOnPlayerCount: 2
   minCustomerSpawnDelay: 30
   maxCustomerSpawnDelay: 60
   rateOFDecresedDelayOfCustomerSpawn: 0.5
-  chanceToMess: 100
+  chanceToMess: 50
   loiterMessEverySec: 5
-  chanceToLoiter: 50
+  chanceToLoiter: 25
   minWaitTime: 60
   maxWaitTime: 120
   drinkThreshold: 3
@@ -33,4 +34,4 @@ MonoBehaviour:
   strengthIngredientList: {fileID: 11400000, guid: 803efb1c478b64248b985509034d4cb6, type: 2}
   spicinessIngredientList: {fileID: 11400000, guid: 62548164cb83c984b9514e74a85253e8, type: 2}
   allIngredientsList: {fileID: 11400000, guid: d24fc2a30b947c649be1b5d0960b3220, type: 2}
-  moneyToPass: 0
+  moneyToPass: 50

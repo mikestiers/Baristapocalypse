@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Unity.Netcode;
 
@@ -33,6 +34,8 @@ public class OrderStats : NetworkBehaviour
     [SerializeField] public Sprite OrderTargetSuccessRectangle;
     [SerializeField] public Sprite TransparentSegment;  
     [SerializeField] public Image resetMachineImage;
+    [SerializeField] public Image previousMachineImage;
+    [SerializeField] public Image nextMachineImage;
 
     [Header("Associated Brewing Station")]
     [SerializeField] public BrewingStation brewingStation;
@@ -61,14 +64,14 @@ public class OrderStats : NetworkBehaviour
 
     private void OnEnable()
     {
-        //OrderManager.Instance.OnOrderUpdated += SetOrderInfo;
+        PlayerController.OnInputChanged += InputUpdated;
         brewingStation.OnBrewingEmpty += OrderCompleted;
         brewingStation.OnBrewingDone += OrderCompleted;
     }
 
     private void OnDisable()
     {
-        //OrderManager.Instance.OnOrderUpdated -= SetOrderInfo;
+        PlayerController.OnInputChanged -= InputUpdated;
         brewingStation.OnBrewingEmpty -= OrderCompleted;
         brewingStation.OnBrewingDone -= OrderCompleted;
     }
@@ -93,6 +96,13 @@ public class OrderStats : NetworkBehaviour
             SetTargetSegment(spicinessSegments, spicinessTargetValue, spicinessPotentialValue);
             SetTargetSegment(strengthSegments, strengthTargetValue, strengthPotentialValue);
         }
+    }
+
+    private void InputUpdated(InputImagesSO inputImagesSO)
+    {
+        resetMachineImage.sprite = inputImagesSO.brewingStationEmpty;
+        previousMachineImage.sprite = inputImagesSO.brewingStationSelectLeft;
+        nextMachineImage.sprite = inputImagesSO.brewingStationSelectRight;
     }
 
     public int MapValue(int originalValue)
@@ -154,10 +164,10 @@ public class OrderStats : NetworkBehaviour
                 imageColor.a = 0.2f;
                 selectedByPlayerImage.SetActive(false);
                 customerInfoRoot.SetActive(false);
-                temperatureTargetValue = 0;
-                sweetnessTargetValue = 0;
-                spicinessTargetValue = 0;
-                strengthTargetValue = 0;
+                temperatureTargetValue = MapValue(0);
+                sweetnessTargetValue = MapValue(0);
+                spicinessTargetValue = MapValue(0);
+                strengthTargetValue = MapValue(0);
 
                 ResetAll();
                 orderOwner = null;
@@ -177,8 +187,15 @@ public class OrderStats : NetworkBehaviour
 
     private void UpdateTimer()
     {
-        //if (orderOwner.GetCustomerState() != CustomerBase.CustomerState.Leaving)
-            //orderTimer.value = - (orderOwner.customerLeaveTime - orderOwner.orderTimer.Value) / orderOwner.customerLeaveTime;
+        if (orderOwner.GetCustomerState() != CustomerBase.CustomerState.Leaving)
+            orderTimer.value = - (orderOwner.customerLeaveTime - orderOwner.orderTimer.Value) / orderOwner.customerLeaveTime;
+        else
+        {
+            brewingStation.Empty();
+            brewingStation.availableForOrder = true;
+            orderInProgress = false;
+            OrderInProgress();
+        }
     }
 
     public List<PlayerController> GetActivePlayers()
