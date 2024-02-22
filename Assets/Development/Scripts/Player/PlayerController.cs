@@ -823,7 +823,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
             Debug.Log("Customer dead");
             pickup.GetCustomer().Dead();
-            pickup.AddRigidbody();
+            //pickup.AddRigidbody();
+            pickup.GetComponentInChildren<Rigidbody>().isKinematic = false;
         }
 
         pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
