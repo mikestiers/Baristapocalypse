@@ -92,7 +92,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     private readonly int MovementWithCupHash = Animator.StringToHash("MovementWithCup");
     private readonly int MovementHash = Animator.StringToHash("Movement");
     private readonly int BP_Barista_Floor_PickupHash = Animator.StringToHash("BP_Barista_Floor_Pickup");
-    
+    private readonly int BP_Barista_Throw_CupHash = Animator.StringToHash("BP_Barista_Throw_Cup");
+
     private const float CrossFadeDuration = 0.1f;
 
     private CinemachineVirtualCamera virtualCamera;
@@ -596,6 +597,39 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [ClientRpc]
     private void ThrowIngredientClientRpc()
     {
+        StartCoroutine(ThrowIngredientAnimation());
+        //for (int i = 0; i < ingredientsList.Count; i++)
+        //{
+        //    if (ingredientsList[i] == null) continue;
+
+        //    //Detach child from hold point
+        //    ingredientsList[i].GetComponent<IngredientFollowTransform>().SetTargetTransform(ingredientsList[i].transform);
+
+        //    //Enable collider
+        //    ingredientsList[i].EnableIngredientCollision(ingredientsList[i]);
+
+        //    // Apply the throw force to the ingredient
+        //    Rigidbody ingredientRb = ingredientsList[i].GetComponent<Rigidbody>();
+        //    if (ingredientRb != null)
+        //    {
+        //        ingredientRb.isKinematic = false;
+        //        ingredientRb.AddForce(transform.forward * ingredientThrowForce, ForceMode.Force);
+        //        ingredientRb.useGravity = true;
+        //    }
+        //    ingredientIndicatorText.SetText("");
+        //    RemoveIngredientInListAtIndex(i);
+        //    OnAnimationSwitch();
+        //}
+    }
+
+    private IEnumerator ThrowIngredientAnimation()
+    {
+        anim.CrossFadeInFixedTime(BP_Barista_Throw_CupHash, CrossFadeDuration);
+        movementToggle = false;
+
+        yield return new WaitForSeconds(1f); // hard coded while new player statemachine is dead
+
+        movementToggle = true;
         for (int i = 0; i < ingredientsList.Count; i++)
         {
             if (ingredientsList[i] == null) continue;
@@ -618,6 +652,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             RemoveIngredientInListAtIndex(i);
             OnAnimationSwitch();
         }
+
     }
 
     public void GrabIngredientFromFloor(Ingredient floorIngredient, IngredientSO ingredientSO)
@@ -829,13 +864,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             pickup.AddRigidbody();
         }
 
-        pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
-        pickup.EnablePickupColliders(pickup);
-        pickup.GetCollider().enabled = true;
+        StartCoroutine(ThrowPickUpAnimation());
 
-        pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
-        pickup.ClearPickupOnParent();
-       
         //gizmos from InteractionStart
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(InteractzoneStart.transform.position + InteractzoneStart.transform.forward * stationInteractDistance, stationsSphereCastRadius);
@@ -980,7 +1010,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
     }
 
-    // Play trash pick up and set trash parent
+    // Play trash pick up and set trash parent while new player statemachine is dead
     private IEnumerator TrashPickUpAnimation(Pickup pickup)
     {
         anim.CrossFadeInFixedTime(BP_Barista_Floor_PickupHash, CrossFadeDuration);
@@ -991,6 +1021,23 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         movementToggle = true;
         pickup.SetPickupObjectParent(this);
         pickup.DisablePickupColliders(pickup);
+    }
+
+    // Play throw pick up and set trash parent while new player statemachine is dead
+    private IEnumerator ThrowPickUpAnimation()
+    {
+        anim.CrossFadeInFixedTime(BP_Barista_Throw_CupHash, CrossFadeDuration);
+        movementToggle = false;
+
+        yield return new WaitForSeconds(1f); // hard coded while new player statemachine is dead
+
+        movementToggle = true;
+        pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
+        pickup.EnablePickupColliders(pickup);
+        pickup.GetCollider().enabled = true;
+
+        pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
+        pickup.ClearPickupOnParent();
     }
 
 }
