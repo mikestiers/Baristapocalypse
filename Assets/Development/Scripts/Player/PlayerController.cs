@@ -796,8 +796,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         StartCoroutine(ThrowPickUpAnimation());
 
         //gizmos from InteractionStart
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(InteractzoneStart.transform.position + InteractzoneStart.transform.forward * stationInteractDistance, stationsSphereCastRadius);
+        //Gizmos.color = Color.red;
+        //Gizmos.DrawWireSphere(InteractzoneStart.transform.position + InteractzoneStart.transform.forward * stationInteractDistance, stationsSphereCastRadius);
        
     }
 
@@ -963,12 +963,15 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         yield return new WaitForSeconds(1f); // hard coded while new player statemachine is dead
 
         movementToggle = true;
-        pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
-        pickup.EnablePickupColliders(pickup);
-        pickup.GetCollider().enabled = true;
+        if (pickup != null) 
+        { 
+            pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
+            pickup.EnablePickupColliders(pickup);
+            pickup.GetCollider().enabled = true;
 
-        pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
-        pickup.ClearPickupOnParent();
+            pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
+            pickup.ClearPickupOnParent();
+        }
     }
 
     // Play throw ingredient 
