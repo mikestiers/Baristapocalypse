@@ -57,8 +57,6 @@ public class IngredientSelectionUI : BaseStation
     {
         // This should not be in Update() but difficultysettings are not available when the game starts for some reason
 
-       
-
         if (!currentStationInteraction)
             return;
 
@@ -189,18 +187,10 @@ public class IngredientSelectionUI : BaseStation
         canSelectIngredient = true;
         currentStationInteraction = true;
         obj.SetActive(true);
-
+        
         // Select first igredient if not playing with mouse
-        if (!Cursor.visible)
-        {
-            EventSystem.current.firstSelectedGameObject = ingredientButtons[0].gameObject;
-            SetDefaultSelected(ingredientButtons[0].gameObject);
-        }
-        else if (Cursor.visible) 
-        {
-            // Fix bug where BG select image does not trigger at the start of the game
-        }
-
+        EventSystem.current.firstSelectedGameObject = ingredientButtons[0].gameObject;
+        SetDefaultSelected(ingredientButtons[0].gameObject);
     }
 
     private void CalculateIngredients(IngredientSO currentIngredient)
