@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System;
 using System.Collections;
 using Unity.Collections;
@@ -58,6 +59,9 @@ public class CustomerBase : Base
     public GameObject customerReviewPrefab;
     private GameObject customerReviewPanel;
 
+    public delegate void CustomerLeaveEvent(int customerNumber);
+    public static event CustomerLeaveEvent OnCustomerLeave;
+    
     public enum CustomerState
     {
         Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead
@@ -79,6 +83,7 @@ public class CustomerBase : Base
         if (distThreshold <= 0) distThreshold = 0.5f;
         
         customerReviewPanel = GameObject.FindGameObjectWithTag("CustomerReviewPanel");
+
     }
 
     public virtual void Update()
@@ -186,7 +191,6 @@ public class CustomerBase : Base
         orderBeingServed = true;
         if (orderTimer >= customerLeaveTime)
         {
-            OrderManager.Instance.FinishOrder(order);
             CustomerManager.Instance.customerLeaveIncrease();
             GameManager.Instance.moneySystem.ResetStreak();
             CustomerLeave();
@@ -251,7 +255,10 @@ public class CustomerBase : Base
     private void UpdatePickedUp()
     {
         //Remove order from list if picked up
-        OrderManager.Instance.FinishOrder(order);
+        if (OnCustomerLeave != null)
+        {
+            OnCustomerLeave?.Invoke(customerNumber.Value);
+        }
     }
 
     private void UpdateDead()
@@ -400,6 +407,11 @@ public class CustomerBase : Base
             //UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
             //if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
         }
+
+        if (OnCustomerLeave != null)
+        {
+            OnCustomerLeave?.Invoke(customerNumber.Value);
+        }
     }
 
     public void Walkto(Vector3 Spot)
@@ -426,7 +438,6 @@ public class CustomerBase : Base
     [ClientRpc]
     private void JustGotHandedCoffeeClientRpc()
     {
-        OrderManager.Instance.FinishOrder(order);
         CustomerReviewManager.Instance.CustomerReviewEvent(this);
         StopOrderTimer();
         CustomerLeave();

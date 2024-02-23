@@ -50,6 +50,8 @@ public class OrderManager : Singleton<OrderManager>
 
     public void FinishOrder(OrderInfo order)
     {
+        if (order == null) return;
+        if (!orders.Contains(order)) return;
         orders.Remove(order);
         order.SetOrderState(OrderState.Delivered);
         OnOrderCompleted?.Invoke(this, EventArgs.Empty);
@@ -97,6 +99,7 @@ public class OrderManager : Singleton<OrderManager>
             {
                 if (order.GetOrderState() == OrderState.Waiting)
                 {
+                    Debug.Log("GOT THE ORDER " + order.number);
                     StartOrder(order);
                     order.SetOrderState(OrderState.Brewing);
                     return;
@@ -107,6 +110,7 @@ public class OrderManager : Singleton<OrderManager>
 
     public void StartOrder(OrderInfo order)
     {
+        Debug.Log("STARTING ORDER");
         //OnOrderUpdated?.Invoke(order);
         availableBrewingStation.SetOrder(order);
         associatedOrderStats.SetOrderInfo(order);

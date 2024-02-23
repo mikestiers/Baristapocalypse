@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Unity.Netcode;
+using Unity.VisualScripting;
 
 public class OrderStats : NetworkBehaviour
 {
@@ -41,7 +42,7 @@ public class OrderStats : NetworkBehaviour
     [SerializeField] public BrewingStation brewingStation;
 
     [Header("Private State Values")]
-    [SerializeField] private CustomerBase orderOwner;
+    private OrderInfo currentOrder;
     [SerializeField] private GameObject temperatureTargetSegment;
     [SerializeField] private GameObject sweetnessTargetSegment;
     [SerializeField] private GameObject spicinessTargetSegment;
@@ -59,7 +60,7 @@ public class OrderStats : NetworkBehaviour
     [SerializeField] private int spicinessCumulativeValue;
     [SerializeField] private int strengthCumulativeValue;
 
-    public bool orderInProgress { get; set; }
+    public bool orderInProgress;
     public List<PlayerController> currentPlayers;
 
     private void OnEnable()
@@ -68,14 +69,16 @@ public class OrderStats : NetworkBehaviour
         brewingStation.OnBrewingEmpty += OrderCompleted;
         brewingStation.OnBrewingDone += OrderCompleted;
 
+        CustomerBase.OnCustomerLeave += CustomerBase_OnCustomerLeave;
     }
 
     private void OnDisable()
     {
         PlayerController.OnInputChanged -= InputUpdated;
         brewingStation.OnBrewingEmpty -= OrderCompleted;
-        brewingStation.OnBrewingDone += OrderCompleted;
+        brewingStation.OnBrewingDone -= OrderCompleted;
 
+        CustomerBase.OnCustomerLeave -= CustomerBase_OnCustomerLeave;
     }
 
     private void Start()
@@ -85,7 +88,15 @@ public class OrderStats : NetworkBehaviour
         ResetSegments(spicinessSegments);
         ResetSegments(strengthSegments);
         orderInProgress = false;
-        OrderInProgress();
+        OrderInProgress(); 
+    }
+
+    private void CustomerBase_OnCustomerLeave(int customerIndex)
+    {
+        if(currentOrder.number == customerIndex)
+        {
+            OrderCompleted(this, EventArgs.Empty);
+        }
     }
 
     private void Update()
@@ -139,6 +150,8 @@ public class OrderStats : NetworkBehaviour
     [ClientRpc]
     private void SetOrderInfoClientRpc(OrderInfo order)
     {
+        
+        currentOrder = order;
         customerInfoRoot.SetActive(true);
         customerNumberText.text = order.number.ToString();
         customerNameText.text = order.orderName.ToString();
@@ -154,16 +167,6 @@ public class OrderStats : NetworkBehaviour
         SetTargetSegment(spicinessSegments, spicinessTargetValue, spicinessPotentialValue);
         SetTargetSegment(strengthSegments, strengthTargetValue, strengthPotentialValue);
         OrderInProgress();
-    }
-
-    public CustomerBase GetOrderOwner()
-    {
-        return orderOwner;
-    }
-
-    public void SetOrderOwner(CustomerBase customer)
-    {
-        orderOwner = customer;
     }
 
     // Fade or unfade the order stats
@@ -196,7 +199,6 @@ public class OrderStats : NetworkBehaviour
                 strengthTargetValue = MapValue(0);
 
                 ResetAll();
-                orderOwner = null;
             }
             else if (orderInProgress)
             {
