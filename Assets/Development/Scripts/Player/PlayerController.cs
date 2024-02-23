@@ -79,6 +79,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] private Pickup pickup;
     public float pickupThrowForce;
 
+    // Animations
+    private readonly int MovementWithCupHash = Animator.StringToHash("MovementWithCup");
+    private readonly int MovementHash = Animator.StringToHash("Movement");
+    private const float CrossFadeDuration = 0.1f;
+
     private CinemachineVirtualCamera virtualCamera;
     public PlayerColorChoice playerVisual;
     private bool tutorialMessageActive = false;
@@ -168,6 +173,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.DebugConsoleEvent += ShowDebugConsole;
         inputManager.BrewingStationSelectEvent += OnChangeBrewingStationSelect;
         inputManager.BrewingStationEmptyEvent += OnBrewingStationEmpty;
+        OrderManager.Instance.brewingStations[currentBrewingStation].animationSwitch += OnAnimationSwitch;
         if (AISupervisor.Instance)
         {
             AISupervisor.Instance.OnTutorialMessageReceived += TutorialMessage;
@@ -185,6 +191,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.DebugConsoleEvent -= ShowDebugConsole;
         inputManager.BrewingStationSelectEvent -= OnChangeBrewingStationSelect;
         inputManager.BrewingStationEmptyEvent -= OnBrewingStationEmpty;
+        OrderManager.Instance.brewingStations[currentBrewingStation].animationSwitch -= OnAnimationSwitch;
+
         if (AISupervisor.Instance)
         {
             AISupervisor.Instance.OnTutorialMessageReceived -= TutorialMessage;
@@ -230,7 +238,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                     SetSelectedStation(baseStation);
                     Show(visualGameObject);
                 }
-                Debug.Log("Station hit");
+                //Debug.Log("Station hit");
             }
         }
         else
@@ -445,13 +453,27 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         while (Time.time < startTime + dashTime)
         {
             rb.AddForce(moveDirection * dashForce * Time.deltaTime, ForceMode.Impulse);
-            anim.SetBool("isDashing", isDashing);
+            if (ingredientsList.Count > 0)
+            {
+                anim.SetBool("isDashinWithCup", isDashing);
+            }
+            else
+            {
+                anim.SetBool("isDashing", isDashing);
+            }
             yield return null;
         }
 
         yield return new WaitForSeconds(dashCooldownTime);
         isDashing = false;
-        anim.SetBool("isDashing", isDashing);
+        if (ingredientsList.Count > 0)
+        {
+            anim.SetBool("isDashinWithCup", isDashing);
+        }
+        else
+        {
+            anim.SetBool("isDashing", isDashing);
+        }
 
     }
 
@@ -579,6 +601,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             }
             ingredientIndicatorText.SetText("");
             RemoveIngredientInListAtIndex(i);
+            OnAnimationSwitch();
         }
     }
 
@@ -886,5 +909,45 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         tutorialMessageActive = true;
         if (tutorialMessageActive)
             Time.timeScale = 0f;
+    }
+
+    public enum InputDevice
+    {
+        None,
+        DualSense,
+        Xbox,
+        KeyboardMouse
+    }
+
+    // Normalized time to handle animations
+    public float GetNormalizedTime(Animator animator, string tag)
+    {
+        AnimatorStateInfo currentInfo = animator.GetCurrentAnimatorStateInfo(0);
+        AnimatorStateInfo nextInfo = animator.GetNextAnimatorStateInfo(0);
+
+        if (animator.IsInTransition(0) && nextInfo.IsTag(tag))
+        {
+            return nextInfo.normalizedTime;
+        }
+        else if (!animator.IsInTransition(0) && currentInfo.IsTag(tag))
+        {
+            return currentInfo.normalizedTime;
+        }
+        else
+        {
+            return 0f;
+        }
+    }
+
+    public void OnAnimationSwitch()
+    {
+        if (HasIngredient())
+        {
+            anim.CrossFadeInFixedTime(MovementWithCupHash, CrossFadeDuration);
+        }
+        else
+        {
+            anim.CrossFadeInFixedTime(MovementHash, CrossFadeDuration);
+        }
     }
 }

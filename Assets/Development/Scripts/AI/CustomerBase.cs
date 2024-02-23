@@ -1,11 +1,14 @@
+using JetBrains.Annotations;
 using System;
 using System.Collections;
+using Unity.Collections;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using static BrewingStation;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(NavMeshAgent))]
@@ -25,17 +28,17 @@ public class CustomerBase : Base
     public int currentPosInLine;
 
     [Header("Identifiers")]
-    public string customerName;
-    public int customerNumber;
+    public NetworkVariable<FixedString32Bytes> customerName = new NetworkVariable<FixedString32Bytes>();
+    public NetworkVariable<int> customerNumber = new NetworkVariable<int>();
     private bool orderBeingServed;
 
     [Header("Coffee Attributes")]
     public CoffeeAttributes coffeeAttributes;
-    public Order order;
+    public OrderInfo order;
 
     [Header("State Related")]
     public NetworkVariable<CustomerState> currentState = new NetworkVariable<CustomerState>(CustomerState.Init);
-    public float? orderTimer = null;
+    public float orderTimer = -1f;
     public float? messTime = null;
     public float customerLeaveTime;
     public float deadTimerSeconds = 5.0f;
@@ -56,6 +59,16 @@ public class CustomerBase : Base
     public GameObject customerReviewPrefab;
     private GameObject customerReviewPanel;
 
+    // Animation interaction with brewing machine// dirty fix for when player controller is redone
+    public event Action animationSwitch;
+    private readonly int BP_Brista_PutDown_LowHash = Animator.StringToHash("BP_Brista_PutDown_Low");
+    private readonly int MovementHash = Animator.StringToHash("Movement");
+    private const float CrossFadeDuration = 0.1f;
+    private float animationWaitTime = 1.2f;
+
+    public delegate void CustomerLeaveEvent(int customerNumber);
+    public static event CustomerLeaveEvent OnCustomerLeave;
+    
     public enum CustomerState
     {
         Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead
@@ -77,13 +90,16 @@ public class CustomerBase : Base
         if (distThreshold <= 0) distThreshold = 0.5f;
         
         customerReviewPanel = GameObject.FindGameObjectWithTag("CustomerReviewPanel");
+
     }
 
     public virtual void Update()
     {
         if(!IsOwner) return;    
-        if (orderTimer != null)
+        if (orderTimer >= 0f)
+        {
             orderTimer += Time.deltaTime;
+        }  
 
         if (messTime != null)
             messTime += Time.deltaTime; 
@@ -139,7 +155,7 @@ public class CustomerBase : Base
 
     private void UpdateOrdering()
     {
-        if (orderTimer == null)
+        if (orderTimer < 0)
         {
             //Order();
             OrderClientRpc();
@@ -245,7 +261,11 @@ public class CustomerBase : Base
 
     private void UpdatePickedUp()
     {
-        // To be implmented or removed
+        //Remove order from list if picked up
+        if (OnCustomerLeave != null)
+        {
+            OnCustomerLeave?.Invoke(customerNumber.Value);
+        }
     }
 
     private void UpdateDead()
@@ -284,6 +304,8 @@ public class CustomerBase : Base
             JustGotHandedCoffee();
             player.RemoveIngredientInListByReference(player.GetIngredient());
             CustomerManager.Instance.customerServedIncrease();
+
+            DropCupAnimation(player);// Animation
 
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
             interactParticle.Play();
@@ -338,15 +360,15 @@ public class CustomerBase : Base
     // CUSTOMER IDENTIFICATION METHODS
     // These methods are for setting or displaying visual identifiers
     // such as customer names, reviews, dialogue, numbers, etc...
-     public void SetCustomerName(String newName)
+     public void SetCustomerName(FixedString32Bytes newName)
     {
-        customerName = newName;
+        customerName.Value = newName;
     }
 
     public void SetCustomerVisualIdentifiers()
     {
-        customerNumberText.text = customerNumber.ToString();
-        customerNameText.text = customerName;
+        customerNumberText.text = customerNumber.Value.ToString();
+        customerNameText.text = customerName.Value.ToString();
         customerDialogue.SetActive(false);
         customerNumberCanvas.enabled = false; 
     }
@@ -393,6 +415,11 @@ public class CustomerBase : Base
             //CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
             //UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
             //if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
+        }
+
+        if (OnCustomerLeave != null)
+        {
+            OnCustomerLeave?.Invoke(customerNumber.Value);
         }
     }
 
@@ -448,9 +475,13 @@ public class CustomerBase : Base
 
     public int GetCustomerNumber()
     {
-        return customerNumber;
+        return customerNumber.Value;
     }
 
+    public void SetOrder(OrderInfo order)
+    {
+        this.order = order;
+    }
 
     private void Reorder()
     {
@@ -466,7 +497,7 @@ public class CustomerBase : Base
 
     public void StopOrderTimer()
     {
-        orderTimer = null;
+        orderTimer = -1f;
     }
 
     public void RestartMessTimer()
@@ -500,5 +531,21 @@ public class CustomerBase : Base
     private void OnDestroy()
     {
        if(Application.isPlaying) CustomerManager.Instance.ReduceCustomerInStore();
+    }
+
+    private void DropCupAnimation(PlayerController player)
+    {
+        StartCoroutine(ResetAnimation(player));
+    }
+
+    private IEnumerator ResetAnimation(PlayerController player)
+    {
+        player.anim.CrossFadeInFixedTime(BP_Brista_PutDown_LowHash, CrossFadeDuration);
+        player.movementToggle = false;
+
+        yield return new WaitForSeconds(animationWaitTime);
+        player.movementToggle = true;
+        player.anim.CrossFadeInFixedTime(MovementHash, CrossFadeDuration);
+        animationSwitch?.Invoke();
     }
 }
