@@ -62,9 +62,24 @@ public class MainMenuManager : MonoBehaviour
 
     [Header("Level Loader")]
     [SerializeField] private LevelLoader levelLoader;
+
     private void Awake()
     {
         SceneHelper.Instance.ResetGame();
+
+        if (SceneHelper.Instance.isRestartGame)
+        {
+            if (!BaristapocalypseMultiplayer.playMultiplayer)
+            {
+                SceneHelper.Instance.isRestartGame = false;
+                PlayScene_SinglePlayer();
+            }
+            else
+            {
+                SceneHelper.Instance.isRestartGame = false;
+                LobbyScene();
+            }
+        }
     }
 
     public void Start()
