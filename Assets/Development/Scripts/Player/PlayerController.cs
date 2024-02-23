@@ -136,6 +136,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
             virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
             virtualCamera.Follow = gameObject.transform;
+            virtualCamera.LookAt = gameObject.transform;
         }
 
         //Get components
