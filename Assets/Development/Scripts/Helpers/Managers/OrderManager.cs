@@ -18,11 +18,8 @@ public class OrderManager : Singleton<OrderManager>
     BrewingStation availableBrewingStation;
     OrderStats associatedOrderStats;
 
-    private void Update()
-    {
-        if (orders.Any(order => order.GetOrderState() == OrderState.Waiting))
-            TryStartOrder();
-    }
+    public event EventHandler OnOrderSpawned;
+    public event EventHandler OnOrderCompleted;
 
     public void SpawnOrder(CustomerBase customer)
     {
@@ -34,6 +31,12 @@ public class OrderManager : Singleton<OrderManager>
 
     public void AddOrder(OrderInfo order)
     {
+        AddOrderServerRpc(order);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void AddOrderServerRpc(OrderInfo order)
+    {
         AddOrderClientRpc(order);
     }
 
@@ -41,21 +44,17 @@ public class OrderManager : Singleton<OrderManager>
     private void AddOrderClientRpc(OrderInfo order)
     {
         orders.Add(order);
-        TryStartOrderServerRpc();
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void TryStartOrderServerRpc()
-    {
-        if (IsServer) { 
-            TryStartOrder();
-        }
+        OnOrderSpawned?.Invoke(this, EventArgs.Empty);
+        TryStartOrder();
     }
 
     public void FinishOrder(OrderInfo order)
     {
+        if (order == null) return;
+        if (!orders.Contains(order)) return;
         orders.Remove(order);
         order.SetOrderState(OrderState.Delivered);
+        OnOrderCompleted?.Invoke(this, EventArgs.Empty);
         TryStartOrder();
     }
 
@@ -71,7 +70,6 @@ public class OrderManager : Singleton<OrderManager>
 
     public void TryStartOrder()
     {
-        if (!IsServer) return;
         bool availableStationFound = false;
 
         // We are doing this instead of finding the objects dynamically because
@@ -85,13 +83,13 @@ public class OrderManager : Singleton<OrderManager>
                 availableStationFound = true;
                 availableBrewingStation = brewingStations[i];
                 associatedOrderStats = orderStats[i];
+                
                 break;
             }
         }
 
         if (!availableStationFound)
         {
-            Debug.Log("All brewing stations are busy");
             return;
         }
 
@@ -99,9 +97,9 @@ public class OrderManager : Singleton<OrderManager>
         {
             foreach (OrderInfo order in orders)
             {
-                Debug.Log("Order " + order);
                 if (order.GetOrderState() == OrderState.Waiting)
                 {
+                    Debug.Log("GOT THE ORDER " + order.number);
                     StartOrder(order);
                     order.SetOrderState(OrderState.Brewing);
                     return;
@@ -112,8 +110,14 @@ public class OrderManager : Singleton<OrderManager>
 
     public void StartOrder(OrderInfo order)
     {
+        Debug.Log("STARTING ORDER");
         //OnOrderUpdated?.Invoke(order);
         availableBrewingStation.SetOrder(order);
         associatedOrderStats.SetOrderInfo(order);
+    }
+
+    public List<OrderInfo> GetOrdersList()
+    {
+        return orders;
     }
 }

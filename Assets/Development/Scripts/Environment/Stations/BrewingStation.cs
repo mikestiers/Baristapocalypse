@@ -7,6 +7,7 @@ using Unity.Netcode;
 using UnityEngine.UI;
 using static UnityEngine.Rendering.HableCurve;
 using Unity.VisualScripting;
+using System.Runtime.CompilerServices;
 
 public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 {
@@ -53,33 +54,6 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     private const float CrossFadeDuration = 0.1f;
     private float animationWaitTime;
 
-
-    protected virtual void RaiseBrewingDone()
-    {
-        currentOrder.SetOrderState(OrderState.BeingDelivered);
-        OnBrewingDone?.Invoke(this, EventArgs.Empty);
-    }
-
-    protected virtual void RaiseBrewingEmpty()
-    {
-        OnBrewingEmpty?.Invoke(this, EventArgs.Empty);
-    }
-
-    //private void OnEnable()
-    //{
-    //    OrderManager.Instance.OnOrderUpdated += ProcessOrder;
-    //}
-
-    //private void OnDisable()
-    //{
-    //    OrderManager.Instance.OnOrderUpdated -= ProcessOrder;
-    //}
-
-    //private void ProcessOrder(Order order)
-    //{
-    //    SetOrder(order);
-    //}
-
     private void Start()
     {
         RaiseBrewingEmpty();
@@ -98,7 +72,49 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     {
         brewingTimer.OnValueChanged += BrewingTimer_OnValueChanged;
         minigameTimer.OnValueChanged += MinigameTimer_OnValueChanged;
+        CustomerBase.OnCustomerLeave += CustomerBase_OnCustomerLeave;
     }
+
+    public override void OnNetworkDespawn()
+    {
+        brewingTimer.OnValueChanged -= BrewingTimer_OnValueChanged;
+        minigameTimer.OnValueChanged -= MinigameTimer_OnValueChanged;
+        CustomerBase.OnCustomerLeave -= CustomerBase_OnCustomerLeave;
+    }
+
+    protected virtual void RaiseBrewingDone()
+    {
+        currentOrder.SetOrderState(OrderState.BeingDelivered);
+        OnBrewingDone?.Invoke(this, EventArgs.Empty);
+    }
+
+    protected virtual void RaiseBrewingEmpty()
+    {
+        OnBrewingEmpty?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void CustomerBase_OnCustomerLeave(int customerIndex)
+    {
+        if (currentOrder == null) return;
+        if (currentOrder.number == customerIndex)
+        {
+            sweetSpotPosition.Value = UnityEngine.Random.Range(minSweetSpotPosition, maxSweetSpotPosition);
+            availableForOrder.Value = true;
+            ingredientSOList.Clear();
+            isBrewing = false;
+
+            currentOrder.SetOrderState(OrderState.BeingDelivered);
+
+            OrderManager.Instance.FinishOrder(currentOrder);
+        }
+    }
+    //private void ProcessOrder(Order order)
+    //{
+    //    SetOrder(order);
+    //}
+
+
+
 
     private void MinigameTimer_OnValueChanged(float previousValue, float newValue)
     {
@@ -145,10 +161,23 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     public void SetOrder(OrderInfo order)
     {
-        currentOrder = order;
+        SetOrderServerRpc(order);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetOrderServerRpc(OrderInfo order)
+    {
         availableForOrder.Value = false;
+        SetOrderClientRpc(order);
+    }
+
+    [ClientRpc]
+    private void SetOrderClientRpc(OrderInfo order)
+    {
+        currentOrder = order;
         order.SetOrderState(OrderState.Brewing);
     }
+
 
     [ServerRpc]
     private void SpawnCoffeeDrinkServerRpc()
@@ -174,8 +203,9 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     private void BrewingDoneServerRpc()
     {
         sweetSpotPosition.Value = UnityEngine.Random.Range(minSweetSpotPosition, maxSweetSpotPosition);
+        availableForOrder.Value = true;
         BrewingDoneClientRpc();
-        RaiseBrewingDone();
+        
     }
 
     [ClientRpc]
@@ -183,9 +213,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     {
         ingredientSOList.Clear();
         isBrewing = false;
-        availableForOrder.Value = true;
 
-        //setup minigame
         minigameTiming = true;
         minigameTimer.Value = 0f;
     }
@@ -201,6 +229,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     private void MinigameDoneClientRpc()
     {
         minigameTiming = false;
+        RaiseBrewingDone();
     }
 
     public override void Interact(PlayerController player)

@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Mathematics;
 using Unity.Netcode;
 using Unity.VisualScripting;
@@ -25,7 +26,7 @@ public class CustomerManager : Singleton<CustomerManager>
     private float timer;
     private ServingState currentServingState;
     private int customerNumber = 0;
-    List<string> customerNames = new List<string>
+    List<FixedString32Bytes> customerNames = new List<FixedString32Bytes>
         {
             "Abby",
             "Abdul",
@@ -127,7 +128,7 @@ public class CustomerManager : Singleton<CustomerManager>
 
         if (GameManager.Instance.IsGamePlaying())
         {
-            Debug.Log($"currentServingState {currentServingState}");
+            //Debug.Log($"currentServingState {currentServingState}");
             switch (currentServingState)
             {
                 case ServingState.CurrentlyServing:
@@ -290,18 +291,10 @@ public class CustomerManager : Singleton<CustomerManager>
 
     private void SpawnCustomer()
     {
-        //newcustomer = Instantiate(customerPrefab, barEntrance.transform.position, Quaternion.identity);
-
-        // Ensure that the spawned object is spawned on the network
-        //newcustomer.Spawn();
-
-        //customersOutsideList.Add(newcustomer.GetComponent<CustomerBase>());
-
-        //customerNumber += 1;
         SpawnCustomerServerRpc();
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [ServerRpc]
     private void SpawnCustomerServerRpc()
     {
         Transform newCustomerTransform = Instantiate(customerPrefab.transform, barEntrance.transform.position, Quaternion.identity);
@@ -312,7 +305,7 @@ public class CustomerManager : Singleton<CustomerManager>
         customersOutsideList.Add(newCustomerBase);
         customerNumber += 1;
 
-        newCustomerBase.customerNumber = customerNumber;
+        newCustomerBase.customerNumber.Value = customerNumber;
         if(customerNames.Count >= 1)
         {
             int randomCustomerNameIndex = UnityEngine.Random.Range(0, customerNames.Count);
@@ -322,6 +315,8 @@ public class CustomerManager : Singleton<CustomerManager>
 
         newCustomer.Spawn(true);
     }
+
+
 
     public int TotalCustomers()
     {

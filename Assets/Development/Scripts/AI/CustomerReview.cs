@@ -345,7 +345,7 @@ public class CustomerReview : MonoBehaviour
     private float GetTimeToServe()
     {
         float timeScore = 0;
-        float timeToServe = orderOwner.orderTimer != null ? (float)orderOwner.orderTimer : 0;
+        float timeToServe = orderOwner.orderTimer < 0 ? (float)orderOwner.orderTimer : 0;
         Debug.Log("ServeTime: " + timeToServe);
         if (timeToServe <= 20)
         {

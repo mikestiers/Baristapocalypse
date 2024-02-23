@@ -8,24 +8,27 @@ using Unity.VisualScripting;
 [System.Serializable]
 public class OrderInfo : INetworkSerializable, IEquatable<OrderInfo>
 {
-    public int number;
     public FixedString32Bytes orderName;
+    public int number;
+    public float orderTimer; 
     public int coffeeAttributesSweetness;
     public int coffeeAttributesTemperature;
     public int coffeeAttributesSpiciness;
     public int coffeeAttributesStrength;
     public OrderState orderState;
+
     public OrderInfo() { }
 
     public OrderInfo(CustomerBase customerOrder)
     {
-        orderName = new FixedString32Bytes(customerOrder.customerName);
-        number = customerOrder.customerNumber;
+        orderName = new FixedString32Bytes(customerOrder.customerName.Value);
+        number = customerOrder.customerNumber.Value;
+        orderTimer = customerOrder.orderTimer;
         coffeeAttributesSweetness = customerOrder.coffeeAttributes.GetSweetness();
         coffeeAttributesTemperature = customerOrder.coffeeAttributes.GetTemperature();
         coffeeAttributesSpiciness = customerOrder.coffeeAttributes.GetSpiciness();
         coffeeAttributesStrength = customerOrder.coffeeAttributes.GetStrength();
-        orderState = OrderState.Waiting;
+        orderState = OrderState.Waiting; 
     }
 
     public void SetOrderState(OrderState _orderState)
@@ -40,8 +43,9 @@ public class OrderInfo : INetworkSerializable, IEquatable<OrderInfo>
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
-        serializer.SerializeValue(ref number);
         serializer.SerializeValue(ref orderName);
+        serializer.SerializeValue(ref number);
+        serializer.SerializeValue(ref orderTimer);
         serializer.SerializeValue(ref coffeeAttributesSpiciness);
         serializer.SerializeValue(ref coffeeAttributesTemperature);
         serializer.SerializeValue(ref coffeeAttributesSweetness);
