@@ -762,7 +762,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             pickup.DisablePickupColliders(pickup);
         }
 
-        if (pickup.IsCustomer)
+        if (pickup.IsCustomer && pickup.GetCustomer().GetCustomerState() == CustomerBase.CustomerState.Loitering)
         {
             Debug.Log("hello im a customer and im trying to be picked up");
             pickup.GetNavMeshAgent().enabled = false;
