@@ -911,14 +911,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             Time.timeScale = 0f;
     }
 
-    public enum InputDevice
-    {
-        None,
-        DualSense,
-        Xbox,
-        KeyboardMouse
-    }
-
     // Normalized time to handle animations
     public float GetNormalizedTime(Animator animator, string tag)
     {
