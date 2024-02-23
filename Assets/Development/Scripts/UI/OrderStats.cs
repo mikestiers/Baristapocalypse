@@ -65,7 +65,7 @@ public class OrderStats : NetworkBehaviour
 
     private void OnEnable()
     {
-        PlayerController.OnInputChanged += InputUpdated;
+        InputManager.OnInputChanged += InputUpdated;
         brewingStation.OnBrewingEmpty += OrderCompleted;
         brewingStation.OnBrewingDone += OrderCompleted;
 
@@ -74,7 +74,7 @@ public class OrderStats : NetworkBehaviour
 
     private void OnDisable()
     {
-        PlayerController.OnInputChanged -= InputUpdated;
+        InputManager.OnInputChanged -= InputUpdated;
         brewingStation.OnBrewingEmpty -= OrderCompleted;
         brewingStation.OnBrewingDone -= OrderCompleted;
 
