@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
+using Unity.Collections;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using static BrewingStation;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(NavMeshAgent))]
@@ -25,8 +27,8 @@ public class CustomerBase : Base
     public int currentPosInLine;
 
     [Header("Identifiers")]
-    public string customerName;
-    public int customerNumber;
+    public NetworkVariable<FixedString32Bytes> customerName = new NetworkVariable<FixedString32Bytes>();
+    public NetworkVariable<int> customerNumber = new NetworkVariable<int>();
     private bool orderBeingServed;
 
     [Header("Coffee Attributes")]
@@ -35,7 +37,7 @@ public class CustomerBase : Base
 
     [Header("State Related")]
     public NetworkVariable<CustomerState> currentState = new NetworkVariable<CustomerState>(CustomerState.Init);
-    public float? orderTimer = null;
+    public float orderTimer = -1f;
     public float? messTime = null;
     public float customerLeaveTime;
     public float deadTimerSeconds = 5.0f;
@@ -82,8 +84,10 @@ public class CustomerBase : Base
     public virtual void Update()
     {
         if(!IsOwner) return;    
-        if (orderTimer != null)
+        if (orderTimer >= 0f)
+        {
             orderTimer += Time.deltaTime;
+        }  
 
         if (messTime != null)
             messTime += Time.deltaTime; 
@@ -139,7 +143,7 @@ public class CustomerBase : Base
 
     private void UpdateOrdering()
     {
-        if (orderTimer == null)
+        if (orderTimer < 0)
         {
             //Order();
             OrderClientRpc();
@@ -182,6 +186,7 @@ public class CustomerBase : Base
         orderBeingServed = true;
         if (orderTimer >= customerLeaveTime)
         {
+            OrderManager.Instance.FinishOrder(order);
             CustomerManager.Instance.customerLeaveIncrease();
             GameManager.Instance.moneySystem.ResetStreak();
             CustomerLeave();
@@ -245,7 +250,8 @@ public class CustomerBase : Base
 
     private void UpdatePickedUp()
     {
-        // To be implmented or removed
+        //Remove order from list if picked up
+        OrderManager.Instance.FinishOrder(order);
     }
 
     private void UpdateDead()
@@ -338,15 +344,15 @@ public class CustomerBase : Base
     // CUSTOMER IDENTIFICATION METHODS
     // These methods are for setting or displaying visual identifiers
     // such as customer names, reviews, dialogue, numbers, etc...
-     public void SetCustomerName(String newName)
+     public void SetCustomerName(FixedString32Bytes newName)
     {
-        customerName = newName;
+        customerName.Value = newName;
     }
 
     public void SetCustomerVisualIdentifiers()
     {
-        customerNumberText.text = customerNumber.ToString();
-        customerNameText.text = customerName;
+        customerNumberText.text = customerNumber.Value.ToString();
+        customerNameText.text = customerName.Value.ToString();
         customerDialogue.SetActive(false);
         customerNumberCanvas.enabled = false; 
     }
@@ -420,6 +426,7 @@ public class CustomerBase : Base
     [ClientRpc]
     private void JustGotHandedCoffeeClientRpc()
     {
+        OrderManager.Instance.FinishOrder(order);
         CustomerReviewManager.Instance.CustomerReviewEvent(this);
         StopOrderTimer();
         CustomerLeave();
@@ -448,7 +455,7 @@ public class CustomerBase : Base
 
     public int GetCustomerNumber()
     {
-        return customerNumber;
+        return customerNumber.Value;
     }
 
     public void SetOrder(OrderInfo order)
@@ -470,7 +477,7 @@ public class CustomerBase : Base
 
     public void StopOrderTimer()
     {
-        orderTimer = null;
+        orderTimer = -1f;
     }
 
     public void RestartMessTimer()

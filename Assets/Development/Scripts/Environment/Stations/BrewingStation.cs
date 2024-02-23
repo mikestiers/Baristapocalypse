@@ -7,6 +7,7 @@ using Unity.Netcode;
 using UnityEngine.UI;
 using static UnityEngine.Rendering.HableCurve;
 using Unity.VisualScripting;
+using System.Runtime.CompilerServices;
 
 public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 {
@@ -135,10 +136,23 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     public void SetOrder(OrderInfo order)
     {
-        currentOrder = order;
+        SetOrderServerRpc(order);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetOrderServerRpc(OrderInfo order)
+    {
         availableForOrder.Value = false;
+        SetOrderClientRpc(order);
+    }
+
+    [ClientRpc]
+    private void SetOrderClientRpc(OrderInfo order)
+    {
+        currentOrder = order;
         order.SetOrderState(OrderState.Brewing);
     }
+
 
     [ServerRpc]
     private void SpawnCoffeeDrinkServerRpc()
@@ -164,6 +178,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     private void BrewingDoneServerRpc()
     {
         sweetSpotPosition.Value = UnityEngine.Random.Range(minSweetSpotPosition, maxSweetSpotPosition);
+        availableForOrder.Value = true;
         BrewingDoneClientRpc();
         RaiseBrewingDone();
     }
@@ -173,7 +188,6 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     {
         ingredientSOList.Clear();
         isBrewing = false;
-        availableForOrder.Value = true;
 
         //setup minigame
         minigameTiming = true;

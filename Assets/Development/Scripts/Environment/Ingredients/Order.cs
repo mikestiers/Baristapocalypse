@@ -15,7 +15,7 @@ public enum OrderState
 
 public struct Order : INetworkSerializable, IEquatable<Order>
 {
-    public int number;
+    //public int number;
     //public FixedString32Bytes orderName;
     public int coffeeAttributesSweetness;
     public int coffeeAttributesTemperature;
@@ -27,7 +27,7 @@ public struct Order : INetworkSerializable, IEquatable<Order>
     public Order(CustomerBase customerOrder)
     {
        //orderName = new FixedString32Bytes(customerOrder.customerName);
-        number = customerOrder.customerNumber;
+        //number = customerOrder.customerNumber.Value;
         coffeeAttributesSweetness = customerOrder.coffeeAttributes.GetSweetness();
         coffeeAttributesTemperature = customerOrder.coffeeAttributes.GetTemperature();
         coffeeAttributesSpiciness = customerOrder.coffeeAttributes.GetSpiciness();
@@ -47,7 +47,7 @@ public struct Order : INetworkSerializable, IEquatable<Order>
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
-        serializer.SerializeValue(ref number);
+        //serializer.SerializeValue(ref number);
        // serializer.SerializeValue(ref orderName);
         serializer.SerializeValue(ref coffeeAttributesSpiciness);
         serializer.SerializeValue(ref coffeeAttributesTemperature);
@@ -58,10 +58,6 @@ public struct Order : INetworkSerializable, IEquatable<Order>
 
     public bool Equals(Order other)
     {
-        if((number == other.number)) //&&(orderName == other.orderName))
-        {
-            return true;
-        }
         return false;
     }
 }

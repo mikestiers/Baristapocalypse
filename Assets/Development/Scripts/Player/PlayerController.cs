@@ -241,7 +241,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                     SetSelectedStation(baseStation);
                     Show(visualGameObject);
                 }
-                Debug.Log("Station hit");
+                //Debug.Log("Station hit");
             }
         }
         else
