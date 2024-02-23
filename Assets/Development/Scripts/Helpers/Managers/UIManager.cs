@@ -79,6 +79,7 @@ public class UIManager : Singleton<UIManager>
     // Scenes
     private string activeGameScene = "T5M3_BUILD";
     private string mainMenuScene = "MainMenuScene"; // using lobby scene in the mean time, need changing to Main menu
+    private string lobbyScene = "LobbyScene";
 
     [Header("DifficultyTesting")]
     public Text customersLeft;
@@ -152,7 +153,8 @@ public class UIManager : Singleton<UIManager>
         Time.timeScale = 1f;
         gameOverMenu.SetActive(false);
         //GameManager.Instance.gameState = GameState.RUNNING;
-        SceneManager.LoadScene(activeGameScene);
+        SceneHelper.Instance.isRestartGame = true;
+        SceneManager.LoadScene(mainMenuScene);
     }
 
     private void ClosePause()
