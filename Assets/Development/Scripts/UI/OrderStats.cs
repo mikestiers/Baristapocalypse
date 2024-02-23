@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Unity.Netcode;
+using Unity.VisualScripting;
 
 public class OrderStats : NetworkBehaviour
 {
@@ -41,7 +42,7 @@ public class OrderStats : NetworkBehaviour
     [SerializeField] public BrewingStation brewingStation;
 
     [Header("Private State Values")]
-    [SerializeField] private CustomerBase orderOwner;
+    private OrderInfo currentOrder;
     [SerializeField] private GameObject temperatureTargetSegment;
     [SerializeField] private GameObject sweetnessTargetSegment;
     [SerializeField] private GameObject spicinessTargetSegment;
@@ -59,7 +60,7 @@ public class OrderStats : NetworkBehaviour
     [SerializeField] private int spicinessCumulativeValue;
     [SerializeField] private int strengthCumulativeValue;
 
-    public bool orderInProgress { get; set; }
+    public bool orderInProgress;
     public List<PlayerController> currentPlayers;
 
     private void OnEnable()
@@ -67,6 +68,8 @@ public class OrderStats : NetworkBehaviour
         PlayerController.OnInputChanged += InputUpdated;
         brewingStation.OnBrewingEmpty += OrderCompleted;
         brewingStation.OnBrewingDone += OrderCompleted;
+
+        CustomerBase.OnCustomerLeave += CustomerBase_OnCustomerLeave;
     }
 
     private void OnDisable()
@@ -74,6 +77,8 @@ public class OrderStats : NetworkBehaviour
         PlayerController.OnInputChanged -= InputUpdated;
         brewingStation.OnBrewingEmpty -= OrderCompleted;
         brewingStation.OnBrewingDone -= OrderCompleted;
+
+        CustomerBase.OnCustomerLeave -= CustomerBase_OnCustomerLeave;
     }
 
     private void Start()
@@ -83,7 +88,15 @@ public class OrderStats : NetworkBehaviour
         ResetSegments(spicinessSegments);
         ResetSegments(strengthSegments);
         orderInProgress = false;
-        OrderInProgress();
+        OrderInProgress(); 
+    }
+
+    private void CustomerBase_OnCustomerLeave(int customerIndex)
+    {
+        if(currentOrder.number == customerIndex)
+        {
+            OrderCompleted(this, EventArgs.Empty);
+        }
     }
 
     private void Update()
@@ -91,10 +104,10 @@ public class OrderStats : NetworkBehaviour
         if (orderInProgress == true)
         {
             UpdateTimer();
-            SetTargetSegment(temperatureSegments, temperatureTargetValue, temperaturePotentialValue);
-            SetTargetSegment(sweetnessSegments, sweetnessTargetValue, sweetnessPotentialValue);
-            SetTargetSegment(spicinessSegments, spicinessTargetValue, spicinessPotentialValue);
-            SetTargetSegment(strengthSegments, strengthTargetValue, strengthPotentialValue);
+            SetTargetSegment(temperatureSegments, temperatureTargetValue, temperatureCumulativeValue);
+            SetTargetSegment(sweetnessSegments, sweetnessTargetValue, sweetnessCumulativeValue);
+            SetTargetSegment(spicinessSegments, spicinessTargetValue, spicinessCumulativeValue);
+            SetTargetSegment(strengthSegments, strengthTargetValue, strengthCumulativeValue);
         }
     }
 
@@ -113,11 +126,23 @@ public class OrderStats : NetworkBehaviour
 
     private void OrderCompleted(object sender, EventArgs e)
     {
+        OrderCompletedClientRpc();
+    }
+
+    [ClientRpc]
+    private void OrderCompletedClientRpc()
+    {
         orderInProgress = false;
         OrderInProgress();
     }
 
     public void SetOrderInfo(OrderInfo order)
+    {
+        SetOrderInfoServerRpc(order);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetOrderInfoServerRpc(OrderInfo order)
     {
         SetOrderInfoClientRpc(order);
     }
@@ -125,10 +150,12 @@ public class OrderStats : NetworkBehaviour
     [ClientRpc]
     private void SetOrderInfoClientRpc(OrderInfo order)
     {
+        
+        currentOrder = order;
         customerInfoRoot.SetActive(true);
         customerNumberText.text = order.number.ToString();
-        //customerNameText.text = order.orderName.ToString();
-        //orderTimer.value = order.customer.orderTimer.Value;
+        customerNameText.text = order.orderName.ToString();
+        orderTimer.value = order.orderTimer;
         temperatureTargetValue = MapValue(order.coffeeAttributesTemperature);
         sweetnessTargetValue = MapValue(order.coffeeAttributesSweetness);
         spicinessTargetValue = MapValue(order.coffeeAttributesSpiciness);
@@ -142,18 +169,20 @@ public class OrderStats : NetworkBehaviour
         OrderInProgress();
     }
 
-    public CustomerBase GetOrderOwner()
-    {
-        return orderOwner;
-    }
-
-    public void SetOrderOwner(CustomerBase customer)
-    {
-        orderOwner = customer;
-    }
-
     // Fade or unfade the order stats
     public void OrderInProgress()
+    {
+        OrderInProgressServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void OrderInProgressServerRpc()
+    {
+        OrderInProgressClientRpc();
+    }
+
+    [ClientRpc]
+    private void OrderInProgressClientRpc()
     {
         Image[] images = GetComponentsInChildren<Image>(); // not including 'true' parameter because it includes inactive objects and the segments are not active by default
         foreach (Image image in images)
@@ -170,7 +199,6 @@ public class OrderStats : NetworkBehaviour
                 strengthTargetValue = MapValue(0);
 
                 ResetAll();
-                orderOwner = null;
             }
             else if (orderInProgress)
             {
@@ -187,9 +215,9 @@ public class OrderStats : NetworkBehaviour
 
     private void UpdateTimer()
     {
-        if (orderOwner.GetCustomerState() != CustomerBase.CustomerState.Leaving)
+        /*if (orderOwner.GetCustomerState() != CustomerBase.CustomerState.Leaving)
         {
-            //orderTimer.value = - (orderOwner.customerLeaveTime - orderOwner.orderTimer.Value) / orderOwner.customerLeaveTime;
+            orderTimer.value = - (orderOwner.customerLeaveTime - orderOwner.orderTimer) / orderOwner.customerLeaveTime;
         }
         else
         {
@@ -197,7 +225,7 @@ public class OrderStats : NetworkBehaviour
             brewingStation.availableForOrder.Value = true;
             orderInProgress = false;
             OrderInProgress();
-        }
+        }*/
     }
 
     public List<PlayerController> GetActivePlayers()
@@ -242,18 +270,78 @@ public class OrderStats : NetworkBehaviour
     }
 
     public void SetPotentialStrength(int value)
-    {   
+    {
         strengthPotentialValue = value;
         SetPotentialSegment(strengthPotentialAttributeSelector, strengthSegments[MapValue(value)], strengthPotentialValue, strengthTargetValue);
     }
 
-    public void SetCumulativeTemperature(int value) => temperatureCumulativeValue = value;
+    public void SetCumulativeTemperature(int value) 
+    {
+        SetCumulativeTemperatureServerRpc(value);
+    }
 
-    public void SetCumulativeSweetness(int value) => sweetnessCumulativeValue = value;
+    [ServerRpc(RequireOwnership = false)]
+    private void SetCumulativeTemperatureServerRpc(int value)
+    {
+        SetCumulativeTemperatureClientRpc(value);
+    }
 
-    public void SetCumulativeSpiciness(int value) => spicinessCumulativeValue = value;
+    [ClientRpc]
+    private void SetCumulativeTemperatureClientRpc(int value)
+    {
+        temperatureCumulativeValue = value;
+    }
 
-    public void SetCumulativeStrength(int value) => strengthCumulativeValue = value;
+    public void SetCumulativeSweetness(int value)
+    {
+        SetCumulativeSweetnessServerRpc(value);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetCumulativeSweetnessServerRpc(int value)
+    {
+        SetCumulativeSweetnessClientRpc(value);
+    }
+
+    [ClientRpc]
+    private void SetCumulativeSweetnessClientRpc(int value)
+    {
+        sweetnessCumulativeValue = value;
+    }
+
+    public void SetCumulativeSpiciness(int value)
+    {
+        SetCumulativeSpicinessServerRpc(value);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetCumulativeSpicinessServerRpc(int value)
+    {
+        SetCumulativeSpicinessClientRpc(value);
+    }
+
+    [ClientRpc]
+    private void SetCumulativeSpicinessClientRpc(int value)
+    {
+        spicinessCumulativeValue = value;
+    }
+
+    public void SetCumulativeStrength(int value)
+    {
+        SetCumulativeStrengthServerRpc(value);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetCumulativeStrengthServerRpc(int value)
+    {
+        SetCumulativeStrengthClientRpc(value);
+    }
+
+    [ClientRpc]
+    private void SetCumulativeStrengthClientRpc(int value)
+    {
+        strengthCumulativeValue = value;
+    }
 
     public void ResetSegments(GameObject[] segments)
     {
