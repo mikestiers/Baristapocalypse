@@ -82,6 +82,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     // Animations
     private readonly int MovementWithCupHash = Animator.StringToHash("MovementWithCup");
     private readonly int MovementHash = Animator.StringToHash("Movement");
+    private readonly int BP_Barista_Floor_PickupHash = Animator.StringToHash("BP_Barista_Floor_Pickup");
+    private readonly int BP_Barista_Throw_CupHash = Animator.StringToHash("BP_Barista_Throw_Cup");
+
     private const float CrossFadeDuration = 0.1f;
 
     private CinemachineVirtualCamera virtualCamera;
@@ -324,6 +327,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         // Check if the inputDevice has changed
         //HandleMouseVisibility();
 
+        Debug.LogWarning("HasPickup() " + HasPickup());
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward, Color.green);
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward * customerInteractDistance, Color.red);
     }
@@ -453,9 +457,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         while (Time.time < startTime + dashTime)
         {
             rb.AddForce(moveDirection * dashForce * Time.deltaTime, ForceMode.Impulse);
-            if (ingredientsList.Count > 0)
+            if (ingredientsList.Count > 0  || HasPickup())
             {
-                anim.SetBool("isDashinWithCup", isDashing);
+                anim.SetBool("isDashingWithCup", isDashing);
             }
             else
             {
@@ -465,10 +469,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
 
         yield return new WaitForSeconds(dashCooldownTime);
+
         isDashing = false;
-        if (ingredientsList.Count > 0)
+        if (ingredientsList.Count > 0 || HasPickup())
         {
-            anim.SetBool("isDashinWithCup", isDashing);
+            anim.SetBool("isDashingWithCup", isDashing);
         }
         else
         {
@@ -581,28 +586,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [ClientRpc]
     private void ThrowIngredientClientRpc()
     {
-        for (int i = 0; i < ingredientsList.Count; i++)
-        {
-            if (ingredientsList[i] == null) continue;
-
-            //Detach child from hold point
-            ingredientsList[i].GetComponent<IngredientFollowTransform>().SetTargetTransform(ingredientsList[i].transform);
-
-            //Enable collider
-            ingredientsList[i].EnableIngredientCollision(ingredientsList[i]);
-
-            // Apply the throw force to the ingredient
-            Rigidbody ingredientRb = ingredientsList[i].GetComponent<Rigidbody>();
-            if (ingredientRb != null)
-            {
-                ingredientRb.isKinematic = false;
-                ingredientRb.AddForce(transform.forward * ingredientThrowForce, ForceMode.Force);
-                ingredientRb.useGravity = true;
-            }
-            ingredientIndicatorText.SetText("");
-            RemoveIngredientInListAtIndex(i);
-            OnAnimationSwitch();
-        }
+        StartCoroutine(ThrowIngredientAnimation()); //Play throw ingredient
     }
 
     public void GrabIngredientFromFloor(Ingredient floorIngredient, IngredientSO ingredientSO)
@@ -747,8 +731,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         if (pickupSo != null)
         {
-            pickup.SetPickupObjectParent(this);
-            pickup.DisablePickupColliders(pickup);
+            StartCoroutine(TrashPickUpAnimation(pickup)); // Play trash pick up and set trash parent
         }
 
         if (pickup.IsCustomer)
@@ -778,22 +761,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     public void ThrowPickup()
     {
         ThrowPickupServerRpc();
-        //if (!HasPickup())
-        //    return;
-
-        //if (pickup.IsCustomer)
-        //{
-        //    Debug.Log("Customer dead");
-        //    pickup.GetCustomer().Dead();
-        //    pickup.AddRigidbody();
-        //}
-
-        //pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
-        //pickup.EnablePickupColliders(pickup);
-        //pickup.GetCollider().enabled = true;
-
-        //pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
-        //pickup.ClearPickupOnParent();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -815,16 +782,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             pickup.AddRigidbody();
         }
 
-        pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
-        pickup.EnablePickupColliders(pickup);
-        pickup.GetCollider().enabled = true;
+        StartCoroutine(ThrowPickUpAnimation());
 
-        pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
-        pickup.ClearPickupOnParent();
-       
         //gizmos from InteractionStart
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(InteractzoneStart.transform.position + InteractzoneStart.transform.forward * stationInteractDistance, stationsSphereCastRadius);
+        //Gizmos.color = Color.red;
+        //Gizmos.DrawWireSphere(InteractzoneStart.transform.position + InteractzoneStart.transform.forward * stationInteractDistance, stationsSphereCastRadius);
        
     }
 
@@ -911,6 +873,16 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             Time.timeScale = 0f;
     }
 
+    public enum InputDevice
+    {
+        None,
+        DualSense,
+        Xbox,
+        KeyboardMouse
+    }
+
+    // Temporary Animation Implementation
+
     // Normalized time to handle animations
     public float GetNormalizedTime(Animator animator, string tag)
     {
@@ -942,4 +914,72 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             anim.CrossFadeInFixedTime(MovementHash, CrossFadeDuration);
         }
     }
+
+    // Play trash pick up and set trash parent while new player statemachine is dead
+    private IEnumerator TrashPickUpAnimation(Pickup pickup)
+    {
+        anim.CrossFadeInFixedTime(BP_Barista_Floor_PickupHash, CrossFadeDuration);
+        movementToggle = false;
+
+        yield return new WaitForSeconds(1f); // hard coded while new player statemachine is dead
+
+        movementToggle = true;
+        pickup.SetPickupObjectParent(this);
+        pickup.DisablePickupColliders(pickup);
+    }
+
+    // Play throw pick up
+    private IEnumerator ThrowPickUpAnimation()
+    {
+        anim.CrossFadeInFixedTime(BP_Barista_Throw_CupHash, CrossFadeDuration);
+        movementToggle = false;
+
+        yield return new WaitForSeconds(1f); // hard coded while new player statemachine is dead
+
+        movementToggle = true;
+        if (pickup != null) 
+        { 
+            pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
+            pickup.EnablePickupColliders(pickup);
+            pickup.GetCollider().enabled = true;
+
+            pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
+            pickup.ClearPickupOnParent();
+        }
+    }
+
+    // Play throw ingredient 
+    private IEnumerator ThrowIngredientAnimation()
+    {
+        anim.CrossFadeInFixedTime(BP_Barista_Throw_CupHash, CrossFadeDuration);
+        movementToggle = false;
+
+        yield return new WaitForSeconds(1f); // hard coded while new player statemachine is dead
+
+        movementToggle = true;
+        for (int i = 0; i < ingredientsList.Count; i++)
+        {
+            if (ingredientsList[i] == null) continue;
+
+            //Detach child from hold point
+            ingredientsList[i].GetComponent<IngredientFollowTransform>().SetTargetTransform(ingredientsList[i].transform);
+
+            //Enable collider
+            ingredientsList[i].EnableIngredientCollision(ingredientsList[i]);
+
+            // Apply the throw force to the ingredient
+            Rigidbody ingredientRb = ingredientsList[i].GetComponent<Rigidbody>();
+            if (ingredientRb != null)
+            {
+                ingredientRb.isKinematic = false;
+                ingredientRb.AddForce(transform.forward * ingredientThrowForce, ForceMode.Force);
+                ingredientRb.useGravity = true;
+            }
+            ingredientIndicatorText.SetText("");
+            RemoveIngredientInListAtIndex(i);
+            OnAnimationSwitch();
+        }
+
+    }
+
 }

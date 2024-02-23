@@ -68,6 +68,10 @@ public class GameManager : NetworkBehaviour
     //bool for endgame -> please update code
     public bool iSEndGame = false;
 
+    // Animation
+    private readonly int BP_Barista_SufferHash = Animator.StringToHash("BP_Barista_Suffer");
+    private const float CrossFadeDuration = 0.1f;
+
     private void Awake()
     {
         Instance = this;
@@ -215,6 +219,9 @@ public class GameManager : NetworkBehaviour
                 break;
 
             case GameState.GameOver:
+                Debug.LogWarning("Game Over......");
+                PlayerController playerController = FindObjectOfType<PlayerController>();
+                playerController.anim.CrossFadeInFixedTime(BP_Barista_SufferHash, CrossFadeDuration);
                 break; 
         }
 
