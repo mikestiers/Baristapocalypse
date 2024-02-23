@@ -125,12 +125,12 @@ public class UIManager : Singleton<UIManager>
     }
     private void OnEnable()
     {
-        PlayerController.OnInputChanged += InputUpdated;
+        InputManager.OnInputChanged += InputUpdated;
     }
 
     private void OnDisable()
     {
-        PlayerController.OnInputChanged -= InputUpdated;
+        InputManager.OnInputChanged -= InputUpdated;
     }
 
     private void InputUpdated(InputImagesSO inputImagesSO)
@@ -211,33 +211,6 @@ public class UIManager : Singleton<UIManager>
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         audioSettings.SetActive(false);
         mainMenu.SetActive(true);
-    }
-
-    public void RemoveCustomerUiOrder(CustomerBase customer)
-    {
-        foreach (Transform t in ordersPanel)
-        {
-            OrderStats o = t.GetComponent<OrderStats>();
-            if (o != null)
-            {
-                if (o.GetOrderOwner() == customer)
-                {
-                    Destroy(t.gameObject);
-                    return;
-                }
-                else if (o.GetOrderOwner().customerNumber == customer.customerNumber)
-                {
-                    // This exists because pickups are cloned, so the connection to the order prefab is lost
-                    // Just search for the customer based on their number in case owner is lost
-                    Destroy(t.gameObject);
-                    return;
-                }
-                else
-                {
-                    Debug.Log($"Customer Order UI not found for {customer.customerNumber}");
-                }
-            }
-        }
     }
 
     public void UpdateStarRating(int reviewScore)

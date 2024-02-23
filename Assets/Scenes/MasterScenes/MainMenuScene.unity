@@ -465,6 +465,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 30288310}
   m_CullTransparentMesh: 1
+--- !u!95 &85535503 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 127878382, guid: 405466483f3e6f541b499eaa95bca32e, type: 3}
+  m_PrefabInstance: {fileID: 1946896890}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &99220757
 GameObject:
   m_ObjectHideFlags: 0
@@ -1727,6 +1732,8 @@ MonoBehaviour:
   SettingsCamera: {fileID: 1380300612}
   PlayerSelectionCamera: {fileID: 930288303}
   CreditsCamera: {fileID: 226758619}
+  leftDoorAnimator: {fileID: 867800017}
+  rightDoorAnimator: {fileID: 85535503}
   StartGame: {fileID: 2080696817}
   Settings: {fileID: 1308168378}
   Credits: {fileID: 2071330419}
@@ -1748,6 +1755,9 @@ MonoBehaviour:
   MainMenuTab: {fileID: 1563376424}
   PlayMenuTab: {fileID: 1567503593}
   CreditsMenuTab: {fileID: 817017998}
+  buttonSwitchedSound: {fileID: 8300000, guid: 2b07abbb4adaed24982bfcc663ffa6a9, type: 3}
+  backButtonPressedSound: {fileID: 8300000, guid: 1e80f71b6b09bc647920fee222943c1d, type: 3}
+  nextButtonPressedSound: {fileID: 8300000, guid: a89f9de0e31fc3f4db72a1010e1c2f6a, type: 3}
   levelLoader: {fileID: 53240911447269502}
 --- !u!1 &335553884
 GameObject:
@@ -3375,7 +3385,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioClipRefsSO: {fileID: 11400000, guid: d130e19404f3b2940b08508d186373f0, type: 2}
-  sFXMixerGroup: {fileID: 0}
+  sFXMixerGroup: {fileID: 4533755897248373498, guid: 706d11347a7f6dd43a4c406c59e7b7e8, type: 2}
 --- !u!4 &709675213
 Transform:
   m_ObjectHideFlags: 0
@@ -3608,6 +3618,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 817017998}
   m_CullTransparentMesh: 1
+--- !u!95 &867800017 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 1029679691, guid: 405466483f3e6f541b499eaa95bca32e, type: 3}
+  m_PrefabInstance: {fileID: 1946896890}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &889447582
 GameObject:
   m_ObjectHideFlags: 0

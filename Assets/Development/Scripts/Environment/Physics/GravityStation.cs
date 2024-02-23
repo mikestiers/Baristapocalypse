@@ -62,17 +62,20 @@ public class GravityStation : MonoBehaviour
             foreach (var obj in gravityStorm.objectsToMove)
             {
                 Rigidbody objRigidbody = obj.GetComponent<Rigidbody>();
+                Collider objCollider = obj.GetComponent<Collider>();
+
                 if (objRigidbody != null)
                 {
+                    objCollider.isTrigger = false;
                     objRigidbody.useGravity = true;
                     //objRigidbody.Sleep();
                 }
             }
         }
-        
+
         if (!randomEvent.GetNetworkObject().IsSpawned)
         {
-            randomEvent.GetNetworkObject().Spawn(); 
+            randomEvent.GetNetworkObject().Spawn();
         }
 
         Debug.LogWarning("DeactivateRandomEvent " + randomEvent.name);
@@ -87,3 +90,4 @@ public class GravityStation : MonoBehaviour
     }
 
 }
+
