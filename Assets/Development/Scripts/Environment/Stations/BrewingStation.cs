@@ -45,6 +45,15 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     public delegate void OnBrewingEmptyHandler(object sender, EventArgs e);
     public event OnBrewingEmptyHandler OnBrewingEmpty;
 
+    // Animation interaction with brewing machine
+    public event Action animationSwitch;//*******************************
+    private PlayerController playerController;
+    private float previousFrameTime;
+    private readonly int BP_Barista_PickUpHash = Animator.StringToHash("BP_Barista_PickUp");
+    private readonly int Barista_BrewingHash = Animator.StringToHash("Barista_Brewing");
+    private const float CrossFadeDuration = 0.1f;
+    private float animationWaitTime;
+
     private void Start()
     {
         RaiseBrewingEmpty();
@@ -139,7 +148,8 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             brewingTimer.Value += Time.deltaTime;
             if (brewingTimer.Value >= 0)
             {
-                SpawnCoffeeDrinkServerRpc();   
+                SpawnCoffeeDrinkServerRpc();
+                animationWaitTime = 1.2f; //PlayerController.Instance.anim.GetCurrentAnimatorStateInfo(0).normalizedTime; this is giving a delay of like 1 sec , i believe is because i'm playimg the animation faster than original
                 BrewingDoneServerRpc();   
             }
         }
@@ -229,9 +239,12 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             Debug.LogWarning("me local player");
             return;
         }
+        playerController = player; // Reference for animations
         // Start brewing for ingredients in the machine.  This is for adding directly from stations instead of player hands
         if (ingredientSOList.Count >= numIngredientsNeeded)
         {
+            player.anim.CrossFadeInFixedTime(Barista_BrewingHash, CrossFadeDuration);
+            player.movementToggle = false;
             InteractLogicPlaceObjectOnBrewing();
         }
 
@@ -260,7 +273,8 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstDrinkReady)
                 TutorialManager.Instance.FirstDrinkReady();
 
-            GetIngredient().SetIngredientParent(player);
+            PickCupAnimation(player);// plays animation and sets cup in hand (SetIngredientParent(player))
+            //GetIngredient().SetIngredientParent(player);
         }
         if (minigameTimer.Value >= maxMinigameTimer)
         {
@@ -361,6 +375,22 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     public void Empty()
     {
         ingredientSOList.Clear();
+    }
+
+    private void PickCupAnimation(PlayerController player)
+    {
+        StartCoroutine(ResetAnimation(player));
+    }
+
+    private IEnumerator ResetAnimation(PlayerController player)
+    {
+        player.anim.CrossFadeInFixedTime(BP_Barista_PickUpHash, CrossFadeDuration);
+        player.movementToggle = false;
+
+        yield return new WaitForSeconds(animationWaitTime);
+        player.movementToggle = true;
+        GetIngredient().SetIngredientParent(player);
+        animationSwitch?.Invoke();
     }
 }
 

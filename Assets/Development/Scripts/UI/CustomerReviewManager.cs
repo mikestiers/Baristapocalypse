@@ -25,7 +25,6 @@ public class CustomerReviewManager : NetworkBehaviour
     public float popOutReviewTime;
     private bool reviewInProgress;
     private TextMeshProUGUI customerReviewText;
-    public AudioClip popOutSound;
 
     // Event to receive Supervisor Message
     public delegate void CustomerReviewHandler(CustomerBase customer);
@@ -85,7 +84,6 @@ public class CustomerReviewManager : NetworkBehaviour
             customerReviewText.text = customerReview.GetComponent<CustomerReview>().ReviewText;
             UpdateStarRating(customerReview.GetComponent<CustomerReview>().ReviewScore, starPrefabs);
             StartCoroutine(MoveRP());
-            SoundManager.Instance.PlayOneShot(popOutSound);
         }
         else
         {  
