@@ -745,7 +745,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             StartCoroutine(TrashPickUpAnimation(pickup)); // Play trash pick up and set trash parent
         }
 
-        if (pickup.IsCustomer)
+        if (pickup.IsCustomer && pickup.GetCustomer().GetCustomerState() == CustomerBase.CustomerState.Loitering)
         {
             Debug.Log("hello im a customer and im trying to be picked up");
             pickup.GetNavMeshAgent().enabled = false;
@@ -790,7 +790,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
             Debug.Log("Customer dead");
             pickup.GetCustomer().Dead();
-            pickup.AddRigidbody();
+            //pickup.AddRigidbody();
+            pickup.GetComponentInChildren<Rigidbody>().isKinematic = false;
         }
 
         StartCoroutine(ThrowPickUpAnimation());
