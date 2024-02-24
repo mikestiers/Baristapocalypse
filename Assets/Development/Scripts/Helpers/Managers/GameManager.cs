@@ -19,6 +19,8 @@ public class GameManager : NetworkBehaviour
     [HideInInspector] public bool isEventActive = false;
     [HideInInspector] public bool isGravityStorm = false;
     [HideInInspector] public RandomEventBase currentRandomEvent;
+    [HideInInspector] public bool isEvaluationOn = false;
+    private float evaluationTimer = 9.0f;
     // Event to trigger events
     public delegate void RandomEventHandler();
     public static event RandomEventHandler OnRandomEventTriggered;
@@ -159,7 +161,6 @@ public class GameManager : NetworkBehaviour
         // Temporary for Testing Random Events
         if (Input.GetKeyDown(KeyCode.P))
         {
-            Debug.LogWarning("ActivateRandomEvent " + randomEventList.Count);
             TriggerRandomEvent();
 
             //Debug.Log("randomEventObject " + randomEventList[0].name); 
@@ -200,7 +201,7 @@ public class GameManager : NetworkBehaviour
                     // Adjust the difficulty based on time passed
                     foreach (float randomEventTime in randomEventTimes)
                     {
-                        if (timeSinceStart > randomEventTime && timeSinceStart < (randomEventTime + 1.0f))
+                        if (timeSinceStart > randomEventTime && timeSinceStart < (randomEventTime + evaluationTimer))
                         {
                             TriggerRandomEvent();
                         }
@@ -394,6 +395,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    // Needs a better way of doing it
     private float CalculateRandomEventTime(string difficulty)
     {
         float totalTime = gamePlayingTimerMax;
@@ -451,8 +453,9 @@ public class GameManager : NetworkBehaviour
     // Activate random Event after x amount of random time, will add the time variable after testing
     private void ActivateRandomEvent()
     {
-        if (!isEventActive)
+        if (!isEventActive && !isEvaluationOn)
         {
+            Debug.LogWarning("Triggering event");
             currentRandomEvent = GetRandomEvent();
             if (currentRandomEvent != null)
             {
