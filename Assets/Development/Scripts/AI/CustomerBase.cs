@@ -65,6 +65,7 @@ public class CustomerBase : Base
     private readonly int MovementHash = Animator.StringToHash("Movement");
     private const float CrossFadeDuration = 0.1f;
     private float animationWaitTime = 1.2f;
+    private bool isGivingOrderToCustomer = false;
 
     public delegate void CustomerLeaveEvent(int customerNumber);
     public static event CustomerLeaveEvent OnCustomerLeave;
@@ -298,8 +299,9 @@ public class CustomerBase : Base
         }
 
         // Deliver customer order
-        else if (GetCustomerState() == CustomerState.Insit && player.GetIngredient().CompareTag("CoffeeCup"))
+        else if (GetCustomerState() == CustomerState.Insit && player.GetIngredient().CompareTag("CoffeeCup") && !isGivingOrderToCustomer)
         {
+            isGivingOrderToCustomer = true;
             DropCupAnimation(player);// Play animation and handles delivering the drink
    
         }
@@ -546,6 +548,7 @@ public class CustomerBase : Base
         player.anim.CrossFadeInFixedTime(MovementHash, CrossFadeDuration);
 
         animationSwitch?.Invoke();
+        isGivingOrderToCustomer = false;
         player.movementToggle = true;
     }
 }
