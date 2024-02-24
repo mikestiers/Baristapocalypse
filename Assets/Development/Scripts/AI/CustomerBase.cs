@@ -300,15 +300,8 @@ public class CustomerBase : Base
         // Deliver customer order
         else if (GetCustomerState() == CustomerState.Insit && player.GetIngredient().CompareTag("CoffeeCup"))
         {
-            player.GetIngredient().SetIngredientParent(this);
-            JustGotHandedCoffee();
-            player.RemoveIngredientInListByReference(player.GetIngredient());
-            CustomerManager.Instance.customerServedIncrease();
-
-            DropCupAnimation(player);// Animation
-
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
-            interactParticle.Play();
+            DropCupAnimation(player);// Play animation and handles delivering the drink
+   
         }
 
         if(makingAMess == true)
@@ -544,8 +537,15 @@ public class CustomerBase : Base
         player.movementToggle = false;
 
         yield return new WaitForSeconds(animationWaitTime);
-        player.movementToggle = true;
+        player.GetIngredient().SetIngredientParent(this);
+        JustGotHandedCoffee();
+        player.RemoveIngredientInListByReference(player.GetIngredient());
+        CustomerManager.Instance.customerServedIncrease();
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
+        interactParticle.Play();
         player.anim.CrossFadeInFixedTime(MovementHash, CrossFadeDuration);
+
         animationSwitch?.Invoke();
+        player.movementToggle = true;
     }
 }
