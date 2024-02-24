@@ -47,6 +47,7 @@ public class MainMenuManager : MonoBehaviour
     [Header("Credits Menu")]
     public Button MainMenuFromCredits;
     public TMPro.TextMeshProUGUI creditsText;
+    public TextScroller creditsTextScroller;
     private Button[] CreditsMenuButtons;
 
     [Header("Menu Tabs")]
@@ -62,9 +63,24 @@ public class MainMenuManager : MonoBehaviour
 
     [Header("Level Loader")]
     [SerializeField] private LevelLoader levelLoader;
+
     private void Awake()
     {
         SceneHelper.Instance.ResetGame();
+
+        if (SceneHelper.Instance.isRestartGame)
+        {
+            if (!BaristapocalypseMultiplayer.playMultiplayer)
+            {
+                SceneHelper.Instance.isRestartGame = false;
+                PlayScene_SinglePlayer();
+            }
+            else
+            {
+                SceneHelper.Instance.isRestartGame = false;
+                LobbyScene();
+            }
+        }
     }
 
     public void Start()
@@ -124,7 +140,9 @@ public class MainMenuManager : MonoBehaviour
         SetInteractableButtons(SettingsMenuButtons, false);
         SetInteractableSliders(SettingsMenuSliders, false);
         SetInteractableButtons(PlayerSelectionButtons, false);
-        SetInteractableButtons(CreditsMenuButtons, false);  
+        SetInteractableButtons(CreditsMenuButtons, false);
+
+        creditsTextScroller.enabled = false;
     }
 
     void ReturnFromSettings() 
@@ -168,6 +186,7 @@ public class MainMenuManager : MonoBehaviour
             CreditsCamera.Priority = 0;
             MainmenuCamera.Priority = 1;
             EventSystem.current.SetSelectedGameObject(StartGame.gameObject);
+            creditsTextScroller.enabled = false;
             SetInteractableButtons(MainMenuButtons, true);
             SetInteractableButtons(SettingsMenuButtons, false);
             SetInteractableSliders(SettingsMenuSliders, false);
@@ -206,6 +225,7 @@ public class MainMenuManager : MonoBehaviour
             SetInteractableSliders(SettingsMenuSliders, false);
             SetInteractableButtons(PlayerSelectionButtons, false);
             SetInteractableButtons(CreditsMenuButtons, true);
+            creditsTextScroller.enabled = true;
         }
     }
 

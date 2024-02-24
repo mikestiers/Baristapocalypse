@@ -43,6 +43,7 @@ public class ShiftEvaluationUI : MonoBehaviour
 
     public void Evaluate()
     {
+        GameManager.Instance.isEvaluationOn = true;
         int customersServed = CustomerManager.Instance.GetCustomerServed() - previousCustomersServed;
         int customersLeave = CustomerManager.Instance.GetCustomerLeave() - previousCustomersLeave;
         int tipsAcquired = GameManager.Instance.moneySystem.GetCurrentMoney() - previousTipsAcquired;
@@ -111,6 +112,8 @@ public class ShiftEvaluationUI : MonoBehaviour
         yield return new WaitForSeconds(popOutReviewTime);
 
         UpdatePreviousValues();
+
+        GameManager.Instance.isEvaluationOn = false;
     }
 
     //set

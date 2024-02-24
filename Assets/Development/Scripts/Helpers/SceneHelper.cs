@@ -6,6 +6,7 @@ using System;
 
 public class SceneHelper : MonoBehaviour
 {
+    public bool isRestartGame = false;
     private static SceneHelper _instance;
 
     public static SceneHelper Instance
@@ -50,6 +51,7 @@ public class SceneHelper : MonoBehaviour
         "PlayerConfigurationManager",
         "BaristapocalypseMultiplayer",
         "CustomerReviewManager",
+        "OrderManager"
     };
 
     public void ResetGame()
@@ -57,13 +59,13 @@ public class SceneHelper : MonoBehaviour
         Debug.Log("Reset Game Function Called");
         ShutdownAndDestroy<NetworkManager>();
         FindObjectOfType<CustomerManager>()?.ResetSingleton();
-        //FindObjectOfType<GameValueHolder>()?.ResetSingleton();
         FindObjectOfType<ScoreTimerManager>()?.ResetSingleton();
         DestroyIfExists<CustomerReviewManager>();
         DestroyIfExists<LobbyManager>();
         DestroyIfExists<PlayerConfigurationManager>();
         DestroyIfExists<BaristapocalypseMultiplayer>();
         DestroyIfExists<NetworkManager>();
+        DestroyIfExists<OrderManager>();
     }
 
     private void ShutdownAndDestroy<T>() where T : MonoBehaviour
