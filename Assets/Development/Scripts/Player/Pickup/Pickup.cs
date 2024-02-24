@@ -22,7 +22,7 @@ public class Pickup : NetworkBehaviour
     [SerializeField] private float throwForceMultiplier = 1;
     public bool IsCustomer => customer != null;
     private IPickupObjectParent pickupObjectParent;
-    [field: SerializeField] private PickupSO pickupSo { get; set; }
+    [field: SerializeField] public PickupSO pickupSo { get;  private set; }
     [SerializeField] private IngredientFollowTransform followTransform;
 
     public PickupSO Getpickup()

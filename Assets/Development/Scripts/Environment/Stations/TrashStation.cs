@@ -8,6 +8,7 @@ public class TrashStation : BaseStation
     [SerializeField] private ParticleSystem interactParticle;
     private Ingredient ingredient;
     private Pickup pickup;
+    private string mop = "Mop";
 
     public override void Interact(PlayerController player)
     {
@@ -19,18 +20,27 @@ public class TrashStation : BaseStation
                 player.RemoveIngredientInListByReference(i);
                 ingredient = i;
                 InteractServerRpc();
+                player.OnAnimationSwitch();// setup animation here, OnAnimationSwitch() just reset the animation
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
             }
         }
 
         if (player.HasPickup())
         {
-            Debug.Log("Destroying garbage cup");
             pickup = player.GetPickup();
+
+            bool hasMop = pickup.pickupSo.objectName == mop;
+            if (hasMop)
+            {
+                return; 
+            }
+
+            Debug.Log("Destroying garbage cup");
             pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
             pickup.ClearPickupOnParent();
 
             TrashPickupServerRpc();
+            player.OnAnimationSwitch();// setup animation here, OnAnimationSwitch() just reset the animation
         }
     }
 
