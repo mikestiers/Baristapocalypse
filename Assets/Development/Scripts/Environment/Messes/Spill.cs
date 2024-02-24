@@ -93,7 +93,7 @@ public class Spill : NetworkBehaviour
              Rigidbody rb = stateMachine.rb;
              Vector3 movedirection = rb.transform.forward;
              rb.AddForce(movedirection * slipSpeed , ForceMode.VelocityChange);
-            stateMachine.ThrowIngredient();
+             //stateMachine.ThrowIngredient();
         }
     }
    

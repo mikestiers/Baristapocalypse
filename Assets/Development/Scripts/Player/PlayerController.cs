@@ -444,7 +444,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                 {
                     Debug.Log("MessSO is null");
                 }
-                ThrowIngredient();
+                //ThrowIngredient();
             }
         }
         else return;
@@ -928,9 +928,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         anim.CrossFadeInFixedTime(BP_Barista_Throw_CupHash, CrossFadeDuration);
         movementToggle = false;
 
-        yield return new WaitForSeconds(1f); // hard coded while new player statemachine is dead
+        yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is dead
 
-        movementToggle = true;
         if (pickup != null) 
         { 
             pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
@@ -940,6 +939,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
             pickup.ClearPickupOnParent();
         }
+        movementToggle = true;
     }
 
     // Play throw ingredient 
@@ -948,9 +948,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         anim.CrossFadeInFixedTime(BP_Barista_Throw_CupHash, CrossFadeDuration);
         movementToggle = false;
 
-        yield return new WaitForSeconds(1f); // hard coded while new player statemachine is dead
+        yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is dead
 
-        movementToggle = true;
         for (int i = 0; i < ingredientsList.Count; i++)
         {
             if (ingredientsList[i] == null) continue;
@@ -973,6 +972,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             RemoveIngredientInListAtIndex(i);
             OnAnimationSwitch();
         }
+        movementToggle = true;
 
     }
 
