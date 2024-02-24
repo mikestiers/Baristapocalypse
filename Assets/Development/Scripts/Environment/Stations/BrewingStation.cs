@@ -13,7 +13,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 {
     public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
     public event EventHandler<IHasMinigameTiming.OnMinigameTimingEventArgs> OnMinigameTimingStarted;
-
+ 
     [Header("Visuals")]
     [SerializeField] private ParticleSystem interactParticle;
 
@@ -85,7 +85,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     protected virtual void RaiseBrewingDone()
     {
         currentOrder.SetOrderState(OrderState.BeingDelivered);
-        OnBrewingDone?.Invoke(this, EventArgs.Empty);
+        OnBrewingDone?.Invoke(this, EventArgs.Empty); 
     }
 
     protected virtual void RaiseBrewingEmpty()
@@ -268,18 +268,19 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             {
                 this.GetIngredient().GetComponent<CoffeeAttributes>().SetIsMinigamePerfect(minigameResult);
             }
-            MinigameDoneServerRpc();
 
             if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstDrinkReady)
                 TutorialManager.Instance.FirstDrinkReady();
 
             PickCupAnimation(player);// plays animation and sets cup in hand (SetIngredientParent(player))
+            MinigameDoneServerRpc();
             //GetIngredient().SetIngredientParent(player);
         }
         if (minigameTimer.Value >= maxMinigameTimer)
         {
+            PickCupAnimation(player);// plays animation and sets cup in hand (SetIngredientParent(player))
             MinigameDoneServerRpc();
-            GetIngredient().SetIngredientParent(player);
+            //GetIngredient().SetIngredientParent(player);
         }
         PrintHeldIngredientList();
     }
