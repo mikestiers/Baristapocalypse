@@ -203,7 +203,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 673274661197347126}
-  m_Mesh: {fileID: -4085380093826285621, guid: 84d4ccc56d1405f47aac6aa3b4f37a62, type: 3}
+  m_Mesh: {fileID: -4085380093826285621, guid: 906fe010722980c49841dcdd15796e31, type: 3}
 --- !u!23 &5590470094889157486
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -441,7 +441,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2085907929542913488}
-  m_Mesh: {fileID: -8598431922344890102, guid: 24212b8bc80adde40a137b4a5c07da82, type: 3}
+  m_Mesh: {fileID: -8598431922344890102, guid: 1b975be95f0272c46a3c87cf8023ef42, type: 3}
 --- !u!23 &264396441413426268
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -732,7 +732,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2438364519506259247}
-  m_Mesh: {fileID: -8839368762345780380, guid: ef1507673216d5f4e9371369402086fa, type: 3}
+  m_Mesh: {fileID: -8839368762345780380, guid: 1b975be95f0272c46a3c87cf8023ef42, type: 3}
 --- !u!23 &8832921676924409649
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -849,7 +849,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2900567331128240276}
-  m_Mesh: {fileID: -8839368762345780380, guid: ef1507673216d5f4e9371369402086fa, type: 3}
+  m_Mesh: {fileID: -8839368762345780380, guid: 1b975be95f0272c46a3c87cf8023ef42, type: 3}
 --- !u!23 &3261656726444024132
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1130,11 +1130,45 @@ MonoBehaviour:
   Line: []
   LineIndex: 0
   currentPosInLine: 0
-  customerName: 
-  customerNumber: 0
+  customerName:
+    m_InternalValue:
+      utf8LengthInBytes: 0
+      bytes:
+        offset0000:
+          byte0000: 0
+          byte0001: 0
+          byte0002: 0
+          byte0003: 0
+          byte0004: 0
+          byte0005: 0
+          byte0006: 0
+          byte0007: 0
+          byte0008: 0
+          byte0009: 0
+          byte0010: 0
+          byte0011: 0
+          byte0012: 0
+          byte0013: 0
+          byte0014: 0
+          byte0015: 0
+        byte0016: 0
+        byte0017: 0
+        byte0018: 0
+        byte0019: 0
+        byte0020: 0
+        byte0021: 0
+        byte0022: 0
+        byte0023: 0
+        byte0024: 0
+        byte0025: 0
+        byte0026: 0
+        byte0027: 0
+        byte0028: 0
+        byte0029: 0
+  customerNumber:
+    m_InternalValue: 0
   coffeeAttributes: {fileID: 4092279481114173512}
   order:
-    number: 0
     orderName:
       utf8LengthInBytes: 0
       bytes:
@@ -1169,6 +1203,8 @@ MonoBehaviour:
         byte0027: 0
         byte0028: 0
         byte0029: 0
+    number: 0
+    orderTimer: 0
     coffeeAttributesSweetness: 0
     coffeeAttributesTemperature: 0
     coffeeAttributesSpiciness: 0
@@ -1176,6 +1212,7 @@ MonoBehaviour:
     orderState: 0
   currentState:
     m_InternalValue: 6
+  orderTimer: -1
   customerLeaveTime: 180
   deadTimerSeconds: 15
   customerNumberCanvas: {fileID: 7644296860494902969}
@@ -1552,7 +1589,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8571327297907685429}
-  m_Mesh: {fileID: -8839368762345780380, guid: 9c1f20e26fde81b4297c069751098d5e, type: 3}
+  m_Mesh: {fileID: -8839368762345780380, guid: 906fe010722980c49841dcdd15796e31, type: 3}
 --- !u!23 &5317470277533631864
 MeshRenderer:
   m_ObjectHideFlags: 0
