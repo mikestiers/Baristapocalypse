@@ -72,7 +72,7 @@ public class CustomerBase : Base
     
     public enum CustomerState
     {
-        Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead
+        Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead, Drinking
     }
 
     public virtual void Start()
@@ -136,6 +136,9 @@ public class CustomerBase : Base
                 break;
             case CustomerState.Dead:
                 UpdateDead();
+                break;
+            case CustomerState.Drinking:
+                UpdateDrinking();
                 break;
         }
     }
@@ -232,6 +235,11 @@ public class CustomerBase : Base
         StartCoroutine(TryGoToRandomPoint(5f));
     }
 
+    private void UpdateDrinking()
+    {
+       //update
+    }
+
     public IEnumerator TryGoToRandomPoint(float delay)
     {
         if (leaving == true || moving == true) yield break;
@@ -306,7 +314,8 @@ public class CustomerBase : Base
    
         }
 
-        if(makingAMess == true)
+        /*
+        {  if(makingAMess == true)
         {
             SetCustomerState(CustomerState.Leaving);
             agent.SetDestination(exit.position);
@@ -317,6 +326,7 @@ public class CustomerBase : Base
             //UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
             //if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
         }
+        */
         
     }
 
@@ -391,6 +401,17 @@ public class CustomerBase : Base
         Order();
     }
 
+    private IEnumerator Drink()
+    {
+        SetCustomerState(CustomerState.Drinking);
+        //Start Animation for drinking
+        float drinkingDur = Random.Range(15.0f , 60.0f);
+        yield return new WaitForSeconds(drinkingDur);
+
+        CustomerLeave();
+
+    }
+
     public virtual void CustomerLeave()
     {
         if (Random.Range(0, 100) <= GameValueHolder.Instance.difficultySettings.GetChanceToMess()) CreateMess();
@@ -444,7 +465,7 @@ public class CustomerBase : Base
     {
         CustomerReviewManager.Instance.CustomerReviewEvent(this);
         StopOrderTimer();
-        CustomerLeave();
+        StartCoroutine(Drink());
     }
 
     void HeadDetach()
