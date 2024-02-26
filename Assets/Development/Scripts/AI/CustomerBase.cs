@@ -53,7 +53,6 @@ public class CustomerBase : Base
     [SerializeField] private ParticleSystem interactParticle;
     [SerializeField] private DetachedHead detachedHead;
     [SerializeField] private ScoreTimerManager scoreTimerManager;
-    [SerializeField] public GameObject customerDialogue;
     [SerializeField] private MessSO spillPrefab;
     [SerializeField] private Transform spillSpawnPoint;
     [SerializeField] private PickupSO pickupSO;
@@ -232,8 +231,6 @@ public class CustomerBase : Base
     private void UpdateInsit()
     {
         if (agent.remainingDistance < distThreshold && atSit == false) atSit = true;
-       
-        customerDialogue.SetActive(false);
         if (!orderBeingServed)
             DisplayCustomerVisualIdentifiers();
         orderBeingServed = true;
@@ -410,16 +407,26 @@ public class CustomerBase : Base
 
     public void SetCustomerVisualIdentifiers()
     {
+        SetCustomerVisualIdentifiersClientRpc();
+    }
+
+    [ClientRpc]
+    private void SetCustomerVisualIdentifiersClientRpc()
+    {
         customerNumberText.text = customerNumber.Value.ToString();
         customerNameText.text = customerName.Value.ToString();
-        customerDialogue.SetActive(false);
-        customerNumberCanvas.enabled = false; 
+        customerNumberCanvas.enabled = false;
     }
 
     public void DisplayCustomerVisualIdentifiers()
     {
+        DisplayCustomerVisualIdentifiersClientRpc();
+    }
+
+    [ClientRpc]
+    private void DisplayCustomerVisualIdentifiersClientRpc()
+    {
         customerNumberCanvas.enabled = true;
-        customerDialogue.SetActive(true);
         //UIManager.Instance.ShowCustomerUiOrder(this);
     }
 
@@ -477,6 +484,7 @@ public class CustomerBase : Base
         if (OnCustomerLeave != null)
         {
             OnCustomerLeave?.Invoke(customerNumber.Value);
+            OrderManager.Instance.FinishOrder(order);
         }
     }
 
@@ -504,7 +512,10 @@ public class CustomerBase : Base
     [ClientRpc]
     private void JustGotHandedCoffeeClientRpc()
     {
+        CustomerManager.Instance.customerServedIncrease();
+        CustomerManager.Instance.ReduceCustomerLeftoServe();
         CustomerReviewManager.Instance.CustomerReviewEvent(this);
+        OrderManager.Instance.FinishOrder(order);
         StopOrderTimer();
         StartCoroutine(Drink());
     }
@@ -599,8 +610,6 @@ public class CustomerBase : Base
         player.GetIngredient().SetIngredientParent(this);
         JustGotHandedCoffee();
         player.RemoveIngredientInListByReference(player.GetIngredient());
-        CustomerManager.Instance.customerServedIncrease();
-        CustomerManager.Instance.ReduceCustomerLeftoServe();
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
         interactParticle.Play();
         player.anim.CrossFadeInFixedTime(MovementHash, CrossFadeDuration);

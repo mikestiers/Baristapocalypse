@@ -98,6 +98,7 @@ public class DifficultySettings
         else
         {
             Debug.Log("Shift: " + Shift);
+            UIManager.Instance.shiftEvaluationUI.SetActive(true);
             Shift++;
         }
 

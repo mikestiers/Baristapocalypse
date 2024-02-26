@@ -104,8 +104,6 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             isBrewing = false;
 
             currentOrder.SetOrderState(OrderState.BeingDelivered);
-
-            OrderManager.Instance.FinishOrder(currentOrder);
         }
     }
     //private void ProcessOrder(Order order)
