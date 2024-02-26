@@ -52,7 +52,6 @@ public class CustomerBase : Base
     [SerializeField] private ParticleSystem interactParticle;
     [SerializeField] private DetachedHead detachedHead;
     [SerializeField] private ScoreTimerManager scoreTimerManager;
-    [SerializeField] public GameObject customerDialogue;
     [SerializeField] private MessSO spillPrefab;
     [SerializeField] private Transform spillSpawnPoint;
     [SerializeField] private PickupSO pickupSO;
@@ -230,7 +229,6 @@ public class CustomerBase : Base
 
     private void UpdateInsit()
     {
-        customerDialogue.SetActive(false);
         if (!orderBeingServed)
             DisplayCustomerVisualIdentifiers();
         orderBeingServed = true;
@@ -407,16 +405,26 @@ public class CustomerBase : Base
 
     public void SetCustomerVisualIdentifiers()
     {
+        SetCustomerVisualIdentifiersClientRpc();
+    }
+
+    [ClientRpc]
+    private void SetCustomerVisualIdentifiersClientRpc()
+    {
         customerNumberText.text = customerNumber.Value.ToString();
         customerNameText.text = customerName.Value.ToString();
-        customerDialogue.SetActive(false);
-        customerNumberCanvas.enabled = false; 
+        customerNumberCanvas.enabled = false;
     }
 
     public void DisplayCustomerVisualIdentifiers()
     {
+        DisplayCustomerVisualIdentifiersClientRpc();
+    }
+
+    [ClientRpc]
+    private void DisplayCustomerVisualIdentifiersClientRpc()
+    {
         customerNumberCanvas.enabled = true;
-        customerDialogue.SetActive(true);
         //UIManager.Instance.ShowCustomerUiOrder(this);
     }
 

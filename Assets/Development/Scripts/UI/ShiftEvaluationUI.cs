@@ -53,24 +53,6 @@ public class ShiftEvaluationUI : NetworkBehaviour
         previousCustomersServed.Value = 0;
     }
 
-    void Update()
-    {
-        if (!IsServer)
-        {
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            ShiftEvaluationDisplayEvent();
-        }
-    }
-
-    private void ShiftEvaluationDisplayEvent()
-    {
-        OnShiftEvaluation?.Invoke();
-    }
-
     public void HandleShiftEvaluation()
     {
         HandleShiftEvaluationClientRpc();
