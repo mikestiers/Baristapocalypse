@@ -749,6 +749,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             {
                 int _CustomerPos = pickup.GetCustomer().currentPosInLine;
                 CustomerManager.Instance.LineQueue.RemoveCustomerInPos(_CustomerPos);
+                CustomerManager.Instance.ReduceCustomerLeftoServe();
             }
 
             //CustomerManager.Instance.ReduceCustomerInStore();
