@@ -93,10 +93,10 @@ public class OrderStats : NetworkBehaviour
 
     private void CustomerBase_OnCustomerLeave(int customerIndex)
     {
-        if(currentOrder.number == customerIndex)
-        {
+        //if(currentOrder.number == customerIndex)
+        //{
             OrderCompleted(this, EventArgs.Empty);
-        }
+        //}
     }
 
     private void Update()

@@ -11,7 +11,7 @@ using Unity.Services.Lobbies.Models;
 using Cinemachine;
 using System.Linq;
 using static AISupervisor;
-using UnityEditor.ShaderGraph;
+//using UnityEditor.ShaderGraph;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObjectParent, ISpill
@@ -177,7 +177,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.DebugConsoleEvent += ShowDebugConsole;
         inputManager.BrewingStationSelectEvent += OnChangeBrewingStationSelect;
         inputManager.BrewingStationEmptyEvent += OnBrewingStationEmpty;
-        OrderManager.Instance.brewingStations[currentBrewingStation].animationSwitch += OnAnimationSwitch;
+        //OrderManager.Instance.brewingStations[currentBrewingStation].animationSwitch += OnAnimationSwitch;
+        
         if (AISupervisor.Instance)
         {
             AISupervisor.Instance.OnTutorialMessageReceived += TutorialMessage;
@@ -195,7 +196,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.DebugConsoleEvent -= ShowDebugConsole;
         inputManager.BrewingStationSelectEvent -= OnChangeBrewingStationSelect;
         inputManager.BrewingStationEmptyEvent -= OnBrewingStationEmpty;
-        OrderManager.Instance.brewingStations[currentBrewingStation].animationSwitch -= OnAnimationSwitch;
+        //OrderManager.Instance.brewingStations[currentBrewingStation].animationSwitch -= OnAnimationSwitch;
 
         if (AISupervisor.Instance)
         {
@@ -749,6 +750,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             {
                 int _CustomerPos = pickup.GetCustomer().currentPosInLine;
                 CustomerManager.Instance.LineQueue.RemoveCustomerInPos(_CustomerPos);
+                CustomerManager.Instance.ReduceCustomerLeftoServe();
             }
 
             //CustomerManager.Instance.ReduceCustomerInStore();

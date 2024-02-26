@@ -347,7 +347,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1393675180259305296}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.44, z: 0}
+  m_LocalPosition: {x: 0, y: 3.437, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -394,7 +394,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1604853931562314124}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.68, y: 0.89, z: 0}
+  m_LocalPosition: {x: 0.68, y: 2.382, z: 0.458}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -589,7 +589,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2409413091286520164}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: -0.09}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.074152514, y: 0.074152514, z: 0.074152514}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -601,7 +601,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.02, y: 3.41}
+  m_AnchoredPosition: {x: 0, y: 5}
   m_SizeDelta: {x: 20.2578, y: 19.711}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7329881569619542417
@@ -799,7 +799,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2584330252243922892}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 1.798, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -996,7 +996,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3426656431178919953}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 2}
+  m_LocalPosition: {x: 0, y: 2.501, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1130,11 +1130,45 @@ MonoBehaviour:
   Line: []
   LineIndex: 0
   currentPosInLine: 0
-  customerName: 
-  customerNumber: 0
+  customerName:
+    m_InternalValue:
+      utf8LengthInBytes: 0
+      bytes:
+        offset0000:
+          byte0000: 0
+          byte0001: 0
+          byte0002: 0
+          byte0003: 0
+          byte0004: 0
+          byte0005: 0
+          byte0006: 0
+          byte0007: 0
+          byte0008: 0
+          byte0009: 0
+          byte0010: 0
+          byte0011: 0
+          byte0012: 0
+          byte0013: 0
+          byte0014: 0
+          byte0015: 0
+        byte0016: 0
+        byte0017: 0
+        byte0018: 0
+        byte0019: 0
+        byte0020: 0
+        byte0021: 0
+        byte0022: 0
+        byte0023: 0
+        byte0024: 0
+        byte0025: 0
+        byte0026: 0
+        byte0027: 0
+        byte0028: 0
+        byte0029: 0
+  customerNumber:
+    m_InternalValue: 0
   coffeeAttributes: {fileID: 4092279481114173512}
   order:
-    number: 0
     orderName:
       utf8LengthInBytes: 0
       bytes:
@@ -1169,6 +1203,8 @@ MonoBehaviour:
         byte0027: 0
         byte0028: 0
         byte0029: 0
+    number: 0
+    orderTimer: 0
     coffeeAttributesSweetness: 0
     coffeeAttributesTemperature: 0
     coffeeAttributesSpiciness: 0
@@ -1176,7 +1212,9 @@ MonoBehaviour:
     orderState: 0
   currentState:
     m_InternalValue: 6
+  orderTimer: -1
   customerLeaveTime: 180
+  maxInLineTime: 0
   deadTimerSeconds: 15
   customerNumberCanvas: {fileID: 7644296860494902969}
   customerNumberText: {fileID: 279206825771054927}

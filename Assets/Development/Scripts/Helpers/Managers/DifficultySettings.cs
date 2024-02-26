@@ -21,6 +21,8 @@ public class DifficultySettings
     private float chanceToLoiter;
     private float minWaitTime;
     private float maxWaitTime;
+    private float minInLineWaitTime;
+    private float maxInLineWaitTime;
     private float drinkThreshold;
     private int moneyToPass;
     public IngredientListSO temperatureIngredientList { get; set; }
@@ -53,6 +55,9 @@ public class DifficultySettings
 
         minWaitTime = currentDifficulty.minWaitTime;
         maxWaitTime = currentDifficulty.maxWaitTime;
+
+        minInLineWaitTime = currentDifficulty.minInLineWaitTime;
+        maxInLineWaitTime = currentDifficulty.maxInLineWaitTime;
 
         drinkThreshold = currentDifficulty.drinkThreshold;
 
@@ -204,5 +209,15 @@ public class DifficultySettings
     public int GetMoneyToPass()
     {
         return moneyToPass;
+    }
+
+    public float GetMinInLineWaitTime()
+    {
+        return minInLineWaitTime;
+    }
+
+    public float GetMaxInLineWaitTime()
+    {
+        return maxInLineWaitTime;
     }
 }

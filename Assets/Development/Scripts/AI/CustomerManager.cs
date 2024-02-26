@@ -21,7 +21,7 @@ public class CustomerManager : Singleton<CustomerManager>
     [SerializeField] private int numberOfCustomers = 5;
     [SerializeField] private int customersLeftinWave;
     [SerializeField] private int WavesLeft;
-    [SerializeField] private int customersInStore = 0;
+    [SerializeField] private int customersLefttoServe = 0;
     [SerializeField] private float initCustomerSpawnDelay;
     private float timer;
     private ServingState currentServingState;
@@ -132,7 +132,7 @@ public class CustomerManager : Singleton<CustomerManager>
             switch (currentServingState)
             {
                 case ServingState.CurrentlyServing:
-                    if (GetCustomerLeftinStore() <= 0 && isSpawningCustomers == true)
+                    if (GetCustomerLefttoServe() <= 0 && customersLeftinWave <= 0 && isSpawningCustomers == true)
                     {
                         isSpawningCustomers = false;
                         currentServingState = ServingState.BreakTime;
@@ -170,7 +170,7 @@ public class CustomerManager : Singleton<CustomerManager>
         {
             SpawnCustomer();
             StartCoroutine(CustomerEnterStore());
-            customersInStore++;
+            customersLefttoServe++;
             customersLeftinWave--;
             //UIManager.Instance.customersInStore.text = ("Customers in Store: ") + customersInStore.ToString();
             //UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
@@ -363,14 +363,14 @@ public class CustomerManager : Singleton<CustomerManager>
         return exit;
     }
 
-    public int GetCustomerLeftinStore()
+    public int GetCustomerLefttoServe()
     {
-        return customersInStore;
+        return customersLefttoServe;
     }
 
-    public void ReduceCustomerInStore()
+    public void ReduceCustomerLeftoServe()
     {
-        customersInStore--;
+        customersLefttoServe--;
     }
 
     public void customerServedIncrease()
