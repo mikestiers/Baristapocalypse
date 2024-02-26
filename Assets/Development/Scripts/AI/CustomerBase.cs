@@ -18,6 +18,7 @@ public class CustomerBase : Base
     public NavMeshAgent agent;
     public bool frontofLine;
     public bool inLine;
+    public bool atSit = false; //for tables customer rotation orientation 
     public bool leaving = false;
     public bool makingAMess = false;
     public bool moving;
@@ -230,6 +231,8 @@ public class CustomerBase : Base
 
     private void UpdateInsit()
     {
+        if (agent.remainingDistance < distThreshold && atSit == false) atSit = true;
+       
         customerDialogue.SetActive(false);
         if (!orderBeingServed)
             DisplayCustomerVisualIdentifiers();
@@ -450,6 +453,8 @@ public class CustomerBase : Base
     public virtual void CustomerLeave()
     {
         if (agent.isStopped) agent.isStopped = false;
+        atSit = false;
+
         if (GetCustomerState() == CustomerState.Drinking && Random.Range(0, 100) <= GameValueHolder.Instance.difficultySettings.GetChanceToMess()) CreateMess();
         if (Random.Range(0, 100) < GameValueHolder.Instance.difficultySettings.GetChanceToLoiter())
         {
