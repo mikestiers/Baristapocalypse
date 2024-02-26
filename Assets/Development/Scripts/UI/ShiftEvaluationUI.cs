@@ -62,7 +62,7 @@ public class ShiftEvaluationUI : MonoBehaviour
     {
         previousCustomersServed = CustomerManager.Instance.GetCustomerServed();
         previousCustomersLeave = CustomerManager.Instance.GetCustomerLeave();
-        previousTipsAcquired =GameManager.Instance.moneySystem.GetCurrentMoney();
+        previousTipsAcquired = GameManager.Instance.moneySystem.GetCurrentMoney();
     }
 
     private IEnumerator MoveEP(Vector3 target, Vector3 start)
