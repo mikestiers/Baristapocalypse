@@ -370,17 +370,17 @@ public class CustomerManager : Singleton<CustomerManager>
 
     public void ReduceCustomerLeftoServe()
     {
-        customersLefttoServe--;
+        if(IsServer) customersLefttoServe--;
     }
 
     public void customerServedIncrease()
     {
-        customerServed.Value++;
+        if(IsServer) customerServed.Value++;
     }
 
     public void customerLeaveIncrease()
     {
-        customerLeave.Value++;
+        if(IsServer) customerLeave.Value++;
     }
 
     public int GetCustomerServed()

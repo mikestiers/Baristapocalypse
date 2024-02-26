@@ -472,6 +472,7 @@ public class CustomerBase : Base
         if (OnCustomerLeave != null)
         {
             OnCustomerLeave?.Invoke(customerNumber.Value);
+            OrderManager.Instance.FinishOrder(order);
         }
     }
 
@@ -499,7 +500,10 @@ public class CustomerBase : Base
     [ClientRpc]
     private void JustGotHandedCoffeeClientRpc()
     {
+        CustomerManager.Instance.customerServedIncrease();
+        CustomerManager.Instance.ReduceCustomerLeftoServe();
         CustomerReviewManager.Instance.CustomerReviewEvent(this);
+        OrderManager.Instance.FinishOrder(order);
         StopOrderTimer();
         StartCoroutine(Drink());
     }
@@ -594,8 +598,6 @@ public class CustomerBase : Base
         player.GetIngredient().SetIngredientParent(this);
         JustGotHandedCoffee();
         player.RemoveIngredientInListByReference(player.GetIngredient());
-        CustomerManager.Instance.customerServedIncrease();
-        CustomerManager.Instance.ReduceCustomerLeftoServe();
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
         interactParticle.Play();
         player.anim.CrossFadeInFixedTime(MovementHash, CrossFadeDuration);
