@@ -171,6 +171,7 @@ public class CustomerBase : Base
         if (inLine == true && lineTime > (maxInLineTime)) 
         {
             CustomerManager.Instance.customerLeaveIncrease();
+            CustomerManager.Instance.ReduceCustomerLeftoServe();
             CustomerManager.Instance.LineQueue.RemoveCustomerInPos(currentPosInLine);
             CustomerLeave();
             inLine = false;
@@ -184,6 +185,18 @@ public class CustomerBase : Base
         {
             //Order();
             OrderClientRpc();
+        }
+
+        if (inLine == true && lineTime == null) lineTime = 0.0f;
+        else if (inLine == false) lineTime = null;
+
+        if (inLine == true && lineTime > (maxInLineTime))
+        {
+            CustomerManager.Instance.customerLeaveIncrease();
+            CustomerManager.Instance.ReduceCustomerLeftoServe();
+            CustomerManager.Instance.LineQueue.RemoveCustomerInPos(currentPosInLine);
+            CustomerLeave();
+            inLine = false;
         }
     }
 
@@ -224,6 +237,7 @@ public class CustomerBase : Base
         if (orderTimer >= customerLeaveTime)
         {
             CustomerManager.Instance.customerLeaveIncrease();
+            CustomerManager.Instance.ReduceCustomerLeftoServe();
             GameManager.Instance.moneySystem.ResetStreak();
             CustomerLeave();
 
@@ -566,11 +580,6 @@ public class CustomerBase : Base
         messTime = 0f;
     }
 
-    private void OnDestroy()
-    {
-       if(Application.isPlaying) CustomerManager.Instance.ReduceCustomerInStore();
-    }
-
     private void DropCupAnimation(PlayerController player)
     {
         StartCoroutine(ResetAnimation(player));
@@ -586,6 +595,7 @@ public class CustomerBase : Base
         JustGotHandedCoffee();
         player.RemoveIngredientInListByReference(player.GetIngredient());
         CustomerManager.Instance.customerServedIncrease();
+        CustomerManager.Instance.ReduceCustomerLeftoServe();
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
         interactParticle.Play();
         player.anim.CrossFadeInFixedTime(MovementHash, CrossFadeDuration);
