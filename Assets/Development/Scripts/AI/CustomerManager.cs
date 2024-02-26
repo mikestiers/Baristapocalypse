@@ -78,8 +78,8 @@ public class CustomerManager : Singleton<CustomerManager>
     //private int chairNumber = 0;
 
     //Shift Evaluation values
-    private int customerServed = 0;
-    private int customerLeave = 0;
+    private NetworkVariable<int> customerServed = new NetworkVariable<int>(0);
+    private NetworkVariable<int> customerLeave = new NetworkVariable<int>(0);
 
     private bool IsServing = true;
     private bool isSpawningCustomers = false;
@@ -209,7 +209,7 @@ public class CustomerManager : Singleton<CustomerManager>
             }
             else if (GameValueHolder.Instance.difficultySettings.GetShift() < GameValueHolder.Instance.difficultySettings.MaxShift)
             {
-                UIManager.Instance.ShowShiftEvaluation();
+                ShiftEvaluationUI.Instance.HandleShiftEvaluation();
                 GameValueHolder.Instance.difficultySettings.NextShift();
                 WavesLeft = GameValueHolder.Instance.difficultySettings.GetNumberOfWaves();
                 currentServingState = ServingState.CurrentlyServing;
@@ -375,22 +375,22 @@ public class CustomerManager : Singleton<CustomerManager>
 
     public void customerServedIncrease()
     {
-        customerServed++;
+        customerServed.Value++;
     }
 
     public void customerLeaveIncrease()
     {
-        customerLeave++;
+        customerLeave.Value++;
     }
 
     public int GetCustomerServed()
     {
-        return customerServed;
+        return customerServed.Value;
     }
 
     public int GetCustomerLeave()
     {
-        return customerLeave;
+        return customerLeave.Value;
     }
 }
 
