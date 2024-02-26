@@ -40,7 +40,9 @@ public class CustomerBase : Base
     public NetworkVariable<CustomerState> currentState = new NetworkVariable<CustomerState>(CustomerState.Init);
     public float orderTimer = -1f;
     public float? messTime = null;
+    public float? lineTime = null;
     public float customerLeaveTime;
+    public float maxInLineTime;
     public float deadTimerSeconds = 5.0f;
 
     [Header("Visuals")]
@@ -85,11 +87,13 @@ public class CustomerBase : Base
         SetCustomerVisualIdentifiers();
 
         customerLeaveTime = Random.Range(GameValueHolder.Instance.difficultySettings.GetMinWaitTime(), GameValueHolder.Instance.difficultySettings.GetMaxWaitTime());
+        maxInLineTime = Random.Range(GameValueHolder.Instance.difficultySettings.GetMinInLineWaitTime(), GameValueHolder.Instance.difficultySettings.GetMaxInLineWaitTime());
 
         agent = GetComponent<NavMeshAgent>();
         exit = CustomerManager.Instance.GetExit();
         if (distThreshold <= 0) distThreshold = 0.5f;
         
+
         customerReviewPanel = GameObject.FindGameObjectWithTag("CustomerReviewPanel");
 
     }
@@ -104,6 +108,11 @@ public class CustomerBase : Base
 
         if (messTime != null)
             messTime += Time.deltaTime; 
+
+        if(lineTime != null)
+        {
+            lineTime += Time.deltaTime;
+        }
 
         switch (currentState.Value)
         {
@@ -155,6 +164,18 @@ public class CustomerBase : Base
     {
         // To be implmented or removed
         if (makingAMess == true) SetCustomerState(CustomerState.Loitering);
+
+        if (inLine == true && lineTime == null) lineTime = 0.0f;
+        else if (inLine == false) lineTime = null;
+
+        if (inLine == true && lineTime > (maxInLineTime)) 
+        {
+            CustomerManager.Instance.customerLeaveIncrease();
+            CustomerManager.Instance.LineQueue.RemoveCustomerInPos(currentPosInLine);
+            CustomerLeave();
+            inLine = false;
+        }
+
     }
 
     private void UpdateOrdering()
@@ -414,7 +435,8 @@ public class CustomerBase : Base
 
     public virtual void CustomerLeave()
     {
-        if (Random.Range(0, 100) <= GameValueHolder.Instance.difficultySettings.GetChanceToMess()) CreateMess();
+        if (agent.isStopped) agent.isStopped = false;
+        if (GetCustomerState() == CustomerState.Drinking && Random.Range(0, 100) <= GameValueHolder.Instance.difficultySettings.GetChanceToMess()) CreateMess();
         if (Random.Range(0, 100) < GameValueHolder.Instance.difficultySettings.GetChanceToLoiter())
         {
             SetCustomerState(CustomerState.Loitering);
