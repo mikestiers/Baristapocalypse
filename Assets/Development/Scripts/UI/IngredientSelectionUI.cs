@@ -73,7 +73,7 @@ public class IngredientSelectionUI : BaseStation
 
     private void Update()
     {
-        if ((Gamepad.current.buttonSouth.wasPressedThisFrame || Keyboard.current.qKey.wasPressedThisFrame) && isOnPlate == true)
+        if (((Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame) || Keyboard.current.qKey.wasPressedThisFrame) && isOnPlate == true)
         {
             interactImage.SetActive(false);
             Show(ingredientMenu);
