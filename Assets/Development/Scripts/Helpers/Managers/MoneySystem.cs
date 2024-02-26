@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.ProBuilder.MeshOperations;
 
 public class MoneySystem 
 {
-    private int currentMoney;
+    private NetworkVariable<int> currentMoney = new NetworkVariable<int>();
     private int moneyNeededToPass;
-    public int currentStreakCount;
+    public NetworkVariable<int> currentStreakCount = new NetworkVariable<int>();
     private int maxStreakCount; //before activating double tips
     private float baseTipMultiplier;
     private float streakBonus;
@@ -18,8 +19,8 @@ public class MoneySystem
     public MoneySystem(int moneyNeededToPass)
     {
         this.moneyNeededToPass = moneyNeededToPass;
-        this.currentMoney = 0;
-        this.currentStreakCount = 0;
+        this.currentMoney.Value = 0;
+        this.currentStreakCount.Value = 0;
         this.streakBonus = 0.5f;
 
         //can be exposed in difficultysettings, ask team
@@ -36,30 +37,30 @@ public class MoneySystem
 
     public void AdjustMoneyByAmount(int MoneyAmount, bool isAdding)
     {
-        if(isAdding == true) currentMoney += MoneyAmount;
-        else currentMoney -= MoneyAmount;
+        if(isAdding == true) currentMoney.Value += MoneyAmount;
+        else currentMoney.Value -= MoneyAmount;
 
-        if(currentMoney < 0) currentMoney = 0;
+        if(currentMoney.Value < 0) currentMoney.Value = 0;
 
-        float percentToPass = (float)currentMoney / (float)moneyNeededToPass;
+        float percentToPass = (float)currentMoney.Value / (float)moneyNeededToPass;
 
         //UI for Added Money //Set UI MoneyText to currentMoney //SetPercentBar
-        UIManager.Instance.UpdateScoreUI(currentMoney, MoneyAmount, isAdding, percentToPass);
+        UIManager.Instance.UpdateScoreUI(currentMoney.Value, MoneyAmount, isAdding, percentToPass);
     }
 
     public int ComputeMoney(int reviewscore)
     {
         int baseAmount = 10; //change with amount of ingredients? check with team
-        int money = Mathf.CeilToInt(baseAmount * (reviewscore * baseTipMultiplier) + (streakBonus * currentStreakCount));
+        int money = Mathf.CeilToInt(baseAmount * (reviewscore * baseTipMultiplier) + (streakBonus * currentStreakCount.Value));
 
         return money;
     }
 
     public bool CheckStreak()
     {
-        if (currentStreakCount >= maxStreakCount)
+        if (currentStreakCount.Value >= maxStreakCount)
         {
-            currentStreakCount = maxStreakCount; 
+            currentStreakCount.Value = maxStreakCount; 
             return true;
         }
         else return false;
@@ -67,23 +68,23 @@ public class MoneySystem
 
     public int GetCurrentMoney()
     {
-        return currentMoney;
+        return currentMoney.Value;
     }
 
     public void IncreaseStreakCount()
     {
-        currentStreakCount++;
+        currentStreakCount.Value++;
     }
 
     public void DecreaseStreakCount()
     {
-        currentStreakCount--;
-        if (currentStreakCount <= 0) currentStreakCount = 0;
+        currentStreakCount.Value--;
+        if (currentStreakCount.Value <= 0) currentStreakCount.Value = 0;
     }
 
     public void ResetStreak()
     {
-        currentStreakCount = 0;
+        currentStreakCount.Value = 0;
     }
 
     public void SetAverageReviewRating(float Rating) 
