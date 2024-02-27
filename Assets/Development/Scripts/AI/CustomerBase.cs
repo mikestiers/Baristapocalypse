@@ -247,9 +247,9 @@ public class CustomerBase : Base
 
     private void UpdateLeaving()
     {
-        customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 idle animation
         messTime = null;
         leaving = true;
+
         if (agent.remainingDistance < distThreshold)
         {
             Destroy(gameObject);
@@ -303,7 +303,7 @@ public class CustomerBase : Base
 
     private void UpdateDrinking()
     {
-       //update
+       //update DRINKING ANIMATION
     }
 
     public IEnumerator TryGoToRandomPoint(float delay)
@@ -347,7 +347,10 @@ public class CustomerBase : Base
     private void UpdateSitting()
     {
         // sitting animation
-        customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
+        if (atSit)
+        {
+            customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
+        }
 
     }
 
@@ -512,6 +515,7 @@ public class CustomerBase : Base
         }
         else
         {
+            customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
             SetCustomerState(CustomerState.Leaving);
             agent.SetDestination(exit.position);
 
