@@ -283,11 +283,6 @@ public class UIManager : Singleton<UIManager>
     {
         moneyUI.GetComponent<ScoreUI>().UpdateMoneyVisuals(currentMoney, adjustedMoney, isAdding, passPercentage);
     }
-    
-    public void ShowShiftEvaluation()
-    {
-        shiftEvaluationUI.GetComponent<ShiftEvaluationUI>().Evaluate();
-    }
 
     private void CloseTutorial()
     {
