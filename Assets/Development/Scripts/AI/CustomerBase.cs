@@ -74,7 +74,7 @@ public class CustomerBase : Base
     
     public enum CustomerState
     {
-        Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead, Drinking
+        Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead, Drinking, Sitting
     }
 
     public virtual void Start()
@@ -104,7 +104,9 @@ public class CustomerBase : Base
         if (orderTimer >= 0f)
         {
             orderTimer += Time.deltaTime;
-        }  
+        }
+
+        Debug.LogWarning("CustomerState " + currentState.Value);
 
         if (messTime != null)
             messTime += Time.deltaTime; 
@@ -149,8 +151,12 @@ public class CustomerBase : Base
             case CustomerState.Drinking:
                 UpdateDrinking();
                 break;
+            case CustomerState.Sitting:
+                UpdateSitting();
+                break;
         }
     }
+
 
     // UPDATE<action> METHODS
     // Any Update<action> method is called by the Update() switch case.
@@ -231,6 +237,9 @@ public class CustomerBase : Base
     private void UpdateInsit()
     {
         if (agent.remainingDistance < distThreshold && atSit == false) atSit = true;
+
+        if (atSit) SetCustomerState(CustomerState.Sitting);
+
         if (!orderBeingServed)
             DisplayCustomerVisualIdentifiers();
         orderBeingServed = true;
@@ -312,6 +321,11 @@ public class CustomerBase : Base
         }
     }
 
+    private void UpdateSitting()
+    {
+        
+    }
+
     private void UpdateDead()
     {
         // To be implmented or removed
@@ -342,7 +356,7 @@ public class CustomerBase : Base
         }
 
         // Deliver customer order
-        else if (GetCustomerState() == CustomerState.Insit && player.GetIngredient().CompareTag("CoffeeCup") && !isGivingOrderToCustomer)
+        else if (GetCustomerState() == CustomerState.Sitting && player.GetIngredient().CompareTag("CoffeeCup") && !isGivingOrderToCustomer)
         {
             isGivingOrderToCustomer = true;
             DropCupAnimation(player);// Play animation and handles delivering the drink
@@ -460,6 +474,7 @@ public class CustomerBase : Base
     public virtual void CustomerLeave()
     {
         if (agent.isStopped) agent.isStopped = false;
+        
         atSit = false;
 
         if (GetCustomerState() == CustomerState.Drinking && Random.Range(0, 100) <= GameValueHolder.Instance.difficultySettings.GetChanceToMess()) CreateMess();
