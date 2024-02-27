@@ -11,7 +11,7 @@ using Unity.Services.Lobbies.Models;
 using Cinemachine;
 using System.Linq;
 using static AISupervisor;
-using UnityEditor.ShaderGraph;
+//using UnityEditor.ShaderGraph;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObjectParent, ISpill
@@ -40,17 +40,18 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] private LayerMask isStationLayer;
     [SerializeField] private LayerMask isIngredientLayer;
     [SerializeField] private LayerMask isCustomerLayer;
-   
     [SerializeField] private float stationsSphereCastRadius;
     [SerializeField] private float customersSphereCastRadius;
     [SerializeField] private float stationInteractDistance;
     [SerializeField] private float customerInteractDistance;
     [SerializeField] private GameObject InteractzoneStart;
+    [SerializeField] private BrewingStation brewingStation1;
+    [SerializeField] private BrewingStation brewingStation2;
 
-    
     private BaseStation selectedStation;
     private Base selectedCustomer;
     public int currentBrewingStation = 0;
+    private BrewingStation interactingBrewingStation;
 
     [Header("Ingredients Data")]
     [SerializeField] public Transform[] ingredientHoldPoints; // Array to hold multiple ingredient
@@ -144,10 +145,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         anim = GetComponentInChildren<Animator>();
 
         //Set variables if null
-        if (moveSpeed <= 0) moveSpeed = 10.0f;
+        if (moveSpeed <= 0) moveSpeed = 7.5f;
         if (gravityMoveSpeed <= 0) gravityMoveSpeed = 4.0f;
         if (jumpForce <= 0) jumpForce = 200.0f;
-        if (dashForce <= 0) dashForce = 100.0f;
+        if (dashForce <= 0) dashForce = 130.0f;
         if (dashTime <= 0) dashTime = 0.1f;
         if (dashCooldownTime <= 0) dashCooldownTime = 1.0f;
         if (ingredientThrowForce <= 0) ingredientThrowForce = 10f;
@@ -177,7 +178,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.DebugConsoleEvent += ShowDebugConsole;
         inputManager.BrewingStationSelectEvent += OnChangeBrewingStationSelect;
         inputManager.BrewingStationEmptyEvent += OnBrewingStationEmpty;
-        OrderManager.Instance.brewingStations[currentBrewingStation].animationSwitch += OnAnimationSwitch;
+        //brewingStation1.animationSwitch += OnAnimationSwitch;
+        //brewingStation2.animationSwitch += OnAnimationSwitch;
+
+
         if (AISupervisor.Instance)
         {
             AISupervisor.Instance.OnTutorialMessageReceived += TutorialMessage;
@@ -195,7 +199,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.DebugConsoleEvent -= ShowDebugConsole;
         inputManager.BrewingStationSelectEvent -= OnChangeBrewingStationSelect;
         inputManager.BrewingStationEmptyEvent -= OnBrewingStationEmpty;
-        OrderManager.Instance.brewingStations[currentBrewingStation].animationSwitch -= OnAnimationSwitch;
+        brewingStation1.animationSwitch -= OnAnimationSwitch;
+        brewingStation2.animationSwitch -= OnAnimationSwitch;
 
         if (AISupervisor.Instance)
         {
@@ -501,7 +506,16 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     public void SetSelectedStation(BaseStation baseStation)
     {
         selectedStation = baseStation;
-
+        if (!brewingStation1)
+        {
+            brewingStation1 = FindObjectOfType<BrewingStation>();
+            brewingStation1.animationSwitch += OnAnimationSwitch;
+        }
+        if (!brewingStation2)
+        {
+            brewingStation2 = FindObjectOfType<BrewingStation>();
+            brewingStation2.animationSwitch += OnAnimationSwitch;
+        }
     }
 
     public void SetSelectedCustomer(Base customer)
@@ -749,6 +763,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             {
                 int _CustomerPos = pickup.GetCustomer().currentPosInLine;
                 CustomerManager.Instance.LineQueue.RemoveCustomerInPos(_CustomerPos);
+                CustomerManager.Instance.ReduceCustomerLeftoServe();
             }
 
             //CustomerManager.Instance.ReduceCustomerInStore();

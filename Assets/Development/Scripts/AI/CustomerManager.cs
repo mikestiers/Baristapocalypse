@@ -21,7 +21,7 @@ public class CustomerManager : Singleton<CustomerManager>
     [SerializeField] private int numberOfCustomers = 5;
     [SerializeField] private int customersLeftinWave;
     [SerializeField] private int WavesLeft;
-    [SerializeField] private int customersInStore = 0;
+    [SerializeField] private int customersLefttoServe = 0;
     [SerializeField] private float initCustomerSpawnDelay;
     private float timer;
     private ServingState currentServingState;
@@ -78,8 +78,8 @@ public class CustomerManager : Singleton<CustomerManager>
     //private int chairNumber = 0;
 
     //Shift Evaluation values
-    private int customerServed = 0;
-    private int customerLeave = 0;
+    private NetworkVariable<int> customerServed = new NetworkVariable<int>(0);
+    private NetworkVariable<int> customerLeave = new NetworkVariable<int>(0);
 
     private bool IsServing = true;
     private bool isSpawningCustomers = false;
@@ -132,7 +132,7 @@ public class CustomerManager : Singleton<CustomerManager>
             switch (currentServingState)
             {
                 case ServingState.CurrentlyServing:
-                    if (GetCustomerLeftinStore() <= 0 && isSpawningCustomers == true)
+                    if (GetCustomerLefttoServe() <= 0 && customersLeftinWave <= 0 && isSpawningCustomers == true)
                     {
                         isSpawningCustomers = false;
                         currentServingState = ServingState.BreakTime;
@@ -170,7 +170,7 @@ public class CustomerManager : Singleton<CustomerManager>
         {
             SpawnCustomer();
             StartCoroutine(CustomerEnterStore());
-            customersInStore++;
+            customersLefttoServe++;
             customersLeftinWave--;
             //UIManager.Instance.customersInStore.text = ("Customers in Store: ") + customersInStore.ToString();
             //UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
@@ -209,7 +209,7 @@ public class CustomerManager : Singleton<CustomerManager>
             }
             else if (GameValueHolder.Instance.difficultySettings.GetShift() < GameValueHolder.Instance.difficultySettings.MaxShift)
             {
-                UIManager.Instance.ShowShiftEvaluation();
+                ShiftEvaluationUI.Instance.HandleShiftEvaluation();
                 GameValueHolder.Instance.difficultySettings.NextShift();
                 WavesLeft = GameValueHolder.Instance.difficultySettings.GetNumberOfWaves();
                 currentServingState = ServingState.CurrentlyServing;
@@ -363,34 +363,34 @@ public class CustomerManager : Singleton<CustomerManager>
         return exit;
     }
 
-    public int GetCustomerLeftinStore()
+    public int GetCustomerLefttoServe()
     {
-        return customersInStore;
+        return customersLefttoServe;
     }
 
-    public void ReduceCustomerInStore()
+    public void ReduceCustomerLeftoServe()
     {
-        customersInStore--;
+        if(IsServer) customersLefttoServe--;
     }
 
     public void customerServedIncrease()
     {
-        customerServed++;
+        if(IsServer) customerServed.Value++;
     }
 
     public void customerLeaveIncrease()
     {
-        customerLeave++;
+        if(IsServer) customerLeave.Value++;
     }
 
     public int GetCustomerServed()
     {
-        return customerServed;
+        return customerServed.Value;
     }
 
     public int GetCustomerLeave()
     {
-        return customerLeave;
+        return customerLeave.Value;
     }
 }
 
