@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class CustomerRandomizer : NetworkBehaviour
 {
     [SerializeField] public CustomerRaceSO[] Races;
-    public List<GameObject> heads = new List<GameObject>();
+    //public List<GameObject> heads = new List<GameObject>();
     public List<GameObject> bodies = new List<GameObject>();
     public GridLayoutGroup cheatIconsLayoutGroup;
 
@@ -79,14 +79,14 @@ public class CustomerRandomizer : NetworkBehaviour
 
 
 
-        int headIndex = Random.Range(0, heads.Count);
+        //int headIndex = Random.Range(0, heads.Count);
         int bodyIndex = Random.Range(0, bodies.Count);
 
-        StartClientRpc(headIndex, bodyIndex, accumulatedSpiciness, accumulatedStrength, accumulatedSweetness, accumulatedTemperature);
+        StartClientRpc(bodyIndex, accumulatedSpiciness, accumulatedStrength, accumulatedSweetness, accumulatedTemperature);
     }
 
     [ClientRpc]
-    private void StartClientRpc(int headIndex, int bodyIndex, int accumulatedSpiciness, int accumulatedStrength, int accumulatedSweetness, int accumulatedTemperature)
+    private void StartClientRpc(int bodyIndex, int accumulatedSpiciness, int accumulatedStrength, int accumulatedSweetness, int accumulatedTemperature)
     {
         coffeePreferences = GetComponent<CoffeeAttributes>();
 
@@ -95,7 +95,7 @@ public class CustomerRandomizer : NetworkBehaviour
         coffeePreferences.AddSweetness(accumulatedSweetness);
         coffeePreferences.AddTemperature(accumulatedTemperature);
 
-        heads[headIndex].SetActive(true);
+        //heads[headIndex].SetActive(true);
         bodies[bodyIndex].SetActive(true);
     }
 }
