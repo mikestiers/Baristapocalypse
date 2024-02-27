@@ -145,10 +145,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         anim = GetComponentInChildren<Animator>();
 
         //Set variables if null
-        if (moveSpeed <= 0) moveSpeed = 10.0f;
+        if (moveSpeed <= 0) moveSpeed = 7.5f;
         if (gravityMoveSpeed <= 0) gravityMoveSpeed = 4.0f;
         if (jumpForce <= 0) jumpForce = 200.0f;
-        if (dashForce <= 0) dashForce = 100.0f;
+        if (dashForce <= 0) dashForce = 130.0f;
         if (dashTime <= 0) dashTime = 0.1f;
         if (dashCooldownTime <= 0) dashCooldownTime = 1.0f;
         if (ingredientThrowForce <= 0) ingredientThrowForce = 10f;
