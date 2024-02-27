@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class MainMenuManager : MonoBehaviour
     public CinemachineVirtualCamera SettingsCamera;
     public CinemachineVirtualCamera PlayerSelectionCamera;
     public CinemachineVirtualCamera CreditsCamera;
+    [SerializeField] private Animator leftDoorAnimator;
+    [SerializeField] private Animator rightDoorAnimator;
 
     [Header("Main Menu")]
     public Button StartGame;
@@ -44,6 +47,7 @@ public class MainMenuManager : MonoBehaviour
     [Header("Credits Menu")]
     public Button MainMenuFromCredits;
     public TMPro.TextMeshProUGUI creditsText;
+    public TextScroller creditsTextScroller;
     private Button[] CreditsMenuButtons;
 
     [Header("Menu Tabs")]
@@ -52,10 +56,31 @@ public class MainMenuManager : MonoBehaviour
     public GameObject PlayMenuTab;
     public GameObject CreditsMenuTab;
 
+    [Header("Button Sounds")]
+    public AudioClip buttonSwitchedSound;
+    public AudioClip backButtonPressedSound;
+    public AudioClip nextButtonPressedSound;
+
+    [Header("Level Loader")]
     [SerializeField] private LevelLoader levelLoader;
+
     private void Awake()
     {
         SceneHelper.Instance.ResetGame();
+
+        if (SceneHelper.Instance.isRestartGame)
+        {
+            if (!BaristapocalypseMultiplayer.playMultiplayer)
+            {
+                SceneHelper.Instance.isRestartGame = false;
+                PlayScene_SinglePlayer();
+            }
+            else
+            {
+                SceneHelper.Instance.isRestartGame = false;
+                LobbyScene();
+            }
+        }
     }
 
     public void Start()
@@ -116,14 +141,15 @@ public class MainMenuManager : MonoBehaviour
         SetInteractableSliders(SettingsMenuSliders, false);
         SetInteractableButtons(PlayerSelectionButtons, false);
         SetInteractableButtons(CreditsMenuButtons, false);
-        
+
+        creditsTextScroller.enabled = false;
     }
 
     void ReturnFromSettings() 
     { 
         if(SettingsCamera.Priority ==1) 
         {
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+            SoundManager.Instance.PlayOneShot(backButtonPressedSound);
             SettingsCamera.Priority= 0;
             MainmenuCamera.Priority= 1;
             EventSystem.current.SetSelectedGameObject(StartGame.gameObject);
@@ -138,7 +164,9 @@ public class MainMenuManager : MonoBehaviour
     { 
         if(PlayerSelectionCamera.Priority == 1) 
         {
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+            SoundManager.Instance.PlayOneShot(backButtonPressedSound);
+            leftDoorAnimator.SetBool("isOpen", false);
+            rightDoorAnimator.SetBool("isOpen", false);
             PlayerSelectionCamera.Priority= 0;
             MainmenuCamera.Priority= 1;
             EventSystem.current.SetSelectedGameObject(StartGame.gameObject);
@@ -154,10 +182,11 @@ public class MainMenuManager : MonoBehaviour
     {
         if (CreditsCamera.Priority == 1)
         {
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+            SoundManager.Instance.PlayOneShot(backButtonPressedSound);
             CreditsCamera.Priority = 0;
             MainmenuCamera.Priority = 1;
             EventSystem.current.SetSelectedGameObject(StartGame.gameObject);
+            creditsTextScroller.enabled = false;
             SetInteractableButtons(MainMenuButtons, true);
             SetInteractableButtons(SettingsMenuButtons, false);
             SetInteractableSliders(SettingsMenuSliders, false);
@@ -171,7 +200,7 @@ public class MainMenuManager : MonoBehaviour
     { 
         if (MainmenuCamera.Priority == 1)
         {
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+            SoundManager.Instance.PlayOneShot(nextButtonPressedSound);
             MainmenuCamera.Priority = 0;
             SettingsCamera.Priority = 1;
             EventSystem.current.SetSelectedGameObject(FullScreenGO.gameObject);
@@ -187,7 +216,7 @@ public class MainMenuManager : MonoBehaviour
     {
         if (MainmenuCamera.Priority == 1)
         {
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+            SoundManager.Instance.PlayOneShot(nextButtonPressedSound);
             MainmenuCamera.Priority = 0;
             CreditsCamera.Priority = 1;
             EventSystem.current.SetSelectedGameObject(FullScreenGO.gameObject);
@@ -196,6 +225,7 @@ public class MainMenuManager : MonoBehaviour
             SetInteractableSliders(SettingsMenuSliders, false);
             SetInteractableButtons(PlayerSelectionButtons, false);
             SetInteractableButtons(CreditsMenuButtons, true);
+            creditsTextScroller.enabled = true;
         }
     }
 
@@ -203,7 +233,9 @@ public class MainMenuManager : MonoBehaviour
     {
         if (MainmenuCamera.Priority == 1)
         {
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+            SoundManager.Instance.PlayOneShot(nextButtonPressedSound);
+            leftDoorAnimator.SetBool("isOpen", true);
+            rightDoorAnimator.SetBool("isOpen", true);
             MainmenuCamera.Priority = 0;
             PlayerSelectionCamera.Priority = 1;
             EventSystem.current.SetSelectedGameObject(singlePlayerButton.gameObject);
@@ -217,7 +249,7 @@ public class MainMenuManager : MonoBehaviour
 
     void LobbyScene() 
     {
-        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+        SoundManager.Instance.PlayOneShot(nextButtonPressedSound);
         BaristapocalypseMultiplayer.playMultiplayer = true;
         if (!levelLoader.isActiveAndEnabled)
         {
@@ -229,7 +261,7 @@ public class MainMenuManager : MonoBehaviour
 
     void PlayScene_SinglePlayer()
     {
-        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+        SoundManager.Instance.PlayOneShot(nextButtonPressedSound);
         BaristapocalypseMultiplayer.playMultiplayer = false;
         if (!levelLoader.isActiveAndEnabled)
         {
@@ -241,7 +273,7 @@ public class MainMenuManager : MonoBehaviour
 
     void closeGame() 
     {
-        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
+        SoundManager.Instance.PlayOneShot(nextButtonPressedSound);
     #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
         #else
@@ -273,7 +305,6 @@ public class MainMenuManager : MonoBehaviour
         foreach (Button button in buttons)
         {
             button.interactable = interactable;
-            Debug.Log($"Button {button.name} is interactable: {interactable}");
         }
     }
 
@@ -282,6 +313,46 @@ public class MainMenuManager : MonoBehaviour
         foreach (Slider slider in sliders)
         {
             slider.interactable = interactable;
+        }
+    }
+
+    private void Update()
+    {
+        if (Keyboard.current.upArrowKey.wasPressedThisFrame)
+        {
+            SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+        }
+        else if (Keyboard.current.downArrowKey.wasPressedThisFrame)
+        {
+            SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+        }
+        else if (Keyboard.current.leftArrowKey.wasPressedThisFrame)
+        {
+            SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+        }
+        else if (Keyboard.current.rightArrowKey.wasPressedThisFrame)
+        {
+            SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+        }
+
+        if (Gamepad.current != null)
+        {
+            if (Gamepad.current.dpad.up.wasPressedThisFrame)
+            {
+                SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+            }
+            else if (Gamepad.current.dpad.down.wasPressedThisFrame)
+            {
+                SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+            }
+            else if (Gamepad.current.dpad.left.wasPressedThisFrame)
+            {
+                SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+            }
+            else if (Gamepad.current.dpad.right.wasPressedThisFrame)
+            {
+                SoundManager.Instance.PlayOneShot(buttonSwitchedSound);
+            }
         }
     }
 }

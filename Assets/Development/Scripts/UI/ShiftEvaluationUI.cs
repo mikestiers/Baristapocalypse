@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Serialization;
@@ -5,22 +6,22 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.Netcode;
 
-public class ShiftEvaluationUI : MonoBehaviour
+public class ShiftEvaluationUI : NetworkBehaviour
 {
-    private int previousCustomersServed;
-    private int previousCustomersLeave;
-    private int previousTipsAcquired;
+    public static ShiftEvaluationUI Instance {  get; private set; }
 
-    public float rPSpeed;
-    public float rPArrivalThreshold;
-    public float popOutReviewTime;
-    private Vector3 originalEvaluationPosition;
-    private Vector3 popOutEvaluationPosition;
+    private NetworkVariable<int> previousCustomersServed = new NetworkVariable<int>();
+    private NetworkVariable<int> previousCustomersLeave = new NetworkVariable<int>();
+    private NetworkVariable<int> previousTipsAcquired = new NetworkVariable<int>();
 
-    [Header("Pop Out Transforms")]
-    public Transform EvaluationPanel;
-    public Transform popOutEvaluationPanel;
+    [SerializeField] private float transitionSpeed;
+    [SerializeField] private float popOutReviewTime;
+    [SerializeField] private RectTransform shiftEvaluationRectTransform;
+
+    [SerializeField] private Vector2 startPos;
+    [SerializeField] private Vector2 endPos;
 
     [Header("Text")]
     public TextMeshProUGUI customersServedValue;
@@ -30,22 +31,45 @@ public class ShiftEvaluationUI : MonoBehaviour
     public List<Image> starImages;
     public List<GameObject> containers;
 
+    public delegate void ShiftEvaluationHandler();
+    public static event ShiftEvaluationHandler OnShiftEvaluation;
+
+    private void Awake()
+    {
+        Instance = this;
+        OnShiftEvaluation += HandleShiftEvaluation;
+    }
+
+    public override void OnDestroy()
+    {
+        OnShiftEvaluation -= HandleShiftEvaluation;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        previousCustomersLeave = 0;
-        previousTipsAcquired = 0;
-        previousCustomersServed = 0;
+        previousCustomersLeave.Value = 0;
+        previousTipsAcquired.Value = 0;
+        previousCustomersServed.Value = 0;
+    }
 
-        originalEvaluationPosition = EvaluationPanel.transform.position;
-        popOutEvaluationPosition = popOutEvaluationPanel.position;
+    public void HandleShiftEvaluation()
+    {
+        HandleShiftEvaluationClientRpc();
+    }
+
+    [ClientRpc]
+    private void HandleShiftEvaluationClientRpc()
+    {
+        Evaluate();
     }
 
     public void Evaluate()
     {
-        int customersServed = CustomerManager.Instance.GetCustomerServed() - previousCustomersServed;
-        int customersLeave = CustomerManager.Instance.GetCustomerLeave() - previousCustomersLeave;
-        int tipsAcquired = GameManager.Instance.moneySystem.GetCurrentMoney() - previousTipsAcquired;
+        GameManager.Instance.isEvaluationOn = true;
+        int customersServed = CustomerManager.Instance.GetCustomerServed() - previousCustomersServed.Value;
+        int customersLeave = CustomerManager.Instance.GetCustomerLeave() - previousCustomersLeave.Value;
+        int tipsAcquired = GameManager.Instance.moneySystem.GetCurrentMoney() - previousTipsAcquired.Value;
         int currentRatings = Mathf.FloorToInt(GameManager.Instance.moneySystem.GetAverageReviewrating());
 
         customersServedValue.text = customersServed.ToString();
@@ -54,30 +78,30 @@ public class ShiftEvaluationUI : MonoBehaviour
 
         UpdateStarRating(currentRatings);
 
-        StartCoroutine(MoveEP(popOutEvaluationPosition, originalEvaluationPosition));
+        StartCoroutine(MoveEP());
     }
 
     public void UpdatePreviousValues() 
     {
-        previousCustomersServed = CustomerManager.Instance.GetCustomerServed();
-        previousCustomersLeave = CustomerManager.Instance.GetCustomerLeave();
-        previousTipsAcquired =GameManager.Instance.moneySystem.GetCurrentMoney();
+        previousCustomersServed.Value = CustomerManager.Instance.GetCustomerServed();
+        previousCustomersLeave.Value = CustomerManager.Instance.GetCustomerLeave();
+        previousTipsAcquired.Value = GameManager.Instance.moneySystem.GetCurrentMoney();
     }
 
-    private IEnumerator MoveEP(Vector3 target, Vector3 start)
+    private IEnumerator MoveEP()
     {
-        float startTime = Time.time;
-        StartCoroutine(ShowElements());
+        float startTime = 0f;
 
         // Move towards the target
-        while (Time.time - startTime < popOutReviewTime)
+        while (startTime < transitionSpeed)
         {
-            float t = (Time.time - startTime) / popOutReviewTime * rPSpeed;
-            EvaluationPanel.transform.position = Vector3.Lerp(start, target, t);
+            float t = startTime / transitionSpeed;
+            shiftEvaluationRectTransform.anchoredPosition = Vector3.Lerp(startPos, endPos, t);
+            startTime += Time.deltaTime;
             yield return null;
         }
 
-       
+        StartCoroutine(ShowElements());
     }
 
     private IEnumerator ShowElements()
@@ -89,34 +113,33 @@ public class ShiftEvaluationUI : MonoBehaviour
             yield return new WaitForSeconds(.5f);
         }
 
-        yield return new WaitForSeconds(8f);
+        yield return new WaitForSeconds(6f);
 
-        StartCoroutine(MoveBackEP(originalEvaluationPosition, popOutEvaluationPosition));
+        StartCoroutine(MoveBackEP());
     }
 
-    private IEnumerator MoveBackEP(Vector3 target, Vector3 start)
+    private IEnumerator MoveBackEP()
     {
-        float startTime = Time.time;
-
-        startTime = Time.time;
+        float startTime = 0;
 
         // Move back to the initial position
-        while (Time.time - startTime < popOutReviewTime)
+        while (startTime < transitionSpeed)
         {
-            float t = (Time.time - startTime) / popOutReviewTime * rPSpeed;
-            EvaluationPanel.transform.position = Vector3.Lerp(start, target, t);
+            float t = startTime / transitionSpeed;
+            shiftEvaluationRectTransform.anchoredPosition = Vector3.Lerp(endPos, startPos, t);
+            startTime += Time.deltaTime;
             yield return null;
         }
 
-        yield return new WaitForSeconds(popOutReviewTime);
-
         UpdatePreviousValues();
+
+        GameManager.Instance.isEvaluationOn = false;
     }
 
     //set
     public IEnumerator ActivateMessage(GameObject Container)
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
 
         Container.SetActive(true);
 

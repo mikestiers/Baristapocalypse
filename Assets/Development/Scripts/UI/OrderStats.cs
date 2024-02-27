@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using Unity.Netcode;
+using Unity.VisualScripting;
 
-public class OrderStats : MonoBehaviour
+public class OrderStats : NetworkBehaviour
 {
     [Header("UI Objects")]
     [SerializeField] public GameObject customerInfoRoot;
@@ -33,7 +33,7 @@ public class OrderStats : MonoBehaviour
     [SerializeField] public Sprite OrderTargetEmptyRectangle;
     [SerializeField] public Sprite OrderTargetSuccessPolygon;
     [SerializeField] public Sprite OrderTargetSuccessRectangle;
-    [SerializeField] public Sprite TransparentSegment;  
+    [SerializeField] public Sprite TransparentSegment;
     [SerializeField] public Image resetMachineImage;
     [SerializeField] public Image previousMachineImage;
     [SerializeField] public Image nextMachineImage;
@@ -42,7 +42,7 @@ public class OrderStats : MonoBehaviour
     [SerializeField] public BrewingStation brewingStation;
 
     [Header("Private State Values")]
-    [SerializeField] private CustomerBase orderOwner;
+    private OrderInfo currentOrder;
     [SerializeField] private GameObject temperatureTargetSegment;
     [SerializeField] private GameObject sweetnessTargetSegment;
     [SerializeField] private GameObject spicinessTargetSegment;
@@ -60,21 +60,25 @@ public class OrderStats : MonoBehaviour
     [SerializeField] private int spicinessCumulativeValue;
     [SerializeField] private int strengthCumulativeValue;
 
-    public bool orderInProgress { get; set; }
+    public bool orderInProgress;
     public List<PlayerController> currentPlayers;
 
     private void OnEnable()
     {
-        PlayerController.OnInputChanged += InputUpdated;
+        InputManager.OnInputChanged += InputUpdated;
         brewingStation.OnBrewingEmpty += OrderCompleted;
         brewingStation.OnBrewingDone += OrderCompleted;
+
+        CustomerBase.OnCustomerLeave += CustomerBase_OnCustomerLeave;
     }
 
     private void OnDisable()
     {
-        PlayerController.OnInputChanged -= InputUpdated;
+        InputManager.OnInputChanged -= InputUpdated;
         brewingStation.OnBrewingEmpty -= OrderCompleted;
         brewingStation.OnBrewingDone -= OrderCompleted;
+
+        CustomerBase.OnCustomerLeave -= CustomerBase_OnCustomerLeave;
     }
 
     private void Start()
@@ -87,15 +91,23 @@ public class OrderStats : MonoBehaviour
         OrderInProgress();
     }
 
+    private void CustomerBase_OnCustomerLeave(int customerIndex)
+    {
+        if (currentOrder.number == customerIndex)
+        {
+            OrderCompleted(this, EventArgs.Empty);
+        }
+    }
+
     private void Update()
     {
         if (orderInProgress == true)
         {
             UpdateTimer();
-            SetTargetSegment(temperatureSegments, temperatureTargetValue, temperaturePotentialValue);
-            SetTargetSegment(sweetnessSegments, sweetnessTargetValue, sweetnessPotentialValue);
-            SetTargetSegment(spicinessSegments, spicinessTargetValue, spicinessPotentialValue);
-            SetTargetSegment(strengthSegments, strengthTargetValue, strengthPotentialValue);
+            SetTargetSegment(temperatureSegments, temperatureTargetValue, temperatureCumulativeValue);
+            SetTargetSegment(sweetnessSegments, sweetnessTargetValue, sweetnessCumulativeValue);
+            SetTargetSegment(spicinessSegments, spicinessTargetValue, spicinessCumulativeValue);
+            SetTargetSegment(strengthSegments, strengthTargetValue, strengthCumulativeValue);
         }
     }
 
@@ -114,21 +126,39 @@ public class OrderStats : MonoBehaviour
 
     private void OrderCompleted(object sender, EventArgs e)
     {
+        OrderCompletedClientRpc();
+    }
+
+    [ClientRpc]
+    private void OrderCompletedClientRpc()
+    {
         orderInProgress = false;
         OrderInProgress();
     }
 
-    public void SetOrderInfo(Order order)
+    public void SetOrderInfo(OrderInfo order)
     {
-        SetOrderOwner(order.customer);
+        SetOrderInfoServerRpc(order);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetOrderInfoServerRpc(OrderInfo order)
+    {
+        SetOrderInfoClientRpc(order);
+    }
+
+    [ClientRpc]
+    private void SetOrderInfoClientRpc(OrderInfo order)
+    {
+        currentOrder = order;
         customerInfoRoot.SetActive(true);
-        customerNumberText.text = order.customer.customerNumber.ToString();
-        customerNameText.text = order.customer.customerName;
-        orderTimer.value = order.customer.orderTimer.Value;
-        temperatureTargetValue = MapValue(order.customer.coffeeAttributes.GetTemperature());
-        sweetnessTargetValue = MapValue(order.customer.coffeeAttributes.GetSweetness());
-        spicinessTargetValue = MapValue(order.customer.coffeeAttributes.GetSpiciness());
-        strengthTargetValue = MapValue(order.customer.coffeeAttributes.GetStrength());
+        customerNumberText.text = order.number.ToString();
+        customerNameText.text = order.orderName.ToString();
+        orderTimer.value = order.orderTimer;
+        temperatureTargetValue = MapValue(order.coffeeAttributesTemperature);
+        sweetnessTargetValue = MapValue(order.coffeeAttributesSweetness);
+        spicinessTargetValue = MapValue(order.coffeeAttributesSpiciness);
+        strengthTargetValue = MapValue(order.coffeeAttributesStrength);
         ResetPotential();
         orderInProgress = true;
         SetTargetSegment(temperatureSegments, temperatureTargetValue, temperaturePotentialValue);
@@ -138,18 +168,20 @@ public class OrderStats : MonoBehaviour
         OrderInProgress();
     }
 
-    public CustomerBase GetOrderOwner()
-    {
-        return orderOwner;
-    }
-
-    public void SetOrderOwner(CustomerBase customer)
-    {
-        orderOwner = customer;
-    }
-
     // Fade or unfade the order stats
     public void OrderInProgress()
+    {
+        OrderInProgressServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void OrderInProgressServerRpc()
+    {
+        OrderInProgressClientRpc();
+    }
+
+    [ClientRpc]
+    private void OrderInProgressClientRpc()
     {
         Image[] images = GetComponentsInChildren<Image>(); // not including 'true' parameter because it includes inactive objects and the segments are not active by default
         foreach (Image image in images)
@@ -166,7 +198,6 @@ public class OrderStats : MonoBehaviour
                 strengthTargetValue = MapValue(0);
 
                 ResetAll();
-                orderOwner = null;
             }
             else if (orderInProgress)
             {
@@ -183,38 +214,22 @@ public class OrderStats : MonoBehaviour
 
     private void UpdateTimer()
     {
-        if (orderOwner.GetCustomerState() != CustomerBase.CustomerState.Leaving)
-            orderTimer.value = - (orderOwner.customerLeaveTime - orderOwner.orderTimer.Value) / orderOwner.customerLeaveTime;
+        /*if (orderOwner.GetCustomerState() != CustomerBase.CustomerState.Leaving)
+        {
+            orderTimer.value = - (orderOwner.customerLeaveTime - orderOwner.orderTimer) / orderOwner.customerLeaveTime;
+        }
         else
         {
             brewingStation.Empty();
-            brewingStation.availableForOrder = true;
+            brewingStation.availableForOrder.Value = true;
             orderInProgress = false;
             OrderInProgress();
-        }
+        }*/
     }
 
     public List<PlayerController> GetActivePlayers()
     {
         return currentPlayers;
-    }
-
-    public void SetActivePlayer(PlayerController player)
-    {
-        if (currentPlayers.Count > 0)
-        {
-            currentPlayers.Add(player);
-            selectedByPlayerImage.SetActive(true);
-        }
-    }
-
-    public void RemoveActivePlayer(PlayerController player)
-    {
-        currentPlayers.Remove(player);
-        if (currentPlayers.Count == 0)
-        {
-            selectedByPlayerImage.SetActive(false);
-        }
     }
 
     public void SetPotentialTemperature(int value)
@@ -236,18 +251,82 @@ public class OrderStats : MonoBehaviour
     }
 
     public void SetPotentialStrength(int value)
-    {   
+    {
         strengthPotentialValue = value;
         SetPotentialSegment(strengthPotentialAttributeSelector, strengthSegments[MapValue(value)], strengthPotentialValue, strengthTargetValue);
     }
 
-    public void SetCumulativeTemperature(int value) => temperatureCumulativeValue = value;
+    public void SetCumulativeTemperature(int value)
+    {
+        SetCumulativeTemperatureServerRpc(value);
+    }
 
-    public void SetCumulativeSweetness(int value) => sweetnessCumulativeValue = value;
+    [ServerRpc(RequireOwnership = false)]
+    private void SetCumulativeTemperatureServerRpc(int value)
+    {
+        SetCumulativeTemperatureClientRpc(value);
+    }
 
-    public void SetCumulativeSpiciness(int value) => spicinessCumulativeValue = value;
+    [ClientRpc]
+    private void SetCumulativeTemperatureClientRpc(int value)
+    {
+        temperatureCumulativeValue = value;
+        temperaturePotentialValue = value;
+    }
 
-    public void SetCumulativeStrength(int value) => strengthCumulativeValue = value;
+    public void SetCumulativeSweetness(int value)
+    {
+        SetCumulativeSweetnessServerRpc(value);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetCumulativeSweetnessServerRpc(int value)
+    {
+        SetCumulativeSweetnessClientRpc(value);
+    }
+
+    [ClientRpc]
+    private void SetCumulativeSweetnessClientRpc(int value)
+    {
+        sweetnessCumulativeValue = value;
+        sweetnessPotentialValue = value;
+    }
+
+    public void SetCumulativeSpiciness(int value)
+    {
+        SetCumulativeSpicinessServerRpc(value);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetCumulativeSpicinessServerRpc(int value)
+    {
+        SetCumulativeSpicinessClientRpc(value);
+    }
+
+    [ClientRpc]
+    private void SetCumulativeSpicinessClientRpc(int value)
+    {
+        spicinessCumulativeValue = value;
+        spicinessPotentialValue = value;
+    }
+
+    public void SetCumulativeStrength(int value)
+    {
+        SetCumulativeStrengthServerRpc(value);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetCumulativeStrengthServerRpc(int value)
+    {
+        SetCumulativeStrengthClientRpc(value);
+    }
+
+    [ClientRpc]
+    private void SetCumulativeStrengthClientRpc(int value)
+    {
+        strengthCumulativeValue = value;
+        strengthPotentialValue = value;
+    }
 
     public void ResetSegments(GameObject[] segments)
     {

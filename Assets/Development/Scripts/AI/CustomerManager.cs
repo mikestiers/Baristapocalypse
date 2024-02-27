@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Mathematics;
 using Unity.Netcode;
 using Unity.VisualScripting;
@@ -20,12 +21,12 @@ public class CustomerManager : Singleton<CustomerManager>
     [SerializeField] private int numberOfCustomers = 5;
     [SerializeField] private int customersLeftinWave;
     [SerializeField] private int WavesLeft;
-    [SerializeField] private int customersInStore = 0;
+    [SerializeField] private int customersLefttoServe = 0;
     [SerializeField] private float initCustomerSpawnDelay;
     private float timer;
     private ServingState currentServingState;
     private int customerNumber = 0;
-    List<string> customerNames = new List<string>
+    List<FixedString32Bytes> customerNames = new List<FixedString32Bytes>
         {
             "Abby",
             "Abdul",
@@ -77,8 +78,8 @@ public class CustomerManager : Singleton<CustomerManager>
     //private int chairNumber = 0;
 
     //Shift Evaluation values
-    private int customerServed = 0;
-    private int customerLeave = 0;
+    private NetworkVariable<int> customerServed = new NetworkVariable<int>(0);
+    private NetworkVariable<int> customerLeave = new NetworkVariable<int>(0);
 
     private bool IsServing = true;
     private bool isSpawningCustomers = false;
@@ -127,11 +128,11 @@ public class CustomerManager : Singleton<CustomerManager>
 
         if (GameManager.Instance.IsGamePlaying())
         {
-            Debug.Log($"currentServingState {currentServingState}");
+            //Debug.Log($"currentServingState {currentServingState}");
             switch (currentServingState)
             {
                 case ServingState.CurrentlyServing:
-                    if (GetCustomerLeftinStore() <= 0 && isSpawningCustomers == true)
+                    if (GetCustomerLefttoServe() <= 0 && customersLeftinWave <= 0 && isSpawningCustomers == true)
                     {
                         isSpawningCustomers = false;
                         currentServingState = ServingState.BreakTime;
@@ -169,7 +170,7 @@ public class CustomerManager : Singleton<CustomerManager>
         {
             SpawnCustomer();
             StartCoroutine(CustomerEnterStore());
-            customersInStore++;
+            customersLefttoServe++;
             customersLeftinWave--;
             //UIManager.Instance.customersInStore.text = ("Customers in Store: ") + customersInStore.ToString();
             //UIManager.Instance.customersLeft.text = ("SpawnLeft: " + customersLeftinWave.ToString());
@@ -208,7 +209,7 @@ public class CustomerManager : Singleton<CustomerManager>
             }
             else if (GameValueHolder.Instance.difficultySettings.GetShift() < GameValueHolder.Instance.difficultySettings.MaxShift)
             {
-                UIManager.Instance.ShowShiftEvaluation();
+                ShiftEvaluationUI.Instance.HandleShiftEvaluation();
                 GameValueHolder.Instance.difficultySettings.NextShift();
                 WavesLeft = GameValueHolder.Instance.difficultySettings.GetNumberOfWaves();
                 currentServingState = ServingState.CurrentlyServing;
@@ -290,18 +291,10 @@ public class CustomerManager : Singleton<CustomerManager>
 
     private void SpawnCustomer()
     {
-        //newcustomer = Instantiate(customerPrefab, barEntrance.transform.position, Quaternion.identity);
-
-        // Ensure that the spawned object is spawned on the network
-        //newcustomer.Spawn();
-
-        //customersOutsideList.Add(newcustomer.GetComponent<CustomerBase>());
-
-        //customerNumber += 1;
         SpawnCustomerServerRpc();
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [ServerRpc]
     private void SpawnCustomerServerRpc()
     {
         Transform newCustomerTransform = Instantiate(customerPrefab.transform, barEntrance.transform.position, Quaternion.identity);
@@ -312,7 +305,7 @@ public class CustomerManager : Singleton<CustomerManager>
         customersOutsideList.Add(newCustomerBase);
         customerNumber += 1;
 
-        newCustomerBase.customerNumber = customerNumber;
+        newCustomerBase.customerNumber.Value = customerNumber;
         if(customerNames.Count >= 1)
         {
             int randomCustomerNameIndex = UnityEngine.Random.Range(0, customerNames.Count);
@@ -322,6 +315,8 @@ public class CustomerManager : Singleton<CustomerManager>
 
         newCustomer.Spawn(true);
     }
+
+
 
     public int TotalCustomers()
     {
@@ -368,34 +363,34 @@ public class CustomerManager : Singleton<CustomerManager>
         return exit;
     }
 
-    public int GetCustomerLeftinStore()
+    public int GetCustomerLefttoServe()
     {
-        return customersInStore;
+        return customersLefttoServe;
     }
 
-    public void ReduceCustomerInStore()
+    public void ReduceCustomerLeftoServe()
     {
-        customersInStore--;
+        if(IsServer) customersLefttoServe--;
     }
 
     public void customerServedIncrease()
     {
-        customerServed++;
+        if(IsServer) customerServed.Value++;
     }
 
     public void customerLeaveIncrease()
     {
-        customerLeave++;
+        if(IsServer) customerLeave.Value++;
     }
 
     public int GetCustomerServed()
     {
-        return customerServed;
+        return customerServed.Value;
     }
 
     public int GetCustomerLeave()
     {
-        return customerLeave;
+        return customerLeave.Value;
     }
 }
 

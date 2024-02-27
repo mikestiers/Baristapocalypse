@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 using System.Linq;
+using UnityEngine.InputSystem;
 
 public class IngredientSelectionUI : BaseStation
 {
@@ -17,12 +18,29 @@ public class IngredientSelectionUI : BaseStation
     public GameObject buttonsRoot;
     [SerializeField] private Button[] ingredientButtons;
     [SerializeField] private GameObject[] selectedBGImages;
+    [SerializeField] private GameObject interactImage;
     public IngredientStationType ingredientStationType;
     public IngredientListSO ingredientList;
     private int ingredientListIndex;
     private IngredientSO currentIngredient;
     private bool canSelectIngredient = false;
     public bool isInUse = false;
+    public bool isOnPlate = false;
+
+    private void OnEnable()
+    {
+        InputManager.OnInputChanged += InputUpdated;
+    }
+
+    private void OnDisable()
+    {
+        InputManager.OnInputChanged -= InputUpdated;
+    }
+
+    private void InputUpdated(InputImagesSO inputImagesSO)
+    {
+        interactImage.GetComponentInChildren<Image>().sprite = inputImagesSO.interact;
+    }
 
     private void Start()
     {
@@ -32,16 +50,16 @@ public class IngredientSelectionUI : BaseStation
 
         switch (ingredientStationType)
         {
-            case IngredientStationType.Temperature:
+            case IngredientStationType.Milk:
                 ingredientList = GameValueHolder.Instance.difficultySettings.temperatureIngredientList;
                 break;
-            case IngredientStationType.Sweetness:
+            case IngredientStationType.Sweetener:
                 ingredientList = GameValueHolder.Instance.difficultySettings.sweetnessIngredientList;
                 break;
-            case IngredientStationType.Strength:
+            case IngredientStationType.CoffeeGrind:
                 ingredientList = GameValueHolder.Instance.difficultySettings.strengthIngredientList;
                 break;
-            case IngredientStationType.Spiciness:
+            case IngredientStationType.BioMatter:
                 ingredientList = GameValueHolder.Instance.difficultySettings.spicinessIngredientList;
                 break;
             default:
@@ -55,9 +73,22 @@ public class IngredientSelectionUI : BaseStation
 
     private void Update()
     {
-        // This should not be in Update() but difficultysettings are not available when the game starts for some reason
+        if (((Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame) || Keyboard.current.qKey.wasPressedThisFrame) && isOnPlate == true)
+        {
+            interactImage.SetActive(false);
+            Show(ingredientMenu);
+            //player.movementToggle = false;  // use when camera zooms
+            isInUse = true;
+        }
 
-       
+        // This is for when camera zooms so we can close camera
+        //if ((Gamepad.current.buttonWest.wasPressedThisFrame || Keyboard.current.eKey.wasPressedThisFrame) && isInUse == true)
+        //{
+        //    interactImage.SetActive(false);
+        //    StartCoroutine(CloseMenu());
+        //    player.movementToggle = true;
+        //    isInUse = false;
+        //}
 
         if (!currentStationInteraction)
             return;
@@ -77,6 +108,15 @@ public class IngredientSelectionUI : BaseStation
             // Playing with controller or mouse?
             GameObject targetObj = selectedObj != null ? selectedObj : hoveredObj;
 
+            // Detecting if the ingredient is already in the list so you can
+            // switch to the next brewing station if you want to do two at once
+            foreach (IngredientSO ingredient in OrderManager.Instance.brewingStations[player.currentBrewingStation].ingredientSOList)
+            {
+                if (ingredient.objectTag == ingredientStationType.ToString())
+                    return;
+            }
+
+            // Hover behaviour for ingredient selection buttons
             if (targetObj != null)
             {
                 for (int i = 0; i < ingredientButtons.Length; i++)
@@ -118,9 +158,8 @@ public class IngredientSelectionUI : BaseStation
 
     public void AddIngredient()
     {
-        EventSystem.current.SetSelectedGameObject(null);
+        //EventSystem.current.SetSelectedGameObject(null);
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
-        player.movementToggle = true;
         if (OrderManager.Instance.brewingStations[player.currentBrewingStation].TryAddIngredient(currentIngredient))
         {
             OrderManager.Instance.brewingStations[player.currentBrewingStation].AddIngredientToListSO(BaristapocalypseMultiplayer.Instance.GetIngredientSOIndex(currentIngredient));
@@ -138,7 +177,7 @@ public class IngredientSelectionUI : BaseStation
             else if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.fourthIngredientSelected)
                 TutorialManager.Instance.MadeFourthIngredientSelection();
         }
-        StartCoroutine(CloseMenu());
+        //StartCoroutine(CloseMenu());
     }
 
     private void OnTriggerEnter(Collider other)
@@ -146,15 +185,13 @@ public class IngredientSelectionUI : BaseStation
         if (other.tag == "Player")
         {
             player = other.GetComponent<PlayerController>();
-            //player.movementToggle = false;
 
             //Display UI ingredient menu
             if (player.IsLocalPlayer)
             {
-                Show(ingredientMenu);
-                isInUse = true;
+                isOnPlate = true;
+                interactImage.SetActive(true);
             }
-            
         }
     }
 
@@ -163,7 +200,6 @@ public class IngredientSelectionUI : BaseStation
         if (other.tag == "Player")
         {
             player = other.GetComponent<PlayerController>();
-            player.movementToggle = true;
 
             if (player.IsLocalPlayer)
             {
@@ -171,6 +207,8 @@ public class IngredientSelectionUI : BaseStation
                 EventSystem.current.SetSelectedGameObject(null);
                 StartCoroutine(CloseMenu());
                 isInUse = false;
+                isOnPlate = false;
+                interactImage.SetActive(false);
             }
         }
     }
@@ -189,18 +227,10 @@ public class IngredientSelectionUI : BaseStation
         canSelectIngredient = true;
         currentStationInteraction = true;
         obj.SetActive(true);
-
+        
         // Select first igredient if not playing with mouse
-        if (!Cursor.visible)
-        {
-            EventSystem.current.firstSelectedGameObject = ingredientButtons[0].gameObject;
-            SetDefaultSelected(ingredientButtons[0].gameObject);
-        }
-        else if (Cursor.visible) 
-        {
-            // Fix bug where BG select image does not trigger at the start of the game
-        }
-
+        EventSystem.current.firstSelectedGameObject = ingredientButtons[0].gameObject;
+        SetDefaultSelected(ingredientButtons[0].gameObject);
     }
 
     private void CalculateIngredients(IngredientSO currentIngredient)
@@ -216,14 +246,13 @@ public class IngredientSelectionUI : BaseStation
         Hide(ingredientMenu);
         OrderManager.Instance.orderStats[player.currentBrewingStation].SetPotentialToCumulative();
         currentStationInteraction = false;
-        player.movementToggle = true;
     }
 }
 
 public enum IngredientStationType
 {
-    Temperature,
-    Sweetness,
-    Spiciness,
-    Strength
+    Milk,
+    Sweetener,
+    BioMatter,
+    CoffeeGrind
 }

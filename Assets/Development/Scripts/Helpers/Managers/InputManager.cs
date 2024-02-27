@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
+//using UnityEditor.ShaderGraph;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -22,8 +24,16 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
     public event EventHandler PauseEvent;
     public event Action BrewingStationSelectEvent;
     public event Action BrewingStationEmptyEvent;
+    public event Action AnyPressedEvent;
 
     public event Action DebugConsoleEvent;
+
+    public InputDevice inputDevice;
+    public InputImagesSO inputImagesSOXbox;
+    public InputImagesSO inputImagesSODualSense;
+    public InputImagesSO inputImagesSOKeyboardMouse;
+    private InputImagesSO inputImagesSO;
+    public static event Action<InputImagesSO> OnInputChanged;
 
     //player movement input
     [HideInInspector] public Vector3 moveDir;
@@ -44,12 +54,97 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
     {
         Instance = this;
         controllerInputs = new ControllerInputs();
+
+        if (Gamepad.current != null && Gamepad.current.displayName.Contains("Xbox"))
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            inputImagesSO = inputImagesSOXbox;
+            inputDevice = InputDevice.Xbox;
+        }
+        else if (Gamepad.current != null && Gamepad.current.displayName.Contains("DualSense"))
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked; 
+            inputImagesSO = inputImagesSODualSense;
+            inputDevice = InputDevice.DualSense;
+        }
+        else
+        {
+            inputImagesSO = inputImagesSOKeyboardMouse;
+            inputDevice = InputDevice.KeyboardMouse;
+        }
+        OnInputChanged?.Invoke(inputImagesSO);
     }
 
     private void Start()
     {
         controllerInputs.Player.SetCallbacks(this);// SetCallbacks calls the methods for us
         controllerInputs.Player.Enable();
+    }
+
+    public void OnMouseDetection(InputAction.CallbackContext context)
+    {
+        if (inputDevice == InputDevice.KeyboardMouse)
+            return;
+        if (context.performed)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            inputImagesSO = inputImagesSOKeyboardMouse;
+            inputDevice = InputDevice.KeyboardMouse;
+            OnInputChanged?.Invoke(inputImagesSO);
+        }
+    }
+
+    public void OnGamepadDetection(InputAction.CallbackContext context)
+    {
+        if (inputDevice == InputDevice.DualSense || inputDevice == InputDevice.Xbox)
+            return;
+        if (context.performed)
+            GamepadTypeDetection(context);
+    }
+
+    public void OnKeyboardDetection(InputAction.CallbackContext context)
+    {
+        if (inputDevice == InputDevice.KeyboardMouse)
+            return;
+        if (context.performed)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            inputImagesSO = inputImagesSOKeyboardMouse;
+            inputDevice = InputDevice.KeyboardMouse;
+            OnInputChanged?.Invoke(inputImagesSO);
+        }
+    }
+
+    public void GamepadTypeDetection(InputAction.CallbackContext context)
+    {
+        if (Gamepad.current != null && Gamepad.current.displayName.Contains("DualSense"))
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            inputImagesSO = inputImagesSODualSense;
+            inputDevice = InputDevice.DualSense;
+            OnInputChanged?.Invoke(inputImagesSO);
+        }
+        else if (Gamepad.current != null && Gamepad.current.displayName.Contains("Xbox"))
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            inputImagesSO = inputImagesSOXbox;
+            inputDevice = InputDevice.Xbox;
+            OnInputChanged?.Invoke(inputImagesSO);
+        }
+        else // some other gamepad, just show xbox
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            inputImagesSO = inputImagesSOXbox;
+            inputDevice = InputDevice.Xbox;
+            OnInputChanged?.Invoke(inputImagesSO);
+        }
     }
 
     private void OnDestroy()
@@ -136,5 +231,13 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
     {
         if (context.performed)
             DebugConsoleEvent?.Invoke();
+    }
+
+    public enum InputDevice
+    {
+        None,
+        DualSense,
+        Xbox,
+        KeyboardMouse
     }
 }
