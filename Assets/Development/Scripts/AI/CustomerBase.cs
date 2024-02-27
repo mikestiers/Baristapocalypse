@@ -69,6 +69,15 @@ public class CustomerBase : Base
     private float animationWaitTime = 1.2f;
     private bool isGivingOrderToCustomer = false;
 
+    // Customer Animations
+    [Header("Customer Animations")]
+    [SerializeField] private GameObject bodiesContainerObject;
+    private Animator customerAnimator;
+    private readonly int Customer1_IdleHash = Animator.StringToHash("Customer1_Idle");
+    private readonly int Customer1_WalkHash = Animator.StringToHash("Customer1_Walk");
+    private readonly int Customer1_StruggleHash = Animator.StringToHash("Customer1_Struggle");
+
+
     public delegate void CustomerLeaveEvent(int customerNumber);
     public static event CustomerLeaveEvent OnCustomerLeave;
     
@@ -83,7 +92,9 @@ public class CustomerBase : Base
         {
             SetCustomerState(CustomerState.Init);
         }
-        
+
+        customerAnimator = bodiesContainerObject.GetComponentInChildren<Animator>();
+
         SetCustomerVisualIdentifiers();
 
         customerLeaveTime = Random.Range(GameValueHolder.Instance.difficultySettings.GetMinWaitTime(), GameValueHolder.Instance.difficultySettings.GetMaxWaitTime());
@@ -100,7 +111,13 @@ public class CustomerBase : Base
 
     public virtual void Update()
     {
-        if(!IsOwner) return;    
+        if(!IsOwner) return;
+
+        if (!customerAnimator)
+        {
+            customerAnimator = bodiesContainerObject.GetComponentInChildren<Animator>();
+        }
+
         if (orderTimer >= 0f)
         {
             orderTimer += Time.deltaTime;
@@ -163,11 +180,14 @@ public class CustomerBase : Base
     // When a customer's state has changed, the appropriate Update<action> method is called
     private void UpdateWandering()
     {
+        customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
+
         // To be implmented or removed
     }
 
     private void UpdateWaiting()
     {
+        customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
         // To be implmented or removed
         if (makingAMess == true) SetCustomerState(CustomerState.Loitering);
 
@@ -187,6 +207,7 @@ public class CustomerBase : Base
 
     private void UpdateOrdering()
     {
+        customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
         if (orderTimer < 0)
         {
             //Order();
@@ -226,6 +247,7 @@ public class CustomerBase : Base
 
     private void UpdateLeaving()
     {
+        customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 idle animation
         messTime = null;
         leaving = true;
         if (agent.remainingDistance < distThreshold)
@@ -314,6 +336,7 @@ public class CustomerBase : Base
 
     private void UpdatePickedUp()
     {
+        customerAnimator.CrossFadeInFixedTime(Customer1_StruggleHash, CrossFadeDuration); // Customer1 idle animation
         //Remove order from list if picked up
         if (OnCustomerLeave != null)
         {
@@ -323,7 +346,9 @@ public class CustomerBase : Base
 
     private void UpdateSitting()
     {
-        
+        // sitting animation
+        customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
+
     }
 
     private void UpdateDead()
@@ -507,6 +532,7 @@ public class CustomerBase : Base
     {
         if (agent.isStopped) agent.isStopped = false;
         agent.SetDestination(Spot);
+        customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
         SetCustomerState(CustomerState.Moving);
         moving = true;
     }
