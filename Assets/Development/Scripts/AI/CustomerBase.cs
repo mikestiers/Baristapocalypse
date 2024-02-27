@@ -18,6 +18,7 @@ public class CustomerBase : Base
     public NavMeshAgent agent;
     public bool frontofLine;
     public bool inLine;
+    public bool atSit = false; //for tables customer rotation orientation 
     public bool leaving = false;
     public bool makingAMess = false;
     public bool moving;
@@ -40,7 +41,9 @@ public class CustomerBase : Base
     public NetworkVariable<CustomerState> currentState = new NetworkVariable<CustomerState>(CustomerState.Init);
     public float orderTimer = -1f;
     public float? messTime = null;
+    public float? lineTime = null;
     public float customerLeaveTime;
+    public float maxInLineTime;
     public float deadTimerSeconds = 5.0f;
 
     [Header("Visuals")]
@@ -50,7 +53,6 @@ public class CustomerBase : Base
     [SerializeField] private ParticleSystem interactParticle;
     [SerializeField] private DetachedHead detachedHead;
     [SerializeField] private ScoreTimerManager scoreTimerManager;
-    [SerializeField] public GameObject customerDialogue;
     [SerializeField] private MessSO spillPrefab;
     [SerializeField] private Transform spillSpawnPoint;
     [SerializeField] private PickupSO pickupSO;
@@ -67,12 +69,21 @@ public class CustomerBase : Base
     private float animationWaitTime = 1.2f;
     private bool isGivingOrderToCustomer = false;
 
+    // Customer Animations
+    [Header("Customer Animations")]
+    [SerializeField] private GameObject bodiesContainerObject;
+    private Animator customerAnimator;
+    private readonly int Customer1_IdleHash = Animator.StringToHash("Customer1_Idle");
+    private readonly int Customer1_WalkHash = Animator.StringToHash("Customer1_Walk");
+    private readonly int Customer1_StruggleHash = Animator.StringToHash("Customer1_Struggle");
+
+
     public delegate void CustomerLeaveEvent(int customerNumber);
     public static event CustomerLeaveEvent OnCustomerLeave;
     
     public enum CustomerState
     {
-        Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead
+        Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead, Drinking, Sitting
     }
 
     public virtual void Start()
@@ -81,29 +92,46 @@ public class CustomerBase : Base
         {
             SetCustomerState(CustomerState.Init);
         }
-        
+
+        customerAnimator = bodiesContainerObject.GetComponentInChildren<Animator>();
+
         SetCustomerVisualIdentifiers();
 
         customerLeaveTime = Random.Range(GameValueHolder.Instance.difficultySettings.GetMinWaitTime(), GameValueHolder.Instance.difficultySettings.GetMaxWaitTime());
+        maxInLineTime = Random.Range(GameValueHolder.Instance.difficultySettings.GetMinInLineWaitTime(), GameValueHolder.Instance.difficultySettings.GetMaxInLineWaitTime());
 
         agent = GetComponent<NavMeshAgent>();
         exit = CustomerManager.Instance.GetExit();
         if (distThreshold <= 0) distThreshold = 0.5f;
         
+
         customerReviewPanel = GameObject.FindGameObjectWithTag("CustomerReviewPanel");
 
     }
 
     public virtual void Update()
     {
-        if(!IsOwner) return;    
+        if(!IsOwner) return;
+
+        if (!customerAnimator)
+        {
+            customerAnimator = bodiesContainerObject.GetComponentInChildren<Animator>();
+        }
+
         if (orderTimer >= 0f)
         {
             orderTimer += Time.deltaTime;
-        }  
+        }
+
+        Debug.LogWarning("CustomerState " + currentState.Value);
 
         if (messTime != null)
             messTime += Time.deltaTime; 
+
+        if(lineTime != null)
+        {
+            lineTime += Time.deltaTime;
+        }
 
         switch (currentState.Value)
         {
@@ -137,29 +165,65 @@ public class CustomerBase : Base
             case CustomerState.Dead:
                 UpdateDead();
                 break;
+            case CustomerState.Drinking:
+                UpdateDrinking();
+                break;
+            case CustomerState.Sitting:
+                UpdateSitting();
+                break;
         }
     }
+
 
     // UPDATE<action> METHODS
     // Any Update<action> method is called by the Update() switch case.
     // When a customer's state has changed, the appropriate Update<action> method is called
     private void UpdateWandering()
     {
+        customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
+
         // To be implmented or removed
     }
 
     private void UpdateWaiting()
     {
+        customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
         // To be implmented or removed
         if (makingAMess == true) SetCustomerState(CustomerState.Loitering);
+
+        if (inLine == true && lineTime == null) lineTime = 0.0f;
+        else if (inLine == false) lineTime = null;
+
+        if (inLine == true && lineTime > (maxInLineTime)) 
+        {
+            CustomerManager.Instance.customerLeaveIncrease();
+            CustomerManager.Instance.ReduceCustomerLeftoServe();
+            CustomerManager.Instance.LineQueue.RemoveCustomerInPos(currentPosInLine);
+            CustomerLeave();
+            inLine = false;
+        }
+
     }
 
     private void UpdateOrdering()
     {
+        customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
         if (orderTimer < 0)
         {
             //Order();
             OrderClientRpc();
+        }
+
+        if (inLine == true && lineTime == null) lineTime = 0.0f;
+        else if (inLine == false) lineTime = null;
+
+        if (inLine == true && lineTime > (maxInLineTime))
+        {
+            CustomerManager.Instance.customerLeaveIncrease();
+            CustomerManager.Instance.ReduceCustomerLeftoServe();
+            CustomerManager.Instance.LineQueue.RemoveCustomerInPos(currentPosInLine);
+            CustomerLeave();
+            inLine = false;
         }
     }
 
@@ -185,6 +249,7 @@ public class CustomerBase : Base
     {
         messTime = null;
         leaving = true;
+
         if (agent.remainingDistance < distThreshold)
         {
             Destroy(gameObject);
@@ -193,13 +258,17 @@ public class CustomerBase : Base
 
     private void UpdateInsit()
     {
-        customerDialogue.SetActive(false);
+        if (agent.remainingDistance < distThreshold && atSit == false) atSit = true;
+
+        if (atSit) SetCustomerState(CustomerState.Sitting);
+
         if (!orderBeingServed)
             DisplayCustomerVisualIdentifiers();
         orderBeingServed = true;
         if (orderTimer >= customerLeaveTime)
         {
             CustomerManager.Instance.customerLeaveIncrease();
+            CustomerManager.Instance.ReduceCustomerLeftoServe();
             GameManager.Instance.moneySystem.ResetStreak();
             CustomerLeave();
 
@@ -232,6 +301,11 @@ public class CustomerBase : Base
         StartCoroutine(TryGoToRandomPoint(5f));
     }
 
+    private void UpdateDrinking()
+    {
+       //update DRINKING ANIMATION
+    }
+
     public IEnumerator TryGoToRandomPoint(float delay)
     {
         if (leaving == true || moving == true) yield break;
@@ -262,11 +336,22 @@ public class CustomerBase : Base
 
     private void UpdatePickedUp()
     {
+        customerAnimator.CrossFadeInFixedTime(Customer1_StruggleHash, CrossFadeDuration); // Customer1 idle animation
         //Remove order from list if picked up
         if (OnCustomerLeave != null)
         {
             OnCustomerLeave?.Invoke(customerNumber.Value);
         }
+    }
+
+    private void UpdateSitting()
+    {
+        // sitting animation
+        if (atSit)
+        {
+            customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
+        }
+
     }
 
     private void UpdateDead()
@@ -299,14 +384,15 @@ public class CustomerBase : Base
         }
 
         // Deliver customer order
-        else if (GetCustomerState() == CustomerState.Insit && player.GetIngredient().CompareTag("CoffeeCup") && !isGivingOrderToCustomer)
+        else if (GetCustomerState() == CustomerState.Sitting && player.GetIngredient().CompareTag("CoffeeCup") && !isGivingOrderToCustomer)
         {
             isGivingOrderToCustomer = true;
             DropCupAnimation(player);// Play animation and handles delivering the drink
    
         }
 
-        if(makingAMess == true)
+        /*
+        {  if(makingAMess == true)
         {
             SetCustomerState(CustomerState.Leaving);
             agent.SetDestination(exit.position);
@@ -317,6 +403,7 @@ public class CustomerBase : Base
             //UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
             //if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
         }
+        */
         
     }
 
@@ -362,16 +449,26 @@ public class CustomerBase : Base
 
     public void SetCustomerVisualIdentifiers()
     {
+        SetCustomerVisualIdentifiersClientRpc();
+    }
+
+    [ClientRpc]
+    private void SetCustomerVisualIdentifiersClientRpc()
+    {
         customerNumberText.text = customerNumber.Value.ToString();
         customerNameText.text = customerName.Value.ToString();
-        customerDialogue.SetActive(false);
-        customerNumberCanvas.enabled = false; 
+        customerNumberCanvas.enabled = false;
     }
 
     public void DisplayCustomerVisualIdentifiers()
     {
+        DisplayCustomerVisualIdentifiersClientRpc();
+    }
+
+    [ClientRpc]
+    private void DisplayCustomerVisualIdentifiersClientRpc()
+    {
         customerNumberCanvas.enabled = true;
-        customerDialogue.SetActive(true);
         //UIManager.Instance.ShowCustomerUiOrder(this);
     }
 
@@ -391,9 +488,24 @@ public class CustomerBase : Base
         Order();
     }
 
+    private IEnumerator Drink()
+    {
+        SetCustomerState(CustomerState.Drinking);
+        //Start Animation for drinking
+        float drinkingDur = Random.Range(15.0f , 60.0f);
+        yield return new WaitForSeconds(drinkingDur);
+
+        CustomerLeave();
+
+    }
+
     public virtual void CustomerLeave()
     {
-        if (Random.Range(0, 100) <= GameValueHolder.Instance.difficultySettings.GetChanceToMess()) CreateMess();
+        if (agent.isStopped) agent.isStopped = false;
+        
+        atSit = false;
+
+        if (GetCustomerState() == CustomerState.Drinking && Random.Range(0, 100) <= GameValueHolder.Instance.difficultySettings.GetChanceToMess()) CreateMess();
         if (Random.Range(0, 100) < GameValueHolder.Instance.difficultySettings.GetChanceToLoiter())
         {
             SetCustomerState(CustomerState.Loitering);
@@ -403,6 +515,7 @@ public class CustomerBase : Base
         }
         else
         {
+            customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
             SetCustomerState(CustomerState.Leaving);
             agent.SetDestination(exit.position);
 
@@ -415,6 +528,7 @@ public class CustomerBase : Base
         if (OnCustomerLeave != null)
         {
             OnCustomerLeave?.Invoke(customerNumber.Value);
+            OrderManager.Instance.FinishOrder(order);
         }
     }
 
@@ -422,6 +536,7 @@ public class CustomerBase : Base
     {
         if (agent.isStopped) agent.isStopped = false;
         agent.SetDestination(Spot);
+        customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
         SetCustomerState(CustomerState.Moving);
         moving = true;
     }
@@ -442,9 +557,12 @@ public class CustomerBase : Base
     [ClientRpc]
     private void JustGotHandedCoffeeClientRpc()
     {
+        CustomerManager.Instance.customerServedIncrease();
+        CustomerManager.Instance.ReduceCustomerLeftoServe();
         CustomerReviewManager.Instance.CustomerReviewEvent(this);
+        OrderManager.Instance.FinishOrder(order);
         StopOrderTimer();
-        CustomerLeave();
+        StartCoroutine(Drink());
     }
 
     void HeadDetach()
@@ -523,11 +641,6 @@ public class CustomerBase : Base
         messTime = 0f;
     }
 
-    private void OnDestroy()
-    {
-       if(Application.isPlaying) CustomerManager.Instance.ReduceCustomerInStore();
-    }
-
     private void DropCupAnimation(PlayerController player)
     {
         StartCoroutine(ResetAnimation(player));
@@ -542,7 +655,6 @@ public class CustomerBase : Base
         player.GetIngredient().SetIngredientParent(this);
         JustGotHandedCoffee();
         player.RemoveIngredientInListByReference(player.GetIngredient());
-        CustomerManager.Instance.customerServedIncrease();
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
         interactParticle.Play();
         player.anim.CrossFadeInFixedTime(MovementHash, CrossFadeDuration);
