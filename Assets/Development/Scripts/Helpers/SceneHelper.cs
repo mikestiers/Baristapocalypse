@@ -51,8 +51,7 @@ public class SceneHelper : MonoBehaviour
         "PlayerConfigurationManager",
         "BaristapocalypseMultiplayer",
         "CustomerReviewManager",
-        "OrderManager",
-        "ShiftEvaluationUI"
+        "OrderManager"
     };
 
     public void ResetGame()

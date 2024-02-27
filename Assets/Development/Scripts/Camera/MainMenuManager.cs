@@ -305,6 +305,7 @@ public class MainMenuManager : MonoBehaviour
         foreach (Button button in buttons)
         {
             button.interactable = interactable;
+            Debug.Log($"Button {button.name} is interactable: {interactable}");
         }
     }
 

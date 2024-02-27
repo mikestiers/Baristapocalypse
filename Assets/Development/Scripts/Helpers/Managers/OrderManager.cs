@@ -52,13 +52,6 @@ public class OrderManager : Singleton<OrderManager>
     {
         if (order == null) return;
         if (!orders.Contains(order)) return;
-
-        FinishOrderClientRpc(order);
-    }
-
-    [ClientRpc]
-    private void FinishOrderClientRpc(OrderInfo order)
-    {
         orders.Remove(order);
         order.SetOrderState(OrderState.Delivered);
         OnOrderCompleted?.Invoke(this, EventArgs.Empty);

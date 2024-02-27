@@ -25,7 +25,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     [SerializeField] private TextMeshPro ingredientsIndicatorText;
     [SerializeField] private string currentIngredientSOList;
     [SerializeField] private List<String> validIngredientTagList = new List<String>();
-    [SerializeField] private int numIngredientsNeeded = 1;
+    [SerializeField] private int numIngredientsNeeded = 4;
 
     [Header("Brewing")]
     private NetworkVariable<float> brewingTimer = new NetworkVariable<float>(0f);
@@ -104,6 +104,8 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             isBrewing = false;
 
             currentOrder.SetOrderState(OrderState.BeingDelivered);
+
+            OrderManager.Instance.FinishOrder(currentOrder);
         }
     }
     //private void ProcessOrder(Order order)

@@ -30,7 +30,7 @@ public class ScoreUI : MonoBehaviour
     public void UpdateStreak()
     {
         streakText.gameObject.SetActive(true);
-        streakText.text = ("Perfect Drink x") + GameManager.Instance.moneySystem.currentStreakCount.Value;
+        streakText.text = ("Perfect Drink x") + GameManager.Instance.moneySystem.currentStreakCount;
     }
 
     public void DeactivateStreak()

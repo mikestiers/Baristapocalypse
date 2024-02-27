@@ -33,7 +33,7 @@ public class OrderStats : NetworkBehaviour
     [SerializeField] public Sprite OrderTargetEmptyRectangle;
     [SerializeField] public Sprite OrderTargetSuccessPolygon;
     [SerializeField] public Sprite OrderTargetSuccessRectangle;
-    [SerializeField] public Sprite TransparentSegment;
+    [SerializeField] public Sprite TransparentSegment;  
     [SerializeField] public Image resetMachineImage;
     [SerializeField] public Image previousMachineImage;
     [SerializeField] public Image nextMachineImage;
@@ -88,12 +88,12 @@ public class OrderStats : NetworkBehaviour
         ResetSegments(spicinessSegments);
         ResetSegments(strengthSegments);
         orderInProgress = false;
-        OrderInProgress();
+        OrderInProgress(); 
     }
 
     private void CustomerBase_OnCustomerLeave(int customerIndex)
     {
-        if (currentOrder.number == customerIndex)
+        if(currentOrder.number == customerIndex)
         {
             OrderCompleted(this, EventArgs.Empty);
         }
@@ -150,6 +150,7 @@ public class OrderStats : NetworkBehaviour
     [ClientRpc]
     private void SetOrderInfoClientRpc(OrderInfo order)
     {
+        
         currentOrder = order;
         customerInfoRoot.SetActive(true);
         customerNumberText.text = order.number.ToString();
@@ -232,6 +233,24 @@ public class OrderStats : NetworkBehaviour
         return currentPlayers;
     }
 
+    public void SetActivePlayer(PlayerController player)
+    {
+        if (currentPlayers.Count > 0)
+        {
+            currentPlayers.Add(player);
+            selectedByPlayerImage.SetActive(true);
+        }
+    }
+
+    public void RemoveActivePlayer(PlayerController player)
+    {
+        currentPlayers.Remove(player);
+        if (currentPlayers.Count == 0)
+        {
+            selectedByPlayerImage.SetActive(false);
+        }
+    }
+
     public void SetPotentialTemperature(int value)
     {
         temperaturePotentialValue = value;
@@ -256,7 +275,7 @@ public class OrderStats : NetworkBehaviour
         SetPotentialSegment(strengthPotentialAttributeSelector, strengthSegments[MapValue(value)], strengthPotentialValue, strengthTargetValue);
     }
 
-    public void SetCumulativeTemperature(int value)
+    public void SetCumulativeTemperature(int value) 
     {
         SetCumulativeTemperatureServerRpc(value);
     }
@@ -271,7 +290,6 @@ public class OrderStats : NetworkBehaviour
     private void SetCumulativeTemperatureClientRpc(int value)
     {
         temperatureCumulativeValue = value;
-        temperaturePotentialValue = value;
     }
 
     public void SetCumulativeSweetness(int value)
@@ -289,7 +307,6 @@ public class OrderStats : NetworkBehaviour
     private void SetCumulativeSweetnessClientRpc(int value)
     {
         sweetnessCumulativeValue = value;
-        sweetnessPotentialValue = value;
     }
 
     public void SetCumulativeSpiciness(int value)
@@ -307,7 +324,6 @@ public class OrderStats : NetworkBehaviour
     private void SetCumulativeSpicinessClientRpc(int value)
     {
         spicinessCumulativeValue = value;
-        spicinessPotentialValue = value;
     }
 
     public void SetCumulativeStrength(int value)
@@ -325,7 +341,6 @@ public class OrderStats : NetworkBehaviour
     private void SetCumulativeStrengthClientRpc(int value)
     {
         strengthCumulativeValue = value;
-        strengthPotentialValue = value;
     }
 
     public void ResetSegments(GameObject[] segments)
