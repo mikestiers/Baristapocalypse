@@ -10734,6 +10734,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5693558581524879549, guid: 823308a6e2d6c834182e765c8fcf1dd2, type: 3}
   m_PrefabInstance: {fileID: 1041523732}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &773320920 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b462dffd459c2584fbac872da8b4d671, type: 3}
+  m_PrefabInstance: {fileID: 997325304}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &802021779
 GameObject:
   m_ObjectHideFlags: 0
@@ -11163,6 +11168,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BrewingStation 2
       objectReference: {fileID: 0}
+    - target: {fileID: 5944609261704788045, guid: 35190cf297479a541b3384c9d8a87c04, type: 3}
+      propertyPath: bioMatterFloorPlate
+      value: 
+      objectReference: {fileID: 1907024565}
     - target: {fileID: 8086891939505322414, guid: 35190cf297479a541b3384c9d8a87c04, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -17768,6 +17777,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5944609261704788045, guid: 35190cf297479a541b3384c9d8a87c04, type: 3}
+      propertyPath: bioMatterFloorPlate
+      value: 
+      objectReference: {fileID: 1907024565}
+    - target: {fileID: 5944609261704788045, guid: 35190cf297479a541b3384c9d8a87c04, type: 3}
+      propertyPath: coffeeBeanFloorPlate
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8086891939505322414, guid: 35190cf297479a541b3384c9d8a87c04, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -18360,6 +18377,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 34cb5420cd4644a4c87487e6f1c9e7e1, type: 3}
+--- !u!23 &1907024565 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: b462dffd459c2584fbac872da8b4d671, type: 3}
+  m_PrefabInstance: {fileID: 997325304}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1907024568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 773320920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31699402b3ee0bf4b82f414819b18df3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  emissiveMaterial: {fileID: 2100000, guid: 9e48c5ec5bfc6e8458730886143d84fe, type: 2}
 --- !u!1 &1925207453
 GameObject:
   m_ObjectHideFlags: 0
