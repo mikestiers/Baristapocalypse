@@ -13,6 +13,8 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 {
     public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
     public event EventHandler<IHasMinigameTiming.OnMinigameTimingEventArgs> OnMinigameTimingStarted;
+
+    [SerializeField] private MinigameQTE minigameQTE;
  
     [Header("Visuals")]
     [SerializeField] private ParticleSystem interactParticle;
@@ -212,8 +214,9 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         ingredientSOList.Clear();
         isBrewing = false;
 
-        minigameTiming = true;
-        minigameTimer.Value = 0f;
+        minigameQTE.StartMinigame();
+        /*minigameTiming = true;
+        minigameTimer.Value = 0f;*/
     }
 
     [ServerRpc(RequireOwnership = false)]

@@ -26,6 +26,11 @@ public class MinigameQTE : MonoBehaviour
     [SerializeField] private int correctKey;
     [SerializeField] private int countingDown;
 
+    private void Awake()
+    {
+        Hide();
+    }
+
     private void Start()
     {
         fillDripRectTransform = fillDrip.GetComponent<RectTransform>();
@@ -46,7 +51,7 @@ public class MinigameQTE : MonoBehaviour
         // Changes filldrip position to appear on top of the slider
         if (fillDripRectTransform != null)
         {
-            fillDripRectTransform.anchoredPosition = new Vector2(fillDripRectTransform.anchoredPosition.x, 0.38f + (fillSlider.value * fillDripYMultiplier));
+            fillDripRectTransform.anchoredPosition = new Vector2(fillDripRectTransform.anchoredPosition.x, 0.38f + (fillSlider.value / fillDripYMultiplier));
         }
 
         if (progressTime >= completedTime)
@@ -129,6 +134,11 @@ public class MinigameQTE : MonoBehaviour
                 StartCoroutine(InputSubmitted(QTEgen));
             }
         }
+    }
+
+    public void StartMinigame()
+    {
+        Show();
     }
 
     private void EndMinigame()
