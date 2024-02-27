@@ -34,6 +34,18 @@ public class GravityStation : MonoBehaviour
         DeactivateRandomEvent();
     }
 
+    //// this is temporary, the player will interact with this and hold a button to deactivate the gravity Storm
+    //private void OnTriggerStay(Collider other)
+    //{
+    //    if (other.GetComponent<PlayerController>())
+    //    {
+    //        if (mouse.leftButton.wasPressedThisFrame) 
+    //        { 
+    //             DeactivateRandomEvent();
+    //        }
+    //    }
+    //}
+
     private void DeactivateRandomEvent()
     {
 
@@ -44,13 +56,6 @@ public class GravityStation : MonoBehaviour
         GravityStorm gravityStorm = randomEvent.gameObject.GetComponent<GravityStorm>();
         if (gravityStorm != null)
         {
-            // Populate objectsToMoveList before conversion
-            gravityStorm.objectsToMoveList.Clear(); // Clear the list before populating
-            foreach (var obj in gravityStorm.objectsToMove)
-            {
-                gravityStorm.objectsToMoveList.Add(obj);
-            }
-
             gravityStorm.ConvertListToArray();
 
             // Stop physics simulation for each object
@@ -78,12 +83,11 @@ public class GravityStation : MonoBehaviour
         randomEvent.SetEventBool(false);
         randomEvent.ActivateDeactivateEvent();
 
-        //foreach (GameObject bootParticle in PlayerController.Instance.bootsParticles)
-        //{
-        //    bootParticle.SetActive(GameManager.Instance.isEventActive);
-        //}
+        foreach (GameObject bootParticle in PlayerController.Instance.bootsParticles)
+        {
+            bootParticle.SetActive(GameManager.Instance.isEventActive);
+        }
     }
 
 }
-
 
