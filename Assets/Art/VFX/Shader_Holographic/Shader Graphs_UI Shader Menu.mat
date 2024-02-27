@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5626078934777372922
+--- !u!114 &-7656378001917226940
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shader Graphs_WC MainWall
-  m_Shader: {fileID: -6465566751694194690, guid: d34a8cd922c3eda4da1fc8b55030405b, type: 3}
+  m_Name: Shader Graphs_UI Shader Menu
+  m_Shader: {fileID: -6465566751694194690, guid: 386eb072a3bfab944b68decf6ce67e04, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 2
@@ -33,20 +33,8 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _Main_Texture:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_1881923ece9f4090b69fc3ed73c49edc_Texture_1:
-        m_Texture: {fileID: 2800000, guid: 8ac02ec6bb63ca141a88b0c30f847352, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_57aacc2ede0a4019b0be674d00a216a3_Texture_1:
-        m_Texture: {fileID: 2800000, guid: b4f824a0594c88b4a8774afb62f4d802, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_e828f58d4185470f91cee7560282574e_Texture_1:
-        m_Texture: {fileID: 2800000, guid: 37ef2dfbd1de22e4694fcc8cdb4130c2, type: 3}
+    - _Scanlines:
+        m_Texture: {fileID: 2800000, guid: 1ee73747ae3db54418ea8dbb709c858e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -63,12 +51,17 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Opacity: 0.514
+    - _DivideSlowdown: 1
+    - _GlitchStrength: 0.1
+    - _NoiseScale: 400
+    - _NoiseStrength: 0.5
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Size: 0
-    - _SmoothMess: 0.306
+    - _RECEIVE_SHADOWS_OFF: 0
+    - _ScollSpeed: 0.05
+    - _Transparency: 1
     m_Colors:
-    - _PlayerPosition: {r: 0.5987731, g: 0.20964712, b: 22.437103, a: 0}
-    - _Tint: {r: 0, g: 0, b: 0, a: 0}
+    - _FresnelColour: {r: 0.03137255, g: 4.203922, b: 7.560784, a: 0}
+    - _HologramTiling: {r: 64, g: 64, b: 0, a: 0}
+    - _MainColour: {r: 0.6007597, g: 1.451186, b: 1.490196, a: 0}
   m_BuildTextureStacks: []
