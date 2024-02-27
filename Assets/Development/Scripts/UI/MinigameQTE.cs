@@ -29,6 +29,8 @@ public class MinigameQTE : MonoBehaviour
     [SerializeField] private int correctKey;
     [SerializeField] private int countingDown;
 
+    private Coroutine curUptimeCoroutine;
+
     private void Awake()
     {
         Hide();
@@ -42,6 +44,23 @@ public class MinigameQTE : MonoBehaviour
         if (progressTime != 0)
         {
             progressTime = 0f;
+        }
+    }
+
+    private void OnEnable()
+    {
+        if (progressTime != 0)
+        {
+            progressTime = 0f;
+        }
+        failedText.SetActive(false);
+        succeededText.SetActive(false);
+        QTEgen = 5;
+        waitingForKey = 0;
+        countingDown = 1;
+        for (int i = 0; i < 4; i++)
+        {
+            arrows[i].gameObject.SetActive(false);
         }
     }
 
@@ -69,7 +88,7 @@ public class MinigameQTE : MonoBehaviour
             countingDown = 1;
             waitingForKey = 1;
             arrows[QTEgen].gameObject.SetActive(true);
-            StartCoroutine(UptimeCountdown(QTEgen));
+            curUptimeCoroutine = StartCoroutine(UptimeCountdown(QTEgen));
         }
 
         // Verifies input against spawned arrow
@@ -178,6 +197,11 @@ public class MinigameQTE : MonoBehaviour
 
         if (correctKey == 1)
         {
+            if (curUptimeCoroutine != null)
+            {
+                StopCoroutine(curUptimeCoroutine);
+            }
+
             countingDown = 2;
             succeededText.SetActive(true);
             arrows[originalQTEgen].gameObject.SetActive(false);
@@ -186,12 +210,18 @@ public class MinigameQTE : MonoBehaviour
             yield return new WaitForSeconds(1.5f);
             correctKey = 0;
             succeededText.SetActive(false);
+            failedText.SetActive(false);
             yield return new WaitForSeconds(1.0f);
             waitingForKey = 0;
             countingDown = 1;
         }
         else if (correctKey == 2)
         {
+            if (curUptimeCoroutine != null)
+            {
+                StopCoroutine(curUptimeCoroutine);
+            }
+
             countingDown = 2;
             // Here is where the fail animation will play
             failedText.SetActive(true);
@@ -211,6 +241,7 @@ public class MinigameQTE : MonoBehaviour
         yield return new WaitForSeconds(3.0f);
         if (countingDown == 1)
         {
+            Debug.Log("UptimeCoroutine NOT stopped");
             QTEgen = 5;
             countingDown = 2;
             // Here is where the fail animation will play
