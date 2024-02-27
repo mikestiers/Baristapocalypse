@@ -69,12 +69,21 @@ public class CustomerBase : Base
     private float animationWaitTime = 1.2f;
     private bool isGivingOrderToCustomer = false;
 
+    // Customer Animations
+    [Header("Customer Animations")]
+    [SerializeField] private GameObject bodiesContainerObject;
+    private Animator customerAnimator;
+    private readonly int Customer1_IdleHash = Animator.StringToHash("Customer1_Idle");
+    private readonly int Customer1_WalkHash = Animator.StringToHash("Customer1_Walk");
+    private readonly int Customer1_StruggleHash = Animator.StringToHash("Customer1_Struggle");
+
+
     public delegate void CustomerLeaveEvent(int customerNumber);
     public static event CustomerLeaveEvent OnCustomerLeave;
     
     public enum CustomerState
     {
-        Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead, Drinking
+        Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead, Drinking, Sitting
     }
 
     public virtual void Start()
@@ -83,7 +92,9 @@ public class CustomerBase : Base
         {
             SetCustomerState(CustomerState.Init);
         }
-        
+
+        customerAnimator = bodiesContainerObject.GetComponentInChildren<Animator>();
+
         SetCustomerVisualIdentifiers();
 
         customerLeaveTime = Random.Range(GameValueHolder.Instance.difficultySettings.GetMinWaitTime(), GameValueHolder.Instance.difficultySettings.GetMaxWaitTime());
@@ -100,11 +111,19 @@ public class CustomerBase : Base
 
     public virtual void Update()
     {
-        if(!IsOwner) return;    
+        if(!IsOwner) return;
+
+        if (!customerAnimator)
+        {
+            customerAnimator = bodiesContainerObject.GetComponentInChildren<Animator>();
+        }
+
         if (orderTimer >= 0f)
         {
             orderTimer += Time.deltaTime;
-        }  
+        }
+
+        Debug.LogWarning("CustomerState " + currentState.Value);
 
         if (messTime != null)
             messTime += Time.deltaTime; 
@@ -149,19 +168,26 @@ public class CustomerBase : Base
             case CustomerState.Drinking:
                 UpdateDrinking();
                 break;
+            case CustomerState.Sitting:
+                UpdateSitting();
+                break;
         }
     }
+
 
     // UPDATE<action> METHODS
     // Any Update<action> method is called by the Update() switch case.
     // When a customer's state has changed, the appropriate Update<action> method is called
     private void UpdateWandering()
     {
+        customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
+
         // To be implmented or removed
     }
 
     private void UpdateWaiting()
     {
+        customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
         // To be implmented or removed
         if (makingAMess == true) SetCustomerState(CustomerState.Loitering);
 
@@ -181,6 +207,7 @@ public class CustomerBase : Base
 
     private void UpdateOrdering()
     {
+        customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
         if (orderTimer < 0)
         {
             //Order();
@@ -222,6 +249,7 @@ public class CustomerBase : Base
     {
         messTime = null;
         leaving = true;
+
         if (agent.remainingDistance < distThreshold)
         {
             Destroy(gameObject);
@@ -231,6 +259,9 @@ public class CustomerBase : Base
     private void UpdateInsit()
     {
         if (agent.remainingDistance < distThreshold && atSit == false) atSit = true;
+
+        if (atSit) SetCustomerState(CustomerState.Sitting);
+
         if (!orderBeingServed)
             DisplayCustomerVisualIdentifiers();
         orderBeingServed = true;
@@ -272,7 +303,7 @@ public class CustomerBase : Base
 
     private void UpdateDrinking()
     {
-       //update
+       //update DRINKING ANIMATION
     }
 
     public IEnumerator TryGoToRandomPoint(float delay)
@@ -305,11 +336,22 @@ public class CustomerBase : Base
 
     private void UpdatePickedUp()
     {
+        customerAnimator.CrossFadeInFixedTime(Customer1_StruggleHash, CrossFadeDuration); // Customer1 idle animation
         //Remove order from list if picked up
         if (OnCustomerLeave != null)
         {
             OnCustomerLeave?.Invoke(customerNumber.Value);
         }
+    }
+
+    private void UpdateSitting()
+    {
+        // sitting animation
+        if (atSit)
+        {
+            customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
+        }
+
     }
 
     private void UpdateDead()
@@ -342,7 +384,7 @@ public class CustomerBase : Base
         }
 
         // Deliver customer order
-        else if (GetCustomerState() == CustomerState.Insit && player.GetIngredient().CompareTag("CoffeeCup") && !isGivingOrderToCustomer)
+        else if (GetCustomerState() == CustomerState.Sitting && player.GetIngredient().CompareTag("CoffeeCup") && !isGivingOrderToCustomer)
         {
             isGivingOrderToCustomer = true;
             DropCupAnimation(player);// Play animation and handles delivering the drink
@@ -460,6 +502,7 @@ public class CustomerBase : Base
     public virtual void CustomerLeave()
     {
         if (agent.isStopped) agent.isStopped = false;
+        
         atSit = false;
 
         if (GetCustomerState() == CustomerState.Drinking && Random.Range(0, 100) <= GameValueHolder.Instance.difficultySettings.GetChanceToMess()) CreateMess();
@@ -472,6 +515,7 @@ public class CustomerBase : Base
         }
         else
         {
+            customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
             SetCustomerState(CustomerState.Leaving);
             agent.SetDestination(exit.position);
 
@@ -492,6 +536,7 @@ public class CustomerBase : Base
     {
         if (agent.isStopped) agent.isStopped = false;
         agent.SetDestination(Spot);
+        customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
         SetCustomerState(CustomerState.Moving);
         moving = true;
     }
