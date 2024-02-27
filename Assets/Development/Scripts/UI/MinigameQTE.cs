@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class MinigameQTE : MonoBehaviour
 {
+    public delegate void MinigameFinishedAction();
+    public static event MinigameFinishedAction MinigameFinished;
+
     [Header("UIElements")]
     [SerializeField] private GameObject fillDrip;
     [SerializeField] private Slider fillSlider;
@@ -51,7 +54,7 @@ public class MinigameQTE : MonoBehaviour
         // Changes filldrip position to appear on top of the slider
         if (fillDripRectTransform != null)
         {
-            fillDripRectTransform.anchoredPosition = new Vector2(fillDripRectTransform.anchoredPosition.x, 0.38f + (fillSlider.value / fillDripYMultiplier));
+            fillDripRectTransform.anchoredPosition = new Vector2(fillDripRectTransform.anchoredPosition.x, 0.33f + (fillSlider.value / fillDripYMultiplier));
         }
 
         if (progressTime >= completedTime)
@@ -144,8 +147,18 @@ public class MinigameQTE : MonoBehaviour
     private void EndMinigame()
     {
         progressTime = 0f;
+        failedText.SetActive(false);
+        succeededText.SetActive(false);
+        QTEgen = 5;
+        waitingForKey = 0;
+        countingDown = 1;
+        for (int i = 0; i < 4; i++)
+        {
+            arrows[i].gameObject.SetActive(false);
+        }
         Hide();
         // TODO - Give the player the completed drink
+        MinigameFinished();
     }
 
     private void Show()
@@ -167,12 +180,12 @@ public class MinigameQTE : MonoBehaviour
         {
             countingDown = 2;
             succeededText.SetActive(true);
+            arrows[originalQTEgen].gameObject.SetActive(false);
             progressTime += 4.0f;
             // Here is where the succeeded animation will play
             yield return new WaitForSeconds(1.5f);
             correctKey = 0;
             succeededText.SetActive(false);
-            arrows[originalQTEgen].gameObject.SetActive(false);
             yield return new WaitForSeconds(1.0f);
             waitingForKey = 0;
             countingDown = 1;
@@ -182,10 +195,10 @@ public class MinigameQTE : MonoBehaviour
             countingDown = 2;
             // Here is where the fail animation will play
             failedText.SetActive(true);
+            arrows[originalQTEgen].gameObject.SetActive(false);
             yield return new WaitForSeconds(1.5f);
             correctKey = 0;
             failedText.SetActive(false);
-            arrows[originalQTEgen].gameObject.SetActive(false);
             yield return new WaitForSeconds(1.0f);
             waitingForKey = 0;
             countingDown = 1;
@@ -202,10 +215,10 @@ public class MinigameQTE : MonoBehaviour
             countingDown = 2;
             // Here is where the fail animation will play
             failedText.SetActive(true);
+            arrows[originalQTEgen].gameObject.SetActive(false);
             yield return new WaitForSeconds(1.5f);
             correctKey = 0;
             failedText.SetActive(false);
-            arrows[originalQTEgen].gameObject.SetActive(false);
             yield return new WaitForSeconds(1.0f);
             waitingForKey = 0;
             countingDown = 1;

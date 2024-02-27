@@ -56,6 +56,16 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     private const float CrossFadeDuration = 0.1f;
     private float animationWaitTime;
 
+    void OnEnable()
+    {
+        MinigameQTE.MinigameFinished += MinigameEnded;
+    }
+
+    void OnDisable()
+    {
+        MinigameQTE.MinigameFinished -= MinigameEnded;
+    }
+
     private void Start()
     {
         RaiseBrewingEmpty();
@@ -283,6 +293,16 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             MinigameDoneServerRpc();
             //GetIngredient().SetIngredientParent(player);
         }
+        PrintHeldIngredientList();
+    }
+
+    void MinigameEnded()
+    {
+        if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstDrinkReady)
+            TutorialManager.Instance.FirstDrinkReady();
+
+        PickCupAnimation(playerController);// plays animation and sets cup in hand (SetIngredientParent(player))
+        MinigameDoneServerRpc();
         PrintHeldIngredientList();
     }
 
