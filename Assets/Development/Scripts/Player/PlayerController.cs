@@ -21,7 +21,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     [Header("Player Attributes")]
     public List<GameObject> bootsParticles = new List<GameObject>();
-    [SerializeField] private float moveSpeed;
+    [SerializeField] public float moveSpeed;
     [SerializeField] private float gravityMoveSpeed;
     [SerializeField] private float jumpForce;
     [SerializeField] private float ingredientThrowForce;
@@ -116,6 +116,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [Header("Other Components")]
     [SerializeField] private InputManager inputManager;
 
+    [SerializeField] private QTEMiniGameSystem qte;
     // UI player ingrerdien indicator
     [SerializeField] private TextMeshPro ingredientIndicatorText;
     private string currentIndicator;
@@ -271,6 +272,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             {
                 if (mouse.leftButton.wasPressedThisFrame)
                 {
+                    //qte.ActivateQTE();
                     spill.Interact(this);
                 }
                 else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)

@@ -38,6 +38,7 @@ public class Spill : NetworkBehaviour
         pickupNetworkObjectReference.TryGet(out NetworkObject playerPickupNetworkObject);
         
         PlayerController player = playerPickupNetworkObject.GetComponent<PlayerController>();
+       
         
         if (player.HasPickup())
         {
