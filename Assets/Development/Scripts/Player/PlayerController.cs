@@ -222,9 +222,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         // player movement
 
         // Gravity Storm Effect on player
-        if (movementToggle && !GameManager.Instance.isGravityStorm)
+        if (movementToggle && !GameManager.Instance.isGravityStorm.Value)
             Move(moveSpeed);
-        else if (movementToggle && GameManager.Instance.isGravityStorm)
+        else if (movementToggle && GameManager.Instance.isGravityStorm.Value)
             Move(gravityMoveSpeed);
 
         if (!movementToggle)

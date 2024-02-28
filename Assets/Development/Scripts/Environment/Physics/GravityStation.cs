@@ -49,8 +49,8 @@ public class GravityStation : MonoBehaviour
     private void DeactivateRandomEvent()
     {
 
-        GameManager.Instance.isEventActive = false;
-        GameManager.Instance.isGravityStorm = false;
+        GameManager.Instance.isEventActive.Value = false;
+        GameManager.Instance.isGravityStorm.Value = false;
         RandomEventBase randomEvent = GameManager.Instance.currentRandomEvent;
 
         GravityStorm gravityStorm = randomEvent.gameObject.GetComponent<GravityStorm>();
@@ -85,7 +85,7 @@ public class GravityStation : MonoBehaviour
 
         foreach (GameObject bootParticle in PlayerController.Instance.bootsParticles)
         {
-            bootParticle.SetActive(GameManager.Instance.isEventActive);
+            bootParticle.SetActive(GameManager.Instance.isEventActive.Value);
         }
     }
 
