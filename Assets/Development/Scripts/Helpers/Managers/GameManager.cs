@@ -489,6 +489,7 @@ public class GameManager : NetworkBehaviour
         if (randomEvent.GetComponent<GravityStorm>()) 
         {
             isGravityStorm.Value = true;
+            randomEvent.GetComponent<GravityStorm>().GravityEventLights.SetActive(true);
             randomEvent.SetEventBool(true);
             randomEvent.ActivateDeactivateEvent();
         }
@@ -509,6 +510,7 @@ public class GameManager : NetworkBehaviour
         if (randomEvent.GetComponent<GravityStorm>()) 
         {
             isGravityStorm.Value = false;
+            randomEvent.GetComponent<GravityStorm>().GravityEventLights.SetActive(false);
             randomEvent.SetEventBool(false);
             randomEvent.ActivateDeactivateEvent();
         }

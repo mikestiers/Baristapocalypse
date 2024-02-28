@@ -40,11 +40,6 @@ public class GravityStation : NetworkBehaviour
         DeactivateStormEvent();
     }
 
-    private void HandleInteract()
-    {
-        DeactivateStormEvent();
-    }
-
     private void DeactivateStormEvent()
     {
 
@@ -55,6 +50,14 @@ public class GravityStation : NetworkBehaviour
         GravityStorm gravityStorm = randomEvent.gameObject.GetComponent<GravityStorm>();
         if (gravityStorm != null)
         {
+            gravityStorm.GravityEventLights.SetActive(false);
+            // Populate objectsToMoveList before conversion
+            gravityStorm.objectsToMoveList.Clear(); // Clear the list before populating
+            foreach (var obj in gravityStorm.objectsToMove)
+            {
+                gravityStorm.objectsToMoveList.Add(obj);
+            }
+
             gravityStorm.ConvertListToArray();
 
             // Stop physics simulation for each object
@@ -62,7 +65,6 @@ public class GravityStation : NetworkBehaviour
             {
                 Rigidbody objRigidbody = obj.GetComponent<Rigidbody>();
                 Collider objCollider = obj.GetComponent<Collider>();
-
                 if (objRigidbody != null)
                 {
                     objCollider.isTrigger = false;
@@ -71,21 +73,19 @@ public class GravityStation : NetworkBehaviour
                 }
             }
         }
-
         if (!randomEvent.GetNetworkObject().IsSpawned)
         {
             randomEvent.GetNetworkObject().Spawn();
         }
-
         Debug.LogWarning("DeactivateRandomEvent " + randomEvent.name);
         gravityButton.GetComponent<MeshRenderer>().material = originalMaterial;
         randomEvent.SetEventBool(false);
         randomEvent.ActivateDeactivateEvent();
 
-        foreach (GameObject bootParticle in PlayerController.Instance.bootsParticles)
-        {
-            bootParticle.SetActive(GameManager.Instance.isEventActive.Value);
-        }
+        //foreach (GameObject bootParticle in PlayerController.Instance.bootsParticles)
+        //{
+        //    bootParticle.SetActive(GameManager.Instance.isEventActive);
+        //}
     }
 
 }

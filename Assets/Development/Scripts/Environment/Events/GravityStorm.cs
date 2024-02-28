@@ -14,6 +14,7 @@ public class GravityStorm : RandomEventBase
     [SerializeField] private GameObject gravityButton;
     [SerializeField] private Material gravityButtonMaterial;
     [SerializeField] private LayerMask gravityMask;
+    public GameObject GravityEventLights;
     private Collider eventCollider;
     private Vector3[] objectVelocities;
     private Rigidbody[] objectRigidbodies;
@@ -22,10 +23,12 @@ public class GravityStorm : RandomEventBase
     {
         eventCollider = GetComponent<Collider>();
         gravityButton.GetComponent<MeshRenderer>().material = gravityButtonMaterial;
+        
     }
 
     private void Start()
     {
+        
         FindObjectsToMove();
         InitializeArrays();
     }
@@ -142,6 +145,13 @@ public class GravityStorm : RandomEventBase
             Vector3 reflectedVelocity = Vector3.Reflect(objectVelocities[index], collisionNormal);
             objectVelocities[index] = reflectedVelocity;
         }
+    }
+
+
+
+    private void TurnOnEventEffect()
+    {
+
     }
 
 }
