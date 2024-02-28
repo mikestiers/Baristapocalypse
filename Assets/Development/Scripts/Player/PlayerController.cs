@@ -831,7 +831,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if (OrderManager.Instance.brewingStations[currentBrewingStation].ingredientSOList.Count > 0)
         {
             AISupervisor.Instance.SupervisorMessageToDisplay("Throwing away product? I'm taking that out of your tips!");
-            GameManager.Instance.moneySystem.AdjustMoneyByAmount(10, false);
+            GameManager.Instance.moneySystem.AdjustMoneyByAmount(3, false);
         }
         OrderManager.Instance.brewingStations[currentBrewingStation].Empty();
         OrderManager.Instance.orderStats[currentBrewingStation].ResetAll();
