@@ -27,7 +27,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     [SerializeField] private TextMeshPro ingredientsIndicatorText;
     [SerializeField] private string currentIngredientSOList;
     [SerializeField] private List<String> validIngredientTagList = new List<String>();
-    [SerializeField] private int numIngredientsNeeded = 4;
+    [SerializeField] private int numIngredientsNeeded = 1;
 
     [Header("Brewing")]
     private NetworkVariable<float> brewingTimer = new NetworkVariable<float>(0f);
