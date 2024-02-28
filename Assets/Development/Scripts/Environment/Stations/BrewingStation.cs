@@ -224,9 +224,9 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         ingredientSOList.Clear();
         isBrewing = false;
 
-        minigameQTE.StartMinigame();
-        /*minigameTiming = true;
-        minigameTimer.Value = 0f;*/
+        //minigameQTE.StartMinigame();
+        minigameTiming = true;
+        minigameTimer.Value = 0f;
     }
 
     [ServerRpc(RequireOwnership = false)]
