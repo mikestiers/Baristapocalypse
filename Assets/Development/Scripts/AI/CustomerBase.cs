@@ -492,7 +492,8 @@ public class CustomerBase : Base
     {
         SetCustomerState(CustomerState.Drinking);
         //Start Animation for drinking
-        float drinkingDur = Random.Range(15.0f , 60.0f);
+        float drinkingDur = Random.Range(GameValueHolder.Instance.difficultySettings.GetMinDrinkingDurationTime(), GameValueHolder.Instance.difficultySettings.GetMaxDrinkingDurationTime());
+
         yield return new WaitForSeconds(drinkingDur);
 
         CustomerLeave();

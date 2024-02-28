@@ -182,6 +182,7 @@ public class MainMenuManager : MonoBehaviour
     {
         if (CreditsCamera.Priority == 1)
         {
+            GetComponentInChildren<TextScroller>().ResetText();
             SoundManager.Instance.PlayOneShot(backButtonPressedSound);
             CreditsCamera.Priority = 0;
             MainmenuCamera.Priority = 1;
@@ -195,12 +196,13 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
-
     void SettingsScreen() 
     { 
         if (MainmenuCamera.Priority == 1)
         {
             SoundManager.Instance.PlayOneShot(nextButtonPressedSound);
+            leftDoorAnimator.SetBool("isOpen", true);
+            rightDoorAnimator.SetBool("isOpen", true);
             MainmenuCamera.Priority = 0;
             SettingsCamera.Priority = 1;
             EventSystem.current.SetSelectedGameObject(FullScreenGO.gameObject);
@@ -216,6 +218,7 @@ public class MainMenuManager : MonoBehaviour
     {
         if (MainmenuCamera.Priority == 1)
         {
+            GetComponentInChildren<TextScroller>().MoveText();
             SoundManager.Instance.PlayOneShot(nextButtonPressedSound);
             MainmenuCamera.Priority = 0;
             CreditsCamera.Priority = 1;
