@@ -62,13 +62,13 @@ public class WifiStation : RandomEventBase
             // Check the boolean condition
             if (iseventover.Value)
             {
-                material.color = Color;
+                material.color = Color2;
                 Debug.Log("Changed color to white");
             }
             else
             {
                 // Change the color of the material to the original color
-                material.color = Color2;
+                material.color = Color;
                 Debug.Log("Changed color to black");
             }
         }
