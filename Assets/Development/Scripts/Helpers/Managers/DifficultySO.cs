@@ -33,6 +33,8 @@ public class DifficultySO : ScriptableObject
     public float minInLineWaitTime;
     public float maxInLineWaitTime;
 
+    public float minDrinkingDurationTime;
+    public float maxDrinkingDurationTime;
 
     [Header("Customer Preferences")]
     public int drinkThreshold;
