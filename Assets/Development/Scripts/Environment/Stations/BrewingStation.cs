@@ -13,6 +13,8 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 {
     public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
     public event EventHandler<IHasMinigameTiming.OnMinigameTimingEventArgs> OnMinigameTimingStarted;
+
+    [SerializeField] private MinigameQTE minigameQTE;
  
     [Header("Visuals")]
     [SerializeField] private ParticleSystem interactParticle;
@@ -53,6 +55,16 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     private readonly int Barista_BrewingHash = Animator.StringToHash("Barista_Brewing");
     private const float CrossFadeDuration = 0.1f;
     private float animationWaitTime;
+
+    void OnEnable()
+    {
+        MinigameQTE.MinigameFinished += MinigameEnded;
+    }
+
+    void OnDisable()
+    {
+        MinigameQTE.MinigameFinished -= MinigameEnded;
+    }
 
     private void Start()
     {
@@ -212,8 +224,9 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         ingredientSOList.Clear();
         isBrewing = false;
 
-        minigameTiming = true;
-        minigameTimer.Value = 0f;
+        minigameQTE.StartMinigame();
+        /*minigameTiming = true;
+        minigameTimer.Value = 0f;*/
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -280,6 +293,16 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             MinigameDoneServerRpc();
             //GetIngredient().SetIngredientParent(player);
         }
+        PrintHeldIngredientList();
+    }
+
+    void MinigameEnded()
+    {
+        if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstDrinkReady)
+            TutorialManager.Instance.FirstDrinkReady();
+
+        PickCupAnimation(playerController);// plays animation and sets cup in hand (SetIngredientParent(player))
+        MinigameDoneServerRpc();
         PrintHeldIngredientList();
     }
 
