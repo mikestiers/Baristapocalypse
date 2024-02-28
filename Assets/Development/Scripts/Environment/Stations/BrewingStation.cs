@@ -42,13 +42,13 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     private NetworkVariable<float> sweetSpotPosition = new NetworkVariable<float>();
 
     [Header("Emissions")]
-    [SerializeField] private EmissiveControl bioMatterTubing;
+    [SerializeField] private EmissiveControl[] bioMatterTubing;
     [SerializeField] private EmissiveControl bioMatterFloorPlate;
-    [SerializeField] private EmissiveControl liquidTubing;
+    [SerializeField] private EmissiveControl[] liquidTubing;
     [SerializeField] private EmissiveControl liquidFloorPlate;
-    [SerializeField] private EmissiveControl coffeeBeanTubing;
+    [SerializeField] private EmissiveControl[] coffeeBeanTubing;
     [SerializeField] private EmissiveControl coffeeBeanFloorPlate;
-    [SerializeField] private EmissiveControl sweetenerTubing;
+    [SerializeField] private EmissiveControl[] sweetenerTubing;
     [SerializeField] private EmissiveControl sweetenerFloorPlate;
 
     public delegate void OnBrewingDoneHandler(object sender, EventArgs e);
@@ -350,6 +350,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     {
         IngredientSO ingredientSO = BaristapocalypseMultiplayer.Instance.GetIngredientSOFromIndex(ingredientSOIndex);
         ingredientSOList.Add(ingredientSO);
+        TurnOnEmissive(ingredientSO);
     }
 
     public bool TryAddIngredient(IngredientSO ingredientSO)
@@ -424,14 +425,65 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     private void TurnAllEmissiveOff()
     {
-        bioMatterTubing.SetEmissive(false);
+        for(int i=0; i< bioMatterTubing.Length; i++)
+        {
+            bioMatterTubing[i].SetEmissive(false);
+        }
+        for(int i=0; i< liquidTubing.Length; i++)
+        {
+            liquidTubing[i].SetEmissive(false);
+        }
+        for (int i = 0; i < coffeeBeanTubing.Length; i++)
+        {
+            coffeeBeanTubing[i].SetEmissive(false);
+        }
+        for (int i = 0; i < sweetenerTubing.Length; i++)
+        {
+            sweetenerTubing[i].SetEmissive(false);
+        }
+
         bioMatterFloorPlate.SetEmissive(false);
-        liquidTubing.SetEmissive(false);
         liquidFloorPlate.SetEmissive(false);
-        coffeeBeanTubing.SetEmissive(false);
         coffeeBeanFloorPlate.SetEmissive(false);
-        sweetenerTubing.SetEmissive(false);
         sweetenerFloorPlate.SetEmissive(false);
+    }
+
+    private void TurnOnEmissive(IngredientSO ingredientSO)
+    {
+        switch (ingredientSO.objectTag)
+        {
+            case "Sweetener":
+                for (int i = 0; i < sweetenerTubing.Length; i++)
+                {
+                    sweetenerTubing[i].SetEmissive(false);
+                }
+                sweetenerFloorPlate.SetEmissive(false);
+                break;
+            case "Milk":
+                for (int i = 0; i < liquidTubing.Length; i++)
+                {
+                    liquidTubing[i].SetEmissive(false);
+                }
+                liquidFloorPlate.SetEmissive(false);
+                break;
+            case "BioMatter":
+                for (int i = 0; i < bioMatterTubing.Length; i++)
+                {
+                    bioMatterTubing[i].SetEmissive(false);
+                }
+                bioMatterFloorPlate.SetEmissive(false);
+                break;
+            case "CoffeeGrind":
+                for (int i = 0; i < coffeeBeanTubing.Length; i++)
+                {
+                    coffeeBeanTubing[i].SetEmissive(false);
+                }
+                coffeeBeanFloorPlate.SetEmissive(false);
+                break;
+            default:
+                Debug.LogWarning("Emissive tag wrong");
+                break;
+        }
     }
 }
 
