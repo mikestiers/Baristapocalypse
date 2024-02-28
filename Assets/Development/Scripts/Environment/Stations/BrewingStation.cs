@@ -455,30 +455,30 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             case "Sweetener":
                 for (int i = 0; i < sweetenerTubing.Length; i++)
                 {
-                    sweetenerTubing[i].SetEmissive(false);
+                    sweetenerTubing[i].SetEmissive(true);
                 }
-                sweetenerFloorPlate.SetEmissive(false);
+                sweetenerFloorPlate.SetEmissive(true);
                 break;
             case "Milk":
                 for (int i = 0; i < liquidTubing.Length; i++)
                 {
-                    liquidTubing[i].SetEmissive(false);
+                    liquidTubing[i].SetEmissive(true);
                 }
-                liquidFloorPlate.SetEmissive(false);
+                liquidFloorPlate.SetEmissive(true);
                 break;
             case "BioMatter":
                 for (int i = 0; i < bioMatterTubing.Length; i++)
                 {
-                    bioMatterTubing[i].SetEmissive(false);
+                    bioMatterTubing[i].SetEmissive(true);
                 }
-                bioMatterFloorPlate.SetEmissive(false);
+                bioMatterFloorPlate.SetEmissive(true);
                 break;
             case "CoffeeGrind":
                 for (int i = 0; i < coffeeBeanTubing.Length; i++)
                 {
-                    coffeeBeanTubing[i].SetEmissive(false);
+                    coffeeBeanTubing[i].SetEmissive(true);
                 }
-                coffeeBeanFloorPlate.SetEmissive(false);
+                coffeeBeanFloorPlate.SetEmissive(true);
                 break;
             default:
                 Debug.LogWarning("Emissive tag wrong");
