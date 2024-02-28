@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class GravityStorm : RandomEventBase
@@ -13,7 +14,6 @@ public class GravityStorm : RandomEventBase
     [SerializeField] private GameObject gravityButton;
     [SerializeField] private Material gravityButtonMaterial;
     [SerializeField] private LayerMask gravityMask;
-    [HideInInspector] public bool areObjectsDetected = false;
     private Collider eventCollider;
     private Vector3[] objectVelocities;
     private Rigidbody[] objectRigidbodies;

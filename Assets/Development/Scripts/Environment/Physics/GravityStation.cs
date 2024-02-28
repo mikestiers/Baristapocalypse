@@ -1,23 +1,22 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class GravityStation : MonoBehaviour
+public class GravityStation : NetworkBehaviour
 {
     [SerializeField] private GameObject gravityField;
     [SerializeField] private GameObject gravityButton;
     [SerializeField] private Material originalMaterial;
-
-    private Mouse mouse = Mouse.current;
 
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.GetComponent<PlayerController>())
         {
-            InputManager.Instance.InteractEvent += HandleInteract;
+            InputManager.Instance.InteractEvent += DeactivateStormEventServerRpc;
         }
     }
 
@@ -25,28 +24,28 @@ public class GravityStation : MonoBehaviour
     {
         if (other.GetComponent<PlayerController>())
         {
-            InputManager.Instance.InteractEvent -= HandleInteract;
+            InputManager.Instance.InteractEvent -= DeactivateStormEventServerRpc;
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void DeactivateStormEventServerRpc()
+    {
+        DeactivateStormEventClientRpc();
+    }
+
+    [ClientRpc]
+    private void DeactivateStormEventClientRpc()
+    {
+        DeactivateStormEvent();
     }
 
     private void HandleInteract()
     {
-        DeactivateRandomEvent();
+        DeactivateStormEvent();
     }
 
-    //// this is temporary, the player will interact with this and hold a button to deactivate the gravity Storm
-    //private void OnTriggerStay(Collider other)
-    //{
-    //    if (other.GetComponent<PlayerController>())
-    //    {
-    //        if (mouse.leftButton.wasPressedThisFrame) 
-    //        { 
-    //             DeactivateRandomEvent();
-    //        }
-    //    }
-    //}
-
-    private void DeactivateRandomEvent()
+    private void DeactivateStormEvent()
     {
 
         GameManager.Instance.isEventActive.Value = false;
