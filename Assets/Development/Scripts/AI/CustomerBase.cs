@@ -111,26 +111,22 @@ public class CustomerBase : Base
 
     public virtual void Update()
     {
-        if(!IsOwner) return;
-
-        if (!customerAnimator)
+        if (IsOwner)
         {
-            customerAnimator = bodiesContainerObject.GetComponentInChildren<Animator>();
-        }
+            if (orderTimer >= 0f)
+            {
+                orderTimer += Time.deltaTime;
+            }
 
-        if (orderTimer >= 0f)
-        {
-            orderTimer += Time.deltaTime;
-        }
+            Debug.LogWarning("CustomerState " + currentState.Value);
 
-        Debug.LogWarning("CustomerState " + currentState.Value);
+            if (messTime != null)
+                messTime += Time.deltaTime;
 
-        if (messTime != null)
-            messTime += Time.deltaTime; 
-
-        if(lineTime != null)
-        {
-            lineTime += Time.deltaTime;
+            if (lineTime != null)
+            {
+                lineTime += Time.deltaTime;
+            }
         }
 
         switch (currentState.Value)
