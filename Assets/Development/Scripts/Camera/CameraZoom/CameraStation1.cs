@@ -19,25 +19,40 @@ public class CameraStation1 : MonoBehaviour
     {
         m_Camera.Priority = defaultPriority;
     }
-    private void OnTriggerEnter(Collider other)
+
+    public void SwitchCameraOn()
     {
+        m_Camera.gameObject.SetActive(true);
+
+        m_Camera.Priority = insidePriority;
+    }
+
+    public void SwitchCameraOff()
+    {
+        m_Camera.gameObject.SetActive(false);
+
+        m_Camera.Priority = defaultPriority;
+    }
+
+    //private void OnTriggerEnter(Collider other)
+    //{
        
-        if (other.CompareTag("Player"))
-        {
-            m_Camera.gameObject.SetActive(true);
+    //    if (other.CompareTag("Player"))
+    //    {
+    //        m_Camera.gameObject.SetActive(true);
 
-            m_Camera.Priority = insidePriority;
-        }
-    }
+    //        m_Camera.Priority = insidePriority;
+    //    }
+    //}
 
-    private void OnTriggerExit(Collider other)
-    {
+    //private void OnTriggerExit(Collider other)
+    //{
         
-        if (other.CompareTag("Player"))
-        {
-            m_Camera.gameObject.SetActive(false);
+    //    if (other.CompareTag("Player"))
+    //    {
+    //        m_Camera.gameObject.SetActive(false);
 
-            m_Camera.Priority = defaultPriority;
-        }
-    }
+    //        m_Camera.Priority = defaultPriority;
+    //    }
+    //}
 }

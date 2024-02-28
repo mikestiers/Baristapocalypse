@@ -79,6 +79,7 @@ public class IngredientSelectionUI : BaseStation
             Show(ingredientMenu);
             //player.movementToggle = false;  // use when camera zooms
             isInUse = true;
+            GetComponentInParent<CameraStation1>().SwitchCameraOn();
         }
 
         // This is for when camera zooms so we can close camera
@@ -200,6 +201,7 @@ public class IngredientSelectionUI : BaseStation
         if (other.tag == "Player")
         {
             player = other.GetComponent<PlayerController>();
+            GetComponentInParent<CameraStation1>().SwitchCameraOff();
 
             if (player.IsLocalPlayer)
             {
