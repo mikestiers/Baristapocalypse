@@ -22,26 +22,18 @@ public class EmissiveControl : MonoBehaviour
         SetEmissive(isEmissiveOn);
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            isEmissiveOn = !isEmissiveOn;
-            SetEmissive(isEmissiveOn);
-        }
-    }
-
     public void SetEmissive(bool isActive)
     {
         if (emissiveMaterial == null) return;
 
-        // Assuming "_EmissionColor" is the emissive property name
-        Color emissiveColor = isActive ? Color.white : Color.black;
-        emissiveMaterial.SetColor("_EmissionColor", emissiveColor);
-
-        // Enable or disable emission based on the state
-        emissiveMaterial.EnableKeyword("_EMISSION");
-        emissiveMaterial.globalIlluminationFlags = isActive ? MaterialGlobalIlluminationFlags.RealtimeEmissive : MaterialGlobalIlluminationFlags.None;
+        if (isActive)
+        {
+            emissiveMaterial.EnableKeyword("_EMISSION");
+        }
+        else
+        {
+            emissiveMaterial.DisableKeyword("_EMISSION");
+        }
 
         // This is necessary to apply the changes
         emissiveMaterial.SetFloat("_EmissionScaleUI", isActive ? 1.0f : 0.0f);
