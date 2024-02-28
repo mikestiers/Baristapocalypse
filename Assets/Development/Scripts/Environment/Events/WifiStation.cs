@@ -9,12 +9,20 @@ public class WifiStation : RandomEventBase
     public Color Color2 = Color.black;
     [SerializeField] private GameObject eventLight;
     [HideInInspector] NetworkVariable<bool> iseventover = new NetworkVariable<bool>(false);
-    // Start is called before the first frame update
-    void Start()
+
+    [ServerRpc(RequireOwnership = false)]
+    public void WifiEventIsDoneServerRpc()
     {
-      
+        WifiEventIsDoneClientRpc();
     }
-    public void WifiEventIsDone()
+
+    [ClientRpc]
+    private void WifiEventIsDoneClientRpc()
+    {
+        WifiEventIsDone();
+    }
+
+    private void WifiEventIsDone()
     {
         GameManager.Instance.isEventActive.Value = false;
         iseventover.Value = true;
@@ -23,7 +31,19 @@ public class WifiStation : RandomEventBase
         ChangeColorBasedOnEvent();
     }
 
-    public void WifiEventIsStarting() 
+    [ServerRpc(RequireOwnership = false)]
+    public void WifiEventIsStartingServerRpc()
+    {
+        WifiEventIsStartingClientRpc();
+    }
+
+    [ClientRpc]
+    private void WifiEventIsStartingClientRpc()
+    {
+        WifiEventIsStarting();
+    }
+
+    private void WifiEventIsStarting() 
     {
         iseventover.Value = false;
         eventLight.SetActive(true);
@@ -31,7 +51,7 @@ public class WifiStation : RandomEventBase
         ChangeColorBasedOnEvent();
     }
 
-    void ChangeColorBasedOnEvent()
+    private void ChangeColorBasedOnEvent()
     {
         Renderer renderer = GetComponent<Renderer>();
 

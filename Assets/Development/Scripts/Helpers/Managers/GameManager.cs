@@ -494,7 +494,7 @@ public class GameManager : NetworkBehaviour
         }
         else if (randomEvent.GetComponent<WifiStation>()) 
         {
-            randomEvent.gameObject.GetComponent<WifiStation>().WifiEventIsStarting();
+            randomEvent.gameObject.GetComponent<WifiStation>().WifiEventIsStartingServerRpc();
         }
         else if (randomEvent.GetComponent<RadioStation>()) 
         {
@@ -514,7 +514,7 @@ public class GameManager : NetworkBehaviour
         }
         else if (randomEvent.GetComponent<WifiStation>()) 
         {
-            randomEvent.gameObject.GetComponent<WifiStation>().WifiEventIsDone();
+            randomEvent.gameObject.GetComponent<WifiStation>().WifiEventIsDoneServerRpc();
         }
         else if (randomEvent.GetComponent<RadioStation>()) 
         {
