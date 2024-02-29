@@ -176,14 +176,14 @@ public class CustomerBase : Base
     // When a customer's state has changed, the appropriate Update<action> method is called
     private void UpdateWandering()
     {
-        customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
+        //customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
 
         // To be implmented or removed
     }
 
     private void UpdateWaiting()
     {
-        customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
+        //customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
         // To be implmented or removed
         if (makingAMess == true) SetCustomerState(CustomerState.Loitering);
 
@@ -203,7 +203,7 @@ public class CustomerBase : Base
 
     private void UpdateOrdering()
     {
-        customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
+     
         if (orderTimer < 0)
         {
             //Order();
@@ -230,10 +230,12 @@ public class CustomerBase : Base
             agent.isStopped = true;
             if (frontofLine == true)
             {
+                customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
                 SetCustomerState(CustomerState.Ordering);
             }
             if(inLine && frontofLine != true)
             {
+                customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
                 SetCustomerState(CustomerState.Waiting);
             }
             if (!inLine)
@@ -260,7 +262,13 @@ public class CustomerBase : Base
     {
         if (agent.remainingDistance < distThreshold && atSit == false) atSit = true;
 
-        if (atSit) SetCustomerState(CustomerState.Sitting);   
+        if (atSit)
+        {
+
+            SetCustomerState(CustomerState.Sitting);
+            customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration);
+        }
+
     }
 
     private void UpdateInit()
@@ -322,7 +330,6 @@ public class CustomerBase : Base
 
     private void UpdatePickedUp()
     {
-        customerAnimator.CrossFadeInFixedTime(Customer1_StruggleHash, CrossFadeDuration); // Customer1 idle animation
         //Remove order from list if picked up
         if (OnCustomerLeave != null)
         {
@@ -335,7 +342,7 @@ public class CustomerBase : Base
         // sitting animation
         if (atSit)
         {
-            customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
+            //customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
         }
 
         if (!orderBeingServed)
