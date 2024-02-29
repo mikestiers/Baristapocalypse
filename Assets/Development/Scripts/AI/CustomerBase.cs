@@ -540,6 +540,7 @@ public class CustomerBase : Base
     [ServerRpc(RequireOwnership = false)]
     public void WalkToServerRpc(float x, float y, float z)
     {
+        customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
         WalkToClientRpc(x, y ,z);
     }
 
@@ -548,7 +549,7 @@ public class CustomerBase : Base
     {
         if (agent.isStopped) agent.isStopped = false;
         agent.SetDestination(new Vector3(x, y, z));
-        customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
+        
     }
 
     public void JustGotHandedCoffee()
