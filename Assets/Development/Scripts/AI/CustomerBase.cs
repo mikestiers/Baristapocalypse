@@ -228,6 +228,7 @@ public class CustomerBase : Base
         if (agent.remainingDistance < distThreshold)
         {
             agent.isStopped = true;
+            moving.Value = false;
             if (frontofLine == true)
             {
                 SetCustomerState(CustomerState.Ordering);
@@ -237,7 +238,7 @@ public class CustomerBase : Base
                 SetCustomerState(CustomerState.Waiting);
             }
 
-            moving.Value = false;
+            
         }
     }
 
@@ -506,10 +507,10 @@ public class CustomerBase : Base
         if (GetCustomerState() == CustomerState.Drinking && Random.Range(0, 100) <= GameValueHolder.Instance.difficultySettings.GetChanceToMess()) CreateMess();
         if (Random.Range(0, 100) < GameValueHolder.Instance.difficultySettings.GetChanceToLoiter())
         {
-            SetCustomerState(CustomerState.Loitering);
             messTime = 0f;
             makingAMess.Value = true;
             moving.Value = false;
+            SetCustomerState(CustomerState.Loitering);
         }
         else
         {
