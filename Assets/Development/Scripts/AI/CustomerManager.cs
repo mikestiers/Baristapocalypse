@@ -285,7 +285,7 @@ public class CustomerManager : Singleton<CustomerManager>
     {
         CustomerBase customer = LineQueue.GetFirstInQueue();
         barFloor.TrySendToChair(customer);
-        customer.inLine.Value = false;
+        customer.inLine = false;
         customer.frontofLine = false;
     }
 

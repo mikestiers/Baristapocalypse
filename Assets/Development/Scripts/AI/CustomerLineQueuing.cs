@@ -22,7 +22,7 @@ public class CustomerLineQueuing
         customerList.Add(customer);
         customer.Walkto(positionList[customerList.IndexOf(customer)]);
         if(customerList.IndexOf(customer) == 0) customer.frontofLine = true;
-        customer.inLine.Value = true;
+        customer.inLine = true;
         customer.currentPosInLine = customerList.IndexOf(customer);
     }
 

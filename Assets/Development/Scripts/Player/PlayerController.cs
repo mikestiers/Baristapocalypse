@@ -759,7 +759,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
             pickup.DisablePickupColliders(pickup);
 
-            if (pickup.GetCustomer().inLine.Value == true)
+            if (pickup.GetCustomer().inLine == true)
             {
                 int _CustomerPos = pickup.GetCustomer().currentPosInLine;
                 CustomerManager.Instance.LineQueue.RemoveCustomerInPos(_CustomerPos);
