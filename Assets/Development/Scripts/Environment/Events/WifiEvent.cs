@@ -33,7 +33,7 @@ public class WifiEvent : MonoBehaviour
     private void DeactivateRandomEvent()
     {
 
-        Wifi.WifiEventIsDone();
+        Wifi.WifiEventIsDoneServerRpc();
       // GameManager.Instance.isEventActive = false;
       // RandomEventBase randomEvent = GameManager.Instance.currentRandomEvent;
       //

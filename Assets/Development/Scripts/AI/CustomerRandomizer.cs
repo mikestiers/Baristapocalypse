@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
+[DefaultExecutionOrder(-1)]
 public class CustomerRandomizer : NetworkBehaviour
 {
     [SerializeField] public CustomerRaceSO[] Races;
@@ -96,7 +97,12 @@ public class CustomerRandomizer : NetworkBehaviour
         coffeePreferences.AddTemperature(accumulatedTemperature);
 
         //heads[headIndex].SetActive(true);
-        bodies[bodyIndex].SetActive(true);
+        for(int i=0; i<bodies.Count; i++)
+        {
+            if (i == bodyIndex) continue;
+            bodies[i].SetActive(false);
+        }
+        
     }
 }
 

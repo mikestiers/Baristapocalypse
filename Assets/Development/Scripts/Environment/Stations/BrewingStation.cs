@@ -35,11 +35,21 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     private bool isBrewing;
     public NetworkVariable<bool> availableForOrder = new NetworkVariable<bool>(true);
     private NetworkVariable<float> minigameTimer = new NetworkVariable<float>(0f);
-    private bool minigameTiming = false;
+    private NetworkVariable<bool> minigameTiming = new NetworkVariable<bool>(false);
     private float maxMinigameTimer = 4.0f;
     private float minSweetSpotPosition = 0.1f;
     private float maxSweetSpotPosition = 0.9f;
     private NetworkVariable<float> sweetSpotPosition = new NetworkVariable<float>();
+
+    [Header("Emissions")]
+    [SerializeField] private EmissiveControl[] bioMatterTubing;
+    [SerializeField] private EmissiveControl bioMatterFloorPlate;
+    [SerializeField] private EmissiveControl[] liquidTubing;
+    [SerializeField] private EmissiveControl liquidFloorPlate;
+    [SerializeField] private EmissiveControl[] coffeeBeanTubing;
+    [SerializeField] private EmissiveControl coffeeBeanFloorPlate;
+    [SerializeField] private EmissiveControl[] sweetenerTubing;
+    [SerializeField] private EmissiveControl sweetenerFloorPlate;
 
     public delegate void OnBrewingDoneHandler(object sender, EventArgs e);
     public event OnBrewingDoneHandler OnBrewingDone;
@@ -68,6 +78,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     private void Start()
     {
+        TurnAllEmissiveOff();
         RaiseBrewingEmpty();
         Empty();
     }
@@ -96,8 +107,8 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     protected virtual void RaiseBrewingDone()
     {
-        currentOrder.SetOrderState(OrderState.BeingDelivered);
-        OnBrewingDone?.Invoke(this, EventArgs.Empty); 
+        //currentOrder.SetOrderState(OrderState.BeingDelivered);
+        //OnBrewingDone?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void RaiseBrewingEmpty()
@@ -116,15 +127,10 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             isBrewing = false;
 
             currentOrder.SetOrderState(OrderState.BeingDelivered);
+
+            OrderManager.Instance.FinishOrder(currentOrder);
         }
     }
-    //private void ProcessOrder(Order order)
-    //{
-    //    SetOrder(order);
-    //}
-
-
-
 
     private void MinigameTimer_OnValueChanged(float previousValue, float newValue)
     {
@@ -160,12 +166,8 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             {
                 SpawnCoffeeDrinkServerRpc();
                 animationWaitTime = 1.2f; //PlayerController.Instance.anim.GetCurrentAnimatorStateInfo(0).normalizedTime; this is giving a delay of like 1 sec , i believe is because i'm playimg the animation faster than original
-                BrewingDoneServerRpc();   
+                BrewingDoneServerRpc();
             }
-        }
-        if (minigameTiming)
-        {
-            minigameTimer.Value += Time.deltaTime;
         }
     }
 
@@ -213,9 +215,8 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     private void BrewingDoneServerRpc()
     {
         sweetSpotPosition.Value = UnityEngine.Random.Range(minSweetSpotPosition, maxSweetSpotPosition);
-        availableForOrder.Value = true;
         BrewingDoneClientRpc();
-        
+
     }
 
     [ClientRpc]
@@ -225,21 +226,20 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         isBrewing = false;
 
         minigameQTE.StartMinigame();
-        /*minigameTiming = true;
-        minigameTimer.Value = 0f;*/
+        minigameTiming.Value = true;
+        //minigameTimer.Value = 0f;
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void MinigameDoneServerRpc()
     {
-        minigameTimer.Value = 0f;
+        minigameTiming.Value = false;
         MinigameDoneClientRpc();
     }
 
     [ClientRpc]
     private void MinigameDoneClientRpc()
     {
-        minigameTiming = false;
         RaiseBrewingDone();
     }
 
@@ -250,6 +250,9 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             Debug.LogWarning("me local player");
             return;
         }
+
+        if (minigameTiming.Value || isBrewing) return;
+    
         playerController = player; // Reference for animations
         // Start brewing for ingredients in the machine.  This is for adding directly from stations instead of player hands
         if (ingredientSOList.Count >= numIngredientsNeeded)
@@ -258,52 +261,16 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             player.movementToggle = false;
             InteractLogicPlaceObjectOnBrewing();
         }
-
-        if (minigameTiming)
-        {
-            float timingPressed = Mathf.Abs((minigameTimer.Value/ maxMinigameTimer) - sweetSpotPosition.Value);
-            bool minigameResult = false;
-            if (timingPressed <= 0.1f)
-            {
-                minigameResult = true;
-            }
-            else if ((minigameTimer.Value / maxMinigameTimer) < sweetSpotPosition.Value)
-            {
-                minigameResult = false;
-            }
-            else if ((minigameTimer.Value / maxMinigameTimer) > sweetSpotPosition.Value)
-            {
-                minigameResult = false;
-            }
-            if (this.GetIngredient().GetComponent<CoffeeAttributes>() != null)
-            {
-                this.GetIngredient().GetComponent<CoffeeAttributes>().SetIsMinigamePerfect(minigameResult);
-            }
-
-            if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstDrinkReady)
-                TutorialManager.Instance.FirstDrinkReady();
-
-            PickCupAnimation(player);// plays animation and sets cup in hand (SetIngredientParent(player))
-            MinigameDoneServerRpc();
-            //GetIngredient().SetIngredientParent(player);
-        }
-        if (minigameTimer.Value >= maxMinigameTimer)
-        {
-            PickCupAnimation(player);// plays animation and sets cup in hand (SetIngredientParent(player))
-            MinigameDoneServerRpc();
-            //GetIngredient().SetIngredientParent(player);
-        }
-        PrintHeldIngredientList();
     }
 
-    void MinigameEnded()
+    public void MinigameEnded()
     {
         if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstDrinkReady)
             TutorialManager.Instance.FirstDrinkReady();
 
-        PickCupAnimation(playerController);// plays animation and sets cup in hand (SetIngredientParent(player))
         MinigameDoneServerRpc();
         PrintHeldIngredientList();
+        PickCupAnimation(playerController);// plays animation and sets cup in hand (SetIngredientParent(player))
     }
 
     public void InteractLogicPlaceObjectOnBrewing()
@@ -344,6 +311,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     {
         IngredientSO ingredientSO = BaristapocalypseMultiplayer.Instance.GetIngredientSOFromIndex(ingredientSOIndex);
         ingredientSOList.Add(ingredientSO);
+        TurnOnEmissive(ingredientSO);
     }
 
     public bool TryAddIngredient(IngredientSO ingredientSO)
@@ -359,6 +327,11 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             {
                 return false;
             }
+        }
+
+        if(isBrewing || minigameTiming.Value)
+        {
+            return false;
         }
         return true;
     }
@@ -397,6 +370,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     public void Empty()
     {
         ingredientSOList.Clear();
+        TurnAllEmissiveOff();
     }
 
     private void PickCupAnimation(PlayerController player)
@@ -413,6 +387,82 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         player.movementToggle = true;
         GetIngredient().SetIngredientParent(player);
         animationSwitch?.Invoke();
+    }
+
+    private void TurnAllEmissiveOff()
+    {
+        TurnAllEmissiveOffClientRpc();
+    }
+
+    [ClientRpc]
+    private void TurnAllEmissiveOffClientRpc()
+    {
+        for (int i = 0; i < bioMatterTubing.Length; i++)
+        {
+            bioMatterTubing[i].SetEmissive(false);
+        }
+        for (int i = 0; i < liquidTubing.Length; i++)
+        {
+            liquidTubing[i].SetEmissive(false);
+        }
+        for (int i = 0; i < coffeeBeanTubing.Length; i++)
+        {
+            coffeeBeanTubing[i].SetEmissive(false);
+        }
+        for (int i = 0; i < sweetenerTubing.Length; i++)
+        {
+            sweetenerTubing[i].SetEmissive(false);
+        }
+
+        bioMatterFloorPlate.SetEmissive(false);
+        liquidFloorPlate.SetEmissive(false);
+        coffeeBeanFloorPlate.SetEmissive(false);
+        sweetenerFloorPlate.SetEmissive(false);
+    }
+
+    private void TurnOnEmissive(IngredientSO ingredientSO)
+    {
+        TurnOnEmissiveClientRpc(BaristapocalypseMultiplayer.Instance.GetIngredientSOIndex(ingredientSO));
+    }
+
+    [ClientRpc]
+    private void TurnOnEmissiveClientRpc(int ingredientSOIndex)
+    {
+        IngredientSO ingredientSO = BaristapocalypseMultiplayer.Instance.GetIngredientSOFromIndex(ingredientSOIndex);
+        switch (ingredientSO.objectTag)
+        {
+            case "Sweetener":
+                for (int i = 0; i < sweetenerTubing.Length; i++)
+                {
+                    sweetenerTubing[i].SetEmissive(true);
+                }
+                sweetenerFloorPlate.SetEmissive(true);
+                break;
+            case "Milk":
+                for (int i = 0; i < liquidTubing.Length; i++)
+                {
+                    liquidTubing[i].SetEmissive(true);
+                }
+                liquidFloorPlate.SetEmissive(true);
+                break;
+            case "BioMatter":
+                for (int i = 0; i < bioMatterTubing.Length; i++)
+                {
+                    bioMatterTubing[i].SetEmissive(true);
+                }
+                bioMatterFloorPlate.SetEmissive(true);
+                break;
+            case "CoffeeGrind":
+                for (int i = 0; i < coffeeBeanTubing.Length; i++)
+                {
+                    coffeeBeanTubing[i].SetEmissive(true);
+                }
+                coffeeBeanFloorPlate.SetEmissive(true);
+                break;
+            default:
+                Debug.LogWarning("Emissive tag wrong");
+                break;
+        }
     }
 }
 

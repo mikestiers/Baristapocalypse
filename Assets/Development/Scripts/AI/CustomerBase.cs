@@ -111,26 +111,22 @@ public class CustomerBase : Base
 
     public virtual void Update()
     {
-        if(!IsOwner) return;
-
-        if (!customerAnimator)
+        if (IsOwner)
         {
-            customerAnimator = bodiesContainerObject.GetComponentInChildren<Animator>();
-        }
+            if (orderTimer >= 0f)
+            {
+                orderTimer += Time.deltaTime;
+            }
 
-        if (orderTimer >= 0f)
-        {
-            orderTimer += Time.deltaTime;
-        }
+            //Debug.LogWarning("CustomerState " + currentState.Value);
 
-        Debug.LogWarning("CustomerState " + currentState.Value);
+            if (messTime != null)
+                messTime += Time.deltaTime;
 
-        if (messTime != null)
-            messTime += Time.deltaTime; 
-
-        if(lineTime != null)
-        {
-            lineTime += Time.deltaTime;
+            if (lineTime != null)
+            {
+                lineTime += Time.deltaTime;
+            }
         }
 
         switch (currentState.Value)
@@ -180,14 +176,14 @@ public class CustomerBase : Base
     // When a customer's state has changed, the appropriate Update<action> method is called
     private void UpdateWandering()
     {
-        customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
+        //customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
 
         // To be implmented or removed
     }
 
     private void UpdateWaiting()
     {
-        customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
+        //customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
         // To be implmented or removed
         if (makingAMess == true) SetCustomerState(CustomerState.Loitering);
 
@@ -207,7 +203,7 @@ public class CustomerBase : Base
 
     private void UpdateOrdering()
     {
-        customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
+     
         if (orderTimer < 0)
         {
             //Order();
@@ -234,11 +230,17 @@ public class CustomerBase : Base
             agent.isStopped = true;
             if (frontofLine == true)
             {
+                customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
                 SetCustomerState(CustomerState.Ordering);
             }
-            else
+            if(inLine && frontofLine != true)
             {
+                customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
                 SetCustomerState(CustomerState.Waiting);
+            }
+            if (!inLine)
+            {
+                SetCustomerState(CustomerState.Insit);
             }
 
             moving = false;
@@ -260,21 +262,13 @@ public class CustomerBase : Base
     {
         if (agent.remainingDistance < distThreshold && atSit == false) atSit = true;
 
-        if (atSit) SetCustomerState(CustomerState.Sitting);
-
-        if (!orderBeingServed)
-            DisplayCustomerVisualIdentifiers();
-        orderBeingServed = true;
-        if (orderTimer >= customerLeaveTime)
+        if (atSit)
         {
-            CustomerManager.Instance.customerLeaveIncrease();
-            CustomerManager.Instance.ReduceCustomerLeftoServe();
-            GameManager.Instance.moneySystem.ResetStreak();
-            CustomerLeave();
 
-            Debug.LogWarning("Unhappy Customer");
+            SetCustomerState(CustomerState.Sitting);
+            customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration);
         }
-            
+
     }
 
     private void UpdateInit()
@@ -336,7 +330,6 @@ public class CustomerBase : Base
 
     private void UpdatePickedUp()
     {
-        customerAnimator.CrossFadeInFixedTime(Customer1_StruggleHash, CrossFadeDuration); // Customer1 idle animation
         //Remove order from list if picked up
         if (OnCustomerLeave != null)
         {
@@ -349,7 +342,20 @@ public class CustomerBase : Base
         // sitting animation
         if (atSit)
         {
-            customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
+            //customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
+        }
+
+        if (!orderBeingServed)
+            DisplayCustomerVisualIdentifiers();
+        orderBeingServed = true;
+        if (orderTimer >= customerLeaveTime)
+        {
+            CustomerManager.Instance.customerLeaveIncrease();
+            CustomerManager.Instance.ReduceCustomerLeftoServe();
+            GameManager.Instance.moneySystem.ResetStreak();
+            CustomerLeave();
+
+            Debug.LogWarning("Unhappy Customer");
         }
 
     }
@@ -492,7 +498,8 @@ public class CustomerBase : Base
     {
         SetCustomerState(CustomerState.Drinking);
         //Start Animation for drinking
-        float drinkingDur = Random.Range(15.0f , 60.0f);
+        float drinkingDur = Random.Range(GameValueHolder.Instance.difficultySettings.GetMinDrinkingDurationTime(), GameValueHolder.Instance.difficultySettings.GetMaxDrinkingDurationTime());
+
         yield return new WaitForSeconds(drinkingDur);
 
         CustomerLeave();
@@ -534,11 +541,17 @@ public class CustomerBase : Base
 
     public void Walkto(Vector3 Spot)
     {
-        if (agent.isStopped) agent.isStopped = false;
-        agent.SetDestination(Spot);
         customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
         SetCustomerState(CustomerState.Moving);
         moving = true;
+        WalkToClientRpc(Spot.x, Spot.y, Spot.z);
+    }
+
+    [ClientRpc]
+    private void WalkToClientRpc(float x, float y, float z)
+    {
+        if (agent.isStopped) agent.isStopped = false;
+        agent.SetDestination(new Vector3(x, y, z));
     }
 
     public void JustGotHandedCoffee()
@@ -663,4 +676,16 @@ public class CustomerBase : Base
         isGivingOrderToCustomer = false;
         player.movementToggle = true;
     }
+
+    public override void OnDestroy()
+    {
+        Debug.Log("destroying customer");
+        base.OnDestroy();
+        if (HasIngredient())
+        {
+            Debug.Log("destroying customer has ingredient");
+            Ingredient.DestroyIngredient(GetIngredient());
+        }
+    }
+
 }

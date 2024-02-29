@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class GravityStorm : RandomEventBase
@@ -13,7 +14,7 @@ public class GravityStorm : RandomEventBase
     [SerializeField] private GameObject gravityButton;
     [SerializeField] private Material gravityButtonMaterial;
     [SerializeField] private LayerMask gravityMask;
-    [HideInInspector] public bool areObjectsDetected = false;
+    [SerializeField] private GameObject gravityEventLights;
     private Collider eventCollider;
     private Vector3[] objectVelocities;
     private Rigidbody[] objectRigidbodies;
@@ -22,6 +23,8 @@ public class GravityStorm : RandomEventBase
     {
         eventCollider = GetComponent<Collider>();
         gravityButton.GetComponent<MeshRenderer>().material = gravityButtonMaterial;
+        //isEffectOn.Value = true;
+        //TurnOnOffEventEffect(true);
     }
 
     private void Start()
@@ -46,6 +49,7 @@ public class GravityStorm : RandomEventBase
 
     private void FindObjectsToMove()
     {
+       
         Collider[] colliders = Physics.OverlapBox(eventCollider.bounds.center, eventCollider.bounds.extents, Quaternion.identity, gravityMask);
         List<Rigidbody> rigidbodies = new List<Rigidbody>();
         foreach (Collider collider in colliders)
@@ -73,6 +77,7 @@ public class GravityStorm : RandomEventBase
 
     private void MoveObject()
     {
+
         for (int i = 0; i < objectsToMove.Length; i++)
         {
             Rigidbody rb = objectsToMove[i];
