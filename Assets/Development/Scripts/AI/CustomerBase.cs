@@ -232,9 +232,13 @@ public class CustomerBase : Base
             {
                 SetCustomerState(CustomerState.Ordering);
             }
-            else
+            if(inLine && frontofLine != true)
             {
                 SetCustomerState(CustomerState.Waiting);
+            }
+            if (!inLine)
+            {
+                SetCustomerState(CustomerState.Insit);
             }
 
             moving = false;
@@ -530,8 +534,10 @@ public class CustomerBase : Base
 
     public void Walkto(Vector3 Spot)
     {
+        customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
+        SetCustomerState(CustomerState.Moving);
+        moving = true;
         WalkToClientRpc(Spot.x, Spot.y, Spot.z);
-        
     }
 
     [ClientRpc]
@@ -539,9 +545,6 @@ public class CustomerBase : Base
     {
         if (agent.isStopped) agent.isStopped = false;
         agent.SetDestination(new Vector3(x, y, z));
-        customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
-        SetCustomerState(CustomerState.Moving);
-        moving = true;
     }
 
     public void JustGotHandedCoffee()
