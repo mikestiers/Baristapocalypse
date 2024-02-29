@@ -17,7 +17,7 @@ public class CustomerBase : Base
     [Header("Navigation")]
     public NavMeshAgent agent;
     public bool frontofLine;
-    public bool inLine;
+    public NetworkVariable<bool> inLine = new NetworkVariable<bool>();
     public bool atSit = false; //for tables customer rotation orientation 
     public bool leaving = false;
     public bool makingAMess = false;
@@ -187,16 +187,16 @@ public class CustomerBase : Base
         // To be implmented or removed
         if (makingAMess == true) SetCustomerState(CustomerState.Loitering);
 
-        if (inLine == true && lineTime == null) lineTime = 0.0f;
-        else if (inLine == false) lineTime = null;
+        if (inLine.Value == true && lineTime == null) lineTime = 0.0f;
+        else if (inLine.Value == false) lineTime = null;
 
-        if (inLine == true && lineTime > (maxInLineTime)) 
+        if (inLine.Value == true && lineTime > (maxInLineTime)) 
         {
             CustomerManager.Instance.customerLeaveIncrease();
             CustomerManager.Instance.ReduceCustomerLeftoServe();
             CustomerManager.Instance.LineQueue.RemoveCustomerInPos(currentPosInLine);
             CustomerLeave();
-            inLine = false;
+            inLine.Value = false;
         }
 
     }
@@ -210,16 +210,16 @@ public class CustomerBase : Base
             OrderClientRpc();
         }
 
-        if (inLine == true && lineTime == null) lineTime = 0.0f;
-        else if (inLine == false) lineTime = null;
+        if (inLine.Value == true && lineTime == null) lineTime = 0.0f;
+        else if (inLine.Value == false) lineTime = null;
 
-        if (inLine == true && lineTime > (maxInLineTime))
+        if (inLine.Value == true && lineTime > (maxInLineTime))
         {
             CustomerManager.Instance.customerLeaveIncrease();
             CustomerManager.Instance.ReduceCustomerLeftoServe();
             CustomerManager.Instance.LineQueue.RemoveCustomerInPos(currentPosInLine);
             CustomerLeave();
-            inLine = false;
+            inLine.Value = false;
         }
     }
 
