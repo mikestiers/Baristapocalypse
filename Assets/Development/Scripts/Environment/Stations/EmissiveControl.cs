@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class EmissiveControl : MonoBehaviour
+public class EmissiveControl : NetworkBehaviour
 {
     public Material emissiveMaterial;
     private bool isEmissiveOn = false;
@@ -25,20 +26,15 @@ public class EmissiveControl : MonoBehaviour
 
     public void SetEmissive(bool isActive)
     {
+        SetEmissiveClientRpc(isActive);
+    }
+
+    [ClientRpc]
+    private void SetEmissiveClientRpc(bool isActive)
+    {
         if (emissiveMaterial == null) return;
         MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
         propertyBlock.SetColor("_EmissionColor", isActive ? Color.white : Color.black);
-        //if (isActive)
-        //{
-        //    emissiveMaterial.EnableKeyword("_EMISSION");
-        //}
-        //else
-        //{
-        //    emissiveMaterial.DisableKeyword("_EMISSION");
-        //}
-
-        // This is necessary to apply the changes
-        //emissiveMaterial.SetFloat("_EmissionScaleUI", isActive ? 1.0f : 0.0f);
         propertyBlock.SetFloat("_EmissionScaleUI", isActive ? 1.0f : 0.0f);
         GetComponent<Renderer>().SetPropertyBlock(propertyBlock);
     }
