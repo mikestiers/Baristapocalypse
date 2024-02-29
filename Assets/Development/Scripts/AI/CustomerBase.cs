@@ -408,6 +408,12 @@ public class CustomerBase : Base
     [ServerRpc(RequireOwnership = false)]
     private void LeaveLineServerRpc()
     {
+        LeaveLineClientRpc();
+    }
+
+    [ClientRpc]
+    private void LeaveLineClientRpc()
+    {
         CustomerManager.Instance.Leaveline();
     }
 
