@@ -308,6 +308,8 @@ public class CustomerBase : Base
             Debug.Log("Random point: " + hit.position);
 
             Walkto(hit.position);
+            moving = true;
+            SetCustomerState(CustomerState.Moving);
         }
         else
         {
@@ -512,8 +514,9 @@ public class CustomerBase : Base
         else
         {
             customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
+            Walkto(exit.position);
             SetCustomerState(CustomerState.Leaving);
-            agent.SetDestination(exit.position);
+            
 
 
             //CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
@@ -531,7 +534,6 @@ public class CustomerBase : Base
     public void Walkto(Vector3 Spot)
     {
         WalkToClientRpc(Spot.x, Spot.y, Spot.z);
-        
     }
 
     [ClientRpc]
@@ -540,8 +542,6 @@ public class CustomerBase : Base
         if (agent.isStopped) agent.isStopped = false;
         agent.SetDestination(new Vector3(x, y, z));
         customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
-        SetCustomerState(CustomerState.Moving);
-        moving = true;
     }
 
     public void JustGotHandedCoffee()
