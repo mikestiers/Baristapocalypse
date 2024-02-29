@@ -21,7 +21,7 @@ public class CustomerLineQueuing
     {
         customerList.Add(customer);
         customer.Walkto(positionList[customerList.IndexOf(customer)]);
-        customer.moving = true;
+        customer.moving.Value = true;
         customer.SetCustomerState(CustomerBase.CustomerState.Moving);
         if(customerList.IndexOf(customer) == 0) customer.frontofLine = true;
         customer.inLine.Value = true;
@@ -81,7 +81,7 @@ public class CustomerLineQueuing
         {
             customerList[i].Walkto(positionList[i]);
             customerList[i].SetCustomerState(CustomerBase.CustomerState.Moving);
-            customerList[i].moving = true;
+            customerList[i].moving.Value = true;
             if (i == 0) customerList[i].frontofLine = true;
             customerList[i].currentPosInLine = i;
         }

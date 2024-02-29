@@ -23,7 +23,7 @@ public class CustomerBarFloor
         {
             emptyChair.SetCustomer(customer);
             customer.Walkto(emptyChair.GetPosition());
-            customer.moving = true;
+            customer.moving.Value = true;
             customer.SetCustomerState(CustomerBase.CustomerState.Insit);
 
         }

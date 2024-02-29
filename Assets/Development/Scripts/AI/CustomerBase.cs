@@ -19,9 +19,9 @@ public class CustomerBase : Base
     public bool frontofLine;
     public NetworkVariable<bool> inLine = new NetworkVariable<bool>();
     public NetworkVariable<bool> atSit = new NetworkVariable<bool>(false); //for tables customer rotation orientation 
-    public bool leaving = false;
-    public bool makingAMess = false;
-    public bool moving;
+    public NetworkVariable<bool> leaving = new NetworkVariable<bool>(false);
+    public NetworkVariable<bool> makingAMess = new NetworkVariable<bool>(false);
+    public NetworkVariable<bool> moving = new NetworkVariable<bool>();
     public float distThreshold;
     public GameObject[] Line;
     public int LineIndex;
@@ -31,7 +31,7 @@ public class CustomerBase : Base
     [Header("Identifiers")]
     public NetworkVariable<FixedString32Bytes> customerName = new NetworkVariable<FixedString32Bytes>();
     public NetworkVariable<int> customerNumber = new NetworkVariable<int>();
-    private bool orderBeingServed;
+    private NetworkVariable<bool> orderBeingServed = new NetworkVariable<bool>();
 
     [Header("Coffee Attributes")]
     public CoffeeAttributes coffeeAttributes;
@@ -67,7 +67,7 @@ public class CustomerBase : Base
     private readonly int MovementHash = Animator.StringToHash("Movement");
     private const float CrossFadeDuration = 0.1f;
     private float animationWaitTime = 1.2f;
-    private bool isGivingOrderToCustomer = false;
+    private NetworkVariable<bool> isGivingOrderToCustomer = new NetworkVariable<bool>(false);
 
     // Customer Animations
     [Header("Customer Animations")]
@@ -111,23 +111,23 @@ public class CustomerBase : Base
 
     public virtual void Update()
     {
-        if (IsOwner)
+        if (!IsOwner) return;
+        
+        if (orderTimer >= 0f)
         {
-            if (orderTimer >= 0f)
-            {
-                orderTimer += Time.deltaTime;
-            }
-
-            //Debug.LogWarning("CustomerState " + currentState.Value);
-
-            if (messTime != null)
-                messTime += Time.deltaTime;
-
-            if (lineTime != null)
-            {
-                lineTime += Time.deltaTime;
-            }
+            orderTimer += Time.deltaTime;
         }
+
+        //Debug.LogWarning("CustomerState " + currentState.Value);
+
+        if (messTime != null)
+            messTime += Time.deltaTime;
+
+        if (lineTime != null)
+        {
+            lineTime += Time.deltaTime;
+        }
+        
 
         switch (currentState.Value)
         {
@@ -185,7 +185,7 @@ public class CustomerBase : Base
     {
         customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
         // To be implmented or removed
-        if (makingAMess == true) SetCustomerState(CustomerState.Loitering);
+        if (makingAMess.Value == true) SetCustomerState(CustomerState.Loitering);
 
         if (inLine.Value == true && lineTime == null) lineTime = 0.0f;
         else if (inLine.Value == false) lineTime = null;
@@ -237,14 +237,14 @@ public class CustomerBase : Base
                 SetCustomerState(CustomerState.Waiting);
             }
 
-            moving = false;
+            moving.Value = false;
         }
     }
 
     private void UpdateLeaving()
     {
         messTime = null;
-        leaving = true;
+        leaving.Value = true;
 
         if (agent.remainingDistance < distThreshold)
         {
@@ -266,7 +266,7 @@ public class CustomerBase : Base
 
     private void UpdateLoitering()
     {
-        if (leaving == true)
+        if (leaving.Value == true)
         {
             SetCustomerState(CustomerState.Leaving);
             agent.SetDestination(exit.position);
@@ -290,9 +290,9 @@ public class CustomerBase : Base
 
     public IEnumerator TryGoToRandomPoint(float delay)
     {
-        if (leaving == true || moving == true) yield break;
+        if (leaving.Value == true || moving.Value == true) yield break;
 
-        moving = true;
+        moving.Value = true;
 
         yield return new WaitForSeconds(delay);
 
@@ -308,7 +308,7 @@ public class CustomerBase : Base
             Debug.Log("Random point: " + hit.position);
 
             Walkto(hit.position);
-            moving = true;
+            moving.Value = true;
             SetCustomerState(CustomerState.Moving);
         }
         else
@@ -336,9 +336,9 @@ public class CustomerBase : Base
             customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
         }
 
-        if (!orderBeingServed)
+        if (!orderBeingServed.Value)
             DisplayCustomerVisualIdentifiers();
-        orderBeingServed = true;
+        orderBeingServed.Value = true;
         if (orderTimer >= customerLeaveTime)
         {
             CustomerManager.Instance.customerLeaveIncrease();
@@ -381,9 +381,9 @@ public class CustomerBase : Base
         }
 
         // Deliver customer order
-        else if (GetCustomerState() == CustomerState.Sitting && player.GetIngredient().CompareTag("CoffeeCup") && !isGivingOrderToCustomer)
+        else if (GetCustomerState() == CustomerState.Sitting && player.GetIngredient().CompareTag("CoffeeCup") && !isGivingOrderToCustomer.Value)
         {
-            isGivingOrderToCustomer = true;
+            isGivingOrderToCustomer.Value = true;
             DropCupAnimation(player);// Play animation and handles delivering the drink
    
         }
@@ -508,8 +508,8 @@ public class CustomerBase : Base
         {
             SetCustomerState(CustomerState.Loitering);
             messTime = 0f;
-            makingAMess = true;
-            moving = false;
+            makingAMess.Value = true;
+            moving.Value = false;
         }
         else
         {
@@ -669,7 +669,7 @@ public class CustomerBase : Base
         player.anim.CrossFadeInFixedTime(MovementHash, CrossFadeDuration);
 
         animationSwitch?.Invoke();
-        isGivingOrderToCustomer = false;
+        isGivingOrderToCustomer.Value = false;
         player.movementToggle = true;
     }
 
