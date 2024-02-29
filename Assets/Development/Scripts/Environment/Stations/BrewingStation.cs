@@ -391,11 +391,17 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     private void TurnAllEmissiveOff()
     {
-        for(int i=0; i< bioMatterTubing.Length; i++)
+        TurnAllEmissiveOffClientRpc();
+    }
+
+    [ClientRpc]
+    private void TurnAllEmissiveOffClientRpc()
+    {
+        for (int i = 0; i < bioMatterTubing.Length; i++)
         {
             bioMatterTubing[i].SetEmissive(false);
         }
-        for(int i=0; i< liquidTubing.Length; i++)
+        for (int i = 0; i < liquidTubing.Length; i++)
         {
             liquidTubing[i].SetEmissive(false);
         }
@@ -416,6 +422,13 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     private void TurnOnEmissive(IngredientSO ingredientSO)
     {
+        TurnOnEmissiveClientRpc(BaristapocalypseMultiplayer.Instance.GetIngredientSOIndex(ingredientSO));
+    }
+
+    [ClientRpc]
+    private void TurnOnEmissiveClientRpc(int ingredientSOIndex)
+    {
+        IngredientSO ingredientSO = BaristapocalypseMultiplayer.Instance.GetIngredientSOFromIndex(ingredientSOIndex);
         switch (ingredientSO.objectTag)
         {
             case "Sweetener":

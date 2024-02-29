@@ -26,12 +26,6 @@ public class EmissiveControl : NetworkBehaviour
 
     public void SetEmissive(bool isActive)
     {
-        SetEmissiveClientRpc(isActive);
-    }
-
-    [ClientRpc]
-    private void SetEmissiveClientRpc(bool isActive)
-    {
         if (emissiveMaterial == null) return;
         MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
         propertyBlock.SetColor("_EmissionColor", isActive ? Color.white : Color.black);
