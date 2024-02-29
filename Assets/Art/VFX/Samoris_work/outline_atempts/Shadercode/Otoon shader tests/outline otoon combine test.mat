@@ -48,6 +48,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: dd7a0190df5da4e4298758998c19a0da, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _BaseTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 2800000, guid: 71532f6bfd293e243a5763b8bbe04e74, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -101,7 +105,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RampTexture:
-        m_Texture: {fileID: 2800000, guid: 74c09d795d5e35c4da0e38e0440b62f3, type: 3}
+        m_Texture: {fileID: 2800000, guid: 82727f00aa7be504c83aac04d80e4218, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Roughness:
@@ -148,7 +152,7 @@ Material:
     - Vector1_85d44c600d6c46b38d9c8065f25681ea: 0
     - Vector1_8dd6492e16194799b37d5efeb9926b89: 1
     - Vector1_c89cb8dc56774a9583c7b9c3a5725c4c: 0
-    - Vector1_e5b6f1488dec4326bd8bbd0e05156810: -0.278
+    - Vector1_e5b6f1488dec4326bd8bbd0e05156810: -0.374
     - _AllToon_OverrideShadowColor: 0
     - _AlphaClip: 0
     - _BUILTIN_AlphaClip: 0
@@ -180,7 +184,7 @@ Material:
     - _GlossyReflections: 0
     - _HAFTONESHAPES: 0
     - _HafltoneFadeDistance: 1
-    - _HalfToneEnabled: 0
+    - _HalfToneEnabled: 1
     - _HalfToneIncludeReceivedShadow: 1
     - _HalftoneDiffuseOffest: -1
     - _HalftoneFadeToColor: 1
@@ -198,16 +202,16 @@ Material:
     - _OcclusionStrength: 1
     - _OutlinesAcuteDepthThreshold: 0.31
     - _OutlinesAcuteStartDot: 7.17
-    - _OutlinesDepthStrength: 0.3
-    - _OutlinesDepthThreshold: -3.4
-    - _OutlinesDepthTightening: 164.5
+    - _OutlinesDepthStrength: 0.45
+    - _OutlinesDepthThreshold: -2.4
+    - _OutlinesDepthTightening: 164.52
     - _OutlinesFarNormalEndDepth: 10
     - _OutlinesFarNormalStartDepth: 1
-    - _OutlinesFarNormalThreshold: -560.33
+    - _OutlinesFarNormalThreshold: 560.33
     - _OutlinesNormalStregth: 1
     - _OutlinesNormalThreshold: 1
     - _OutlinesNormalTightening: 1
-    - _OutlinesThickness: 0.003
+    - _OutlinesThickness: 0.0009
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
@@ -220,7 +224,7 @@ Material:
     - _ShadowPatternSize: 0.388
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
-    - _SpecColor_1: 0.028
+    - _SpecColor_1: 0.032
     - _SpecFalloff: 0
     - _SpecShadowStrenth: 0
     - _SpecularHighlights: 1
@@ -236,18 +240,18 @@ Material:
     - _ZWriteControl: 0
     m_Colors:
     - Color_e33122dd1341407eb6ef24a34b660f09: {r: 0, g: 0, b: 0, a: 0}
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 0}
+    - _BaseColor: {r: 0, g: 0, b: 0, a: 1}
     - _BaseColor_1: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 0.6415094, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _HalftoneColor: {r: 0.6509434, g: 0, b: 0, a: 1}
+    - _HalftoneColor: {r: 0, g: 0, b: 0, a: 1}
     - _HatchingColor: {r: 0, g: 0, b: 0, a: 1}
     - _HatchingScale: {r: 15, g: 1, b: 0, a: 0}
-    - _OutlineColor: {r: 4, g: 0.45171106, b: 0, a: 1}
+    - _OutlineColor: {r: 10.680627, g: 10.680627, b: 10.680627, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
     - _Screen_UV: {r: 0, g: 0, b: 0, a: 0}
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
-    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _SpecColor: {r: 0.05660379, g: 0.05660379, b: 0.05660379, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &7477731862262511260
 MonoBehaviour:
