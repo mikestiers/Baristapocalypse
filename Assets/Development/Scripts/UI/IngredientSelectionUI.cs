@@ -159,7 +159,6 @@ public class IngredientSelectionUI : BaseStation
 
     public void AddIngredient()
     {
-        if (!IsLocalPlayer) return;
         //EventSystem.current.SetSelectedGameObject(null);
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
         if (OrderManager.Instance.brewingStations[player.currentBrewingStation].TryAddIngredient(currentIngredient))
