@@ -45,12 +45,12 @@ public class GravityStation : NetworkBehaviour
 
         GameManager.Instance.isEventActive.Value = false;
         GameManager.Instance.isGravityStorm.Value = false;
-        RandomEventBase randomEvent = GameManager.Instance.currentRandomEvent;
 
+        RandomEventBase randomEvent = GameManager.Instance.currentRandomEvent;
         GravityStorm gravityStorm = randomEvent.gameObject.GetComponent<GravityStorm>();
         if (gravityStorm != null)
         {
-            gravityStorm.GravityEventLights.SetActive(false);
+            GameManager.Instance.randomEventEffects.TurnOnOffEventEffectServerRpc(false);
             // Populate objectsToMoveList before conversion
             gravityStorm.objectsToMoveList.Clear(); // Clear the list before populating
             foreach (var obj in gravityStorm.objectsToMove)
@@ -59,7 +59,7 @@ public class GravityStation : NetworkBehaviour
             }
 
             gravityStorm.ConvertListToArray();
-
+             
             // Stop physics simulation for each object
             foreach (var obj in gravityStorm.objectsToMove)
             {

@@ -14,6 +14,7 @@ public class GameManager : NetworkBehaviour
 
     // Quick Time Events
     [SerializeField] private List<RandomEventBase> randomEventList;
+    [SerializeField] public RandomEventEffects randomEventEffects;
     [SerializeField] private float minRandomTime = 1f;
     [SerializeField] private float maxRandomTime = 2f;
     [HideInInspector] public NetworkVariable<bool> isEventActive = new NetworkVariable<bool>(false);
@@ -440,15 +441,25 @@ public class GameManager : NetworkBehaviour
         return startTime;
     }
 
+
+
     private void HandleRandomEvent()
     {
-        ActivateRandomEvent();
+        ActivateRandomEventClientRpc();
     }
 
     private void TriggerRandomEvent()
     {
         OnRandomEventTriggered?.Invoke();
     }
+
+
+    [ClientRpc]
+    private void ActivateRandomEventClientRpc()
+    {
+        ActivateRandomEvent();
+    }
+
 
     // Activate random Event after x amount of random time, will add the time variable after testing
     private void ActivateRandomEvent()
@@ -488,10 +499,13 @@ public class GameManager : NetworkBehaviour
         isEventActive.Value = true;
         if (randomEvent.GetComponent<GravityStorm>()) 
         {
+            GravityStorm gravityStorm = randomEvent.GetComponent<GravityStorm>();
             isGravityStorm.Value = true;
-            randomEvent.GetComponent<GravityStorm>().GravityEventLights.SetActive(true);
-            randomEvent.SetEventBool(true);
-            randomEvent.ActivateDeactivateEvent();
+            //randomEvent.GetComponent<GravityStorm>().GravityEventLights.SetActive(true);
+            gravityStorm.SetEventBool(true);
+            gravityStorm.ActivateDeactivateEvent();
+            randomEventEffects.TurnOnOffEventEffectServerRpc(true);
+
         }
         else if (randomEvent.GetComponent<WifiStation>()) 
         {
@@ -509,10 +523,12 @@ public class GameManager : NetworkBehaviour
         isEventActive.Value = false;
         if (randomEvent.GetComponent<GravityStorm>()) 
         {
+            GravityStorm gravityStorm = randomEvent.GetComponent<GravityStorm>();
             isGravityStorm.Value = false;
-            randomEvent.GetComponent<GravityStorm>().GravityEventLights.SetActive(false);
-            randomEvent.SetEventBool(false);
-            randomEvent.ActivateDeactivateEvent();
+            //gravityStorm.TurnOnOffEventEffectServerRpc(false);
+            gravityStorm.SetEventBool(false);
+            gravityStorm.ActivateDeactivateEvent();
+            randomEventEffects.TurnOnOffEventEffectServerRpc(true);
         }
         else if (randomEvent.GetComponent<WifiStation>()) 
         {
