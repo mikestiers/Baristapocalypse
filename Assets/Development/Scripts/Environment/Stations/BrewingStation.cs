@@ -251,6 +251,9 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             Debug.LogWarning("me local player");
             return;
         }
+
+        if (minigameTiming.Value || isBrewing) return;
+    
         playerController = player; // Reference for animations
         // Start brewing for ingredients in the machine.  This is for adding directly from stations instead of player hands
         if (ingredientSOList.Count >= numIngredientsNeeded)
@@ -266,9 +269,9 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstDrinkReady)
             TutorialManager.Instance.FirstDrinkReady();
 
-        PickCupAnimation(playerController);// plays animation and sets cup in hand (SetIngredientParent(player))
         MinigameDoneServerRpc();
         PrintHeldIngredientList();
+        PickCupAnimation(playerController);// plays animation and sets cup in hand (SetIngredientParent(player))
     }
 
     public void InteractLogicPlaceObjectOnBrewing()
