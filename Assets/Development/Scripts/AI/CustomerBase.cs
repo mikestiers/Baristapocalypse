@@ -256,21 +256,7 @@ public class CustomerBase : Base
     {
         if (agent.remainingDistance < distThreshold && atSit == false) atSit = true;
 
-        if (atSit) SetCustomerState(CustomerState.Sitting);
-
-        if (!orderBeingServed)
-            DisplayCustomerVisualIdentifiers();
-        orderBeingServed = true;
-        if (orderTimer >= customerLeaveTime)
-        {
-            CustomerManager.Instance.customerLeaveIncrease();
-            CustomerManager.Instance.ReduceCustomerLeftoServe();
-            GameManager.Instance.moneySystem.ResetStreak();
-            CustomerLeave();
-
-            Debug.LogWarning("Unhappy Customer");
-        }
-            
+        if (atSit) SetCustomerState(CustomerState.Sitting);   
     }
 
     private void UpdateInit()
@@ -346,6 +332,19 @@ public class CustomerBase : Base
         if (atSit)
         {
             customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
+        }
+
+        if (!orderBeingServed)
+            DisplayCustomerVisualIdentifiers();
+        orderBeingServed = true;
+        if (orderTimer >= customerLeaveTime)
+        {
+            CustomerManager.Instance.customerLeaveIncrease();
+            CustomerManager.Instance.ReduceCustomerLeftoServe();
+            GameManager.Instance.moneySystem.ResetStreak();
+            CustomerLeave();
+
+            Debug.LogWarning("Unhappy Customer");
         }
 
     }
@@ -531,8 +530,15 @@ public class CustomerBase : Base
 
     public void Walkto(Vector3 Spot)
     {
+        WalkToClientRpc(Spot.x, Spot.y, Spot.z);
+        
+    }
+
+    [ClientRpc]
+    private void WalkToClientRpc(float x, float y, float z)
+    {
         if (agent.isStopped) agent.isStopped = false;
-        agent.SetDestination(Spot);
+        agent.SetDestination(new Vector3(x, y, z));
         customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
         SetCustomerState(CustomerState.Moving);
         moving = true;
