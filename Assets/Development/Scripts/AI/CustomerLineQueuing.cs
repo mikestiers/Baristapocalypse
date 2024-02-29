@@ -21,13 +21,10 @@ public class CustomerLineQueuing
     {
         customerList.Add(customer);
         customer.Walkto(positionList[customerList.IndexOf(customer)]);
-        customer.moving = true;
-        customer.SetCustomerState(CustomerBase.CustomerState.Moving);
         if(customerList.IndexOf(customer) == 0) customer.frontofLine = true;
         customer.inLine.Value = true;
         customer.currentPosInLine = customerList.IndexOf(customer);
     }
-
 
     //Gets the customer at front of queue
     public CustomerBase GetFirstInQueue()
@@ -80,9 +77,7 @@ public class CustomerLineQueuing
         for (int i = startpos; i < customerList.Count; i++)
         {
             customerList[i].Walkto(positionList[i]);
-            customerList[i].SetCustomerState(CustomerBase.CustomerState.Moving);
-            customerList[i].moving = true;
-            if (i == 0) customerList[i].frontofLine = true;
+            if(i == 0) customerList[i].frontofLine = true;
             customerList[i].currentPosInLine = i;
         }
     }
