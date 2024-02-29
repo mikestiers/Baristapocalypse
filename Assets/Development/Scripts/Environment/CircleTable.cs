@@ -18,7 +18,7 @@ public class CircleTable : MonoBehaviour
         {
             CustomerBase customer = other.gameObject.GetComponent<CustomerBase>();
 
-            if (customer.atSit.Value == true) other.gameObject.transform.LookAt(centerofTable.transform.position);      
+            if (customer.atSit == true) other.gameObject.transform.LookAt(centerofTable.transform.position);      
                
         }
     }

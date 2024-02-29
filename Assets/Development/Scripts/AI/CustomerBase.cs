@@ -18,7 +18,7 @@ public class CustomerBase : Base
     public NavMeshAgent agent;
     public bool frontofLine;
     public NetworkVariable<bool> inLine = new NetworkVariable<bool>();
-    public NetworkVariable<bool> atSit = new NetworkVariable<bool>(false); //for tables customer rotation orientation 
+    public bool atSit = false; //for tables customer rotation orientation 
     public bool leaving = false;
     public bool makingAMess = false;
     public bool moving;
@@ -254,9 +254,9 @@ public class CustomerBase : Base
 
     private void UpdateInsit()
     {
-        if (agent.remainingDistance < distThreshold && atSit.Value == false) atSit.Value = true;
+        if (agent.remainingDistance < distThreshold && atSit == false) atSit = true;
 
-        if (atSit.Value) SetCustomerState(CustomerState.Sitting);   
+        if (atSit) SetCustomerState(CustomerState.Sitting);   
     }
 
     private void UpdateInit()
@@ -331,7 +331,7 @@ public class CustomerBase : Base
     private void UpdateSitting()
     {
         // sitting animation
-        if (atSit.Value)
+        if (atSit)
         {
             customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
         }
@@ -501,7 +501,7 @@ public class CustomerBase : Base
     {
         if (agent.isStopped) agent.isStopped = false;
         
-        atSit.Value = false;
+        atSit = false;
 
         if (GetCustomerState() == CustomerState.Drinking && Random.Range(0, 100) <= GameValueHolder.Instance.difficultySettings.GetChanceToMess()) CreateMess();
         if (Random.Range(0, 100) < GameValueHolder.Instance.difficultySettings.GetChanceToLoiter())
@@ -533,13 +533,7 @@ public class CustomerBase : Base
 
     public void Walkto(Vector3 Spot)
     {
-        WalkToServerRpc(Spot.x, Spot.y, Spot.z);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void WalkToServerRpc(float x, float y, float z)
-    {
-        WalkToClientRpc(x, y ,z);
+        WalkToClientRpc(Spot.x, Spot.y, Spot.z);
     }
 
     [ClientRpc]
