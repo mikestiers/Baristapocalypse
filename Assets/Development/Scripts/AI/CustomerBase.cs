@@ -88,7 +88,7 @@ public class CustomerBase : Base
 
     public virtual void Start()
     {
-        if (IsServer)
+        if (IsOwner)
         {
             SetCustomerState(CustomerState.Init);
         }
@@ -111,7 +111,7 @@ public class CustomerBase : Base
 
     public virtual void Update()
     {
-        if (!IsServer) return;
+        if (!IsOwner) return;
         
         if (orderTimer >= 0f)
         {
@@ -236,7 +236,9 @@ public class CustomerBase : Base
             else
             {
                 SetCustomerState(CustomerState.Waiting);
-            }  
+            }
+
+            
         }
     }
 
@@ -419,7 +421,13 @@ public class CustomerBase : Base
 
     public void SetCustomerState(CustomerState customerState)
     {
-        if (!IsServer) return;
+        if (!IsOwner) return;
+        SetCustomerStateServerRpc(customerState);
+    }
+
+    [ServerRpc]
+    private void SetCustomerStateServerRpc(CustomerState customerState)
+    {
         currentState.Value = customerState;
     }
 
