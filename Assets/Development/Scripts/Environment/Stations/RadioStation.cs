@@ -17,7 +17,7 @@ public class RadioStation : BaseStation
     public override void Interact(PlayerController player)
     {
         ChangeSongDownServerRpc();
-        EventOff();
+        EventOffServerRpc();
     }
 
     public override void InteractAlt(PlayerController player)
@@ -57,7 +57,6 @@ public class RadioStation : BaseStation
         ChangeSongUp();
     }
 
-
     private void ChangeSongUp() 
     {
         AudioIndex--;
@@ -65,7 +64,13 @@ public class RadioStation : BaseStation
         MainAudio.clip = Audios[AudioIndex];
         MainAudio.Play();
     }
-    
+
+    [ClientRpc]
+    public void EventOnClientRpc()
+    {
+        EventOn();
+    }
+
     public void EventOn() 
     {
         MainAudio.clip = BrokenSound;
@@ -73,10 +78,22 @@ public class RadioStation : BaseStation
         eventLight.SetActive(true);
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void EventOffServerRpc()
+    {
+        EventOffClientRpc();
+    }
+
+    [ClientRpc]
+    public void EventOffClientRpc()
+    {
+        EventOff();
+    }
+
     public void EventOff() 
     {
         eventLight.SetActive(false);
-        GameManager.Instance.isEventActive = false;
+        GameManager.Instance.isEventActive.Value = false;
         MainAudio.clip = Audios[AudioIndex];
         MainAudio.Play();
     }
