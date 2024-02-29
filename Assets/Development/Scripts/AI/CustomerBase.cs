@@ -118,7 +118,7 @@ public class CustomerBase : Base
                 orderTimer += Time.deltaTime;
             }
 
-            Debug.LogWarning("CustomerState " + currentState.Value);
+            //Debug.LogWarning("CustomerState " + currentState.Value);
 
             if (messTime != null)
                 messTime += Time.deltaTime;
@@ -660,4 +660,16 @@ public class CustomerBase : Base
         isGivingOrderToCustomer = false;
         player.movementToggle = true;
     }
+
+    public override void OnDestroy()
+    {
+        Debug.Log("destroying customer");
+        base.OnDestroy();
+        if (HasIngredient())
+        {
+            Debug.Log("destroying customer has ingredient");
+            Ingredient.DestroyIngredient(GetIngredient());
+        }
+    }
+
 }

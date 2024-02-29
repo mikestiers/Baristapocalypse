@@ -333,7 +333,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         // Check if the inputDevice has changed
         //HandleMouseVisibility();
 
-        Debug.LogWarning("HasPickup() " + HasPickup());
+        //Debug.LogWarning("HasPickup() " + HasPickup());
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward, Color.green);
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward * customerInteractDistance, Color.red);
     }

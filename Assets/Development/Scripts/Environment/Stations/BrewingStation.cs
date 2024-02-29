@@ -108,7 +108,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     protected virtual void RaiseBrewingDone()
     {
         currentOrder.SetOrderState(OrderState.BeingDelivered);
-        OnBrewingDone?.Invoke(this, EventArgs.Empty);
+        //OnBrewingDone?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void RaiseBrewingEmpty()
@@ -234,13 +234,13 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     [ServerRpc(RequireOwnership = false)]
     private void MinigameDoneServerRpc()
     {
+        minigameTiming.Value = false;
         MinigameDoneClientRpc();
     }
 
     [ClientRpc]
     private void MinigameDoneClientRpc()
     {
-        minigameTiming.Value = false;
         RaiseBrewingDone();
     }
 
