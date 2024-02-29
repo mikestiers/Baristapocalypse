@@ -376,6 +376,7 @@ public class CustomerBase : Base
             LeaveLineServerRpc();
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
             interactParticle.Play();
+            customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration);
         }
 
         // Deliver customer order
