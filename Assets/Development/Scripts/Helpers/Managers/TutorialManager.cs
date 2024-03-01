@@ -61,6 +61,7 @@ public class TutorialManager : Singleton<TutorialManager>
 
     public void TakeFirstOrder()
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.tutorialPopOut);
         AISupervisor.Instance.SupervisorMessageToDisplay("Customer! Wait at the counter and take their order!");
         firstOrderTaken = true;
     }
@@ -68,6 +69,7 @@ public class TutorialManager : Singleton<TutorialManager>
     public void StartFirstBrew(OrderInfo order)
     {
         //Debug.Log($"cusorder: {order.coffeeAttributes.GetSweetness()}");
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.tutorialPopOut);
         AISupervisor.Instance.SupervisorMessageToDisplay($"Look at their drink order");// They want {order.coffeeAttributes.GetSweetness()} sweetness");
         AISupervisor.Instance.SupervisorMessageToDisplay($"Go over to the sweetener station and pick the right ingredient");
         firstBrewStarted = true;
@@ -75,36 +77,42 @@ public class TutorialManager : Singleton<TutorialManager>
 
     public void MadeFirstIngredientSelection()
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.tutorialPopOut);
         AISupervisor.Instance.SupervisorMessageToDisplay("Your ingredient was added to the brewing station. Now add more");
         firstIngredientSelected = true;
     }
 
     public void MadeSecondIngredientSelection()
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.tutorialPopOut);
         AISupervisor.Instance.SupervisorMessageToDisplay("Excellent. They need 4 ingredients. Add from another ingredient station");
         secondIngredientSelected = true;
     }
 
     public void MadeThirdIngredientSelection()
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.tutorialPopOut);
         AISupervisor.Instance.SupervisorMessageToDisplay("One more ingredient type to go");
         thirdIngredientSelected = true;
     }
 
     public void MadeFourthIngredientSelection()
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.tutorialPopOut);
         AISupervisor.Instance.SupervisorMessageToDisplay("Go activate the brewing station and see how you did");
         fourthIngredientSelected = true;
     }
 
     public void FirstDrinkReady()
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.tutorialPopOut);
         AISupervisor.Instance.SupervisorMessageToDisplay("Bring it to the customer!");
         firstDrinkReady = true;
     }
 
     public void FirstDrinkDelivered()
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.tutorialPopOut);
         AISupervisor.Instance.SupervisorMessageToDisplay("Now do this forever until you rust and fall apart");
         firstDrinkDelivered = true;
     }

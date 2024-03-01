@@ -306,6 +306,7 @@ public class UIManager : Singleton<UIManager>
 
     private void ToggleTutorialMode()
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         tutorialModeOnOff.GetComponentInChildren<Text>().text = TutorialManager.Instance.tutorialEnabled ? "Tutorial Mode: Off" : "Tutorial Mode: On";
         TutorialManager.Instance.tutorialEnabled = !TutorialManager.Instance.tutorialEnabled;
         TutorialManager.Instance.TutorialTurnedOff();

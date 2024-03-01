@@ -178,7 +178,7 @@ public class IngredientSelectionUI : BaseStation
             else if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.fourthIngredientSelected)
                 TutorialManager.Instance.MadeFourthIngredientSelection();
         }
-        if(currentIngredient.objectTag == "Sweetner")
+        if(currentIngredient.objectTag == "Sweetener")
         {
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.sweetnerMachine);
         }
@@ -186,7 +186,7 @@ public class IngredientSelectionUI : BaseStation
         {
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.liquidMachine);
         }
-        else if (currentIngredient.objectTag == "CoffeeBean")
+        else if (currentIngredient.objectTag == "CoffeeGrind")
         {
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.beanMachine);
         }
