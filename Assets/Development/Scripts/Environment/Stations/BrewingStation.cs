@@ -248,8 +248,8 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         {
             player.anim.CrossFadeInFixedTime(Barista_BrewingHash, CrossFadeDuration);
             player.movementToggle = false;
-            InteractLogicPlaceObjectOnBrewing();
             brewingPlayer = player;
+            InteractLogicPlaceObjectOnBrewing();
         }
         if (player != brewingPlayer) return;
 
