@@ -17,7 +17,7 @@ public class OrderQueueUI : MonoBehaviour
     private void OnEnable()
     {
         OrderManager.Instance.OnOrderSpawned += OrderManager_OnOrderSpawned;
-        OrderManager.Instance.OnOrderCompleted += OrderManager_OnOrderCompleted;
+        OrderManager.OnOrderCompleted += OrderManager_OnOrderCompleted;
 
         UpdateVisual();
     }
@@ -25,7 +25,7 @@ public class OrderQueueUI : MonoBehaviour
     private void OnDisable()
     {
         OrderManager.Instance.OnOrderSpawned -= OrderManager_OnOrderSpawned;
-        OrderManager.Instance.OnOrderCompleted -= OrderManager_OnOrderCompleted;
+        OrderManager.OnOrderCompleted -= OrderManager_OnOrderCompleted;
 
         UpdateVisual();
     }
@@ -35,7 +35,7 @@ public class OrderQueueUI : MonoBehaviour
         UpdateVisual();
     }
 
-    private void OrderManager_OnOrderCompleted(object sender, EventArgs e)
+    private void OrderManager_OnOrderCompleted(int orderNumber)
     {
         UpdateVisual();
     }

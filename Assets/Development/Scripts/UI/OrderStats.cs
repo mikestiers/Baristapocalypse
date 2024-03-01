@@ -69,7 +69,8 @@ public class OrderStats : NetworkBehaviour
         brewingStation.OnBrewingEmpty += OrderCompleted;
         brewingStation.OnBrewingDone += OrderCompleted;
 
-        CustomerBase.OnCustomerLeave += CustomerBase_OnCustomerLeave;
+       // CustomerBase.OnCustomerLeave += CustomerBase_OnCustomerLeave;
+        OrderManager.OnOrderCompleted += OrderManager_OrderCompleted;
     }
 
     private void OnDisable()
@@ -78,7 +79,8 @@ public class OrderStats : NetworkBehaviour
         brewingStation.OnBrewingEmpty -= OrderCompleted;
         brewingStation.OnBrewingDone -= OrderCompleted;
 
-        CustomerBase.OnCustomerLeave -= CustomerBase_OnCustomerLeave;
+       // CustomerBase.OnCustomerLeave -= CustomerBase_OnCustomerLeave;
+        OrderManager.OnOrderCompleted -= OrderManager_OrderCompleted;
     }
 
     private void Start()
@@ -94,6 +96,14 @@ public class OrderStats : NetworkBehaviour
     private void CustomerBase_OnCustomerLeave(int customerIndex)
     {
         if (currentOrder.number == customerIndex)
+        {
+            OrderCompleted(this, EventArgs.Empty);
+        }
+    }
+
+    private void OrderManager_OrderCompleted(int orderNumber)
+    {
+        if(currentOrder.number == orderNumber)
         {
             OrderCompleted(this, EventArgs.Empty);
         }

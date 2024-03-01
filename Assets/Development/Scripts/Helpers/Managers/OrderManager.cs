@@ -19,7 +19,9 @@ public class OrderManager : Singleton<OrderManager>
     OrderStats associatedOrderStats;
 
     public event EventHandler OnOrderSpawned;
-    public event EventHandler OnOrderCompleted;
+
+    public delegate void OrderCompletedEvent(int orderNumber);
+    public static event OrderCompletedEvent OnOrderCompleted;
 
     public void SpawnOrder(CustomerBase customer)
     {
@@ -61,7 +63,7 @@ public class OrderManager : Singleton<OrderManager>
     {
         orders.Remove(order);
         order.SetOrderState(OrderState.Delivered);
-        OnOrderCompleted?.Invoke(this, EventArgs.Empty);
+        OnOrderCompleted?.Invoke(order.number);
         TryStartOrder();
     }
 
