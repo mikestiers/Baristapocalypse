@@ -145,6 +145,15 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""MiniGameDetection"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""9012cc9b-27ae-41f2-96dd-c48db1634207"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""KeyboardDetection"",
                     ""type"": ""Button"",
                     ""id"": ""198ccfd3-b775-4c48-a325-7c2515651114"",
@@ -704,6 +713,94 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                     ""action"": ""KeyboardDetection"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4d48eed2-b74a-4907-91f7-5d763eb6cebb"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""MiniGameDetection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""41aefc97-b551-4ddd-9dcc-d9d18f65634d"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""MiniGameDetection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c55bb11b-afde-46fb-a962-c4b35375c4c8"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""MiniGameDetection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1cb7763c-ed89-4f53-8add-35ccb6ee0ab4"",
+                    ""path"": ""<Gamepad>/dpad/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""MiniGameDetection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a132ada5-8c3c-4663-809d-6be90d39058a"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""MiniGameDetection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f853ce37-a8ed-41e7-a6ea-105f1c133ab2"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""MiniGameDetection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0f803798-844d-4903-b1cf-a0b8e617731a"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""MiniGameDetection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1fceb0e3-249f-471c-9c5b-1fed6f541be4"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""MiniGameDetection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -1115,6 +1212,7 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
         m_Player_BrewingStationEmpty = m_Player.FindAction("BrewingStationEmpty", throwIfNotFound: true);
         m_Player_MouseDetection = m_Player.FindAction("MouseDetection", throwIfNotFound: true);
         m_Player_GamepadDetection = m_Player.FindAction("GamepadDetection", throwIfNotFound: true);
+        m_Player_MiniGameDetection = m_Player.FindAction("MiniGameDetection", throwIfNotFound: true);
         m_Player_KeyboardDetection = m_Player.FindAction("KeyboardDetection", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
@@ -1200,6 +1298,7 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_BrewingStationEmpty;
     private readonly InputAction m_Player_MouseDetection;
     private readonly InputAction m_Player_GamepadDetection;
+    private readonly InputAction m_Player_MiniGameDetection;
     private readonly InputAction m_Player_KeyboardDetection;
     public struct PlayerActions
     {
@@ -1218,6 +1317,7 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
         public InputAction @BrewingStationEmpty => m_Wrapper.m_Player_BrewingStationEmpty;
         public InputAction @MouseDetection => m_Wrapper.m_Player_MouseDetection;
         public InputAction @GamepadDetection => m_Wrapper.m_Player_GamepadDetection;
+        public InputAction @MiniGameDetection => m_Wrapper.m_Player_MiniGameDetection;
         public InputAction @KeyboardDetection => m_Wrapper.m_Player_KeyboardDetection;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
@@ -1267,6 +1367,9 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                 @GamepadDetection.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGamepadDetection;
                 @GamepadDetection.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGamepadDetection;
                 @GamepadDetection.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGamepadDetection;
+                @MiniGameDetection.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMiniGameDetection;
+                @MiniGameDetection.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMiniGameDetection;
+                @MiniGameDetection.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMiniGameDetection;
                 @KeyboardDetection.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnKeyboardDetection;
                 @KeyboardDetection.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnKeyboardDetection;
                 @KeyboardDetection.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnKeyboardDetection;
@@ -1313,6 +1416,9 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                 @GamepadDetection.started += instance.OnGamepadDetection;
                 @GamepadDetection.performed += instance.OnGamepadDetection;
                 @GamepadDetection.canceled += instance.OnGamepadDetection;
+                @MiniGameDetection.started += instance.OnMiniGameDetection;
+                @MiniGameDetection.performed += instance.OnMiniGameDetection;
+                @MiniGameDetection.canceled += instance.OnMiniGameDetection;
                 @KeyboardDetection.started += instance.OnKeyboardDetection;
                 @KeyboardDetection.performed += instance.OnKeyboardDetection;
                 @KeyboardDetection.canceled += instance.OnKeyboardDetection;
@@ -1458,6 +1564,7 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
         void OnBrewingStationEmpty(InputAction.CallbackContext context);
         void OnMouseDetection(InputAction.CallbackContext context);
         void OnGamepadDetection(InputAction.CallbackContext context);
+        void OnMiniGameDetection(InputAction.CallbackContext context);
         void OnKeyboardDetection(InputAction.CallbackContext context);
     }
     public interface IUIActions

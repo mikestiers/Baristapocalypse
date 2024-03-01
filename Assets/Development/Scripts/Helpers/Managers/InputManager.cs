@@ -34,6 +34,7 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
     public InputImagesSO inputImagesSOKeyboardMouse;
     private InputImagesSO inputImagesSO;
     public static event Action<InputImagesSO> OnInputChanged;
+    public static event Action<InputAction.CallbackContext> OnAnyGamepadButtonPressed;
 
     //player movement input
     [HideInInspector] public Vector3 moveDir;
@@ -145,6 +146,12 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
             inputDevice = InputDevice.Xbox;
             OnInputChanged?.Invoke(inputImagesSO);
         }
+    }
+
+    public void OnMiniGameDetection(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            OnAnyGamepadButtonPressed?.Invoke(context);
     }
 
     private void OnDestroy()

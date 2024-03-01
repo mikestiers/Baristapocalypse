@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class MinigameQTE : MonoBehaviour
@@ -30,6 +31,8 @@ public class MinigameQTE : MonoBehaviour
     [SerializeField] private int countingDown;
 
     private Coroutine curUptimeCoroutine;
+    private bool wasButtonPressed;
+    private string buttonPressedName;
 
     private void Awake()
     {
@@ -49,6 +52,9 @@ public class MinigameQTE : MonoBehaviour
 
     private void OnEnable()
     {
+        InputManager.OnAnyGamepadButtonPressed += AnyGamepadButtonPressed;
+        buttonPressedName = "";
+
         if (progressTime != 0)
         {
             progressTime = 0f;
@@ -62,6 +68,11 @@ public class MinigameQTE : MonoBehaviour
         {
             arrows[i].gameObject.SetActive(false);
         }
+    }
+
+    private void OnDisable()
+    {
+        InputManager.OnAnyGamepadButtonPressed -= AnyGamepadButtonPressed;
     }
 
     private void Update()
@@ -94,9 +105,9 @@ public class MinigameQTE : MonoBehaviour
         // Verifies input against spawned arrow
         if (QTEgen == 0)
         {
-            if (Input.anyKeyDown)
+            if (Input.anyKeyDown || CheckIfButtonWasPressed())
             {
-                if (Input.GetButtonDown("UpInput"))
+                if (Input.GetButtonDown("UpInput") || buttonPressedName == "up")
                 {
                     correctKey = 1;
                 }
@@ -110,9 +121,9 @@ public class MinigameQTE : MonoBehaviour
         }
         else if (QTEgen == 1)
         {
-            if (Input.anyKeyDown)
+            if (Input.anyKeyDown || CheckIfButtonWasPressed())
             {
-                if (Input.GetButtonDown("DownInput"))
+                if (Input.GetButtonDown("DownInput") || buttonPressedName == "down")
                 {
                     correctKey = 1;
                 }
@@ -126,9 +137,9 @@ public class MinigameQTE : MonoBehaviour
         }
         else if (QTEgen == 2)
         {
-            if (Input.anyKeyDown)
+            if (Input.anyKeyDown || CheckIfButtonWasPressed())
             {
-                if (Input.GetButtonDown("LeftInput"))
+                if (Input.GetButtonDown("LeftInput") || buttonPressedName == "left")
                 {
                     correctKey = 1;
                 }
@@ -142,9 +153,9 @@ public class MinigameQTE : MonoBehaviour
         }
         else if (QTEgen == 3)
         {
-            if (Input.anyKeyDown)
+            if (Input.anyKeyDown || CheckIfButtonWasPressed())
             {
-                if (Input.GetButtonDown("RightInput"))
+                if (Input.GetButtonDown("RightInput") || buttonPressedName == "right")
                 {
                     correctKey = 1;
                 }
@@ -188,6 +199,25 @@ public class MinigameQTE : MonoBehaviour
     private void Hide()
     {
         gameObject.SetActive(false);
+    }
+
+    private void AnyGamepadButtonPressed(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            wasButtonPressed = true;
+            buttonPressedName = context.control.name;
+        }
+    }
+
+    public bool CheckIfButtonWasPressed()
+    {
+        if (wasButtonPressed)
+        {
+            wasButtonPressed = false; // Reset the state
+            return true;
+        }
+        return false;
     }
 
     // Performs action based on input verification

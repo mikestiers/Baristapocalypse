@@ -123,6 +123,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "MiniGameDetection",
+                    "type": "PassThrough",
+                    "id": "9012cc9b-27ae-41f2-96dd-c48db1634207",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "KeyboardDetection",
                     "type": "Button",
                     "id": "198ccfd3-b775-4c48-a325-7c2515651114",
@@ -680,6 +689,94 @@
                     "processors": "",
                     "groups": "Keyboard and Mouse",
                     "action": "KeyboardDetection",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4d48eed2-b74a-4907-91f7-5d763eb6cebb",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "MiniGameDetection",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "41aefc97-b551-4ddd-9dcc-d9d18f65634d",
+                    "path": "<Gamepad>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "MiniGameDetection",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c55bb11b-afde-46fb-a962-c4b35375c4c8",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "MiniGameDetection",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1cb7763c-ed89-4f53-8add-35ccb6ee0ab4",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "MiniGameDetection",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a132ada5-8c3c-4663-809d-6be90d39058a",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "MiniGameDetection",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f853ce37-a8ed-41e7-a6ea-105f1c133ab2",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "MiniGameDetection",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0f803798-844d-4903-b1cf-a0b8e617731a",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "MiniGameDetection",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1fceb0e3-249f-471c-9c5b-1fed6f541be4",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "MiniGameDetection",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
