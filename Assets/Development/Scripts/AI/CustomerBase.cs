@@ -264,7 +264,7 @@ public class CustomerBase : Base
 
         if (atSit)
         {
-            customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration);\
+            customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration);
             SetCustomerState(CustomerState.Sitting);
         }
 
