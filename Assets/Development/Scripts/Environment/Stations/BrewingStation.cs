@@ -61,6 +61,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     // Animation interaction with brewing machine
     public event Action animationSwitch;//*******************************
     private PlayerController playerController;
+    private PlayerController brewingPlayer;
     private float previousFrameTime;
     private readonly int BP_Barista_PickUpHash = Animator.StringToHash("BP_Barista_PickUp");
     private readonly int Barista_BrewingHash = Animator.StringToHash("Barista_Brewing");
@@ -248,7 +249,9 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             player.anim.CrossFadeInFixedTime(Barista_BrewingHash, CrossFadeDuration);
             player.movementToggle = false;
             InteractLogicPlaceObjectOnBrewing();
+            brewingPlayer = player;
         }
+        if (player != brewingPlayer) return;
 
         if (minigameTiming.Value)
         {
