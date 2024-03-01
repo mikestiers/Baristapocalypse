@@ -75,6 +75,7 @@ public class IngredientSelectionUI : BaseStation
     {
         if (((Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame) || Keyboard.current.qKey.wasPressedThisFrame) && isOnPlate == true)
         {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
             interactImage.SetActive(false);
             Show(ingredientMenu);
             //player.movementToggle = false;  // use when camera zooms
@@ -160,7 +161,6 @@ public class IngredientSelectionUI : BaseStation
     public void AddIngredient()
     {
         //EventSystem.current.SetSelectedGameObject(null);
-        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
         if (OrderManager.Instance.brewingStations[player.currentBrewingStation].TryAddIngredient(currentIngredient))
         {
             OrderManager.Instance.brewingStations[player.currentBrewingStation].AddIngredientToListSO(BaristapocalypseMultiplayer.Instance.GetIngredientSOIndex(currentIngredient));
@@ -177,6 +177,22 @@ public class IngredientSelectionUI : BaseStation
 
             else if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.fourthIngredientSelected)
                 TutorialManager.Instance.MadeFourthIngredientSelection();
+        }
+        if(currentIngredient.objectTag == "Sweetner")
+        {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.sweetnerMachine);
+        }
+        else if(currentIngredient.objectTag == "Milk")
+        {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.liquidMachine);
+        }
+        else if (currentIngredient.objectTag == "CoffeeBean")
+        {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.beanMachine);
+        }
+        else if (currentIngredient.objectTag == "BioMatter")
+        {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.bioMatterMachine);
         }
         //StartCoroutine(CloseMenu());
     }

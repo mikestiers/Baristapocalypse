@@ -180,6 +180,7 @@ public class MinigameQTE : MonoBehaviour
         {
             countingDown = 2;
             succeededText.SetActive(true);
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.drinkMinigameHit);
             arrows[originalQTEgen].gameObject.SetActive(false);
             progressTime += 4.0f;
             // Here is where the succeeded animation will play
@@ -195,6 +196,7 @@ public class MinigameQTE : MonoBehaviour
             countingDown = 2;
             // Here is where the fail animation will play
             failedText.SetActive(true);
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.drinkMinigameMiss);
             arrows[originalQTEgen].gameObject.SetActive(false);
             yield return new WaitForSeconds(1.5f);
             correctKey = 0;

@@ -90,6 +90,8 @@ public class UIManager : Singleton<UIManager>
 
     [SerializeField] private LevelLoader levelLoader;
 
+    private const string TutorialKey = "FirstTimePlayed";
+
     private void Start()
     {
         if (toGame)
@@ -251,6 +253,11 @@ public class UIManager : Singleton<UIManager>
         }
     }
 
+    public void FlipTutorialText()
+    {
+        tutorialModeOnOff.GetComponentInChildren<Text>().text = "Tutorial Mode: Off";
+    }
+
     public void ToggleBigTimer(bool IsOn)
     {
         if(IsOn) bigTimer.SetActive(true);
@@ -301,6 +308,6 @@ public class UIManager : Singleton<UIManager>
     {
         tutorialModeOnOff.GetComponentInChildren<Text>().text = TutorialManager.Instance.tutorialEnabled ? "Tutorial Mode: Off" : "Tutorial Mode: On";
         TutorialManager.Instance.tutorialEnabled = !TutorialManager.Instance.tutorialEnabled;
+        TutorialManager.Instance.TutorialTurnedOff();
     }
-
 }
