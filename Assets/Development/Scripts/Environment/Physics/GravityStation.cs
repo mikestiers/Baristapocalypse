@@ -1,23 +1,22 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class GravityStation : MonoBehaviour
+public class GravityStation : NetworkBehaviour
 {
     [SerializeField] private GameObject gravityField;
     [SerializeField] private GameObject gravityButton;
     [SerializeField] private Material originalMaterial;
-
-    private Mouse mouse = Mouse.current;
 
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.GetComponent<PlayerController>())
         {
-            InputManager.Instance.InteractEvent += HandleInteract;
+            InputManager.Instance.InteractEvent += DeactivateStormEventServerRpc;
         }
     }
 
@@ -25,25 +24,33 @@ public class GravityStation : MonoBehaviour
     {
         if (other.GetComponent<PlayerController>())
         {
-            InputManager.Instance.InteractEvent -= HandleInteract;
+            InputManager.Instance.InteractEvent -= DeactivateStormEventServerRpc;
         }
     }
 
-    private void HandleInteract()
+    [ServerRpc(RequireOwnership = false)]
+    public void DeactivateStormEventServerRpc()
     {
-        DeactivateRandomEvent();
+        DeactivateStormEventClientRpc();
     }
 
-    private void DeactivateRandomEvent()
+    [ClientRpc]
+    private void DeactivateStormEventClientRpc()
+    {
+        DeactivateStormEvent();
+    }
+
+    private void DeactivateStormEvent()
     {
 
-        GameManager.Instance.isEventActive = false;
-        GameManager.Instance.isGravityStorm = false;
-        RandomEventBase randomEvent = GameManager.Instance.currentRandomEvent;
+        GameManager.Instance.isEventActive.Value = false;
+        GameManager.Instance.isGravityStorm.Value = false;
 
+        RandomEventBase randomEvent = GameManager.Instance.currentRandomEvent;
         GravityStorm gravityStorm = randomEvent.gameObject.GetComponent<GravityStorm>();
         if (gravityStorm != null)
         {
+            GameManager.Instance.randomEventEffects.TurnOnOffEventEffectServerRpc(false);
             // Populate objectsToMoveList before conversion
             gravityStorm.objectsToMoveList.Clear(); // Clear the list before populating
             foreach (var obj in gravityStorm.objectsToMove)
@@ -52,13 +59,12 @@ public class GravityStation : MonoBehaviour
             }
 
             gravityStorm.ConvertListToArray();
-
+             
             // Stop physics simulation for each object
             foreach (var obj in gravityStorm.objectsToMove)
             {
                 Rigidbody objRigidbody = obj.GetComponent<Rigidbody>();
                 Collider objCollider = obj.GetComponent<Collider>();
-
                 if (objRigidbody != null)
                 {
                     objCollider.isTrigger = false;
@@ -67,12 +73,10 @@ public class GravityStation : MonoBehaviour
                 }
             }
         }
-
         if (!randomEvent.GetNetworkObject().IsSpawned)
         {
             randomEvent.GetNetworkObject().Spawn();
         }
-
         Debug.LogWarning("DeactivateRandomEvent " + randomEvent.name);
         gravityButton.GetComponent<MeshRenderer>().material = originalMaterial;
         randomEvent.SetEventBool(false);
@@ -85,5 +89,4 @@ public class GravityStation : MonoBehaviour
     }
 
 }
-
 

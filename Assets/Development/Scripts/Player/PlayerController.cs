@@ -222,9 +222,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         // player movement
 
         // Gravity Storm Effect on player
-        if (movementToggle && !GameManager.Instance.isGravityStorm)
+        if (movementToggle && !GameManager.Instance.isGravityStorm.Value)
             Move(moveSpeed);
-        else if (movementToggle && GameManager.Instance.isGravityStorm)
+        else if (movementToggle && GameManager.Instance.isGravityStorm.Value)
             Move(gravityMoveSpeed);
 
         if (!movementToggle)
@@ -333,7 +333,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         // Check if the inputDevice has changed
         //HandleMouseVisibility();
 
-        Debug.LogWarning("HasPickup() " + HasPickup());
+        //Debug.LogWarning("HasPickup() " + HasPickup());
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward, Color.green);
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward * customerInteractDistance, Color.red);
     }
@@ -434,7 +434,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         if (movementToggle)
             StartCoroutine(Dash());
-        // SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
+        //SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
         //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
 
         if (GetNumberOfIngredients() > 0)
@@ -831,7 +831,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if (OrderManager.Instance.brewingStations[currentBrewingStation].ingredientSOList.Count > 0)
         {
             AISupervisor.Instance.SupervisorMessageToDisplay("Throwing away product? I'm taking that out of your tips!");
-            GameManager.Instance.moneySystem.AdjustMoneyByAmount(10, false);
+            GameManager.Instance.moneySystem.AdjustMoneyByAmount(3, false);
         }
         OrderManager.Instance.brewingStations[currentBrewingStation].Empty();
         OrderManager.Instance.orderStats[currentBrewingStation].ResetAll();
