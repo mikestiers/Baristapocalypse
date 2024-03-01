@@ -34,5 +34,14 @@ public class SoundManager : Singleton<SoundManager>
         temp.outputAudioMixerGroup = sFXMixerGroup;
         currentAudioSources.Add(temp);
         temp.PlayOneShot(clip);
+        StartCoroutine(WaitForOneShot(clip,temp));
+    }
+
+    IEnumerator WaitForOneShot(AudioClip clip, AudioSource audioSource)
+    {
+        float lengthOfAudio = clip.length;
+        yield return new WaitForSeconds(lengthOfAudio);
+        currentAudioSources.Remove(audioSource);
+        Destroy(audioSource);
     }
 }

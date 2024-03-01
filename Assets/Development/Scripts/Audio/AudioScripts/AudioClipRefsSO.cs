@@ -7,6 +7,7 @@ public class AudioClipRefsSO : ScriptableObject
 {
     public AudioClip menuClicks;
     [Header("EventSounds")]
+    public AudioClip tutorialPopOut;
     public AudioClip wifiOff;
     public AudioClip wifiOn;
     public AudioClip radioStationChange;

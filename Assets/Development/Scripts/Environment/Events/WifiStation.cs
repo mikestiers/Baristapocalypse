@@ -24,6 +24,7 @@ public class WifiStation : RandomEventBase
 
     private void WifiEventIsDone()
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.wifiOn);
         GameManager.Instance.isEventActive.Value = false;
         iseventover.Value = true;
         eventLight.SetActive(false);
@@ -45,6 +46,7 @@ public class WifiStation : RandomEventBase
 
     private void WifiEventIsStarting() 
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.wifiOff);
         iseventover.Value = false;
         eventLight.SetActive(true);
         Debug.Log("Wifi event is Starting");

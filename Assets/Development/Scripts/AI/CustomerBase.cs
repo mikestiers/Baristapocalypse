@@ -574,6 +574,7 @@ public class CustomerBase : Base
         CustomerManager.Instance.ReduceCustomerLeftoServe();
         CustomerReviewManager.Instance.CustomerReviewEvent(this);
         OrderManager.Instance.FinishOrder(order);
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.yorpReview);
         StopOrderTimer();
         StartCoroutine(Drink());
     }
@@ -650,6 +651,7 @@ public class CustomerBase : Base
     public void SpawnMessClientRpc()
     {
         Pickup.SpawnPickupItem(pickupSO, this);
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.cupDropped);
         //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
         messTime = 0f;
     }
@@ -668,7 +670,6 @@ public class CustomerBase : Base
         player.GetIngredient().SetIngredientParent(this);
         JustGotHandedCoffee();
         player.RemoveIngredientInListByReference(player.GetIngredient());
-        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
         interactParticle.Play();
         player.anim.CrossFadeInFixedTime(MovementHash, CrossFadeDuration);
 
