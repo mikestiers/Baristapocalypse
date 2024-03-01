@@ -126,6 +126,7 @@ public class OrderStats : NetworkBehaviour
 
     private void OrderCompleted(object sender, EventArgs e)
     {
+        brewingStation.availableForOrder.Value = true;
         OrderCompletedClientRpc();
     }
 
