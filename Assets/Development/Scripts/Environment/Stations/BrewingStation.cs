@@ -224,6 +224,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     {
         ingredientSOList.Clear();
         isBrewing = false;
+        TurnAllEmissiveOff();
 
         minigameQTE.StartMinigame();
         minigameTiming.Value = true;
