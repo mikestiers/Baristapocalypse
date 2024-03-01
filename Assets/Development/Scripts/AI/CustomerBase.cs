@@ -264,9 +264,8 @@ public class CustomerBase : Base
 
         if (atSit)
         {
-
+            customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration);\
             SetCustomerState(CustomerState.Sitting);
-            customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration);
         }
 
     }
@@ -396,20 +395,6 @@ public class CustomerBase : Base
             DropCupAnimation(player);// Play animation and handles delivering the drink
    
         }
-
-        /*
-        {  if(makingAMess == true)
-        {
-            SetCustomerState(CustomerState.Leaving);
-            agent.SetDestination(exit.position);
-            makingAMess = false;
-            leaving = true;
-
-            //CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
-            //UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
-            //if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
-        }
-        */
         
     }
 
@@ -520,21 +505,16 @@ public class CustomerBase : Base
         if (GetCustomerState() == CustomerState.Drinking && Random.Range(0, 100) <= GameValueHolder.Instance.difficultySettings.GetChanceToMess()) CreateMess();
         if (Random.Range(0, 100) < GameValueHolder.Instance.difficultySettings.GetChanceToLoiter())
         {
-            SetCustomerState(CustomerState.Loitering);
             messTime = 0f;
             makingAMess = true;
             moving = false;
+            SetCustomerState(CustomerState.Loitering);
         }
         else
         {
             customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
-            SetCustomerState(CustomerState.Leaving);
             agent.SetDestination(exit.position);
-
-
-            //CustomerManager.Instance.ReduceCustomerInStore(); //reduce from counter to stop the waves when enough
-            //UIManager.Instance.customersInStore.text = ("Customers in Store: ") + CustomerManager.Instance.GetCustomerLeftinStore().ToString();
-            //if (CustomerManager.Instance.GetCustomerLeftinStore() <= 0) CustomerManager.Instance.NextWave(); // Check if Last customer in Wave trigger next Shift
+            SetCustomerState(CustomerState.Leaving);
         }
     }
 
