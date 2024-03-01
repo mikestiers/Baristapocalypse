@@ -8,13 +8,14 @@ using UnityEngine.UI;
 using static UnityEngine.Rendering.HableCurve;
 using Unity.VisualScripting;
 using System.Runtime.CompilerServices;
+using Unity.Services.Lobbies.Models;
 
 public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 {
     public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
     public event EventHandler<IHasMinigameTiming.OnMinigameTimingEventArgs> OnMinigameTimingStarted;
 
-    [SerializeField] private MinigameQTE minigameQTE;
+    //[SerializeField] private MinigameQTE minigameQTE;
  
     [Header("Visuals")]
     [SerializeField] private ParticleSystem interactParticle;
@@ -66,16 +67,6 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     private const float CrossFadeDuration = 0.1f;
     private float animationWaitTime;
 
-    void OnEnable()
-    {
-        MinigameQTE.MinigameFinished += MinigameEnded;
-    }
-
-    void OnDisable()
-    {
-        MinigameQTE.MinigameFinished -= MinigameEnded;
-    }
-
     private void Start()
     {
         TurnAllEmissiveOff();
@@ -103,12 +94,6 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         brewingTimer.OnValueChanged -= BrewingTimer_OnValueChanged;
         minigameTimer.OnValueChanged -= MinigameTimer_OnValueChanged;
         CustomerBase.OnCustomerLeave -= CustomerBase_OnCustomerLeave;
-    }
-
-    protected virtual void RaiseBrewingDone()
-    {
-        //currentOrder.SetOrderState(OrderState.BeingDelivered);
-        //OnBrewingDone?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void RaiseBrewingEmpty()
@@ -169,6 +154,15 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
                 BrewingDoneServerRpc();
             }
         }
+        if (minigameTiming.Value)
+        {
+            minigameTimer.Value += Time.deltaTime;
+
+            if (minigameTimer.Value >= maxMinigameTimer)
+            {
+                MinigameEnded();
+            }
+        }
     }
 
     public void SetOrder(OrderInfo order)
@@ -226,22 +220,17 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         isBrewing = false;
         TurnAllEmissiveOff();
 
-        minigameQTE.StartMinigame();
+        //minigameQTE.StartMinigame();
+        minigameTimer.Value = 0f;
         minigameTiming.Value = true;
-        //minigameTimer.Value = 0f;
+        
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void MinigameDoneServerRpc()
     {
+        minigameTimer.Value = 0f;
         minigameTiming.Value = false;
-        MinigameDoneClientRpc();
-    }
-
-    [ClientRpc]
-    private void MinigameDoneClientRpc()
-    {
-        RaiseBrewingDone();
     }
 
     public override void Interact(PlayerController player)
@@ -251,8 +240,6 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             Debug.LogWarning("me local player");
             return;
         }
-
-        if (minigameTiming.Value || isBrewing) return;
     
         playerController = player; // Reference for animations
         // Start brewing for ingredients in the machine.  This is for adding directly from stations instead of player hands
@@ -262,7 +249,34 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             player.movementToggle = false;
             InteractLogicPlaceObjectOnBrewing();
         }
+
+        if (minigameTiming.Value)
+        {
+            float timingPressed = Mathf.Abs((minigameTimer.Value / maxMinigameTimer) - sweetSpotPosition.Value);
+            bool minigameResult = false;
+            if (timingPressed <= 0.1f)
+            {
+                minigameResult = true;
+            }
+            else if ((minigameTimer.Value / maxMinigameTimer) < sweetSpotPosition.Value)
+            {
+                minigameResult = false;
+            }
+            else if ((minigameTimer.Value / maxMinigameTimer) > sweetSpotPosition.Value)
+            {
+                minigameResult = false;
+            }
+            if (this.GetIngredient().GetComponent<CoffeeAttributes>() != null)
+            {
+                this.GetIngredient().GetComponent<CoffeeAttributes>().SetIsMinigamePerfect(minigameResult);
+            }
+
+            MinigameEnded();
+        }
+        
+        PrintHeldIngredientList();
     }
+
 
     public void MinigameEnded()
     {
