@@ -214,9 +214,7 @@ public class MinigameQTE : MonoBehaviour
     {
         if (wasButtonPressed)
         {
-            Debug.Log($"wasButtonPressed {wasButtonPressed}");
             wasButtonPressed = false; // Reset the state
-            Debug.Log($"wasButtonPressed {wasButtonPressed}");
             return true;
         }
         return false;
