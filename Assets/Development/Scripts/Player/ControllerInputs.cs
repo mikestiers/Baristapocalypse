@@ -146,7 +146,7 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""MiniGameDetection"",
-                    ""type"": ""PassThrough"",
+                    ""type"": ""Button"",
                     ""id"": ""9012cc9b-27ae-41f2-96dd-c48db1634207"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",

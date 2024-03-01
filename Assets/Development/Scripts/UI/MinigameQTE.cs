@@ -182,7 +182,7 @@ public class MinigameQTE : MonoBehaviour
         QTEgen = 5;
         waitingForKey = 0;
         countingDown = 1;
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 1; i++)
         {
             arrows[i].gameObject.SetActive(false);
         }
@@ -214,7 +214,9 @@ public class MinigameQTE : MonoBehaviour
     {
         if (wasButtonPressed)
         {
+            Debug.Log($"wasButtonPressed {wasButtonPressed}");
             wasButtonPressed = false; // Reset the state
+            Debug.Log($"wasButtonPressed {wasButtonPressed}");
             return true;
         }
         return false;
@@ -236,13 +238,13 @@ public class MinigameQTE : MonoBehaviour
             succeededText.SetActive(true);
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.drinkMinigameHit);
             arrows[originalQTEgen].gameObject.SetActive(false);
-            progressTime += 4.0f;
+            progressTime += 1.0f;
             // Here is where the succeeded animation will play
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(0);
             correctKey = 0;
             succeededText.SetActive(false);
             failedText.SetActive(false);
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(0f);
             waitingForKey = 0;
             countingDown = 1;
         }
@@ -258,10 +260,10 @@ public class MinigameQTE : MonoBehaviour
             failedText.SetActive(true);
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.drinkMinigameMiss);
             arrows[originalQTEgen].gameObject.SetActive(false);
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(0.5f);
             correctKey = 0;
             failedText.SetActive(false);
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(0.5f);
             waitingForKey = 0;
             countingDown = 1;
         }
@@ -270,7 +272,7 @@ public class MinigameQTE : MonoBehaviour
     // Keeps arrow spawned for a set period of time before despawning
     IEnumerator UptimeCountdown(int originalQTEgen)
     {
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(1.0f);
         if (countingDown == 1)
         {
             Debug.Log("UptimeCoroutine NOT stopped");
@@ -279,10 +281,10 @@ public class MinigameQTE : MonoBehaviour
             // Here is where the fail animation will play
             failedText.SetActive(true);
             arrows[originalQTEgen].gameObject.SetActive(false);
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(0.5f);
             correctKey = 0;
             failedText.SetActive(false);
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(0f);
             waitingForKey = 0;
             countingDown = 1;
         }
