@@ -205,7 +205,7 @@ public class MainMenuManager : MonoBehaviour
             rightDoorAnimator.SetBool("isOpen", true);
             MainmenuCamera.Priority = 0;
             SettingsCamera.Priority = 1;
-            EventSystem.current.SetSelectedGameObject(FullScreenGO.gameObject);
+            EventSystem.current.SetSelectedGameObject(MainMenuFromSettings.gameObject);
             SetInteractableButtons(MainMenuButtons, false);
             SetInteractableButtons(SettingsMenuButtons, true);
             SetInteractableSliders(SettingsMenuSliders, true);
@@ -222,7 +222,7 @@ public class MainMenuManager : MonoBehaviour
             SoundManager.Instance.PlayOneShot(nextButtonPressedSound);
             MainmenuCamera.Priority = 0;
             CreditsCamera.Priority = 1;
-            EventSystem.current.SetSelectedGameObject(FullScreenGO.gameObject);
+            EventSystem.current.SetSelectedGameObject(MainMenuFromCredits.gameObject);
             SetInteractableButtons(MainMenuButtons, false);
             SetInteractableButtons(SettingsMenuButtons, false);
             SetInteractableSliders(SettingsMenuSliders, false);

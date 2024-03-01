@@ -23,7 +23,7 @@ public class ScoreUI : MonoBehaviour
 
     public void UpdateMoneyVisuals(int currentMoney, int addedMoney, bool isAdding, float passPercentage) 
     {
-        scoreText.text = ("$ ") + currentMoney.ToString();
+        scoreText.text = currentMoney.ToString();
 
         if (isAdding == true) SayAddedMoneyMessage(("+") + addedMoney.ToString());
         else SayAddedMoneyMessage(("-") + addedMoney.ToString());
