@@ -251,7 +251,11 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             brewingPlayer = player;
             InteractLogicPlaceObjectOnBrewing();
         }
-        if (player != brewingPlayer) return;
+        if (player != brewingPlayer)
+        {
+            Debug.Log("IM NOT BREWING SO LEAVE");
+            return;
+        }
 
         if (minigameTiming.Value)
         {
