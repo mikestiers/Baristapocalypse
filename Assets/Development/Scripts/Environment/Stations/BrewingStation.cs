@@ -455,9 +455,9 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         yield return new WaitForSeconds(animationWaitTime);
         GetIngredient().SetIngredientParent(currentPlayerController);
         animationSwitch?.Invoke();
-        isminigameEnded.Value = true;
         currentPlayerController.movementToggle = true;
         currentPlayerController = null;
+        isminigameEnded.Value = true;
 
     }
 
