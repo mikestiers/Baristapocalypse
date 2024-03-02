@@ -60,13 +60,15 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     // Animation interaction with brewing machine
     public event Action animationSwitch;//*******************************
-    private PlayerController playerController;
+    private PlayerController currentPlayerController = null;
     private PlayerController brewingPlayer;
     private float previousFrameTime;
     private readonly int BP_Barista_PickUpHash = Animator.StringToHash("BP_Barista_PickUp");
     private readonly int Barista_BrewingHash = Animator.StringToHash("Barista_Brewing");
     private const float CrossFadeDuration = 0.1f;
     private float animationWaitTime;
+
+    private NetworkVariable<bool> isminigameEnded = new NetworkVariable<bool>(true);
 
     private void Start()
     {
@@ -159,7 +161,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         {
             minigameTimer.Value += Time.deltaTime;
 
-            if (minigameTimer.Value >= maxMinigameTimer)
+            if (minigameTimer.Value >= maxMinigameTimer && !isminigameEnded.Value)
             {
                 MinigameEnded();
             }
@@ -232,67 +234,100 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     {
         minigameTimer.Value = 0f;
         minigameTiming.Value = false;
+        
     }
 
     public override void Interact(PlayerController player)
     {
-        if (!player.IsLocalPlayer)
+
+        ulong playerId = player.GetComponent<NetworkObject>().NetworkObjectId;
+
+        if (currentPlayerController == null && isminigameEnded.Value && ingredientSOList.Count >= numIngredientsNeeded)
         {
-            Debug.LogWarning("me local player");
-            return;
+            currentPlayerController = player; // Reference for animations
+            currentPlayerController.GetInstanceID();
+            //SetCurrentPlayerConrollerServerRpc(player.GetComponent<NetworkObject>());
+
+            Debug.LogWarning("!isBrewing " + isBrewing);
+            Debug.LogWarning("minigameTiming.Value " + minigameTiming.Value);
         }
+            Debug.LogWarning("currentPlayerController " + currentPlayerController);
+
+        if (currentPlayerController == null) return;
     
-        playerController = player; // Reference for animations
-        // Start brewing for ingredients in the machine.  This is for adding directly from stations instead of player hands
-        if (ingredientSOList.Count >= numIngredientsNeeded)
+        if (player.GetInstanceID() == currentPlayerController.GetInstanceID())
         {
-            player.anim.CrossFadeInFixedTime(Barista_BrewingHash, CrossFadeDuration);
-            player.movementToggle = false;
-            brewingPlayer = player;
-            InteractLogicPlaceObjectOnBrewing();
-        }
-        if (player != brewingPlayer)
-        {
-            Debug.Log("IM NOT BREWING SO LEAVE");
-            return;
-        }
-
-        if (minigameTiming.Value)
-        {
-            float timingPressed = Mathf.Abs((minigameTimer.Value / maxMinigameTimer) - sweetSpotPosition.Value);
-            bool minigameResult = false;
-            if (timingPressed <= 0.1f)
+            // Start brewing for ingredients in the machine.  This is for adding directly from stations instead of player hands
+            if (ingredientSOList.Count >= numIngredientsNeeded)
             {
-                minigameResult = true;
-            }
-            else if ((minigameTimer.Value / maxMinigameTimer) < sweetSpotPosition.Value)
-            {
-                minigameResult = false;
-            }
-            else if ((minigameTimer.Value / maxMinigameTimer) > sweetSpotPosition.Value)
-            {
-                minigameResult = false;
-            }
-            if (this.GetIngredient().GetComponent<CoffeeAttributes>() != null)
-            {
-                this.GetIngredient().GetComponent<CoffeeAttributes>().SetIsMinigamePerfect(minigameResult);
+                player.anim.CrossFadeInFixedTime(Barista_BrewingHash, CrossFadeDuration);
+                player.movementToggle = false;
+                brewingPlayer = player;
+                InteractLogicPlaceObjectOnBrewing();
+                IsminigameEndedServerRpc(false);
             }
 
-            MinigameEnded();
+            if (player != brewingPlayer)
+            {
+                Debug.Log("IM NOT BREWING SO LEAVE");
+                return;
+            }
+
+            if (minigameTiming.Value)
+            {
+                float timingPressed = Mathf.Abs((minigameTimer.Value / maxMinigameTimer) - sweetSpotPosition.Value);
+                bool minigameResult = false;
+                if (timingPressed <= 0.1f)
+                {
+                    minigameResult = true;
+                }
+                else if ((minigameTimer.Value / maxMinigameTimer) < sweetSpotPosition.Value)
+                {
+                    minigameResult = false;
+                }
+                else if ((minigameTimer.Value / maxMinigameTimer) > sweetSpotPosition.Value)
+                {
+                    minigameResult = false;
+                }
+                if (this.GetIngredient().GetComponent<CoffeeAttributes>() != null)
+                {
+                    this.GetIngredient().GetComponent<CoffeeAttributes>().SetIsMinigamePerfect(minigameResult);
+                }
+
+                MinigameEnded();
+            }
+
         }
         
         PrintHeldIngredientList();
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void IsminigameEndedServerRpc(bool trueOrFalse)
+    {
+        IsminigameEndedClientRpc(trueOrFalse);
+    }
+
+    [ClientRpc]
+    private void IsminigameEndedClientRpc(bool trueOrFalse)
+    {
+        IsminigameEnded(trueOrFalse);
+    }
+
+    private void IsminigameEnded(bool trueOrFalse)
+    {
+        isminigameEnded.Value = trueOrFalse;
+    }
+
 
     public void MinigameEnded()
-    {
+    { 
         if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstDrinkReady)
             TutorialManager.Instance.FirstDrinkReady();
 
+        PickCupAnimationServerRpc();// plays animation and sets cup in hand (SetIngredientParent(player))
         MinigameDoneServerRpc();
         PrintHeldIngredientList();
-        PickCupAnimation(playerController);// plays animation and sets cup in hand (SetIngredientParent(player))
     }
 
     public void InteractLogicPlaceObjectOnBrewing()
@@ -351,7 +386,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             }
         }
 
-        if(isBrewing || minigameTiming.Value)
+        if (isBrewing || minigameTiming.Value)
         {
             return false;
         }
@@ -395,20 +430,35 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         TurnAllEmissiveOff();
     }
 
-    private void PickCupAnimation(PlayerController player)
+    [ServerRpc(RequireOwnership =false)]
+    private void PickCupAnimationServerRpc()
     {
-        StartCoroutine(ResetAnimation(player));
+        PickCupAnimationClientRpc();
     }
 
-    private IEnumerator ResetAnimation(PlayerController player)
+    [ClientRpc]
+    private void PickCupAnimationClientRpc()
     {
-        player.anim.CrossFadeInFixedTime(BP_Barista_PickUpHash, CrossFadeDuration);
-        player.movementToggle = false;
+        PickCupAnimation();
+    }
+
+    private void PickCupAnimation()
+    {
+        StartCoroutine(ResetAnimation());
+    }
+
+    private IEnumerator ResetAnimation()
+    {
+        currentPlayerController.anim.CrossFadeInFixedTime(BP_Barista_PickUpHash, CrossFadeDuration);
+        currentPlayerController.movementToggle = false;
 
         yield return new WaitForSeconds(animationWaitTime);
-        player.movementToggle = true;
-        GetIngredient().SetIngredientParent(player);
+        GetIngredient().SetIngredientParent(currentPlayerController);
         animationSwitch?.Invoke();
+        isminigameEnded.Value = true;
+        currentPlayerController.movementToggle = true;
+        currentPlayerController = null;
+
     }
 
     private void TurnAllEmissiveOff()
