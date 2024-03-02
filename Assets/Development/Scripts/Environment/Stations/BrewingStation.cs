@@ -204,20 +204,20 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
     public override void Interact(PlayerController player)
     {
         Debug.LogWarning("Is minigame Ended Value " + isminigameEnded.Value);
-        Debug.LogWarning("Player controller null? " + (bool)currentPlayerController == null);
-        Debug.LogWarning("ingredients needed " + (bool)(ingredientSOList.Count >= numIngredientsNeeded));
+        Debug.LogWarning("Current player controller " + currentPlayerController);
         //Setup brewing controller stuff
         if (currentPlayerController == null && isminigameEnded.Value && ingredientSOList.Count >= numIngredientsNeeded)
         {
-            Debug.Log("HELPLEPLEGRGL");
+            Debug.LogWarning("setting new currentPlayerController");
             currentPlayerController = player; // Reference for animations
             currentPlayerController.GetInstanceID();
-            isminigameEnded.Value = false;
+            SetIsMinigameEndedServerRpc(false);
         }
         if (currentPlayerController == null) return;
 
         if (player.GetInstanceID() == currentPlayerController.GetInstanceID())
         {
+            Debug.LogWarning("Players are matching");
             //Stop Brewing Minigame
             if (isMinigameRunning.Value)
             {
@@ -245,7 +245,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
             }
 
             //Begin Brewing Minigame
-            if (!isMinigameRunning.Value && !isminigameEnded.Value && ingredientSOList.Count >= numIngredientsNeeded)
+            if (!isMinigameRunning.Value && ingredientSOList.Count >= numIngredientsNeeded)
             {
                 Debug.LogWarning("Beginning Brewing minigame");
                 MinigameStartedServerRpc();
@@ -255,6 +255,12 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
                 InteractLogicPlaceObjectOnBrewing();
             }
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetIsMinigameEndedServerRpc(bool isMinigameEnded)
+    {
+        isminigameEnded.Value = isMinigameEnded;
     }
 
     public void MinigameEnded()
@@ -398,8 +404,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
         animationSwitch?.Invoke();
         currentPlayerController.movementToggle = true;
         currentPlayerController = null;
-        isminigameEnded.Value = true;
-
+        SetIsMinigameEndedServerRpc(true);
     }
 
     private void TurnAllEmissiveOff()
