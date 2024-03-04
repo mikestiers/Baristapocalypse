@@ -14,22 +14,23 @@ public class IngredientStation : BaseStation
         if (player.HasPickup())
             return;
 
-        if (!HasIngredient())
-        {
-            if (!player.HasIngredient())
-            {
-                // Check if the player has already spawned maxingredients
-                if (player.GetNumberOfIngredients() >= player.GetMaxIngredients())
-                {
-                    Debug.Log("Max ingredients spawned!");
-                    return;
-                }
+        //if (!HasIngredient())
+        //{
+        //    if (!player.HasIngredient())
+        //    {
+        //        // Check if the player has already spawned maxingredients
+        //        if (player.GetNumberOfIngredients() >= player.GetMaxIngredients())
+        //        {
+        //            Debug.Log("Max ingredients spawned!");
+        //            return;
+        //        }
 
-                Ingredient.SpawnIngredient(ingredientSO, player);
-                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
-                interactParticle.Play();
+        //        Ingredient.SpawnIngredient(ingredientSO, player);
+        //        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
+        //        interactParticle.Play();
+        //    }
+        //}
 
-            }
-        }
+        GetComponentInChildren<IngredientSelectionUI>().Interact(player);
     }
 }

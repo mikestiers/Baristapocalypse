@@ -47,7 +47,7 @@ public class GameOverUI : MonoBehaviour
         customersServedValue.text = CustomerManager.Instance.GetCustomerServed().ToString();
         customersLeaveValue.text = CustomerManager.Instance.GetCustomerLeave().ToString();
         tipsAcquiredValue.text = (("$") + GameManager.Instance.moneySystem.GetCurrentMoney().ToString());
-        tipsNeededValue.text = (("S") + GameValueHolder.Instance.difficultySettings.GetMoneyToPass().ToString());
+        tipsNeededValue.text = (("$") + GameValueHolder.Instance.difficultySettings.GetMoneyToPass().ToString());
 
         string difference = iSWin ? "+" : " ";
 

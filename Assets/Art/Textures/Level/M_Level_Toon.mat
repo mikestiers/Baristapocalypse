@@ -10,6 +10,7 @@ Material:
   m_Name: M_Level_Toon
   m_Shader: {fileID: 4800000, guid: 933f24cde1e3f6a41818f56d729421ab, type: 3}
   m_ValidKeywords:
+  - _ALPHATEST_ON
   - _HALFTONESHAPE_DOT
   - _METALLICSPECGLOSSMAP
   - _NORMALMAP
@@ -20,20 +21,20 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: 2450
   stringTagMap:
-    RenderType: Opaque
+    RenderType: TransparentCutout
   disabledShaderPasses:
   - SRPDEFAULTUNLIT
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 2e7b61e74b0ebe54784e57617ad5d7bf, type: 3}
+        m_Texture: {fileID: 2800000, guid: 418c604fca5eee649b68695c67ce7138, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 17fc39a6246e90742a1b5543288d3879, type: 3}
+        m_Texture: {fileID: 2800000, guid: 9fe70783089dc074daece426d853a9bd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CelCurveTexture:
@@ -105,11 +106,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 2e7b61e74b0ebe54784e57617ad5d7bf, type: 3}
+        m_Texture: {fileID: 2800000, guid: 418c604fca5eee649b68695c67ce7138, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
-        m_Texture: {fileID: 2800000, guid: 1083bb04438d8774d848928bd60df4ba, type: 3}
+        m_Texture: {fileID: 2800000, guid: cf871be9b0d9fe443813deec4c8dcfbb, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -147,7 +148,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _ActiveRenderFeature: 1
-    - _AlphaClip: 0
+    - _AlphaClip: 1
     - _Blend: 0
     - _BrushLowerCut: 0
     - _BrushSize: 0.8
@@ -227,7 +228,7 @@ Material:
     - _Mode: 0
     - _Nearest_Distance: 0
     - _NoiseScale: 1
-    - _NoiseStrength: 0.1
+    - _NoiseStrength: 0.01
     - _OcclusionStrength: 1
     - _OutlineDepthOffset: 0
     - _OutlineEnabled: 1
@@ -257,15 +258,15 @@ Material:
     - _ShadowEdgeSize: 0.05
     - _ShadowEdgeSizeExtra: 0.05
     - _SizeFalloff: 0
-    - _Smoothness: 0.592
+    - _Smoothness: 0.298
     - _SmoothnessTextureChannel: 0
     - _SpecClipMaskScale: 1
     - _SpecShadowStrength: 1
     - _SpecularClipStrength: 0
     - _SpecularEnabled: 0
-    - _SpecularFalloff: 0.217
+    - _SpecularFalloff: 1
     - _SpecularHighlights: 1
-    - _SpecularSize: 0.204
+    - _SpecularSize: 0.241
     - _SpecularSmoothness: 1
     - _SpecularStepThreshold: 0.013
     - _SpherizeNormalEnabled: 0
@@ -314,7 +315,7 @@ Material:
     - _OutlineColor: {r: 0.117022455, g: 0, b: 0.1792453, a: 1}
     - _OutlineDistancFade: {r: -25, g: 50, b: 0, a: 0}
     - _RimColor: {r: 0.80893326, g: 1, b: 0, a: 1}
-    - _ShadowColor: {r: 0.081797995, g: 0, b: 0.103773594, a: 1}
+    - _ShadowColor: {r: 0.081796266, g: 0, b: 0.10377159, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _SpherizeNormalOrigin: {r: 0, g: 0, b: 0, a: 1}
     - _UnityShadowColor: {r: 0.85023, g: 0.85034, b: 0.85045, a: 0.85056}

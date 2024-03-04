@@ -21,6 +21,10 @@ public class DifficultySettings
     private float chanceToLoiter;
     private float minWaitTime;
     private float maxWaitTime;
+    private float minInLineWaitTime;
+    private float maxInLineWaitTime;
+    private float minDrinkingDurationTime;
+    private float maxDrinkingDurationTime;
     private float drinkThreshold;
     private int moneyToPass;
     public IngredientListSO temperatureIngredientList { get; set; }
@@ -53,6 +57,12 @@ public class DifficultySettings
 
         minWaitTime = currentDifficulty.minWaitTime;
         maxWaitTime = currentDifficulty.maxWaitTime;
+
+        minInLineWaitTime = currentDifficulty.minInLineWaitTime;
+        maxInLineWaitTime = currentDifficulty.maxInLineWaitTime;
+
+        minDrinkingDurationTime = currentDifficulty.minDrinkingDurationTime;
+        maxDrinkingDurationTime = currentDifficulty.maxDrinkingDurationTime;
 
         drinkThreshold = currentDifficulty.drinkThreshold;
 
@@ -93,58 +103,20 @@ public class DifficultySettings
         else
         {
             Debug.Log("Shift: " + Shift);
+            UIManager.Instance.shiftEvaluationUI.SetActive(true);
             Shift++;
         }
 
         minDelay = currentDifficulty.minCustomerSpawnDelay;
         maxDelay = currentDifficulty.maxCustomerSpawnDelay;
 
-        numberOfWaves = currentDifficulty.InitialnumberOfWaves; // + Mathf.FloorToInt(Shift * currentDifficulty.RateOfIncreaseInNumberOfWaves);
+        numberOfWaves = currentDifficulty.InitialnumberOfWaves + Mathf.FloorToInt(Shift * currentDifficulty.RateOfIncreaseInNumberOfWaves);
     }
 
     public int GetShift()
     {
         return Shift;
     }
-
-    //nothing is calling this
-    //public void NextWave()
-    //{
-    //    numberOfWaves--;
-
-    //    //decreasing the amount of delay between customers spawning
-    //    minDelay -= currentDifficulty.rateOFDecresedDelayOfCustomerSpawn;
-    //    maxDelay -= currentDifficulty.rateOFDecresedDelayOfCustomerSpawn;
-
-    //    //adjusting amount of customers based on wave numbers /// increasing amount of customers every wave
-    //    /*
-    //    switch (difficultyLevel)
-    //    {
-    //        case 0:
-    //            //easy
-    //            numberOfCustomersInWave += (5 + (2 * playerCount));
-
-    //            break; 
-
-    //        case 1:
-    //            //medium
-    //            numberOfCustomersInWave += (5 + (4 * playerCount));
-
-    //            break;
-
-    //        case 2:
-    //            //hard
-    //            numberOfCustomersInWave += (5 + (4 * playerCount));
-
-    //            break;
-
-    //    }
-    //    */
-    //    numberOfCustomersInWave += Mathf.FloorToInt(currentDifficulty.RateOfIncreaseInNumberOfWaves + (playerCount * currentDifficulty.rateOfIncreaseBasedOnPlayerCount));
-
-
-    //}
-
 
     public int GetNumberOfWaves()
     {
@@ -196,6 +168,16 @@ public class DifficultySettings
         return maxWaitTime;
     }
 
+    public float GetMinDrinkingDurationTime()
+    {
+        return minDrinkingDurationTime;
+    }
+
+    public float GetMaxDrinkingDurationTime()
+    {
+        return maxDrinkingDurationTime;
+    }
+
     public float GetDrinkThreshold()
     {
         return drinkThreshold;
@@ -204,5 +186,15 @@ public class DifficultySettings
     public int GetMoneyToPass()
     {
         return moneyToPass;
+    }
+
+    public float GetMinInLineWaitTime()
+    {
+        return minInLineWaitTime;
+    }
+
+    public float GetMaxInLineWaitTime()
+    {
+        return maxInLineWaitTime;
     }
 }
