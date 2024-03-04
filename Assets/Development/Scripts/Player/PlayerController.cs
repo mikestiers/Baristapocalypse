@@ -443,7 +443,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             {
                 if (spillPrefab != null)
                 {
-                    Spill.PlayerCreateSpill(spillPrefab, this);
+                    //Spill.CreateSpill(spillPrefab, this);
                 }
                 else
                 {
