@@ -43,7 +43,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] public Transform[] playerSpawnPoints;
 
     // Pause Vars
-    private bool isLocalGamePaused = false;
+    [HideInInspector] public bool isLocalGamePaused = false;
     private NetworkVariable<bool> isGamePaused = new NetworkVariable<bool>(false);
 
     private Dictionary<ulong, bool> playerReadyDictionary;
@@ -88,15 +88,8 @@ public class GameManager : NetworkBehaviour
     private void Start()
     {
         Application.targetFrameRate = maxFrameRate;
-
-        //if (InputManager.Instance)
-        //{
-        //    InputManager.Instance.PauseEvent += InputManager_PauseEvent;
-        //}
         InitializePauseEventServerRpc();
-
         OnRandomEventTriggered += HandleRandomEvent;
-        
         SetRandomEventTimes();
 
         // debug for random event times (to be deleted)
@@ -314,7 +307,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    private void TogglePauseGame()
+    public void TogglePauseGame()
     {
         isLocalGamePaused = !isLocalGamePaused;
         if (isLocalGamePaused) 
