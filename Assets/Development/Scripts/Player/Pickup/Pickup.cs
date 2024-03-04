@@ -108,12 +108,8 @@ public class Pickup : NetworkBehaviour
     {
         pickupNetworkObjectReference.TryGet(out NetworkObject pickupNetworkObject);
         Pickup pickup = pickupNetworkObject.GetComponent<Pickup>();
-        // Disable the collider immediately after instantiation
-        Collider pickupCollider = pickup.GetComponent<Collider>();
-        if (pickupCollider != null)
-        {
-            pickupCollider.enabled = true;
-        }
+
+        pickup.GetCollider().enabled = true;
     }
 
 
