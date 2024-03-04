@@ -27,6 +27,11 @@ public class LevelLoader : MonoBehaviour
         }
     }
 
+    public void PlaySceneTransition(int levelindex)
+    {
+        StartCoroutine(SceneTransition(levelindex));
+    }
+
     IEnumerator SceneTransition(int levelIndex)
     {
         transition.SetTrigger("Start");
