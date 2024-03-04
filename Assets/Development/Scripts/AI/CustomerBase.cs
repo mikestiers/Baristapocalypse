@@ -496,11 +496,6 @@ public class CustomerBase : Base
         if (agent.isStopped) agent.isStopped = false;
         
         atSit = false;
-        if (OnCustomerLeave != null)
-        {
-            OnCustomerLeave?.Invoke(customerNumber.Value);
-            OrderManager.Instance.FinishOrder(order);
-        }
 
         if (GetCustomerState() == CustomerState.Drinking && Random.Range(0, 100) <= GameValueHolder.Instance.difficultySettings.GetChanceToMess()) CreateMess();
         if (Random.Range(0, 100) < GameValueHolder.Instance.difficultySettings.GetChanceToLoiter())
@@ -515,6 +510,12 @@ public class CustomerBase : Base
             customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
             agent.SetDestination(exit.position);
             SetCustomerState(CustomerState.Leaving);
+        }
+
+        if (OnCustomerLeave != null)
+        {
+            OnCustomerLeave?.Invoke(customerNumber.Value);
+            OrderManager.Instance.FinishOrder(order);
         }
     }
 

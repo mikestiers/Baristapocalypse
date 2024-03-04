@@ -8,13 +8,13 @@ using UnityEngine.UI;
 using static UnityEngine.Rendering.HableCurve;
 using Unity.VisualScripting;
 using System.Runtime.CompilerServices;
+using Unity.Services.Lobbies.Models;
 
-public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
+public class BrewingStation : BaseStation, IHasMinigameTiming
 {
-    public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
     public event EventHandler<IHasMinigameTiming.OnMinigameTimingEventArgs> OnMinigameTimingStarted;
 
-    [SerializeField] private MinigameQTE minigameQTE;
+    //[SerializeField] private MinigameQTE minigameQTE;
  
     [Header("Visuals")]
     [SerializeField] private ParticleSystem interactParticle;
@@ -30,12 +30,10 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     [SerializeField] private int numIngredientsNeeded = 1;
 
     [Header("Brewing")]
-    private NetworkVariable<float> brewingTimer = new NetworkVariable<float>(0f);
     [SerializeField] private BrewingRecipeSO brewingRecipeSO;
-    private bool isBrewing;
     public NetworkVariable<bool> availableForOrder = new NetworkVariable<bool>(true);
     private NetworkVariable<float> minigameTimer = new NetworkVariable<float>(0f);
-    private NetworkVariable<bool> minigameTiming = new NetworkVariable<bool>(false);
+    private NetworkVariable<bool> isMinigameRunning = new NetworkVariable<bool>(false);
     private float maxMinigameTimer = 4.0f;
     private float minSweetSpotPosition = 0.1f;
     private float maxSweetSpotPosition = 0.9f;
@@ -59,22 +57,15 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     // Animation interaction with brewing machine
     public event Action animationSwitch;//*******************************
-    private PlayerController playerController;
+    private PlayerController currentPlayerController = null;
+    private PlayerController brewingPlayer;
     private float previousFrameTime;
     private readonly int BP_Barista_PickUpHash = Animator.StringToHash("BP_Barista_PickUp");
     private readonly int Barista_BrewingHash = Animator.StringToHash("Barista_Brewing");
     private const float CrossFadeDuration = 0.1f;
     private float animationWaitTime;
 
-    void OnEnable()
-    {
-        MinigameQTE.MinigameFinished += MinigameEnded;
-    }
-
-    void OnDisable()
-    {
-        MinigameQTE.MinigameFinished -= MinigameEnded;
-    }
+    private NetworkVariable<bool> isminigameEnded = new NetworkVariable<bool>(true);
 
     private void Start()
     {
@@ -93,22 +84,14 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     public override void OnNetworkSpawn()
     {
-        brewingTimer.OnValueChanged += BrewingTimer_OnValueChanged;
         minigameTimer.OnValueChanged += MinigameTimer_OnValueChanged;
         CustomerBase.OnCustomerLeave += CustomerBase_OnCustomerLeave;
     }
 
     public override void OnNetworkDespawn()
     {
-        brewingTimer.OnValueChanged -= BrewingTimer_OnValueChanged;
         minigameTimer.OnValueChanged -= MinigameTimer_OnValueChanged;
         CustomerBase.OnCustomerLeave -= CustomerBase_OnCustomerLeave;
-    }
-
-    protected virtual void RaiseBrewingDone()
-    {
-        //currentOrder.SetOrderState(OrderState.BeingDelivered);
-        //OnBrewingDone?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void RaiseBrewingEmpty()
@@ -123,8 +106,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         {
             sweetSpotPosition.Value = UnityEngine.Random.Range(minSweetSpotPosition, maxSweetSpotPosition);
             availableForOrder.Value = true;
-            ingredientSOList.Clear();
-            isBrewing = false;
+            Empty();
 
             currentOrder.SetOrderState(OrderState.BeingDelivered);
 
@@ -141,32 +123,20 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         });
     }
 
-    private void BrewingTimer_OnValueChanged(float previousValue, float newValue)
-    {
-        float brewingTimerMax = brewingRecipeSO != null ? brewingRecipeSO.brewingMax : 1f;
-        OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
-        {
-            progressNormalized = brewingTimer.Value / brewingTimerMax
-        });
-    }
-
     private void Update()
     {
-        PrintHeldIngredientList(); // putting this here until we have a way to show activity in the station
-
+        PrintHeldIngredientList();
         if (!IsServer)
         {
             return;
         }
-
-        if (isBrewing)
+        if (isMinigameRunning.Value)
         {
-            brewingTimer.Value += Time.deltaTime;
-            if (brewingTimer.Value >= 0)
+            minigameTimer.Value += Time.deltaTime;
+
+            if (minigameTimer.Value >= maxMinigameTimer && !isminigameEnded.Value)
             {
-                SpawnCoffeeDrinkServerRpc();
-                animationWaitTime = 1.2f; //PlayerController.Instance.anim.GetCurrentAnimatorStateInfo(0).normalizedTime; this is giving a delay of like 1 sec , i believe is because i'm playimg the animation faster than original
-                BrewingDoneServerRpc();
+                MinigameEnded();
             }
         }
     }
@@ -190,7 +160,6 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
         order.SetOrderState(OrderState.Brewing);
     }
 
-
     [ServerRpc]
     private void SpawnCoffeeDrinkServerRpc()
     {
@@ -212,66 +181,96 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void BrewingDoneServerRpc()
+    private void MinigameDoneServerRpc()
     {
-        sweetSpotPosition.Value = UnityEngine.Random.Range(minSweetSpotPosition, maxSweetSpotPosition);
-        BrewingDoneClientRpc();
-
-    }
-
-    [ClientRpc]
-    private void BrewingDoneClientRpc()
-    {
-        ingredientSOList.Clear();
-        isBrewing = false;
-        TurnAllEmissiveOff();
-
-        minigameQTE.StartMinigame();
-        minigameTiming.Value = true;
-        //minigameTimer.Value = 0f;
+        minigameTimer.Value = 0f;
+        isMinigameRunning.Value = false;
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void MinigameDoneServerRpc()
+    private void MinigameStartedServerRpc()
     {
-        minigameTiming.Value = false;
-        MinigameDoneClientRpc();
-    }
+        animationWaitTime = 1.2f; //PlayerController.Instance.anim.GetCurrentAnimatorStateInfo(0).normalizedTime; this is giving a delay of like 1 sec , i believe is because i'm playimg the animation faster than original
+        SpawnCoffeeDrinkServerRpc();
 
-    [ClientRpc]
-    private void MinigameDoneClientRpc()
-    {
-        RaiseBrewingDone();
+        Empty();
+
+        minigameTimer.Value = 0f;
+        isMinigameRunning.Value = true;
+        
+        sweetSpotPosition.Value = UnityEngine.Random.Range(minSweetSpotPosition, maxSweetSpotPosition);
     }
 
     public override void Interact(PlayerController player)
     {
-        if (!player.IsLocalPlayer)
+        Debug.LogWarning("Is minigame Ended Value " + isminigameEnded.Value);
+        Debug.LogWarning("Current player controller " + currentPlayerController);
+        //Setup brewing controller stuff
+        if (currentPlayerController == null && isminigameEnded.Value && ingredientSOList.Count >= numIngredientsNeeded)
         {
-            Debug.LogWarning("me local player");
-            return;
+            Debug.LogWarning("setting new currentPlayerController");
+            currentPlayerController = player; // Reference for animations
+            currentPlayerController.GetInstanceID();
+            SetIsMinigameEndedServerRpc(false);
         }
+        if (currentPlayerController == null) return;
 
-        if (minigameTiming.Value || isBrewing) return;
-    
-        playerController = player; // Reference for animations
-        // Start brewing for ingredients in the machine.  This is for adding directly from stations instead of player hands
-        if (ingredientSOList.Count >= numIngredientsNeeded)
+        if (player.GetInstanceID() == currentPlayerController.GetInstanceID())
         {
-            player.anim.CrossFadeInFixedTime(Barista_BrewingHash, CrossFadeDuration);
-            player.movementToggle = false;
-            InteractLogicPlaceObjectOnBrewing();
+            Debug.LogWarning("Players are matching");
+            //Stop Brewing Minigame
+            if (isMinigameRunning.Value)
+            {
+                Debug.LogWarning("Ending Brewing minigame");
+                float timingPressed = Mathf.Abs((minigameTimer.Value / maxMinigameTimer) - sweetSpotPosition.Value);
+                bool minigameResult = false;
+                if (timingPressed <= 0.1f)
+                {
+                    minigameResult = true;
+                }
+                else if ((minigameTimer.Value / maxMinigameTimer) < sweetSpotPosition.Value)
+                {
+                    minigameResult = false;
+                }
+                else if ((minigameTimer.Value / maxMinigameTimer) > sweetSpotPosition.Value)
+                {
+                    minigameResult = false;
+                }
+                if (GetIngredient().GetComponent<CoffeeAttributes>() != null)
+                {
+                    GetIngredient().GetComponent<CoffeeAttributes>().SetIsMinigamePerfect(minigameResult);
+                }
+
+                MinigameEnded();
+            }
+
+            //Begin Brewing Minigame
+            if (!isMinigameRunning.Value && ingredientSOList.Count >= numIngredientsNeeded)
+            {
+                Debug.LogWarning("Beginning Brewing minigame");
+                MinigameStartedServerRpc();
+
+                player.anim.CrossFadeInFixedTime(Barista_BrewingHash, CrossFadeDuration);
+                player.movementToggle = false;
+                InteractLogicPlaceObjectOnBrewing();
+            }
         }
     }
 
-    public void MinigameEnded()
+    [ServerRpc(RequireOwnership = false)]
+    private void SetIsMinigameEndedServerRpc(bool isMinigameEnded)
     {
+        isminigameEnded.Value = isMinigameEnded;
+    }
+
+    public void MinigameEnded()
+    { 
         if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstDrinkReady)
             TutorialManager.Instance.FirstDrinkReady();
 
+        PickCupAnimationServerRpc();// plays animation and sets cup in hand (SetIngredientParent(player))
         MinigameDoneServerRpc();
         PrintHeldIngredientList();
-        PickCupAnimation(playerController);// plays animation and sets cup in hand (SetIngredientParent(player))
     }
 
     public void InteractLogicPlaceObjectOnBrewing()
@@ -282,7 +281,6 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     [ServerRpc(RequireOwnership = false)]
     private void InteractLogicPlaceObjectOnBrewingServerRpc()
     {
-        brewingTimer.Value = 0f;
         InteractLogicPlaceObjectOnBrewingClientRpc();
     }
 
@@ -291,7 +289,6 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
     {
         if (ingredientSOList.Count >= numIngredientsNeeded)
         {
-            isBrewing = true;
             ingredientsIndicatorText.SetText("");
         }
     }
@@ -330,7 +327,7 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
             }
         }
 
-        if(isBrewing || minigameTiming.Value)
+        if (isMinigameRunning.Value)
         {
             return false;
         }
@@ -370,24 +367,44 @@ public class BrewingStation : BaseStation, IHasProgress, IHasMinigameTiming
 
     public void Empty()
     {
-        ingredientSOList.Clear();
+        EmptyClientRpc();
         TurnAllEmissiveOff();
     }
 
-    private void PickCupAnimation(PlayerController player)
+    [ClientRpc]
+    private void EmptyClientRpc()
     {
-        StartCoroutine(ResetAnimation(player));
+        ingredientSOList.Clear();
     }
 
-    private IEnumerator ResetAnimation(PlayerController player)
+    [ServerRpc(RequireOwnership =false)]
+    private void PickCupAnimationServerRpc()
     {
-        player.anim.CrossFadeInFixedTime(BP_Barista_PickUpHash, CrossFadeDuration);
-        player.movementToggle = false;
+        PickCupAnimationClientRpc();
+    }
+
+    [ClientRpc]
+    private void PickCupAnimationClientRpc()
+    {
+        PickCupAnimation();
+    }
+
+    private void PickCupAnimation()
+    {
+        StartCoroutine(ResetAnimation());
+    }
+
+    private IEnumerator ResetAnimation()
+    {
+        currentPlayerController.anim.CrossFadeInFixedTime(BP_Barista_PickUpHash, CrossFadeDuration);
+        currentPlayerController.movementToggle = false;
 
         yield return new WaitForSeconds(animationWaitTime);
-        player.movementToggle = true;
-        GetIngredient().SetIngredientParent(player);
+        GetIngredient().SetIngredientParent(currentPlayerController);
         animationSwitch?.Invoke();
+        currentPlayerController.movementToggle = true;
+        currentPlayerController = null;
+        SetIsMinigameEndedServerRpc(true);
     }
 
     private void TurnAllEmissiveOff()
