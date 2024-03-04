@@ -93,7 +93,7 @@ public class GameManager : NetworkBehaviour
         //{
         //    InputManager.Instance.PauseEvent += InputManager_PauseEvent;
         //}
-        InitializeInputManagerServerRpc();
+        InitializePauseEventServerRpc();
 
         OnRandomEventTriggered += HandleRandomEvent;
         
