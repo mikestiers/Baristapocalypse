@@ -19,6 +19,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private float maxRandomTime = 2f;
     [HideInInspector] public NetworkVariable<bool> isEventActive = new NetworkVariable<bool>(false);
     [HideInInspector] public NetworkVariable<bool> isGravityStorm = new NetworkVariable<bool>(false);
+    [HideInInspector] public NetworkVariable<bool> isWifiEvent = new NetworkVariable<bool>(false);
     [HideInInspector] public RandomEventBase currentRandomEvent;
     [HideInInspector] public bool isEvaluationOn = false;
     private float evaluationTimer = 9.0f;
@@ -160,7 +161,7 @@ public class GameManager : NetworkBehaviour
         if (!IsServer) { return; }
 
         // Temporary for Testing Random Events
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.B))
         {
             TriggerRandomEvent();
 
@@ -510,6 +511,7 @@ public class GameManager : NetworkBehaviour
         else if (randomEvent.GetComponent<WifiStation>()) 
         {
             randomEvent.gameObject.GetComponent<WifiStation>().WifiEventIsStartingServerRpc();
+            isWifiEvent.Value = true;
         }
         else if (randomEvent.GetComponent<RadioStation>()) 
         {
@@ -533,6 +535,7 @@ public class GameManager : NetworkBehaviour
         else if (randomEvent.GetComponent<WifiStation>()) 
         {
             randomEvent.gameObject.GetComponent<WifiStation>().WifiEventIsDoneServerRpc();
+            isWifiEvent.Value = false;
         }
         else if (randomEvent.GetComponent<RadioStation>()) 
         {

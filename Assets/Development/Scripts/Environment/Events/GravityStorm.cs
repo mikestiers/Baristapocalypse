@@ -107,7 +107,7 @@ public class GravityStorm : RandomEventBase
 
                 rb.AddTorque(new Vector3(torqueX, torqueY, torqueZ), ForceMode.VelocityChange);
 
-                Debug.Log($"Speed:  {rb.velocity.magnitude}");
+                //Debug.Log($"Speed:  {rb.velocity.magnitude}");
             }
         }
     }
