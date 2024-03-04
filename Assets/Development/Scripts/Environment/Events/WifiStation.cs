@@ -10,8 +10,8 @@ public class WifiStation : RandomEventBase
     [SerializeField] private GameObject eventLight;
     [HideInInspector] NetworkVariable<bool> iseventover = new NetworkVariable<bool>(false);
     public delegate void WifiEventHandler();
-    public static event WifiEventHandler OnWifiEventTriggeredOn;
-    public static event WifiEventHandler OnWifiEventTriggeredOff;
+    public static event WifiEventHandler OnWifiEventStarting;
+    public static event WifiEventHandler OnWifiEventStopping;
 
     [ServerRpc(RequireOwnership = false)]
     public void WifiEventIsDoneServerRpc()
@@ -34,7 +34,7 @@ public class WifiStation : RandomEventBase
         eventLight.SetActive(false);
         Debug.Log("Wifi event is done");
         ChangeColorBasedOnEvent();
-        OnWifiEventTriggeredOff?.Invoke();
+        OnWifiEventStopping?.Invoke();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -57,7 +57,7 @@ public class WifiStation : RandomEventBase
         eventLight.SetActive(true);
         Debug.Log("Wifi event is Starting");
         ChangeColorBasedOnEvent();
-        OnWifiEventTriggeredOn?.Invoke();
+        OnWifiEventStarting?.Invoke();
     }
 
     private void ChangeColorBasedOnEvent()

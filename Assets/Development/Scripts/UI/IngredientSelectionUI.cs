@@ -31,15 +31,15 @@ public class IngredientSelectionUI : BaseStation
     private void OnEnable()
     {
         InputManager.OnInputChanged += InputUpdated;
-        WifiStation.OnWifiEventTriggeredOn += RebuildButtonUI;
-        WifiStation.OnWifiEventTriggeredOff += RebuildButtonUI;
+        WifiStation.OnWifiEventStarting += RebuildButtonUI;
+        WifiStation.OnWifiEventStopping += RebuildButtonUI;
     }
 
     private void OnDisable()
     {
         InputManager.OnInputChanged -= InputUpdated;
-        WifiStation.OnWifiEventTriggeredOn -= RebuildButtonUI;
-        WifiStation.OnWifiEventTriggeredOff += RebuildButtonUI;
+        WifiStation.OnWifiEventStarting -= RebuildButtonUI;
+        WifiStation.OnWifiEventStopping += RebuildButtonUI;
     }
 
     private void InputUpdated(InputImagesSO inputImagesSO)
