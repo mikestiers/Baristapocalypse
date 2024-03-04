@@ -18,6 +18,7 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private Button createPrivateLobbyButton;
     [SerializeField] private Button createPublicLobbyButton;
     [SerializeField] private Button backButton;
+    [SerializeField] private Button backToMain;
 
     [SerializeField] private TMP_Dropdown dropdownPlayers;
     private int selectedMaxPlayers;
@@ -27,9 +28,11 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private TMP_InputField maxPlayersInputField;
     [SerializeField] private TMP_InputField lobbyCodeInputField;
 
-
     [SerializeField] private Transform lobbyContainer;
     [SerializeField] private Transform lobbyTemplate;
+
+    [Header("Level Loader")]
+    [SerializeField] private LevelLoader levelLoader;
 
     private void Awake()
     {
@@ -77,6 +80,10 @@ public class LobbyUI : MonoBehaviour
             });
         }
 
+        if (backToMain)
+        {
+            backToMain.onClick.AddListener(BackToMain);
+        }
         lobbyTemplate.gameObject.SetActive(false);
     }
 
@@ -123,6 +130,12 @@ public class LobbyUI : MonoBehaviour
         LobbyManager.Instance.OnLobbyListChanged -= LobbyManager_OnLobbyListChanged;
     }
 
-    
-
+    private void BackToMain()
+    {
+        if (!levelLoader.isActiveAndEnabled)
+        {
+            levelLoader.gameObject.SetActive(true);
+        }
+        levelLoader.PlaySceneTransition(((int)Loader.Scene.MainMenuScene));
+    }
 }
