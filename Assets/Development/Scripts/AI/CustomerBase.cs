@@ -396,6 +396,10 @@ public class CustomerBase : Base
    
         }
         
+        else if (GetCustomerState()== CustomerState.Leaving && player.GetIngredient().CompareTag("CoffeeCup") && !isGivingOrderToCustomer)
+        {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.failedInteration);
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
