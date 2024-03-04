@@ -274,6 +274,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             
             else if (floorHit.transform.TryGetComponent(out Spill spill))
             {
+                spill.ShowUi();
                 if (mouse.leftButton.wasPressedThisFrame)
                 {
                     spill.Interact(this);
@@ -304,6 +305,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
         else
         {
+            spill.HideUi();
             // No interactable object hit, clear selected objects.
             SetSelectedStation(null);
             //Hide(visualGameObject);
@@ -443,7 +445,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             {
                 if (spillPrefab != null)
                 {
-                    //Spill.CreateSpill(spillPrefab, this);
+                    Spill.CreateSpill(spillPrefab, this);
                 }
                 else
                 {
@@ -995,4 +997,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     }
 
+    private void OnDrawGizmos()
+    {
+      //  Gizmos.DrawWireSphere( stationsSphereCastRadius);
+    }
 }
