@@ -47,6 +47,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] private GameObject InteractzoneStart;
     [SerializeField] private BrewingStation brewingStation1;
     [SerializeField] private BrewingStation brewingStation2;
+    private Spill selectedSpill;
 
     private BaseStation selectedStation;
     private Base selectedCustomer;
@@ -274,15 +275,34 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             
             else if (floorHit.transform.TryGetComponent(out Spill spill))
             {
-                spill.ShowUi();
+
+                SetSelectedSpill(spill);
+                selectedSpill.ShowUi();
                 if (mouse.leftButton.wasPressedThisFrame)
                 {
-                    spill.Interact(this);
+                    DoMop(selectedSpill);
                 }
                 else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
                 {
-                    spill.Interact(this);
-                }
+                    DoMop(selectedSpill);
+                }     
+                // if (spill != selectedSpill)
+                // { 
+                //     SetSelectedSpill(spill);
+                //     selectedSpill.ShowUi();
+                //    if (mouse.leftButton.wasPressedThisFrame)
+                //     {
+                //         //SetSelectedSpill(spill);
+                //         selectedSpill.Interact(this);
+                //         //spill.Interact(this);
+                //     }
+                //     else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
+                //     {
+                //        // SetSelectedSpill(spill);
+                //         selectedSpill.Interact(this);
+                //         //spill.Interact(this);
+                //     }
+                // }
             }
         
             // Logic for Ingredient on floor Interaction 
@@ -305,7 +325,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
         else
         {
-            spill.HideUi();
+           selectedSpill.HideUi();
+           SetSelectedSpill(null);
             // No interactable object hit, clear selected objects.
             SetSelectedStation(null);
             //Hide(visualGameObject);
@@ -400,6 +421,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             selectedStation.Interact(this);
         }
 
+        if (selectedSpill)
+        {
+            selectedSpill .Interact(this);
+        }
+        
         if (selectedCustomer)
         {
             selectedCustomer.Interact(this);
@@ -520,6 +546,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
     }
 
+    public void SetSelectedSpill(Spill spill)
+    {
+        selectedSpill = spill;
+    }
     public void SetSelectedCustomer(Base customer)
     {
         selectedCustomer = customer;
@@ -691,7 +721,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     public void SetSpill(Spill spill)
     {
         this.spill = spill;
-
     }
 
     public void ClearSpill()
@@ -738,6 +767,15 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             }
         }
         ingredientIndicatorText.text = currentIndicator;
+    }
+
+    public void DoMop(Spill spill)
+    {
+        if(!HasNoIngredients)return;
+        
+        spill.Interact(this);
+        
+        
     }
     public void DoPickup(Pickup pickup)
     {
@@ -809,7 +847,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
        
     }
 
-
+    
+    
     public void ShowDebugConsole()
     {
         UIManager.Instance.debugConsole.SetActive(!UIManager.Instance.debugConsoleActive);
