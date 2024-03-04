@@ -50,13 +50,14 @@ public class Spill : NetworkBehaviour
                 }
                 if (cleaningProgress >= totalProgress)
                 {
+                    GameManager.Instance.RemoveSpill();
                     Destroy(gameObject);
                 } 
             }
         }
     }
 
-    public static void PlayerCreateSpill(MessSO Mess, ISpill messObjectParent)
+    public static void CreateSpill(MessSO Mess, ISpill messObjectParent)
     {
         BaristapocalypseMultiplayer.Instance.PlayerCreateSpill(Mess, messObjectParent);
     }
@@ -98,7 +99,10 @@ public class Spill : NetworkBehaviour
     }
    
     
-  
+    public void ChanceToSpill()
+    {
+        
+    }
     
 }
           
