@@ -67,16 +67,17 @@ public class OrderStats : NetworkBehaviour
     {
         InputManager.OnInputChanged += InputUpdated;
         brewingStation.OnBrewingEmpty += OrderCompleted;
-        brewingStation.OnBrewingDone += OrderCompleted;
+        brewingStation.OnBrewingDone += BrewingStation_OnBrewingDone;
 
         CustomerBase.OnCustomerLeave += CustomerBase_OnCustomerLeave;
     }
+
 
     private void OnDisable()
     {
         InputManager.OnInputChanged -= InputUpdated;
         brewingStation.OnBrewingEmpty -= OrderCompleted;
-        brewingStation.OnBrewingDone -= OrderCompleted;
+        brewingStation.OnBrewingDone -= BrewingStation_OnBrewingDone;
 
         CustomerBase.OnCustomerLeave -= CustomerBase_OnCustomerLeave;
     }
@@ -100,11 +101,19 @@ public class OrderStats : NetworkBehaviour
         }
     }
 
+    private void BrewingStation_OnBrewingDone(object sender, EventArgs e)
+    {
+        ResetAll();
+    }
     private void Update()
     {
         if (orderInProgress == true)
         {
-            UpdateTimerServerRpc();
+            if (IsServer)
+            {
+                UpdateTimerServerRpc();
+            }
+            
             SetTargetSegment(temperatureSegments, temperatureTargetValue, temperatureCumulativeValue);
             SetTargetSegment(sweetnessSegments, sweetnessTargetValue, sweetnessCumulativeValue);
             SetTargetSegment(spicinessSegments, spicinessTargetValue, spicinessCumulativeValue);

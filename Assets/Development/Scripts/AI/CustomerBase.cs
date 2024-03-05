@@ -645,7 +645,7 @@ public class CustomerBase : Base
         StartOrderTimerServerRpc();
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     private void StartOrderTimerServerRpc()
     {
         orderTimer = 0f;
@@ -692,7 +692,8 @@ public class CustomerBase : Base
 
     private IEnumerator ResetAnimation(PlayerController player)
     {
-        player.anim.CrossFadeInFixedTime(BP_Brista_PutDown_LowHash, CrossFadeDuration);
+        player.StartPlayerAnimationServerRpc(BP_Brista_PutDown_LowHash, CrossFadeDuration);
+        //player.anim.CrossFadeInFixedTime(BP_Brista_PutDown_LowHash, CrossFadeDuration);
         player.movementToggle = false;
 
         yield return new WaitForSeconds(animationWaitTime);
@@ -700,7 +701,8 @@ public class CustomerBase : Base
         JustGotHandedCoffee();
         player.RemoveIngredientInListByReference(player.GetIngredient());
         interactParticle.Play();
-        player.anim.CrossFadeInFixedTime(MovementHash, CrossFadeDuration);
+        player.StartPlayerAnimationServerRpc(MovementHash, CrossFadeDuration);
+        //player.anim.CrossFadeInFixedTime(MovementHash, CrossFadeDuration);
 
         animationSwitch?.Invoke();
         isGivingOrderToCustomer = false;

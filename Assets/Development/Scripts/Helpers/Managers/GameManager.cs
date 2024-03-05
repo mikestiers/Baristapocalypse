@@ -226,7 +226,8 @@ public class GameManager : NetworkBehaviour
             case GameState.GameOver:
                 Debug.LogWarning("Game Over......");
                 PlayerController playerController = FindObjectOfType<PlayerController>();
-                playerController.anim.CrossFadeInFixedTime(BP_Barista_SufferHash, CrossFadeDuration);
+                playerController.StartPlayerAnimationServerRpc(BP_Barista_SufferHash, CrossFadeDuration);
+                //playerController.anim.CrossFadeInFixedTime(BP_Barista_SufferHash, CrossFadeDuration);
                 break; 
         }
 
