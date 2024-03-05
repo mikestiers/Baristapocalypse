@@ -288,23 +288,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                 {
                     DoMop(selectedSpill);
                 }     
-                // if (spill != selectedSpill)
-                // { 
-                //     SetSelectedSpill(spill);
-                //     selectedSpill.ShowUi();
-                //    if (mouse.leftButton.wasPressedThisFrame)
-                //     {
-                //         //SetSelectedSpill(spill);
-                //         selectedSpill.Interact(this);
-                //         //spill.Interact(this);
-                //     }
-                //     else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
-                //     {
-                //        // SetSelectedSpill(spill);
-                //         selectedSpill.Interact(this);
-                //         //spill.Interact(this);
-                //     }
-                // }
+              
             }
         
             // Logic for Ingredient on floor Interaction 
@@ -450,11 +434,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
     }
 
-    //public void OnJump()
-    //{
-    //    // Jump logic if we want jumping
-    //}
-
     public void OnDash()
     {
         if (!IsLocalPlayer) return;
@@ -465,6 +444,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         //SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
         //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
 
+        // left for testing just incase we need to change something
         if (GetNumberOfIngredients() > 0)
         {
             if (CheckIfHoldingLiquid() > 0)//stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
@@ -477,7 +457,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                 {
                     Debug.Log("MessSO is null");
                 }
-                //ThrowIngredient();
             }
         }
         else return;
@@ -840,11 +819,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
 
         StartCoroutine(ThrowPickUpAnimation());
-
-        //gizmos from InteractionStart
-        //Gizmos.color = Color.red;
-        //Gizmos.DrawWireSphere(InteractzoneStart.transform.position + InteractzoneStart.transform.forward * stationInteractDistance, stationsSphereCastRadius);
-       
     }
 
     
@@ -1034,10 +1008,5 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
         movementToggle = true;
 
-    }
-
-    private void OnDrawGizmos()
-    {
-      //  Gizmos.DrawWireSphere( stationsSphereCastRadius);
     }
 }
