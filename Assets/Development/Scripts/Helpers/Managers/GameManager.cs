@@ -76,7 +76,7 @@ public class GameManager : NetworkBehaviour
     private const float CrossFadeDuration = 0.1f;
 
     [Header("Spills")]
-    public bool canSpawnSpill;
+    public bool canSpawnSpill = false;
     private int spills;
     private int spillLimit;
     private void Awake()
@@ -101,7 +101,9 @@ public class GameManager : NetworkBehaviour
         for (int i = 0; i < randomEventTimes.Count; i++)
         {
             Debug.LogWarning("random Time"+ i + " " + randomEventTimes[i]);
-        }       
+        }
+
+        SpillLimit(currentDifficulty.difficultyString);
     }
 
     public override void OnDestroy()
@@ -215,7 +217,7 @@ public class GameManager : NetworkBehaviour
                 }
 
                 */
-
+                CheckSpillAmount();
                 break;
 
             case GameState.GameOver:
@@ -460,7 +462,6 @@ public class GameManager : NetworkBehaviour
 
     private void CheckSpillAmount()
     {
-        
         if (spills >= spillLimit)
         {
             canSpawnSpill = false;

@@ -167,6 +167,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         // Set color of the player based on color selection at the lobby
         PlayerData playerData = BaristapocalypseMultiplayer.Instance.GetPlayerDataFromClientId(OwnerClientId);
         playerVisual.SetPlayerColor(BaristapocalypseMultiplayer.Instance.GetPlayerColor(playerData.colorId));
+        SetSelectedSpill(null);
     }
 
     private void OnEnable()
@@ -276,6 +277,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             else if (floorHit.transform.TryGetComponent(out Spill spill))
             {
 
+                
                 SetSelectedSpill(spill);
                 selectedSpill.ShowUi();
                 if (mouse.leftButton.wasPressedThisFrame)
@@ -325,8 +327,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
         else
         {
-           selectedSpill.HideUi();
-           SetSelectedSpill(null);
+            if (selectedSpill != null)
+            {
+                selectedSpill.HideUi();
+            }
+            SetSelectedSpill(null);
             // No interactable object hit, clear selected objects.
             SetSelectedStation(null);
             //Hide(visualGameObject);
