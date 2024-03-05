@@ -965,4 +965,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         movementToggle = true;
 
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void StartPlayerAnimationServerRpc(int animation, float duration)
+    {
+        this.anim.CrossFadeInFixedTime(animation, duration);
+    }
+
 }
