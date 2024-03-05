@@ -14292,8 +14292,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   target: {fileID: 0}
+  trashStation: {fileID: 2023857886}
   playerTransform: {fileID: 0}
   distance: 30
+  trashCounter: 0
   _currentState: 0
   path: []
   pathIndex: 0
@@ -15562,6 +15564,7 @@ Transform:
   - {fileID: 1216265930}
   - {fileID: 1881282768}
   - {fileID: 1439099078}
+  - {fileID: 2023857887}
   m_Father: {fileID: 0}
   m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -20922,6 +20925,37 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
+--- !u!1 &2023857886
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2023857887}
+  m_Layer: 0
+  m_Name: TrashPoint
+  m_TagString: Trash
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2023857887
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023857886}
+  m_LocalRotation: {x: -0, y: 0.22132981, z: -0, w: 0.97519904}
+  m_LocalPosition: {x: -11.1, y: -6.59, z: -4.8}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1366977910}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2040179919
 GameObject:
   m_ObjectHideFlags: 0

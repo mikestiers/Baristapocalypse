@@ -12,14 +12,18 @@ public class CleanupBot : MonoBehaviour
     NavMeshAgent agent;
 
     //Keep reference to player or target if aggro'd.
-    public GameObject target;
-    public Transform playerTransform;
-    public float distance = 20f;
+    [SerializeField] private GameObject target;
+    [SerializeField] private GameObject trashStation;
+    [SerializeField] private Transform playerTransform;
+    [SerializeField] private float distance = 30f;
+    [SerializeField] private float trashCounter = 0;
+    
 
     public enum BotState
     {
         Roam,
-        Cleanup
+        Cleanup,
+        Empty
     }
 
     [SerializeField] BotState _currentState;
@@ -65,6 +69,10 @@ public class CleanupBot : MonoBehaviour
         {
             _currentState = BotState.Cleanup;
         }
+        else if (trashCounter > 3)
+        {
+            _currentState = BotState.Empty;
+        }
         else
         {
             _currentState = BotState.Roam;
@@ -95,6 +103,12 @@ public class CleanupBot : MonoBehaviour
             }
 
         }
+        else if (_currentState == BotState.Empty)
+        {
+            target = trashStation;
+            trashCounter = 0;
+        }
+        
 
         if (target)
             agent.SetDestination(target.transform.position);
@@ -115,8 +129,8 @@ public class CleanupBot : MonoBehaviour
     public void OnTriggerEnter(Collider other)
     {
         if (other.gameObject == GameObject.FindGameObjectWithTag("Mess").gameObject)
-        {
+
+            trashCounter++;
             Destroy(other.gameObject);
         }
     }
-}
