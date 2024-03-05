@@ -253,7 +253,8 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
                 Debug.LogWarning("Beginning Brewing minigame");
                 MinigameStartedServerRpc();
 
-                player.anim.CrossFadeInFixedTime(Barista_BrewingHash, CrossFadeDuration);
+                player.StartPlayerAnimationServerRpc(Barista_BrewingHash, CrossFadeDuration);
+                //player.anim.CrossFadeInFixedTime(Barista_BrewingHash, CrossFadeDuration);
                 player.movementToggle = false;
                 InteractLogicPlaceObjectOnBrewing();
             }
@@ -399,7 +400,8 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
 
     private IEnumerator ResetAnimation()
     {
-        currentPlayerController.anim.CrossFadeInFixedTime(BP_Barista_PickUpHash, CrossFadeDuration);
+        currentPlayerController.StartPlayerAnimationServerRpc(BP_Barista_PickUpHash, CrossFadeDuration);
+        //currentPlayerController.anim.CrossFadeInFixedTime(BP_Barista_PickUpHash, CrossFadeDuration);
         currentPlayerController.movementToggle = false;
 
         yield return new WaitForSeconds(animationWaitTime);

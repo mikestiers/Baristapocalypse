@@ -888,18 +888,21 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     {
         if (HasIngredient())
         {
-            anim.CrossFadeInFixedTime(MovementWithCupHash, CrossFadeDuration);
+            StartPlayerAnimationServerRpc(MovementWithCupHash, CrossFadeDuration);
+            //anim.CrossFadeInFixedTime(MovementWithCupHash, CrossFadeDuration);
         }
         else
         {
-            anim.CrossFadeInFixedTime(MovementHash, CrossFadeDuration);
+            StartPlayerAnimationServerRpc(MovementWithCupHash, CrossFadeDuration);
+            //anim.CrossFadeInFixedTime(MovementHash, CrossFadeDuration);
         }
     }
 
     // Play trash pick up and set trash parent while new player statemachine is dead
     private IEnumerator TrashPickUpAnimation(Pickup pickup)
     {
-        anim.CrossFadeInFixedTime(BP_Barista_Floor_PickupHash, CrossFadeDuration);
+        StartPlayerAnimationServerRpc(BP_Barista_Floor_PickupHash, CrossFadeDuration);
+        //anim.CrossFadeInFixedTime(BP_Barista_Floor_PickupHash, CrossFadeDuration);
         movementToggle = false;
 
         yield return new WaitForSeconds(1f); // hard coded while new player statemachine is dead
@@ -912,7 +915,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     // Play throw pick up
     private IEnumerator ThrowPickUpAnimation()
     {
-        anim.CrossFadeInFixedTime(BP_Barista_Throw_CupHash, CrossFadeDuration);
+        StartPlayerAnimationServerRpc(BP_Barista_Throw_CupHash, CrossFadeDuration);
+        //anim.CrossFadeInFixedTime(BP_Barista_Throw_CupHash, CrossFadeDuration);
         movementToggle = false;
 
         yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is dead
@@ -935,7 +939,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     // Play throw ingredient 
     private IEnumerator ThrowIngredientAnimation()
     {
-        anim.CrossFadeInFixedTime(BP_Barista_Throw_CupHash, CrossFadeDuration);
+        StartPlayerAnimationServerRpc(BP_Barista_Throw_CupHash, CrossFadeDuration);
+        //anim.CrossFadeInFixedTime(BP_Barista_Throw_CupHash, CrossFadeDuration);
         movementToggle = false;
 
         yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is dead
@@ -967,9 +972,15 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void StartPlayerAnimationServerRpc(int animation, float duration)
+    public void StartPlayerAnimationServerRpc(int animation, float duration)
     {
-        this.anim.CrossFadeInFixedTime(animation, duration);
+        StartPlayerAnimationClientRpc(animation, duration);
+    }
+
+    [ClientRpc]
+    private void StartPlayerAnimationClientRpc(int animation, float duration) 
+    {
+        anim.CrossFadeInFixedTime(animation, duration);
     }
 
 }
