@@ -106,7 +106,7 @@ public class Spill : NetworkBehaviour
         }
     }
 
-    public void ShowUi(bool hasMop)
+    public void ShowUi()
     {
         imageHolder.SetActive(true);
         if (Gamepad.current != null)
@@ -120,7 +120,7 @@ public class Spill : NetworkBehaviour
             controllerPrompt.SetActive(false);
         }
         
-        if(!hasMop) mopErrorHolder.SetActive(true);
+        //if(!hasMop) mopErrorHolder.SetActive(true);
     }
 
     public void HideUi()
@@ -128,7 +128,7 @@ public class Spill : NetworkBehaviour
         imageHolder.SetActive(false);
         keyboardPrompt.SetActive(false);
         controllerPrompt.SetActive(false);
-        mopErrorHolder.SetActive(false);
+        //mopErrorHolder.SetActive(false);
         
     }
     
