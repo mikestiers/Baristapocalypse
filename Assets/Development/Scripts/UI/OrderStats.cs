@@ -111,7 +111,11 @@ public class OrderStats : NetworkBehaviour
     {
         if (orderInProgress == true)
         {
-            UpdateTimerServerRpc();
+            if (IsServer)
+            {
+                UpdateTimerServerRpc();
+            }
+            
             SetTargetSegment(temperatureSegments, temperatureTargetValue, temperatureCumulativeValue);
             SetTargetSegment(sweetnessSegments, sweetnessTargetValue, sweetnessCumulativeValue);
             SetTargetSegment(spicinessSegments, spicinessTargetValue, spicinessCumulativeValue);
