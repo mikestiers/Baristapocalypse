@@ -426,11 +426,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             selectedStation.Interact(this);
         }
 
-        if (selectedSpill)
-        {
-            selectedSpill .Interact(this);
-        }
-        
         if (selectedCustomer)
         {
             selectedCustomer.Interact(this);
