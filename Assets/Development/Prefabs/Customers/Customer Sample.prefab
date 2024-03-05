@@ -1136,6 +1136,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stationTopPoint: {fileID: 4248660750697856040}
+  spill: {fileID: 0}
+  spillSpawnPoint: {fileID: 4961381447448103050}
   agent: {fileID: 5640675751676341539}
   frontofLine: 0
   inLine: 0
@@ -1239,11 +1241,16 @@ MonoBehaviour:
   interactParticle: {fileID: 2366831991706752079}
   detachedHead: {fileID: 8484585654411725913}
   scoreTimerManager: {fileID: 0}
-  spillPrefab: {fileID: 11400000, guid: 6b7275261fe99c245a3688777a6d3ec6, type: 2}
+  spillPrefab: {fileID: 11400000, guid: 436597cbe317b964f940835852e0f1a3, type: 2}
   spillSpawnPoint: {fileID: 4961381447448103050}
   pickupSO: {fileID: 11400000, guid: a087054eb86103f429e8adb373485e6f, type: 2}
   customerReviewPrefab: {fileID: 2146867326294763205, guid: 823308a6e2d6c834182e765c8fcf1dd2, type: 3}
   bodiesContainerObject: {fileID: 2584330252243922892}
+  spill: {fileID: 0}
+  hasSpilledCup: 0
+  maxSpillTime: 5
+  minSpillTime: 30
+  chanceToSpill: 0.3
 --- !u!136 &5640675751676341543
 CapsuleCollider:
   m_ObjectHideFlags: 0

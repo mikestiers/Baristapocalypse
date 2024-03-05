@@ -27,7 +27,9 @@ public class DifficultySO : ScriptableObject
     public float chanceToMess;
     public float loiterMessEverySec;
     public float chanceToLoiter;
-
+    public float chanceToSpill;
+    public int maxSpillAmount;
+    
     public float minWaitTime;
     public float maxWaitTime;
     public float minInLineWaitTime;

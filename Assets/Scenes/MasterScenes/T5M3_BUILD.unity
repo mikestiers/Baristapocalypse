@@ -13391,6 +13391,7 @@ MonoBehaviour:
   customerManager: {fileID: 413644686672339531, guid: 1925542a5a04bd1479636add0536451d, type: 3}
   currentDifficulty: {fileID: 11400000, guid: c046f1ac6f225ac4ea155178afe460e0, type: 2}
   iSEndGame: 0
+  canSpawnSpill: 0
 --- !u!4 &1121951786
 Transform:
   m_ObjectHideFlags: 0
@@ -17241,9 +17242,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: LiquidStation
       objectReference: {fileID: 0}
+    - target: {fileID: 5314870874019623213, guid: 451370859b2a27c4fba09593a691ed65, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5314870874340927408, guid: 451370859b2a27c4fba09593a691ed65, type: 3}
       propertyPath: orderStatsRoot
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5314870874340927422, guid: 451370859b2a27c4fba09593a691ed65, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5314870874340927423, guid: 451370859b2a27c4fba09593a691ed65, type: 3}
       propertyPath: m_LocalScale.x
