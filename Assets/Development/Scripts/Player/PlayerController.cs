@@ -267,9 +267,16 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                 }
             }
             else if (floorHit.transform.TryGetComponent(out Spill spill))
-            {  
+            {
+                bool _hasMop = false;
+                if (Pickup)
+                {
+                    if (Pickup.attributes.Contains(Pickup.PickupAttribute.CleansUpSpills)) _hasMop = true;
+                }
+                else _hasMop = false;
+
                 SetSelectedSpill(spill);
-                selectedSpill.ShowUi();
+                selectedSpill.ShowUi(_hasMop);
                 if (mouse.leftButton.wasPressedThisFrame)
                 {
                     DoMop(selectedSpill);

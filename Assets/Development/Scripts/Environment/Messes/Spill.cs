@@ -15,10 +15,12 @@ public class Spill : NetworkBehaviour
     private ISpill messObjectParent;
     private SpillSpawnPoint _spillSpawnPoint;
     private IngredientFollowTransform _followTransform;
-   [SerializeField] private GameObject controllerPrompt;
-   [SerializeField] private GameObject keyboardPrompt;
-   [SerializeField] private GameObject imageHolder;
-   [SerializeField] private Image imageFill;
+    [SerializeField] private GameObject controllerPrompt;
+    [SerializeField] private GameObject keyboardPrompt;
+    [SerializeField] private GameObject imageHolder;
+    [SerializeField] private Image imageFill;
+    [SerializeField] private GameObject mopErrorHolder;
+
     private void Awake()
     {
         _spillSpawnPoint = GetComponent<SpillSpawnPoint>();
@@ -104,7 +106,7 @@ public class Spill : NetworkBehaviour
         }
     }
 
-    public void ShowUi()
+    public void ShowUi(bool hasMop)
     {
         imageHolder.SetActive(true);
         if (Gamepad.current != null)
@@ -118,6 +120,7 @@ public class Spill : NetworkBehaviour
             controllerPrompt.SetActive(false);
         }
         
+        if(!hasMop) mopErrorHolder.SetActive(true);
     }
 
     public void HideUi()
@@ -125,6 +128,7 @@ public class Spill : NetworkBehaviour
         imageHolder.SetActive(false);
         keyboardPrompt.SetActive(false);
         controllerPrompt.SetActive(false);
+        mopErrorHolder.SetActive(false);
         
     }
     
