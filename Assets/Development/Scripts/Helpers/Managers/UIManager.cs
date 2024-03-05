@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 using System.Collections;
 using System;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 
 public class UIManager : Singleton<UIManager>
 {
