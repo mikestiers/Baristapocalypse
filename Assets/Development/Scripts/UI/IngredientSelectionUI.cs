@@ -22,6 +22,7 @@ public class IngredientSelectionUI : BaseStation
     public IngredientStationType ingredientStationType;
     public IngredientListSO ingredientList;
     private int ingredientListIndex;
+    public Sprite wifiEvent;
     private IngredientSO currentIngredient;
     private bool canSelectIngredient = false;
     public bool isInUse = false;
@@ -30,11 +31,15 @@ public class IngredientSelectionUI : BaseStation
     private void OnEnable()
     {
         InputManager.OnInputChanged += InputUpdated;
+        WifiStation.OnWifiEventStarting += RebuildButtonUI;
+        WifiStation.OnWifiEventStopping += RebuildButtonUI;
     }
 
     private void OnDisable()
     {
         InputManager.OnInputChanged -= InputUpdated;
+        WifiStation.OnWifiEventStarting -= RebuildButtonUI;
+        WifiStation.OnWifiEventStopping += RebuildButtonUI;
     }
 
     private void InputUpdated(InputImagesSO inputImagesSO)
@@ -152,8 +157,9 @@ public class IngredientSelectionUI : BaseStation
             }
             else
             {
-                ingredientButtons[i].GetComponent<Image>().sprite = ingredientList.ingredientSOList[i].icon;
+                ingredientButtons[i].GetComponent<Image>().sprite = !GameManager.Instance.isWifiEvent.Value ? ingredientList.ingredientSOList[i].icon : wifiEvent;
                 ingredientButtons[i].name = ingredientList.ingredientSOList[i].name;
+                ingredientButtons[i].interactable = !GameManager.Instance.isWifiEvent.Value;
             }
         }
     }
