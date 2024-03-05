@@ -34,6 +34,8 @@ public class CustomerManager : Singleton<CustomerManager>
             "Alex G",
             "Alex J",
             "Andrew",
+            "Ben",
+            "Brett",
             "Carter",
             "Darian",
             "Deandre",

@@ -250,7 +250,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
                 Debug.LogWarning("Beginning Brewing minigame");
                 MinigameStartedServerRpc();
 
-                player.anim.CrossFadeInFixedTime(Barista_BrewingHash, CrossFadeDuration);
+                BrewingAnimationServerRpc();
                 player.movementToggle = false;
                 InteractLogicPlaceObjectOnBrewing();
             }
@@ -377,6 +377,25 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
         ingredientSOList.Clear();
     }
 
+    // Brewing animation
+    [ServerRpc(RequireOwnership = false)]
+    private void BrewingAnimationServerRpc()
+    {
+        BrewingAnimationClientRpc();
+    }
+
+    [ClientRpc]
+    private void BrewingAnimationClientRpc()
+    {
+        BrewingAnimation();
+    }
+
+    private void BrewingAnimation()
+    {
+        currentPlayerController.anim.CrossFadeInFixedTime(Barista_BrewingHash, CrossFadeDuration);
+    }
+
+    // Cup Pickup Animation
     [ServerRpc(RequireOwnership =false)]
     private void PickCupAnimationServerRpc()
     {
