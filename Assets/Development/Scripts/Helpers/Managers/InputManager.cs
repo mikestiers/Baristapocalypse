@@ -58,14 +58,14 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
         if (Gamepad.current != null && Gamepad.current.displayName.Contains("Xbox"))
         {
             Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.None;
+            Cursor.lockState = CursorLockMode.Locked;
             inputImagesSO = inputImagesSOXbox;
             inputDevice = InputDevice.Xbox;
         }
         else if (Gamepad.current != null && Gamepad.current.displayName.Contains("DualSense"))
         {
             Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.None; 
+            Cursor.lockState = CursorLockMode.Locked; 
             inputImagesSO = inputImagesSODualSense;
             inputDevice = InputDevice.DualSense;
         }
@@ -124,7 +124,7 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
         if (Gamepad.current != null && Gamepad.current.displayName.Contains("DualSense"))
         {
             Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.None;
+            Cursor.lockState = CursorLockMode.Locked;
             inputImagesSO = inputImagesSODualSense;
             inputDevice = InputDevice.DualSense;
             OnInputChanged?.Invoke(inputImagesSO);
@@ -132,7 +132,7 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
         else if (Gamepad.current != null && Gamepad.current.displayName.Contains("Xbox"))
         {
             Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.None;
+            Cursor.lockState = CursorLockMode.Locked;
             inputImagesSO = inputImagesSOXbox;
             inputDevice = InputDevice.Xbox;
             OnInputChanged?.Invoke(inputImagesSO);
@@ -140,7 +140,7 @@ public class InputManager : MonoBehaviour, ControllerInputs.IPlayerActions
         else // some other gamepad, just show xbox
         {
             Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.None;
+            Cursor.lockState = CursorLockMode.Locked;
             inputImagesSO = inputImagesSOXbox;
             inputDevice = InputDevice.Xbox;
             OnInputChanged?.Invoke(inputImagesSO);

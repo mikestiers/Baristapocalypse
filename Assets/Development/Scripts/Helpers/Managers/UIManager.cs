@@ -8,7 +8,6 @@ using Unity.VisualScripting;
 using System.Collections;
 using System;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem.UI;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -32,7 +31,7 @@ public class UIManager : Singleton<UIManager>
     public GameObject gameOverMenu;
     public GameObject pauseMenu;
     public GameObject tutorialMenu;
-    public GameObject PauseMenuMultiplayer;
+    public GameObject ordersMenu;
     public GameObject playerReadyMenu;
 
     [Header("Text")]
@@ -145,10 +144,9 @@ public class UIManager : Singleton<UIManager>
     private void ReturnToGame()
     {
         timer.enabled = true;
+        ordersMenu.SetActive(true);
         tutorialMenu.SetActive(false);
         pauseMenu.SetActive(false);
-        PauseMenuMultiplayer.SetActive(false);
-        GameManager.Instance.isLocalGamePaused = false;
         Time.timeScale = 1f;
     }
 
@@ -189,7 +187,7 @@ public class UIManager : Singleton<UIManager>
         SceneManager.LoadScene(mainMenuScene); 
         timer.enabled = false;
         //score.enabled = false;
-        //ordersMenu.SetActive(false);
+        ordersMenu.SetActive(false);
         pauseMenu.SetActive(false);
         gameOverMenu.SetActive(false);
         Time.timeScale = 1f;

@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 
 public class GameOverUI : MonoBehaviour
@@ -32,8 +30,6 @@ public class GameOverUI : MonoBehaviour
     {
         if (GameManager.Instance.IsGameOver())
         {
-            ((InputSystemUIInputModule)EventSystem.current.currentInputModule).point.action.Enable();
-            ((InputSystemUIInputModule)EventSystem.current.currentInputModule).leftClick.action.Enable();
             Show();
             ComputeEndGameStats();
             // Add logic to show in the Game Over UI screen

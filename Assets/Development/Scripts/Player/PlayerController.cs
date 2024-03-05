@@ -47,7 +47,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] private GameObject InteractzoneStart;
     [SerializeField] private BrewingStation brewingStation1;
     [SerializeField] private BrewingStation brewingStation2;
-    private Spill selectedSpill;
 
     private BaseStation selectedStation;
     private Base selectedCustomer;
@@ -167,11 +166,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         // Set color of the player based on color selection at the lobby
         PlayerData playerData = BaristapocalypseMultiplayer.Instance.GetPlayerDataFromClientId(OwnerClientId);
         playerVisual.SetPlayerColor(BaristapocalypseMultiplayer.Instance.GetPlayerColor(playerData.colorId));
-        SetSelectedSpill(null);
     }
 
     private void OnEnable()
     {
+        //inputManager.JumpEvent += OnJump;
         inputManager.DashEvent += OnDash;
         inputManager.ThrowEvent += OnThrow;
         inputManager.InteractEvent += Interact;
@@ -179,15 +178,20 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.DebugConsoleEvent += ShowDebugConsole;
         inputManager.BrewingStationSelectEvent += OnChangeBrewingStationSelect;
         inputManager.BrewingStationEmptyEvent += OnBrewingStationEmpty;
+        //brewingStation1.animationSwitch += OnAnimationSwitch;
+        //brewingStation2.animationSwitch += OnAnimationSwitch;
+
 
         if (AISupervisor.Instance)
         {
             AISupervisor.Instance.OnTutorialMessageReceived += TutorialMessage;
         }
+
     }
 
     private void OnDisable()
     {
+        //inputManager.JumpEvent -= OnJump;
         inputManager.DashEvent -= OnDash;
         inputManager.ThrowEvent -= OnThrow;
         inputManager.InteractEvent -= Interact;
@@ -230,7 +234,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             return;
         }
 
-        // Spherecast Interactions
+       
         if (Physics.SphereCast(InteractzoneStart.transform.position + RayCastOffset, stationsSphereCastRadius, InteractzoneStart.transform.forward, out RaycastHit hit, 
                 stationInteractDistance, interactableLayerMask))
         {
@@ -243,6 +247,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                     SetSelectedStation(baseStation);
                     Show(visualGameObject);
                 }
+                //Debug.Log("Station hit");
             }
         }
         else
@@ -257,27 +262,26 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             // Logic for PickUp Interaction
             if (floorHit.transform.TryGetComponent(out Pickup pickup))
             {
-                if (Keyboard.current.eKey.wasPressedThisFrame)
+                if (mouse.rightButton.wasPressedThisFrame)
                 {
                     DoPickup(pickup);
                 }
-                else if (Gamepad.current != null && Gamepad.current.buttonNorth.wasPressedThisFrame)
+                else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
                 {
                     DoPickup(pickup);
                 }
             }
+            
             else if (floorHit.transform.TryGetComponent(out Spill spill))
-            {  
-                SetSelectedSpill(spill);
-                selectedSpill.ShowUi();
+            {
                 if (mouse.leftButton.wasPressedThisFrame)
                 {
-                    DoMop(selectedSpill);
+                    spill.Interact(this);
                 }
                 else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
                 {
-                    DoMop(selectedSpill);
-                }     
+                    spill.Interact(this);
+                }
             }
         
             // Logic for Ingredient on floor Interaction 
@@ -300,17 +304,13 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
         else
         {
-            if (selectedSpill != null)
-            {
-                selectedSpill.HideUi();
-            }
-            SetSelectedSpill(null);
             // No interactable object hit, clear selected objects.
             SetSelectedStation(null);
             //Hide(visualGameObject);
         }
 
         // Customer Interaction Logic
+        //if (Physics.Raycast(transform.position + RayCastOffset, transform.forward, out RaycastHit hitCustomer, customerInteractDistance, interactableLayerMask))
         if (Physics.SphereCast(InteractzoneStart.transform.position + RayCastOffset, customersSphereCastRadius, InteractzoneStart.transform.forward, out RaycastHit hitCustomer, customerInteractDistance, interactableLayerMask))
         {
             if (hitCustomer.transform.TryGetComponent(out Base customerBase))
@@ -422,6 +422,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
     }
 
+    //public void OnJump()
+    //{
+    //    // Jump logic if we want jumping
+    //}
+
     public void OnDash()
     {
         if (!IsLocalPlayer) return;
@@ -432,19 +437,19 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         //SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
         //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
 
-        // left for testing just incase we need to change something
         if (GetNumberOfIngredients() > 0)
         {
             if (CheckIfHoldingLiquid() > 0)//stateMachine.ingredient.GetIngredientSO().objectTag == "Milk")
             {
                 if (spillPrefab != null)
                 {
-                    Spill.CreateSpill(spillPrefab, this);
+                    Spill.PlayerCreateSpill(spillPrefab, this);
                 }
                 else
                 {
                     Debug.Log("MessSO is null");
                 }
+                //ThrowIngredient();
             }
         }
         else return;
@@ -483,6 +488,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     }
 
+
     public void OnThrow()
     {
         if (!IsLocalPlayer) return;
@@ -512,10 +518,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
     }
 
-    public void SetSelectedSpill(Spill spill)
-    {
-        selectedSpill = spill;
-    }
     public void SetSelectedCustomer(Base customer)
     {
         selectedCustomer = customer;
@@ -687,6 +689,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     public void SetSpill(Spill spill)
     {
         this.spill = spill;
+
     }
 
     public void ClearSpill()
@@ -734,15 +737,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
         ingredientIndicatorText.text = currentIndicator;
     }
-
-    public void DoMop(Spill spill)
-    {
-        if(!HasNoIngredients)return;
-        
-        spill.Interact(this);
-        
-        
-    }
     public void DoPickup(Pickup pickup)
     {
         if (HasPickup() || !HasNoIngredients)
@@ -774,6 +768,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
     }
 
+
+
     public void ThrowPickup()
     {
         ThrowPickupServerRpc();
@@ -800,7 +796,13 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
 
         StartCoroutine(ThrowPickUpAnimation());
+
+        //gizmos from InteractionStart
+        //Gizmos.color = Color.red;
+        //Gizmos.DrawWireSphere(InteractzoneStart.transform.position + InteractzoneStart.transform.forward * stationInteractDistance, stationsSphereCastRadius);
+       
     }
+
 
     public void ShowDebugConsole()
     {
@@ -854,6 +856,28 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             }
         }
     }
+
+    //private void HandleMouseVisibility()
+    //{
+    //    // Check if a controller is being used
+    //    bool usingController = Gamepad.current != null;
+    //    if (!usingController) { return; }
+
+    //    float mouseMoveThreshold = 0.1f;
+    //    Vector2 mouseDelta = Mouse.current.delta.ReadValue();
+
+    //    // Check if any button on the controller is pressed or the stick is moved
+    //    if (Gamepad.current.allControls.Any(control => control.IsPressed() && control != Gamepad.current.leftStick))
+    //    {
+    //        Cursor.visible = false;
+    //        Cursor.lockState = CursorLockMode.Locked;
+    //    }
+    //    else if (mouseDelta.magnitude > mouseMoveThreshold)
+    //    {
+    //        Cursor.visible = true;
+    //        Cursor.lockState = CursorLockMode.None;
+    //    }
+    //}
 
     private void TutorialMessage()
     {
@@ -922,16 +946,12 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is dead
 
         if (pickup != null) 
-        {
-            
+        { 
             pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
             pickup.EnablePickupColliders(pickup);
 
             pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
-            if (pickup.gameObject.GetComponent<MopBehavior>() != null) pickup.gameObject.GetComponent<MopBehavior>().ReturnMop();
             pickup.ClearPickupOnParent();
-
-           
         }
         movementToggle = true;
     }

@@ -4,8 +4,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Unity.Netcode;
 using System.Collections;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem.UI;
 
 [DefaultExecutionOrder(-1)]
 public class GameManager : NetworkBehaviour
@@ -21,7 +19,6 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private float maxRandomTime = 2f;
     [HideInInspector] public NetworkVariable<bool> isEventActive = new NetworkVariable<bool>(false);
     [HideInInspector] public NetworkVariable<bool> isGravityStorm = new NetworkVariable<bool>(false);
-    [HideInInspector] public NetworkVariable<bool> isWifiEvent = new NetworkVariable<bool>(false);
     [HideInInspector] public RandomEventBase currentRandomEvent;
     [HideInInspector] public bool isEvaluationOn = false;
     private float evaluationTimer = 9.0f;
@@ -46,7 +43,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] public Transform[] playerSpawnPoints;
 
     // Pause Vars
-    [HideInInspector] public bool isLocalGamePaused = false;
+    private bool isLocalGamePaused = false;
     private NetworkVariable<bool> isGamePaused = new NetworkVariable<bool>(false);
 
     private Dictionary<ulong, bool> playerReadyDictionary;
@@ -78,10 +75,6 @@ public class GameManager : NetworkBehaviour
     private readonly int BP_Barista_SufferHash = Animator.StringToHash("BP_Barista_Suffer");
     private const float CrossFadeDuration = 0.1f;
 
-    [Header("Spills")]
-    public bool canSpawnSpill = false;
-    private int spills;
-    private int spillLimit;
     private void Awake()
     {
         Instance = this;
@@ -95,8 +88,14 @@ public class GameManager : NetworkBehaviour
     private void Start()
     {
         Application.targetFrameRate = maxFrameRate;
-        InitializePauseEventServerRpc();
+
+        if (InputManager.Instance)
+        {
+            InputManager.Instance.PauseEvent += InputManager_PauseEvent;
+        }
+
         OnRandomEventTriggered += HandleRandomEvent;
+        
         SetRandomEventTimes();
 
         // debug for random event times (to be deleted)
@@ -104,9 +103,7 @@ public class GameManager : NetworkBehaviour
         for (int i = 0; i < randomEventTimes.Count; i++)
         {
             Debug.LogWarning("random Time"+ i + " " + randomEventTimes[i]);
-        }
-
-        SpillLimit(currentDifficulty.difficultyString);
+        }       
     }
 
     public override void OnDestroy()
@@ -163,7 +160,7 @@ public class GameManager : NetworkBehaviour
         if (!IsServer) { return; }
 
         // Temporary for Testing Random Events
-        if (Input.GetKeyDown(KeyCode.B))
+        if (Input.GetKeyDown(KeyCode.P))
         {
             TriggerRandomEvent();
 
@@ -220,7 +217,7 @@ public class GameManager : NetworkBehaviour
                 }
 
                 */
-                CheckSpillAmount();
+
                 break;
 
             case GameState.GameOver:
@@ -293,6 +290,7 @@ public class GameManager : NetworkBehaviour
         //playButton.SetActive(true);
     }
 
+
     private void isGamePaused_OnValueChanged(bool previousValue, bool newValue)
     {
         if (isGamePaused.Value) 
@@ -316,10 +314,8 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public void TogglePauseGame()
+    private void TogglePauseGame()
     {
-        ((InputSystemUIInputModule)EventSystem.current.currentInputModule).point.action.Enable();
-        ((InputSystemUIInputModule)EventSystem.current.currentInputModule).leftClick.action.Enable();
         isLocalGamePaused = !isLocalGamePaused;
         if (isLocalGamePaused) 
         {
@@ -368,7 +364,9 @@ public class GameManager : NetworkBehaviour
 
     }
    
+
     // Quick Random Events
+
     private void SetRandomEventTimes()
     {
         if (currentDifficulty != null)
@@ -442,50 +440,9 @@ public class GameManager : NetworkBehaviour
         }
         return startTime;
     }
-    public void SpillLimit(string difficulty)
-    {
-        switch (difficulty)
-        {
-            case "Easy":
-                GetSpillLimit();
-                break;
-            case "Medium":
-                GetSpillLimit();
-                break;
-            case "Hard":
-                GetSpillLimit();
-                break;
-        }
-    }
 
-    private void GetSpillLimit()
-    {
-        spillLimit = currentDifficulty.maxSpillAmount;
-         
-        Debug.Log(message: spillLimit);
-    }
 
-    private void CheckSpillAmount()
-    {
-        if (spills >= spillLimit)
-        {
-            canSpawnSpill = false;
-        }
-        else
-        {
-            canSpawnSpill = true;
-        }
-    }
 
-    public void AddSpill()
-    {
-        spills++;
-    }
-
-    public void RemoveSpill()
-    {
-        spills--;
-    }
     private void HandleRandomEvent()
     {
         ActivateRandomEventClientRpc();
@@ -496,11 +453,13 @@ public class GameManager : NetworkBehaviour
         OnRandomEventTriggered?.Invoke();
     }
 
+
     [ClientRpc]
     private void ActivateRandomEventClientRpc()
     {
         ActivateRandomEvent();
     }
+
 
     // Activate random Event after x amount of random time, will add the time variable after testing
     private void ActivateRandomEvent()
@@ -551,12 +510,12 @@ public class GameManager : NetworkBehaviour
         else if (randomEvent.GetComponent<WifiStation>()) 
         {
             randomEvent.gameObject.GetComponent<WifiStation>().WifiEventIsStartingServerRpc();
-            isWifiEvent.Value = true;
         }
         else if (randomEvent.GetComponent<RadioStation>()) 
         {
             randomEvent.gameObject.GetComponent<RadioStation>().EventOnClientRpc();
         }
+
     }
 
     public void DeactivateEvent(RandomEventBase randomEvent)
@@ -574,13 +533,13 @@ public class GameManager : NetworkBehaviour
         else if (randomEvent.GetComponent<WifiStation>()) 
         {
             randomEvent.gameObject.GetComponent<WifiStation>().WifiEventIsDoneServerRpc();
-            isWifiEvent.Value = false;
         }
         else if (randomEvent.GetComponent<RadioStation>()) 
         {
             randomEvent.gameObject.GetComponent<RadioStation>().EventOffServerRpc();
         }
-
+        
+       
     }
 
     [ClientRpc]
@@ -593,27 +552,6 @@ public class GameManager : NetworkBehaviour
     {
         GameValueHolder.Instance.difficultySettings.SetAmountOfPlayers(numberOfPlayers);
         moneySystem = new MoneySystem(GameValueHolder.Instance.difficultySettings.GetMoneyToPass());
-    }
-
-
-    // Server RPC to subcribe to pause event only one player was subscribing to it
-    [ServerRpc(RequireOwnership = false)]
-    private void InitializePauseEventServerRpc()
-    {
-        InitializePauseEventClientRpc();
-    }
-
-    [ClientRpc]
-    private void InitializePauseEventClientRpc()
-    {
-        // There is a delay on initializing the Inputmanager on multiplayer due to connection timing and order of execution
-        // Delay InitializeInputManager()
-        Invoke("InitializePauseEvent", 1);
-    }
-
-    private void InitializePauseEvent()
-    {
-        InputManager.Instance.PauseEvent += InputManager_PauseEvent;
     }
 
 }

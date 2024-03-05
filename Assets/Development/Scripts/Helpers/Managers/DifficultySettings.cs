@@ -92,7 +92,7 @@ public class DifficultySettings
     public void NextShift()
     {
         Debug.Log("Shift: " + Shift);
-        if (Shift >= MaxShift)
+        if (Shift == MaxShift)
         {
             //Trigger End Game
             GameManager.Instance.iSEndGame = true;

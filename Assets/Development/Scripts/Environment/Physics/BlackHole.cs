@@ -17,7 +17,7 @@ public class BlackHole : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
-        if (other.attachedRigidbody && other.gameObject.GetComponent<PlayerController>() == null)
+        if (other.attachedRigidbody)
         {
             ApplyBlackHoleEffect(other.attachedRigidbody);
         }
