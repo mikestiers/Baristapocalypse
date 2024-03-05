@@ -78,6 +78,10 @@ public class GameManager : NetworkBehaviour
     private readonly int BP_Barista_SufferHash = Animator.StringToHash("BP_Barista_Suffer");
     private const float CrossFadeDuration = 0.1f;
 
+    [Header("Spills")]
+    public bool canSpawnSpill = false;
+    private int spills;
+    private int spillLimit;
     private void Awake()
     {
         Instance = this;
@@ -100,7 +104,9 @@ public class GameManager : NetworkBehaviour
         for (int i = 0; i < randomEventTimes.Count; i++)
         {
             Debug.LogWarning("random Time"+ i + " " + randomEventTimes[i]);
-        }       
+        }
+
+        SpillLimit(currentDifficulty.difficultyString);
     }
 
     public override void OnDestroy()
@@ -214,7 +220,7 @@ public class GameManager : NetworkBehaviour
                 }
 
                 */
-
+                CheckSpillAmount();
                 break;
 
             case GameState.GameOver:
@@ -436,7 +442,50 @@ public class GameManager : NetworkBehaviour
         }
         return startTime;
     }
+    public void SpillLimit(string difficulty)
+    {
+        switch (difficulty)
+        {
+            case "Easy":
+                GetSpillLimit();
+                break;
+            case "Medium":
+                GetSpillLimit();
+                break;
+            case "Hard":
+                GetSpillLimit();
+                break;
+        }
+    }
 
+    private void GetSpillLimit()
+    {
+        spillLimit = currentDifficulty.maxSpillAmount;
+         
+        Debug.Log(message: spillLimit);
+    }
+
+    private void CheckSpillAmount()
+    {
+        if (spills >= spillLimit)
+        {
+            canSpawnSpill = false;
+        }
+        else
+        {
+            canSpawnSpill = true;
+        }
+    }
+
+    public void AddSpill()
+    {
+        spills++;
+    }
+
+    public void RemoveSpill()
+    {
+        spills--;
+    }
     private void HandleRandomEvent()
     {
         ActivateRandomEventClientRpc();
