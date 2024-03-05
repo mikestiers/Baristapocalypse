@@ -172,7 +172,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     private void OnEnable()
     {
-        //inputManager.JumpEvent += OnJump;
         inputManager.DashEvent += OnDash;
         inputManager.ThrowEvent += OnThrow;
         inputManager.InteractEvent += Interact;
@@ -180,20 +179,15 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.DebugConsoleEvent += ShowDebugConsole;
         inputManager.BrewingStationSelectEvent += OnChangeBrewingStationSelect;
         inputManager.BrewingStationEmptyEvent += OnBrewingStationEmpty;
-        //brewingStation1.animationSwitch += OnAnimationSwitch;
-        //brewingStation2.animationSwitch += OnAnimationSwitch;
-
 
         if (AISupervisor.Instance)
         {
             AISupervisor.Instance.OnTutorialMessageReceived += TutorialMessage;
         }
-
     }
 
     private void OnDisable()
     {
-        //inputManager.JumpEvent -= OnJump;
         inputManager.DashEvent -= OnDash;
         inputManager.ThrowEvent -= OnThrow;
         inputManager.InteractEvent -= Interact;
@@ -236,7 +230,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             return;
         }
 
-       
+        // Spherecast Interactions
         if (Physics.SphereCast(InteractzoneStart.transform.position + RayCastOffset, stationsSphereCastRadius, InteractzoneStart.transform.forward, out RaycastHit hit, 
                 stationInteractDistance, interactableLayerMask))
         {
@@ -249,7 +243,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                     SetSelectedStation(baseStation);
                     Show(visualGameObject);
                 }
-                //Debug.Log("Station hit");
             }
         }
         else
@@ -273,11 +266,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                     DoPickup(pickup);
                 }
             }
-            
             else if (floorHit.transform.TryGetComponent(out Spill spill))
-            {
-
-                
+            {  
                 SetSelectedSpill(spill);
                 selectedSpill.ShowUi();
                 if (mouse.leftButton.wasPressedThisFrame)
@@ -288,7 +278,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                 {
                     DoMop(selectedSpill);
                 }     
-              
             }
         
             // Logic for Ingredient on floor Interaction 
@@ -322,7 +311,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
 
         // Customer Interaction Logic
-        //if (Physics.Raycast(transform.position + RayCastOffset, transform.forward, out RaycastHit hitCustomer, customerInteractDistance, interactableLayerMask))
         if (Physics.SphereCast(InteractzoneStart.transform.position + RayCastOffset, customersSphereCastRadius, InteractzoneStart.transform.forward, out RaycastHit hitCustomer, customerInteractDistance, interactableLayerMask))
         {
             if (hitCustomer.transform.TryGetComponent(out Base customerBase))
@@ -494,7 +482,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
 
     }
-
 
     public void OnThrow()
     {
@@ -791,8 +778,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
     }
 
-
-
     public void ThrowPickup()
     {
         ThrowPickupServerRpc();
@@ -821,8 +806,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         StartCoroutine(ThrowPickUpAnimation());
     }
 
-    
-    
     public void ShowDebugConsole()
     {
         UIManager.Instance.debugConsole.SetActive(!UIManager.Instance.debugConsoleActive);
