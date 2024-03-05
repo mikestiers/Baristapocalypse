@@ -102,7 +102,7 @@ public class CustomerBase : Base
 
         agent = GetComponent<NavMeshAgent>();
         exit = CustomerManager.Instance.GetExit();
-        if (distThreshold <= 0) distThreshold = 0.5f;
+        if (distThreshold <= 0) distThreshold = 0.1f;
         
 
         customerReviewPanel = GameObject.FindGameObjectWithTag("CustomerReviewPanel");

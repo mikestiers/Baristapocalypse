@@ -44,7 +44,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] public Transform[] playerSpawnPoints;
 
     // Pause Vars
-    private bool isLocalGamePaused = false;
+    [HideInInspector] public bool isLocalGamePaused = false;
     private NetworkVariable<bool> isGamePaused = new NetworkVariable<bool>(false);
 
     private Dictionary<ulong, bool> playerReadyDictionary;
@@ -89,14 +89,8 @@ public class GameManager : NetworkBehaviour
     private void Start()
     {
         Application.targetFrameRate = maxFrameRate;
-
-        if (InputManager.Instance)
-        {
-            InputManager.Instance.PauseEvent += InputManager_PauseEvent;
-        }
-
+        InitializePauseEventServerRpc();
         OnRandomEventTriggered += HandleRandomEvent;
-        
         SetRandomEventTimes();
 
         // debug for random event times (to be deleted)
@@ -291,7 +285,6 @@ public class GameManager : NetworkBehaviour
         //playButton.SetActive(true);
     }
 
-
     private void isGamePaused_OnValueChanged(bool previousValue, bool newValue)
     {
         if (isGamePaused.Value) 
@@ -315,7 +308,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    private void TogglePauseGame()
+    public void TogglePauseGame()
     {
         isLocalGamePaused = !isLocalGamePaused;
         if (isLocalGamePaused) 
@@ -365,9 +358,7 @@ public class GameManager : NetworkBehaviour
 
     }
    
-
     // Quick Random Events
-
     private void SetRandomEventTimes()
     {
         if (currentDifficulty != null)
@@ -442,8 +433,6 @@ public class GameManager : NetworkBehaviour
         return startTime;
     }
 
-
-
     private void HandleRandomEvent()
     {
         ActivateRandomEventClientRpc();
@@ -454,13 +443,11 @@ public class GameManager : NetworkBehaviour
         OnRandomEventTriggered?.Invoke();
     }
 
-
     [ClientRpc]
     private void ActivateRandomEventClientRpc()
     {
         ActivateRandomEvent();
     }
-
 
     // Activate random Event after x amount of random time, will add the time variable after testing
     private void ActivateRandomEvent()
@@ -517,7 +504,6 @@ public class GameManager : NetworkBehaviour
         {
             randomEvent.gameObject.GetComponent<RadioStation>().EventOnClientRpc();
         }
-
     }
 
     public void DeactivateEvent(RandomEventBase randomEvent)
@@ -541,8 +527,7 @@ public class GameManager : NetworkBehaviour
         {
             randomEvent.gameObject.GetComponent<RadioStation>().EventOffServerRpc();
         }
-        
-       
+
     }
 
     [ClientRpc]
@@ -555,6 +540,27 @@ public class GameManager : NetworkBehaviour
     {
         GameValueHolder.Instance.difficultySettings.SetAmountOfPlayers(numberOfPlayers);
         moneySystem = new MoneySystem(GameValueHolder.Instance.difficultySettings.GetMoneyToPass());
+    }
+
+
+    // Server RPC to subcribe to pause event only one player was subscribing to it
+    [ServerRpc(RequireOwnership = false)]
+    private void InitializePauseEventServerRpc()
+    {
+        InitializePauseEventClientRpc();
+    }
+
+    [ClientRpc]
+    private void InitializePauseEventClientRpc()
+    {
+        // There is a delay on initializing the Inputmanager on multiplayer due to connection timing and order of execution
+        // Delay InitializeInputManager()
+        Invoke("InitializePauseEvent", 1);
+    }
+
+    private void InitializePauseEvent()
+    {
+        InputManager.Instance.PauseEvent += InputManager_PauseEvent;
     }
 
 }

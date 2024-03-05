@@ -946,13 +946,17 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is dead
 
         if (pickup != null) 
-        { 
+        {
+            
             pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
             pickup.EnablePickupColliders(pickup);
             pickup.GetCollider().enabled = true;
 
             pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
+            if (pickup.gameObject.GetComponent<MopBehavior>() != null) pickup.gameObject.GetComponent<MopBehavior>().ReturnMop();
             pickup.ClearPickupOnParent();
+
+           
         }
         movementToggle = true;
     }
