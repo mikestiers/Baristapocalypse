@@ -986,4 +986,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void StartPlayerAnimationServerRpc(int animation, float duration)
+    {
+        this.anim.CrossFadeInFixedTime(animation, duration);
+    }
+
 }
