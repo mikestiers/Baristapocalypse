@@ -48,6 +48,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] private BrewingStation brewingStation1;
     [SerializeField] private BrewingStation brewingStation2;
     private Spill selectedSpill;
+    private Pickup selectedPickUp;
 
     private BaseStation selectedStation;
     private Base selectedCustomer;
@@ -231,7 +232,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
 
         // Spherecast Interactions
-        if (Physics.SphereCast(InteractzoneStart.transform.position + RayCastOffset, stationsSphereCastRadius, InteractzoneStart.transform.forward, out RaycastHit hit, 
+        if (Physics.SphereCast(InteractzoneStart.transform.position + RayCastOffset, stationsSphereCastRadius, InteractzoneStart.transform.forward, out RaycastHit hit,
                 stationInteractDistance, interactableLayerMask))
         {
             // Logic for Station Interaction
@@ -250,13 +251,14 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             // No interactable object hit, clear selected objects.
             SetSelectedStation(null);
         }
-        
+
         // Perform a single SphereCast to detect any interactable object on the floor.
         if (Physics.SphereCast(transform.position + RayCastOffset, stationsSphereCastRadius, transform.forward, out RaycastHit floorHit, stationInteractDistance, interactableLayerMask))
         {
             // Logic for PickUp Interaction
             if (floorHit.transform.TryGetComponent(out Pickup pickup))
             {
+                SetSelectedPickUp(pickup);
                 if (mouse.rightButton.wasPressedThisFrame)
                 {
                     DoPickup(pickup);
@@ -267,7 +269,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                 }
             }
             else if (floorHit.transform.TryGetComponent(out Spill spill))
-            {  
+            {
                 SetSelectedSpill(spill);
                 selectedSpill.ShowUi();
                 if (mouse.leftButton.wasPressedThisFrame)
@@ -277,16 +279,16 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                 else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
                 {
                     DoMop(selectedSpill);
-                }     
+                }
             }
-        
+
             // Logic for Ingredient on floor Interaction 
             else if (floorHit.transform.TryGetComponent(out Ingredient ingredient))
             {
                 if (GetNumberOfIngredients() <= GetMaxIngredients() && !HasPickup())
                 {
                     IngredientSO ingredientSORef = ingredient.GetIngredientSO();
-        
+
                     if (mouse.leftButton.wasPressedThisFrame)
                     {
                         GrabIngredientFromFloor(ingredient, ingredientSORef);
@@ -304,6 +306,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             {
                 selectedSpill.HideUi();
             }
+            SetSelectedPickUp(null);
             SetSelectedSpill(null);
             // No interactable object hit, clear selected objects.
             SetSelectedStation(null);
@@ -458,7 +461,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         while (Time.time < startTime + dashTime)
         {
             rb.AddForce(moveDirection * dashForce * Time.deltaTime, ForceMode.Impulse);
-            if (ingredientsList.Count > 0  || HasPickup())
+            if (ingredientsList.Count > 0 || HasPickup())
             {
                 anim.SetBool("isDashingWithCup", isDashing);
             }
@@ -515,6 +518,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     public void SetSelectedSpill(Spill spill)
     {
         selectedSpill = spill;
+    }
+    public void SetSelectedPickUp(Pickup pickup)
+    {
+        selectedPickUp = pickup;
     }
     public void SetSelectedCustomer(Base customer)
     {
@@ -599,7 +606,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [ClientRpc]
     private void ThrowIngredientClientRpc()
     {
-        StartCoroutine(ThrowIngredientAnimation()); //Play throw ingredient
+        ThrowIngredientAnimationServerRpc(); //Play throw ingredient
     }
 
     public void GrabIngredientFromFloor(Ingredient floorIngredient, IngredientSO ingredientSO)
@@ -737,11 +744,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public void DoMop(Spill spill)
     {
-        if(!HasNoIngredients)return;
-        
+        if (!HasNoIngredients) return;
+
         spill.Interact(this);
-        
-        
+
+
     }
     public void DoPickup(Pickup pickup)
     {
@@ -752,7 +759,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         if (pickupSo != null)
         {
-            StartCoroutine(TrashPickUpAnimation(pickup)); // Play trash pick up and set trash parent
+            TrashPickUpAnimationServerRpc(); // Play trash pick up and set trash parent
         }
 
         if (pickup.IsCustomer && pickup.GetCustomer().GetCustomerState() == CustomerBase.CustomerState.Loitering)
@@ -803,7 +810,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             pickup.GetComponentInChildren<Rigidbody>().isKinematic = false;
         }
 
-        StartCoroutine(ThrowPickUpAnimation());
+        ThrowPickUpAnimationServerRpc();
     }
 
     public void ShowDebugConsole()
@@ -923,7 +930,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     }
 
     // Play trash pick up and set trash parent while new player statemachine is dead
-    private IEnumerator TrashPickUpAnimation(Pickup pickup)
+    private IEnumerator TrashPickUpAnimation()
     {
         anim.CrossFadeInFixedTime(BP_Barista_Floor_PickupHash, CrossFadeDuration);
         movementToggle = false;
@@ -931,8 +938,21 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         yield return new WaitForSeconds(1f); // hard coded while new player statemachine is dead
 
         movementToggle = true;
-        pickup.SetPickupObjectParent(this);
-        pickup.DisablePickupColliders(pickup);
+        selectedPickUp.SetPickupObjectParent(this);
+        selectedPickUp.DisablePickupColliders(selectedPickUp);
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    private void TrashPickUpAnimationServerRpc()
+    {
+        TrashPickUpAnimationClientRpc();
+    }
+
+    [ClientRpc]
+    private void TrashPickUpAnimationClientRpc()
+    {
+        StartCoroutine(TrashPickUpAnimation());
     }
 
     // Play throw pick up
@@ -943,9 +963,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is dead
 
-        if (pickup != null) 
+        if (pickup != null)
         {
-            
+
             pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
             pickup.EnablePickupColliders(pickup);
             pickup.GetCollider().enabled = true;
@@ -953,10 +973,20 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
             if (pickup.gameObject.GetComponent<MopBehavior>() != null) pickup.gameObject.GetComponent<MopBehavior>().ReturnMop();
             pickup.ClearPickupOnParent();
-
-           
         }
         movementToggle = true;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ThrowPickUpAnimationServerRpc()
+    {
+        ThrowPickUpAnimationClientRpc();
+    }
+
+    [ClientRpc]
+    private void ThrowPickUpAnimationClientRpc()
+    {
+        StartCoroutine(ThrowPickUpAnimation());
     }
 
     // Play throw ingredient 
@@ -990,6 +1020,18 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             OnAnimationSwitch();
         }
         movementToggle = true;
-
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ThrowIngredientAnimationServerRpc()
+    {
+        ThrowIngredientAnimationClientRpc();
+    }
+
+    [ClientRpc]
+    private void ThrowIngredientAnimationClientRpc()
+    {
+        StartCoroutine(ThrowIngredientAnimation());
+    }
+
 }
