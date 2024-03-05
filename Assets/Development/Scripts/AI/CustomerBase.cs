@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using static BrewingStation;
 using Random = UnityEngine.Random;
@@ -53,10 +54,9 @@ public class CustomerBase : Base
     [SerializeField] private ParticleSystem interactParticle;
     [SerializeField] private DetachedHead detachedHead;
     [SerializeField] private ScoreTimerManager scoreTimerManager;
-    [SerializeField] private MessSO spillPrefab;
-    [SerializeField] private Transform spillSpawnPoint;
+    
     [SerializeField] private PickupSO pickupSO;
-
+    
     [Header("Customer Review")]
     public GameObject customerReviewPrefab;
     private GameObject customerReviewPanel;
@@ -77,7 +77,14 @@ public class CustomerBase : Base
     private readonly int Customer1_WalkHash = Animator.StringToHash("Customer1_Walk");
     private readonly int Customer1_StruggleHash = Animator.StringToHash("Customer1_Struggle");
 
-
+    [Header("Spills")]
+    private bool hasDrink = false;
+    [SerializeField] private bool hasSpilledCup = false;
+    [SerializeField] private float maxSpillTime;
+    [SerializeField] private float minSpillTime;
+    [SerializeField] private float chanceToSpill;
+    [SerializeField] private MessSO spillPrefab;
+    [SerializeField] private Transform spillSpawnPoint;
     public delegate void CustomerLeaveEvent(int customerNumber);
     public static event CustomerLeaveEvent OnCustomerLeave;
 
@@ -105,11 +112,10 @@ public class CustomerBase : Base
 
         agent = GetComponent<NavMeshAgent>();
         exit = CustomerManager.Instance.GetExit();
-        if (distThreshold <= 0) distThreshold = 0.5f;
+        if (distThreshold <= 0) distThreshold = 0.1f;
         
 
         customerReviewPanel = GameObject.FindGameObjectWithTag("CustomerReviewPanel");
-
     }
 
     public virtual void Update()
@@ -133,6 +139,7 @@ public class CustomerBase : Base
             }
         }
 
+       
         switch (currentState.Value)
         {
             case CustomerState.Wandering:
@@ -298,7 +305,10 @@ public class CustomerBase : Base
 
     private void UpdateDrinking()
     {
-       //update DRINKING ANIMATION
+        if (hasDrink == true)
+        {
+           StartCoroutine(SpillTimer());
+        }
     }
 
     public IEnumerator TryGoToRandomPoint(float delay)
@@ -398,6 +408,10 @@ public class CustomerBase : Base
    
         }
         
+        else if (GetCustomerState()== CustomerState.Leaving && player.GetIngredient().CompareTag("CoffeeCup") && !isGivingOrderToCustomer)
+        {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.failedInteration);
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -583,6 +597,26 @@ public class CustomerBase : Base
         Destroy(gameObject);
     }
 
+    public void SpawnSpill()
+    {
+        if (GameManager.Instance.canSpawnSpill == true && hasSpilledCup == false)
+        {
+            if ((Random.value < chanceToSpill))
+            {
+                Spill.CreateSpill(spillPrefab, this);
+                GameManager.Instance.AddSpill();
+                hasSpilledCup = true;
+            } 
+            Debug.Log("Failed to spawn spill");
+        }
+    }
+    
+    IEnumerator SpillTimer()
+    {
+        yield return new WaitForSeconds(Random.Range(minSpillTime, maxSpillTime));
+        SpawnSpill();
+        
+    }
     public int GetCustomerNumber()
     {
         return customerNumber.Value;

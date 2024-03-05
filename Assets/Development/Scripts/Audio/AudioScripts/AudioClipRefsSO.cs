@@ -43,8 +43,8 @@ public class AudioClipRefsSO : ScriptableObject
     public AudioClip doorClose;
     [Header("Customer Interactions")]
     public AudioClip interactCustomer;
+    public AudioClip failedInteration;
     public AudioClip customerThrown;
     public List<AudioClip> customerPickedUpList;
     public List<AudioClip> customerSipsList;
-
 }

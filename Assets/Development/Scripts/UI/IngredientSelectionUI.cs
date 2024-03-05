@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using System;
 using System.Linq;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 
 public class IngredientSelectionUI : BaseStation
 {
@@ -22,6 +23,7 @@ public class IngredientSelectionUI : BaseStation
     public IngredientStationType ingredientStationType;
     public IngredientListSO ingredientList;
     private int ingredientListIndex;
+    public Sprite wifiEvent;
     private IngredientSO currentIngredient;
     private bool canSelectIngredient = false;
     public bool isInUse = false;
@@ -30,16 +32,48 @@ public class IngredientSelectionUI : BaseStation
     private void OnEnable()
     {
         InputManager.OnInputChanged += InputUpdated;
+        WifiStation.OnWifiEventStarting += RebuildButtonUI;
+        WifiStation.OnWifiEventStopping += RebuildButtonUI;
     }
 
     private void OnDisable()
     {
         InputManager.OnInputChanged -= InputUpdated;
+        WifiStation.OnWifiEventStarting -= RebuildButtonUI;
+        WifiStation.OnWifiEventStopping += RebuildButtonUI;
     }
 
     private void InputUpdated(InputImagesSO inputImagesSO)
     {
         interactImage.GetComponentInChildren<Image>().sprite = inputImagesSO.interact;
+    }
+
+    private void Awake()
+    {
+        // Get the current EventSystem
+        var eventSystem = EventSystem.current;
+        if (eventSystem != null)
+        {
+            // Get the Input System UI Input Module component
+            var inputModule = eventSystem.GetComponent<InputSystemUIInputModule>();
+            if (inputModule != null)
+            {
+                // Disable the 'Point' action
+                var pointActionReference = inputModule.point;
+                if (pointActionReference != null && pointActionReference.action != null)
+                {
+                    pointActionReference.action.Disable();
+                }
+            }
+            else
+            {
+                Debug.LogError("InputSystemUIInputModule not found on the current EventSystem.");
+            }
+        }
+        else
+        {
+            Debug.LogError("Current EventSystem not found.");
+        }
     }
 
     private void Start()
@@ -152,8 +186,9 @@ public class IngredientSelectionUI : BaseStation
             }
             else
             {
-                ingredientButtons[i].GetComponent<Image>().sprite = ingredientList.ingredientSOList[i].icon;
+                ingredientButtons[i].GetComponent<Image>().sprite = !GameManager.Instance.isWifiEvent.Value ? ingredientList.ingredientSOList[i].icon : wifiEvent;
                 ingredientButtons[i].name = ingredientList.ingredientSOList[i].name;
+                ingredientButtons[i].interactable = !GameManager.Instance.isWifiEvent.Value;
             }
         }
     }
@@ -245,8 +280,10 @@ public class IngredientSelectionUI : BaseStation
         canSelectIngredient = true;
         currentStationInteraction = true;
         obj.SetActive(true);
-        
+
         // Select first igredient if not playing with mouse
+        ((InputSystemUIInputModule)EventSystem.current.currentInputModule).point.action.Disable();
+        ((InputSystemUIInputModule)EventSystem.current.currentInputModule).leftClick.action.Disable();
         EventSystem.current.firstSelectedGameObject = ingredientButtons[0].gameObject;
         SetDefaultSelected(ingredientButtons[0].gameObject);
     }
@@ -264,6 +301,8 @@ public class IngredientSelectionUI : BaseStation
         Hide(ingredientMenu);
         OrderManager.Instance.orderStats[player.currentBrewingStation].SetPotentialToCumulative();
         currentStationInteraction = false;
+        ((InputSystemUIInputModule)EventSystem.current.currentInputModule).point.action.Enable();
+        ((InputSystemUIInputModule)EventSystem.current.currentInputModule).leftClick.action.Enable();
     }
 }
 

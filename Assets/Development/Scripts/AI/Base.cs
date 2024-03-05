@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class Base : NetworkBehaviour, IIngredientParent
+public class Base : NetworkBehaviour, IIngredientParent, ISpill
 {
     [SerializeField] private Transform stationTopPoint;
-
+    [SerializeField] private Spill spill;
     private Ingredient ingredient;
+    [SerializeField] private Transform spillSpawnPoint;
 
     public virtual void Interact(PlayerController player)
     {
@@ -42,6 +43,21 @@ public class Base : NetworkBehaviour, IIngredientParent
     public bool HasIngredient()
     {
         return ingredient != null;
+    }
+
+    public Transform GetSpillTransform()
+    {
+        return spillSpawnPoint;
+    }
+
+    public void SetSpill(Spill spill)
+    {
+        this.spill = spill;
+    }
+
+    public void ClearSpill()
+    {
+        spill = null;
     }
 
     public NetworkObject GetNetworkObject()

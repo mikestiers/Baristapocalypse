@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class Spill : NetworkBehaviour
 {
@@ -12,8 +14,11 @@ public class Spill : NetworkBehaviour
     [SerializeField] private float slipSpeed = 0.8f;
     private ISpill messObjectParent;
     private SpillSpawnPoint _spillSpawnPoint;
-    private IngredientFollowTransform _followTransform; 
-
+    private IngredientFollowTransform _followTransform;
+   [SerializeField] private GameObject controllerPrompt;
+   [SerializeField] private GameObject keyboardPrompt;
+   [SerializeField] private GameObject imageHolder;
+   [SerializeField] private Image imageFill;
     private void Awake()
     {
         _spillSpawnPoint = GetComponent<SpillSpawnPoint>();
@@ -47,16 +52,18 @@ public class Spill : NetworkBehaviour
                 {
                     // scale down the spill game object or play animation 
                     cleaningProgress++;
+                    imageFill.fillAmount += 25f / 100f;
                 }
                 if (cleaningProgress >= totalProgress)
                 {
+                    GameManager.Instance.RemoveSpill();
                     Destroy(gameObject);
                 } 
             }
         }
     }
 
-    public static void PlayerCreateSpill(MessSO Mess, ISpill messObjectParent)
+    public static void CreateSpill(MessSO Mess, ISpill messObjectParent)
     {
         BaristapocalypseMultiplayer.Instance.PlayerCreateSpill(Mess, messObjectParent);
     }
@@ -96,9 +103,31 @@ public class Spill : NetworkBehaviour
              //stateMachine.ThrowIngredient();
         }
     }
-   
+
+    public void ShowUi()
+    {
+        imageHolder.SetActive(true);
+        if (Gamepad.current != null)
+        {
+            controllerPrompt.SetActive(true);
+            keyboardPrompt.SetActive(false);
+        }
+        else
+        {
+            keyboardPrompt.SetActive(true);
+            controllerPrompt.SetActive(false);
+        }
+        
+    }
+
+    public void HideUi()
+    {
+        imageHolder.SetActive(false);
+        keyboardPrompt.SetActive(false);
+        controllerPrompt.SetActive(false);
+        
+    }
     
-  
     
 }
           
