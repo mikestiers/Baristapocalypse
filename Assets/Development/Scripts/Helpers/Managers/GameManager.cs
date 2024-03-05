@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Unity.Netcode;
 using System.Collections;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 
 [DefaultExecutionOrder(-1)]
 public class GameManager : NetworkBehaviour
@@ -310,6 +312,8 @@ public class GameManager : NetworkBehaviour
 
     public void TogglePauseGame()
     {
+        ((InputSystemUIInputModule)EventSystem.current.currentInputModule).point.action.Enable();
+        ((InputSystemUIInputModule)EventSystem.current.currentInputModule).leftClick.action.Enable();
         isLocalGamePaused = !isLocalGamePaused;
         if (isLocalGamePaused) 
         {

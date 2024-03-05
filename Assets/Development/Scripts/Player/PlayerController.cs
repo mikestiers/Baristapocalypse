@@ -262,11 +262,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             // Logic for PickUp Interaction
             if (floorHit.transform.TryGetComponent(out Pickup pickup))
             {
-                if (mouse.rightButton.wasPressedThisFrame)
+                if (Keyboard.current.eKey.wasPressedThisFrame)
                 {
                     DoPickup(pickup);
                 }
-                else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
+                else if (Gamepad.current != null && Gamepad.current.buttonNorth.wasPressedThisFrame)
                 {
                     DoPickup(pickup);
                 }
@@ -860,28 +860,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             }
         }
     }
-
-    //private void HandleMouseVisibility()
-    //{
-    //    // Check if a controller is being used
-    //    bool usingController = Gamepad.current != null;
-    //    if (!usingController) { return; }
-
-    //    float mouseMoveThreshold = 0.1f;
-    //    Vector2 mouseDelta = Mouse.current.delta.ReadValue();
-
-    //    // Check if any button on the controller is pressed or the stick is moved
-    //    if (Gamepad.current.allControls.Any(control => control.IsPressed() && control != Gamepad.current.leftStick))
-    //    {
-    //        Cursor.visible = false;
-    //        Cursor.lockState = CursorLockMode.Locked;
-    //    }
-    //    else if (mouseDelta.magnitude > mouseMoveThreshold)
-    //    {
-    //        Cursor.visible = true;
-    //        Cursor.lockState = CursorLockMode.None;
-    //    }
-    //}
 
     private void TutorialMessage()
     {
