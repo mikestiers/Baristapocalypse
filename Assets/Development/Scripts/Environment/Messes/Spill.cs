@@ -27,6 +27,20 @@ public class Spill : NetworkBehaviour
         
     }
 
+    private void OnEnable()
+    {
+        InputManager.OnInputChanged += InputUpdated;
+    }
+
+    private void OnDisable()
+    {
+        InputManager.OnInputChanged -= InputUpdated;
+    }
+    private void InputUpdated(InputImagesSO inputImagesSO)
+    {
+        controllerPrompt.GetComponentInChildren<Image>().sprite = inputImagesSO.interact;
+    }
+
     public void Interact(PlayerController pickupItem)
     {
         InteractServerRpc(pickupItem.GetNetworkObject());
@@ -109,16 +123,17 @@ public class Spill : NetworkBehaviour
     public void ShowUi()
     {
         imageHolder.SetActive(true);
-        if (Gamepad.current != null)
-        {
-            controllerPrompt.SetActive(true);
-            keyboardPrompt.SetActive(false);
-        }
-        else
-        {
-            keyboardPrompt.SetActive(true);
-            controllerPrompt.SetActive(false);
-        }
+        controllerPrompt.SetActive(true);
+        //if (Gamepad.current != null)
+        //{
+        //    controllerPrompt.SetActive(true);
+        //    keyboardPrompt.SetActive(false);
+        //}
+        //else
+        //{
+        //    keyboardPrompt.SetActive(true);
+        //    controllerPrompt.SetActive(false);
+        //}
         
         //if(!hasMop) mopErrorHolder.SetActive(true);
     }
