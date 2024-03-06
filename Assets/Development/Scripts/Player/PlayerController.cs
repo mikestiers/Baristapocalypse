@@ -279,7 +279,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                         //_hasMop = true;
                         SetSelectedSpill(spill);
                         selectedSpill.ShowUi();
-                        if (mouse.leftButton.wasPressedThisFrame)
+                        if(Keyboard.current.qKey.wasPressedThisFrame)
                         {
                             DoMop(selectedSpill);
                         }
