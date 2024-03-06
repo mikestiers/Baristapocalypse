@@ -48,34 +48,6 @@ public class IngredientSelectionUI : BaseStation
         interactImage.GetComponentInChildren<Image>().sprite = inputImagesSO.interact;
     }
 
-    private void Awake()
-    {
-        // Get the current EventSystem
-        var eventSystem = EventSystem.current;
-        if (eventSystem != null)
-        {
-            // Get the Input System UI Input Module component
-            var inputModule = eventSystem.GetComponent<InputSystemUIInputModule>();
-            if (inputModule != null)
-            {
-                // Disable the 'Point' action
-                var pointActionReference = inputModule.point;
-                if (pointActionReference != null && pointActionReference.action != null)
-                {
-                    pointActionReference.action.Disable();
-                }
-            }
-            else
-            {
-                Debug.LogError("InputSystemUIInputModule not found on the current EventSystem.");
-            }
-        }
-        else
-        {
-            Debug.LogError("Current EventSystem not found.");
-        }
-    }
-
     private void Start()
     {
         ingredientListIndex = 0;
