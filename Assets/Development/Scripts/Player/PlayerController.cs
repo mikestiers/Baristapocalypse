@@ -195,8 +195,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.DebugConsoleEvent -= ShowDebugConsole;
         inputManager.BrewingStationSelectEvent -= OnChangeBrewingStationSelect;
         inputManager.BrewingStationEmptyEvent -= OnBrewingStationEmpty;
-        brewingStation1.animationSwitch -= OnAnimationSwitch;
-        brewingStation2.animationSwitch -= OnAnimationSwitch;
+
+        if (brewingStation1 != null)
+            brewingStation1.animationSwitch -= OnAnimationSwitch;
+        if (brewingStation2 != null) 
+            brewingStation2.animationSwitch -= OnAnimationSwitch;
 
         if (AISupervisor.Instance)
         {

@@ -7,14 +7,6 @@ public class RandomEventEffects : NetworkBehaviour
 {
     [SerializeField] private GameObject gravityLights;
 
-    private void Update()
-    {
-        if (Input.GetKeyUp(KeyCode.L))
-        {
-            TurnOnOffEventEffectServerRpc(true);
-        }
-    }
-
     [ServerRpc(RequireOwnership = false)]
     public void TurnOnOffEventEffectServerRpc(bool trueOrFalse)
     {

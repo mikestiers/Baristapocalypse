@@ -42,6 +42,7 @@ public class CleanupBot : MonoBehaviour
     public GameObject[] path;
     public int pathIndex = 0;
     public float distToNextNode;
+    private float distToMess;
 
     // Start is called before the first frame update
     void Start()
@@ -113,7 +114,8 @@ public class CleanupBot : MonoBehaviour
         if (target)
             agent.SetDestination(target.transform.position);
 
-        float distToMess = Vector3.Distance(transform.position, playerTransform.transform.position);
+        if (target)
+            distToMess = Vector3.Distance(transform.position, target.transform.position);
 
         if (distToMess > distance)
         {
