@@ -267,17 +267,28 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                 }
             }
             else if (floorHit.transform.TryGetComponent(out Spill spill))
-            {  
-                SetSelectedSpill(spill);
-                selectedSpill.ShowUi();
-                if (mouse.leftButton.wasPressedThisFrame)
+            {
+                //bool _hasMop = false;
+                if (Pickup)
                 {
-                    DoMop(selectedSpill);
+                    if (Pickup.attributes.Contains(Pickup.PickupAttribute.CleansUpSpills)) 
+                    {
+                        //_hasMop = true;
+                        SetSelectedSpill(spill);
+                        selectedSpill.ShowUi();
+                        if (mouse.leftButton.wasPressedThisFrame)
+                        {
+                            DoMop(selectedSpill);
+                        }
+                        else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
+                        {
+                            DoMop(selectedSpill);
+                        }
+                    } 
                 }
-                else if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
-                {
-                    DoMop(selectedSpill);
-                }     
+                //else _hasMop = false;
+
+               
             }
         
             // Logic for Ingredient on floor Interaction 

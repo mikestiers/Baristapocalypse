@@ -15,14 +15,30 @@ public class Spill : NetworkBehaviour
     private ISpill messObjectParent;
     private SpillSpawnPoint _spillSpawnPoint;
     private IngredientFollowTransform _followTransform;
-   [SerializeField] private GameObject controllerPrompt;
-   [SerializeField] private GameObject keyboardPrompt;
-   [SerializeField] private GameObject imageHolder;
-   [SerializeField] private Image imageFill;
+    [SerializeField] private GameObject controllerPrompt;
+    [SerializeField] private GameObject keyboardPrompt;
+    [SerializeField] private GameObject imageHolder;
+    [SerializeField] private Image imageFill;
+    [SerializeField] private GameObject mopErrorHolder;
+
     private void Awake()
     {
         _spillSpawnPoint = GetComponent<SpillSpawnPoint>();
         
+    }
+
+    private void OnEnable()
+    {
+        InputManager.OnInputChanged += InputUpdated;
+    }
+
+    private void OnDisable()
+    {
+        InputManager.OnInputChanged -= InputUpdated;
+    }
+    private void InputUpdated(InputImagesSO inputImagesSO)
+    {
+        controllerPrompt.GetComponentInChildren<Image>().sprite = inputImagesSO.interact;
     }
 
     public void Interact(PlayerController pickupItem)
@@ -107,17 +123,19 @@ public class Spill : NetworkBehaviour
     public void ShowUi()
     {
         imageHolder.SetActive(true);
-        if (Gamepad.current != null)
-        {
-            controllerPrompt.SetActive(true);
-            keyboardPrompt.SetActive(false);
-        }
-        else
-        {
-            keyboardPrompt.SetActive(true);
-            controllerPrompt.SetActive(false);
-        }
+        controllerPrompt.SetActive(true);
+        //if (Gamepad.current != null)
+        //{
+        //    controllerPrompt.SetActive(true);
+        //    keyboardPrompt.SetActive(false);
+        //}
+        //else
+        //{
+        //    keyboardPrompt.SetActive(true);
+        //    controllerPrompt.SetActive(false);
+        //}
         
+        //if(!hasMop) mopErrorHolder.SetActive(true);
     }
 
     public void HideUi()
@@ -125,6 +143,7 @@ public class Spill : NetworkBehaviour
         imageHolder.SetActive(false);
         keyboardPrompt.SetActive(false);
         controllerPrompt.SetActive(false);
+        //mopErrorHolder.SetActive(false);
         
     }
     
