@@ -34,6 +34,8 @@ public class LobbyUI : MonoBehaviour
     [Header("Level Loader")]
     [SerializeField] private LevelLoader levelLoader;
 
+    private bool isLobbyCreated = false;
+
     private void Awake()
     {
         selectedMaxPlayers = int.Parse(dropdownPlayers.options[dropdownPlayers.value].text);
@@ -66,6 +68,7 @@ public class LobbyUI : MonoBehaviour
 
         if (createPrivateLobbyButton)
         {
+
             createPrivateLobbyButton.onClick.AddListener(() =>
             {
                 LobbyManager.Instance.CreateLobby(lobbyNameInputField.text, true, selectedMaxPlayers);
@@ -106,6 +109,7 @@ public class LobbyUI : MonoBehaviour
 
     private void LobbyManager_OnLobbyListChanged(object sender, LobbyManager.OnLobbyListChangedEventArgs e)
     {
+        Debug.Log("LobbyManager_OnLobbyListChanged");
         UpdateLobbyList(e.lobbyList);
     }
 
