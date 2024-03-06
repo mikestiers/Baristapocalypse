@@ -277,7 +277,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                     if (Pickup.attributes.Contains(Pickup.PickupAttribute.CleansUpSpills)) 
                     {
                         //_hasMop = true;
-                        SetSelectedSpill(spill);
+                        if(selectedSpill == null) SetSelectedSpill(spill);
                         selectedSpill.ShowUi();
                         if(Keyboard.current.qKey.wasPressedThisFrame)
                         {
