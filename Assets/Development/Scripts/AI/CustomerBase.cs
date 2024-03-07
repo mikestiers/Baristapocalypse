@@ -523,6 +523,7 @@ public class CustomerBase : Base
         }
         else
         {
+            if (!IsServer) return;
             Debug.LogError("Customer Leaving");
             customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
             agent.SetDestination(exit);
