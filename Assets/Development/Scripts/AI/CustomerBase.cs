@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Netcode;
 using Unity.VisualScripting;
@@ -79,9 +80,16 @@ public class CustomerBase : Base
     private readonly int Customer_WalkHash = Animator.StringToHash("Customer_Walk");
     private readonly int Customer_SitDownHash = Animator.StringToHash("Customer_SitDown");
     private readonly int Customer_Sit_DrinkHash = Animator.StringToHash("Customer_Sit_Drink");
+    private List<int> customerBadDrinkChairHashList = new List<int>();
+    private List<int> customerGoodDrinkChairHashList = new List<int>();
 
-
-    private readonly int Customer1_StruggleHash = Animator.StringToHash("Customer1_Struggle");
+    private readonly int Customer_Bad_Drink_Chair_1Hash = Animator.StringToHash("Customer_Bad_Drink_Chair_1");
+    private readonly int Customer_Bad_Drink_Chair_2Hash = Animator.StringToHash("Customer_Bad_Drink_Chair_2");
+    private readonly int Customer_Bad_Drink_Chair_3Hash = Animator.StringToHash("Customer_Bad_Drink_Chair_3");
+    private readonly int Customer_Good_Drink_Chair_1Hash = Animator.StringToHash("Customer_Good_Drink_Chair_1");
+    private readonly int Customer_Good_Drink_Chair_2Hash = Animator.StringToHash("Customer_Good_Drink_Chair_2");
+    private readonly int Customer_Good_Drink_Chair_3Hash = Animator.StringToHash("Customer_Good_Drink_Chair_3");
+        private readonly int Customer1_StruggleHash = Animator.StringToHash("Customer1_Struggle");
 
     [Header("Spills")]
     private bool hasDrink = false;
@@ -100,6 +108,20 @@ public class CustomerBase : Base
     public enum CustomerState
     {
         Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead, Drinking, Sitting
+    }
+
+    public void Awake()
+    {
+        // Add Bad Drink Animation Reaction to list
+        customerBadDrinkChairHashList.Add(Animator.StringToHash("Customer_Bad_Drink_Chair_1"));
+        customerBadDrinkChairHashList.Add(Animator.StringToHash("Customer_Bad_Drink_Chair_2"));
+        customerBadDrinkChairHashList.Add(Animator.StringToHash("Customer_Bad_Drink_Chair_3"));
+
+        // Add Bad Drink Animation Reaction to list
+        customerGoodDrinkChairHashList.Add(Animator.StringToHash("Customer_Good_Drink_Chair_1"));
+        customerGoodDrinkChairHashList.Add(Animator.StringToHash("Customer_Good_Drink_Chair_2"));
+        customerGoodDrinkChairHashList.Add(Animator.StringToHash("Customer_Good_Drink_Chair_3"));
+
     }
 
     public virtual void Start()
@@ -509,9 +531,27 @@ public class CustomerBase : Base
     private IEnumerator Drink()
     {
         SetCustomerState(CustomerState.Drinking);
-        //Start Animation for drinking
 
-        customerAnimator.CrossFadeInFixedTime(Customer_Sit_DrinkHash, CrossFadeDuration);
+        // Start Random Drink Reaction Animation
+        if (customerInstanceReviewScore >= 4)
+        {
+            if (customerBadDrinkChairHashList.Count > 0)
+            {
+                int randomIndex = Random.Range(0, customerBadDrinkChairHashList.Count);
+                int randomHash = customerBadDrinkChairHashList[randomIndex];
+                customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
+            }
+        }
+        else if (customerInstanceReviewScore <=3)
+        {
+            if (customerBadDrinkChairHashList.Count > 0)
+            {
+                int randomIndex = Random.Range(0, customerGoodDrinkChairHashList.Count);
+                int randomHash = customerGoodDrinkChairHashList[randomIndex];
+                customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
+            }
+        }
+
 
 
         float drinkingDur = Random.Range(GameValueHolder.Instance.difficultySettings.GetMinDrinkingDurationTime(), GameValueHolder.Instance.difficultySettings.GetMaxDrinkingDurationTime());
@@ -519,6 +559,7 @@ public class CustomerBase : Base
         CustomerLeave();
 
     }
+
 
     public virtual void CustomerLeave()
     {
