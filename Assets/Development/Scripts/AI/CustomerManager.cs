@@ -95,7 +95,7 @@ public class CustomerManager : Singleton<CustomerManager>
         if (Chairs.Length <= 0) Chairs = GameObject.FindGameObjectsWithTag("Waypoint");
 
         //where the firstposition is located in scene
-        Vector3 firstposition = new Vector3(Counter.position.x, 0, Counter.position.z - 3f);
+        Vector3 firstposition = new Vector3(Counter.position.x, 0, Counter.position.z - 1.5f);
         
 
         NavMeshHit hit;
