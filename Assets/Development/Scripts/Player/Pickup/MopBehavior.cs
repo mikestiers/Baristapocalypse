@@ -24,6 +24,7 @@ public class MopBehavior : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
 
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
         transform.position = startPos;
         transform.rotation = startRot;
     }
