@@ -234,12 +234,12 @@ public class CustomerBase : Base
             agent.isStopped = true;
             if (frontofLine == true)
             {
-                customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
+                customerAnimator.CrossFadeInFixedTime(Customer_IdleHash, CrossFadeDuration); // Customer1 idle animation
                 SetCustomerState(CustomerState.Ordering);
             }
             if(inLine && frontofLine != true)
             {
-                customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
+                customerAnimator.CrossFadeInFixedTime(Customer_IdleHash, CrossFadeDuration); // Customer1 idle animation
                 SetCustomerState(CustomerState.Waiting);
             }
             if (!inLine)
@@ -269,7 +269,7 @@ public class CustomerBase : Base
 
         if (atSit)
         {
-            customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration);
+            customerAnimator.CrossFadeInFixedTime(Customer_IdleHash, CrossFadeDuration);
 
             if (orderTimer < 0)
             {
@@ -525,7 +525,7 @@ public class CustomerBase : Base
         else
         {
             Debug.LogError("Customer Leaving");
-            customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
+            customerAnimator.CrossFadeInFixedTime(Customer_WalkHash, CrossFadeDuration); // Customer1 walk animation
             agent.SetDestination(exit);
             SetCustomerState(CustomerState.Leaving);
         }
@@ -539,7 +539,7 @@ public class CustomerBase : Base
 
     public void Walkto(Vector3 Spot)
     {
-        customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
+        customerAnimator.CrossFadeInFixedTime(Customer_WalkHash, CrossFadeDuration); // Customer1 walk animation
         SetCustomerState(CustomerState.Moving);
         moving = true;
         WalkToClientRpc(Spot.x, Spot.y, Spot.z);
