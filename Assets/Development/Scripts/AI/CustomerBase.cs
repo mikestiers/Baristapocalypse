@@ -26,7 +26,7 @@ public class CustomerBase : Base
     public float distThreshold;
     public GameObject[] Line;
     public int LineIndex;
-    private Transform exit;
+    private Vector3 exit;
     public int currentPosInLine;
 
     [Header("Identifiers")]
@@ -289,7 +289,7 @@ public class CustomerBase : Base
         if (leaving == true)
         {
             SetCustomerState(CustomerState.Leaving);
-            agent.SetDestination(exit.position);
+            agent.SetDestination(exit);
         }
     
 
@@ -524,7 +524,7 @@ public class CustomerBase : Base
         else
         {
             customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
-            agent.SetDestination(exit.position);
+            agent.SetDestination(exit);
             SetCustomerState(CustomerState.Leaving);
         }
 

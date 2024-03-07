@@ -7,6 +7,7 @@ using Unity.Mathematics;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 
 public class CustomerManager : Singleton<CustomerManager>
@@ -84,17 +85,28 @@ public class CustomerManager : Singleton<CustomerManager>
     private bool IsServing = true;
     private bool isSpawningCustomers = false;
 
+    [Header("debug")]
+    [SerializeField] private GameObject LineFirstPosition;
+    [SerializeField] private GameObject ExitPos;
+
     private void Start()
     {
         List<Vector3> waitingQueuePostionList = new List<Vector3>();
         if (Chairs.Length <= 0) Chairs = GameObject.FindGameObjectsWithTag("Waypoint");
 
         //where the firstposition is located in scene
-        Vector3 firstposition = new Vector3(Counter.position.x, 0, Counter.position.z - 1.5f);
+        Vector3 firstposition = new Vector3(Counter.position.x, 0, Counter.position.z - 3f);
+        
+
+        NavMeshHit hit;
+        Vector3 navMeshFirstPos = firstposition;
+        if(NavMesh.SamplePosition(firstposition, out hit, 20f,NavMesh.AllAreas)) navMeshFirstPos = hit.position;
+        LineFirstPosition.transform.position = navMeshFirstPos;
+
         float positionSize = 2f;
         for (int i = 0; i < numberOfCustomers; i++)
         {
-            waitingQueuePostionList.Add(firstposition - new Vector3(0, 0, 1f) * positionSize * i);
+            waitingQueuePostionList.Add(navMeshFirstPos - new Vector3(0, 0, 1f) * positionSize * i);
         }
 
         LineQueue = new CustomerLineQueuing(waitingQueuePostionList);
@@ -358,9 +370,17 @@ public class CustomerManager : Singleton<CustomerManager>
         }
     }
     */
-    public Transform GetExit()
+    public Vector3 GetExit()
     {
-        return exit;
+        Vector3 result;
+
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(exit.position, out hit, 20f, NavMesh.AllAreas)) result = hit.position;
+        else result = exit.position;
+
+        ExitPos.transform.position = result;
+
+        return result;
     }
 
     public int GetCustomerLefttoServe()
