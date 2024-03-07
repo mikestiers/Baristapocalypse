@@ -73,8 +73,12 @@ public class CustomerBase : Base
     [Header("Customer Animations")]
     [SerializeField] private GameObject bodiesContainerObject;
     private Animator customerAnimator;
-    private readonly int Customer1_IdleHash = Animator.StringToHash("Customer1_Idle");
-    private readonly int Customer1_WalkHash = Animator.StringToHash("Customer1_Walk");
+    private readonly int Customer_IdleHash = Animator.StringToHash("Customer_Idle");
+    private readonly int Customer_WalkHash = Animator.StringToHash("Customer_Walk");
+    private readonly int Customer_SitDownHash = Animator.StringToHash("Customer_SitDown");
+    private readonly int Customer_Sit_DrinkHash = Animator.StringToHash("Customer_Sit_Drink");
+
+
     private readonly int Customer1_StruggleHash = Animator.StringToHash("Customer1_Struggle");
 
     [Header("Spills")]
@@ -179,6 +183,8 @@ public class CustomerBase : Base
                 UpdateSitting();
                 break;
         }
+
+        Debug.LogWarning("Customer State " + currentState.Value);
     }
 
 
@@ -234,12 +240,12 @@ public class CustomerBase : Base
             agent.isStopped = true;
             if (frontofLine == true)
             {
-                customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
+                customerAnimator.CrossFadeInFixedTime(Customer_IdleHash, CrossFadeDuration); // Customer1 idle animation
                 SetCustomerState(CustomerState.Ordering);
             }
             if(inLine && frontofLine != true)
             {
-                customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
+                customerAnimator.CrossFadeInFixedTime(Customer_IdleHash, CrossFadeDuration); // Customer1 idle animation
                 SetCustomerState(CustomerState.Waiting);
             }
             if (!inLine)
@@ -268,7 +274,7 @@ public class CustomerBase : Base
 
         if (atSit)
         {
-            customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration);
+            customerAnimator.CrossFadeInFixedTime(Customer_SitDownHash, CrossFadeDuration);
 
             if (orderTimer < 0)
             {
@@ -301,13 +307,13 @@ public class CustomerBase : Base
         }
 
         StartCoroutine(TryGoToRandomPoint(5f));
-    }
+    } 
 
     private void UpdateDrinking()
     {
         if (hasDrink == true)
         {
-           StartCoroutine(SpillTimer());
+            StartCoroutine(SpillTimer());
         }
     }
 
@@ -499,6 +505,7 @@ public class CustomerBase : Base
     {
         SetCustomerState(CustomerState.Drinking);
         //Start Animation for drinking
+        customerAnimator.CrossFadeInFixedTime(Customer_Sit_DrinkHash, CrossFadeDuration);
         float drinkingDur = Random.Range(GameValueHolder.Instance.difficultySettings.GetMinDrinkingDurationTime(), GameValueHolder.Instance.difficultySettings.GetMaxDrinkingDurationTime());
 
         yield return new WaitForSeconds(drinkingDur);
@@ -523,7 +530,7 @@ public class CustomerBase : Base
         }
         else
         {
-            customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
+            customerAnimator.CrossFadeInFixedTime(Customer_WalkHash, CrossFadeDuration); // Customer1 walk animation
             agent.SetDestination(exit.position);
             SetCustomerState(CustomerState.Leaving);
         }
@@ -537,7 +544,7 @@ public class CustomerBase : Base
 
     public void Walkto(Vector3 Spot)
     {
-        customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
+        customerAnimator.CrossFadeInFixedTime(Customer_WalkHash, CrossFadeDuration); // Customer1 walk animation
         SetCustomerState(CustomerState.Moving);
         moving = true;
         WalkToClientRpc(Spot.x, Spot.y, Spot.z);
