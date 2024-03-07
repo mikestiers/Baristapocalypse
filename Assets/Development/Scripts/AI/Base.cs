@@ -8,7 +8,7 @@ public class Base : NetworkBehaviour, IIngredientParent, ISpill
     [SerializeField] private Transform stationTopPoint;
     [SerializeField] private Spill spill;
     private Ingredient ingredient;
-    [SerializeField] private Transform baseSpillSpawnPoint;
+    [SerializeField] private Transform spillSpawnPoint;
 
     public virtual void Interact(PlayerController player)
     {
@@ -47,7 +47,7 @@ public class Base : NetworkBehaviour, IIngredientParent, ISpill
 
     public Transform GetSpillTransform()
     {
-        return baseSpillSpawnPoint;
+        return spillSpawnPoint;
     }
 
     public void SetSpill(Spill spill)

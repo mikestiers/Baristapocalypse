@@ -178,7 +178,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.InteractAltEvent += InteractAlt;
         inputManager.DebugConsoleEvent += ShowDebugConsole;
         inputManager.BrewingStationSelectEvent += OnChangeBrewingStationSelect;
-        inputManager.BrewingStationEmptyEvent += OnBrewingStationEmptyServerRpc;
+        inputManager.BrewingStationEmptyEvent += OnBrewingStationEmpty;
 
         if (AISupervisor.Instance)
         {
@@ -194,7 +194,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.InteractAltEvent -= InteractAlt;
         inputManager.DebugConsoleEvent -= ShowDebugConsole;
         inputManager.BrewingStationSelectEvent -= OnChangeBrewingStationSelect;
-        inputManager.BrewingStationEmptyEvent -= OnBrewingStationEmptyServerRpc;
+        inputManager.BrewingStationEmptyEvent -= OnBrewingStationEmpty;
 
         if (brewingStation1 != null)
             brewingStation1.animationSwitch -= OnAnimationSwitch;
@@ -834,26 +834,15 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void OnBrewingStationEmptyServerRpc()
+    public void OnBrewingStationEmpty()
     {
-        if (OrderManager.Instance.brewingStations[currentBrewingStation].ingredientSOList.Count > 0 && OrderManager.Instance.brewingStations[currentBrewingStation].canEmptyBrewingStation.Value)
+        if (OrderManager.Instance.brewingStations[currentBrewingStation].ingredientSOList.Count > 0)
         {
             AISupervisor.Instance.SupervisorMessageToDisplay("Throwing away product? I'm taking that out of your tips!");
             GameManager.Instance.moneySystem.AdjustMoneyByAmount(3, false);
-            OrderManager.Instance.brewingStations[currentBrewingStation].Empty();
-            OrderManager.Instance.orderStats[currentBrewingStation].ResetAll();
-            OrderManager.Instance.brewingStations[currentBrewingStation].canEmptyBrewingStation.Value = false;
-            StartCoroutine(CanEmptyBrewingStation());
         }
-        
-    }
-
-    private IEnumerator CanEmptyBrewingStation()
-    {
-        yield return new WaitForSeconds(OrderManager.Instance.brewingStations[currentBrewingStation].brewingStationEmptyCooldown);
-        OrderManager.Instance.brewingStations[currentBrewingStation].canEmptyBrewingStation.Value = true;
-
+        OrderManager.Instance.brewingStations[currentBrewingStation].Empty();
+        OrderManager.Instance.orderStats[currentBrewingStation].ResetAll();
     }
 
     public override void OnNetworkSpawn()

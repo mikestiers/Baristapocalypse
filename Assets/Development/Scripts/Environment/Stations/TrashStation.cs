@@ -6,7 +6,7 @@ using UnityEngine;
 public class TrashStation : BaseStation
 {
     [SerializeField] private ParticleSystem interactParticle;
-    private Ingredient trashIngredient;
+    private Ingredient ingredient;
     private Pickup pickup;
     private string mop = "Mop";
 
@@ -18,7 +18,7 @@ public class TrashStation : BaseStation
             {
                 Debug.Log("trashinggggg");
                 player.RemoveIngredientInListByReference(i);
-                trashIngredient = i;
+                ingredient = i;
                 InteractServerRpc();
                 player.OnAnimationSwitch();// setup animation here, OnAnimationSwitch() just reset the animation
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
@@ -53,7 +53,7 @@ public class TrashStation : BaseStation
     [ClientRpc]
     private void InteractClientRpc()
     {
-        Ingredient.DestroyIngredient(trashIngredient);
+        Ingredient.DestroyIngredient(ingredient);
     }
 
     [ServerRpc(RequireOwnership = false)]

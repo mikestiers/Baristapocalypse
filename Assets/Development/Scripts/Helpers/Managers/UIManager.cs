@@ -9,7 +9,6 @@ using System.Collections;
 using System;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
-using Unity.Netcode;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -290,12 +289,6 @@ public class UIManager : Singleton<UIManager>
     }
 
     public void UpdateScoreUI(int currentMoney, int adjustedMoney, bool isAdding, float passPercentage)
-    {
-        UpdateScoreUIClientRpc(currentMoney, adjustedMoney, isAdding, passPercentage);
-    }
-
-    [ClientRpc]
-    private void UpdateScoreUIClientRpc(int currentMoney, int adjustedMoney, bool isAdding, float passPercentage)
     {
         moneyUI.GetComponent<ScoreUI>().UpdateMoneyVisuals(currentMoney, adjustedMoney, isAdding, passPercentage);
     }

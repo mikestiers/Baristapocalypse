@@ -38,8 +38,6 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
     private float minSweetSpotPosition = 0.1f;
     private float maxSweetSpotPosition = 0.9f;
     private NetworkVariable<float> sweetSpotPosition = new NetworkVariable<float>();
-    public NetworkVariable<bool> canEmptyBrewingStation = new NetworkVariable<bool>(true);
-    [SerializeField] public float brewingStationEmptyCooldown = 10.0f;
 
     [Header("Emissions")]
     [SerializeField] private EmissiveControl[] bioMatterTubing;
