@@ -73,9 +73,9 @@ public class CustomerBase : Base
     [Header("Customer Animations")]
     [SerializeField] private GameObject bodiesContainerObject;
     private Animator customerAnimator;
-    private readonly int Customer1_IdleHash = Animator.StringToHash("Customer1_Idle");
-    private readonly int Customer1_WalkHash = Animator.StringToHash("Customer1_Walk");
-    private readonly int Customer1_StruggleHash = Animator.StringToHash("Customer1_Struggle");
+    private readonly int Customer_IdleHash = Animator.StringToHash("Customer_Idle");
+    private readonly int Customer_WalkHash = Animator.StringToHash("Customer_Walk");
+    private readonly int Customer_StruggleHash = Animator.StringToHash("Customer_Struggle");
 
     [Header("Spills")]
     private bool hasDrink = false;
