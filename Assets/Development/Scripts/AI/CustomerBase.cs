@@ -533,7 +533,7 @@ public class CustomerBase : Base
         SetCustomerState(CustomerState.Drinking);
 
         // Start Random Drink Reaction Animation
-        if (customerInstanceReviewScore >= 4)
+        if (customerInstanceReviewScore <= 3)
         {
             if (customerBadDrinkChairHashList.Count > 0)
             {
@@ -542,7 +542,7 @@ public class CustomerBase : Base
                 customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
             }
         }
-        else if (customerInstanceReviewScore <=3)
+        else if (customerInstanceReviewScore >= 4)
         {
             if (customerBadDrinkChairHashList.Count > 0)
             {
@@ -551,8 +551,6 @@ public class CustomerBase : Base
                 customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
             }
         }
-
-
 
         float drinkingDur = Random.Range(GameValueHolder.Instance.difficultySettings.GetMinDrinkingDurationTime(), GameValueHolder.Instance.difficultySettings.GetMaxDrinkingDurationTime());
         yield return new WaitForSeconds(drinkingDur);
