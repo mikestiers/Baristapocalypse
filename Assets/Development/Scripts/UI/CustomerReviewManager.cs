@@ -54,6 +54,11 @@ public class CustomerReviewManager : NetworkBehaviour
 
     public void ShowCustomerReview(CustomerBase customer)
     {
+        if (!IsServer)
+        {
+            Debug.LogWarning("Only server should make review");
+            return;
+        }
         if(reviewInProgress == false)
         {
             customerReviewText = customerReview.GetComponentInChildren<TextMeshProUGUI>();

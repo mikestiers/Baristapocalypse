@@ -836,6 +836,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public void OnBrewingStationEmpty()
     {
+        if (!IsServer)
+        {
+            Debug.LogWarning("Only server should empty the brewing station");
+            return;
+        }
         if (OrderManager.Instance.brewingStations[currentBrewingStation].ingredientSOList.Count > 0)
         {
             AISupervisor.Instance.SupervisorMessageToDisplay("Throwing away product? I'm taking that out of your tips!");
