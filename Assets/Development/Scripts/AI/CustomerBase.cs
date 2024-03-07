@@ -699,7 +699,7 @@ public class CustomerBase : Base
         StartOrderTimerServerRpc();
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     private void StartOrderTimerServerRpc()
     {
         orderTimer = 0f;
