@@ -76,6 +76,10 @@ public class CustomerBase : Base
     private readonly int Customer_IdleHash = Animator.StringToHash("Customer_Idle");
     private readonly int Customer_WalkHash = Animator.StringToHash("Customer_Walk");
     private readonly int Customer_StruggleHash = Animator.StringToHash("Customer_Struggle");
+    private readonly int Customer_SitDownHash = Animator.StringToHash("Customer_SitDown");
+
+
+    
 
     [Header("Spills")]
     private bool hasDrink = false;
@@ -269,7 +273,7 @@ public class CustomerBase : Base
 
         if (atSit)
         {
-            customerAnimator.CrossFadeInFixedTime(Customer_IdleHash, CrossFadeDuration);
+            customerAnimator.CrossFadeInFixedTime(Customer_SitDownHash, CrossFadeDuration);
 
             if (orderTimer < 0)
             {
