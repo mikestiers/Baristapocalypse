@@ -60,6 +60,8 @@ public class CustomerBase : Base
     [Header("Customer Review")]
     public GameObject customerReviewPrefab;
     private GameObject customerReviewPanel;
+    private int customerInstanceReviewScore;
+
 
     // Animation interaction with brewing machine// dirty fix for when player controller is redone
     public event Action animationSwitch;
@@ -262,6 +264,8 @@ public class CustomerBase : Base
         messTime = null;
         leaving = true;
 
+
+
         if (agent.remainingDistance < distThreshold)
         {
             Destroy(gameObject);
@@ -365,6 +369,7 @@ public class CustomerBase : Base
         if (!orderBeingServed)
             DisplayCustomerVisualIdentifiers();
         orderBeingServed = true;
+        // 
         if (orderTimer >= customerLeaveTime)
         {
             CustomerManager.Instance.customerLeaveIncrease();
@@ -505,11 +510,12 @@ public class CustomerBase : Base
     {
         SetCustomerState(CustomerState.Drinking);
         //Start Animation for drinking
+
         customerAnimator.CrossFadeInFixedTime(Customer_Sit_DrinkHash, CrossFadeDuration);
+
+
         float drinkingDur = Random.Range(GameValueHolder.Instance.difficultySettings.GetMinDrinkingDurationTime(), GameValueHolder.Instance.difficultySettings.GetMaxDrinkingDurationTime());
-
         yield return new WaitForSeconds(drinkingDur);
-
         CustomerLeave();
 
     }
@@ -576,6 +582,8 @@ public class CustomerBase : Base
         CustomerManager.Instance.customerServedIncrease();
         CustomerManager.Instance.ReduceCustomerLeftoServe();
         CustomerReviewManager.Instance.CustomerReviewEvent(this);
+        customerInstanceReviewScore = CustomerReviewManager.Instance.reviewScore;
+
         if (OnCustomerLeave != null) OnCustomerLeave?.Invoke(customerNumber.Value);
         OrderManager.Instance.FinishOrder(order);
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.yorpReview);

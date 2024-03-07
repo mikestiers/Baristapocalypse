@@ -29,6 +29,7 @@ public class CustomerReviewManager : NetworkBehaviour
     // Event to receive Supervisor Message
     public delegate void CustomerReviewHandler(CustomerBase customer);
     public static event CustomerReviewHandler OnCustomerReviewReceived;
+    [HideInInspector] public int reviewScore {  get; private set; }
 
 
     private void Awake()
@@ -57,12 +58,17 @@ public class CustomerReviewManager : NetworkBehaviour
         if(reviewInProgress == false)
         {
             customerReviewText = customerReview.GetComponentInChildren<TextMeshProUGUI>();
-            customerReview.GetComponent<CustomerReview>().GenerateReview(customer);
+            CustomerReview customerReviewInstance = customerReview.GetComponent<CustomerReview>();
+            customerReviewInstance.GenerateReview(customer);
+            Debug.LogWarning("ReviewScore " + customerReviewInstance.ReviewScore);
+            reviewScore = customerReviewInstance.ReviewScore;
         }
         else
         {
             customerReviewText = customerReview2.GetComponentInChildren<TextMeshProUGUI>();
-            customerReview2.GetComponent<CustomerReview>().GenerateReview(customer);
+            CustomerReview customerReviewInstance = customerReview2.GetComponent<CustomerReview>();
+            customerReviewInstance.GenerateReview(customer);
+            reviewScore =  customerReviewInstance.ReviewScore;
         }
         
         CustomerReviewDisplayClientRpc();
