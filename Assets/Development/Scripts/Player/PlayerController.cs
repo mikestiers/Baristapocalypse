@@ -86,12 +86,14 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     // Animations
     private readonly int MovementWithCupHash = Animator.StringToHash("MovementWithCup");
     private readonly int MovementHash = Animator.StringToHash("Movement");
-    private readonly int MovementWithCustomerHash = Animator.StringToHash("Movement");
+    private readonly int MovementWithCustomerHash = Animator.StringToHash("MovementWithCustomer");
+    private readonly int MovementWithVacHash = Animator.StringToHash("MovementWithVac");
     private readonly int BP_Barista_Floor_PickupHash = Animator.StringToHash("BP_Barista_Floor_Pickup");
     private readonly int BP_Barista_Pickup_VacHash = Animator.StringToHash("BP_Barista_Pickup_Vac");
     private readonly int BP_Barista_Pickup_CustHash = Animator.StringToHash("BP_Barista_Pickup_Cust");
     private readonly int BP_Barista_Throw_CupHash = Animator.StringToHash("BP_Barista_Throw_Cup");
     private readonly int BP_Barista_Throw_CustHash = Animator.StringToHash("BP_Barista_Throw_Cust");
+    private readonly int BP_Barista_Cleaning_VacHash = Animator.StringToHash("BP_Barista_Cleaning_Vac");
 
     private const float CrossFadeDuration = 0.1f;
 
@@ -322,9 +324,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             if (selectedSpill != null)
             {
                 selectedSpill.HideUi();
+                OnAnimationSwitch();
             }
-            SetSelectedSpill(null);
+           
             // No interactable object hit, clear selected objects.
+            SetSelectedSpill(null);
             SetSelectedStation(null);
             //Hide(visualGameObject);
         }
@@ -757,7 +761,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     public void DoMop(Spill spill)
     {
         if(!HasNoIngredients)return;
-        
+        anim.CrossFadeInFixedTime(BP_Barista_Cleaning_VacHash, CrossFadeDuration);
         spill.Interact(this);
   
     }
@@ -907,7 +911,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
             anim.CrossFadeInFixedTime(MovementWithCupHash, CrossFadeDuration);
         }
-        else if (GetPickup().IsCustomer)
+        else if(GetPickup()!= null && GetPickup().GetPickupObjectSo().objectName == mopSoName)
+        {
+            anim.CrossFadeInFixedTime(MovementWithVacHash, CrossFadeDuration);
+        }
+        else if (GetPickup() != null && GetPickup().IsCustomer)
         {
             anim.CrossFadeInFixedTime(MovementWithCustomerHash, CrossFadeDuration);
         }
