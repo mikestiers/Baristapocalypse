@@ -780,7 +780,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         else if (pickup.IsCustomer && pickup.GetCustomer().GetCustomerState() == CustomerBase.CustomerState.Loitering)
         {
             StartCoroutine(PickUpCustomerAnimation(pickup));
-
         }
     }
 
@@ -842,14 +841,12 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             OrderManager.Instance.brewingStations[currentBrewingStation].canEmptyBrewingStation.Value = false;
             StartCoroutine(CanEmptyBrewingStation());
         }
-        
     }
 
     private IEnumerator CanEmptyBrewingStation()
     {
         yield return new WaitForSeconds(OrderManager.Instance.brewingStations[currentBrewingStation].brewingStationEmptyCooldown);
         OrderManager.Instance.brewingStations[currentBrewingStation].canEmptyBrewingStation.Value = true;
-
     }
 
     public override void OnNetworkSpawn()
@@ -882,8 +879,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if (tutorialMessageActive)
             Time.timeScale = 0f;
     }
-
-    // Temporary Animation Implementation
 
     // Normalized time to handle animations
     public float GetNormalizedTime(Animator animator, string tag)
@@ -928,67 +923,41 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     // Play trash pick up and set trash parent while new player statemachine is done
     private IEnumerator PickUpAnimation(Pickup pickup)
     {
-        PickupSO pickupSo = pickup.GetPickupObjectSo();
-
-        if (pickupSo.objectName == mopSoName)
+        if (!pickup.IsCustomer)
         {
-            anim.CrossFadeInFixedTime(BP_Barista_Pickup_VacHash, CrossFadeDuration);
-        }
-        else if (pickup.IsCustomer)
-        {
-            anim.CrossFadeInFixedTime(BP_Barista_Pickup_CustHash, CrossFadeDuration);
-        }
-        else
-        {
-            anim.CrossFadeInFixedTime(BP_Barista_Floor_PickupHash, CrossFadeDuration);
-        }
+            PickupSO pickupSo = pickup.GetPickupObjectSo();
 
-        movementToggle = false;
-
-        yield return new WaitForSeconds(1f); // hard coded while new player statemachine is done
-
-        if (pickup.IsCustomer)
-        {
-            Debug.Log("hello im a customer and im trying to be picked up");
-            pickup.GetNavMeshAgent().enabled = false;
-            pickup.GetCustomer().SetCustomerState(CustomerBase.CustomerState.PickedUp);
-
-            pickup.SetPickupObjectParent(this);
-
-            pickup.DisablePickupColliders(pickup);
-
-            if (pickup.GetCustomer().inLine == true)
+            if (pickupSo.objectName == mopSoName)
             {
-                int _CustomerPos = pickup.GetCustomer().currentPosInLine;
-                CustomerManager.Instance.LineQueue.RemoveCustomerInPos(_CustomerPos);
-                CustomerManager.Instance.ReduceCustomerLeftoServe();
+                anim.CrossFadeInFixedTime(BP_Barista_Pickup_VacHash, CrossFadeDuration);
             }
-        }
-        else
-        {
+            else
+            {
+                anim.CrossFadeInFixedTime(BP_Barista_Floor_PickupHash, CrossFadeDuration);
+            }
+
+            movementToggle = false;
+
+            yield return new WaitForSeconds(1f); // hard coded while new player statemachine is done
+
             pickup.SetPickupObjectParent(this);
             pickup.DisablePickupColliders(pickup);
-        }
-        movementToggle = true;
+            movementToggle = true;
+        } 
     }
 
     // Play customer pick up and set customer parent
     private IEnumerator PickUpCustomerAnimation(Pickup pickup)
     {
-        PickupSO pickupSo = pickup.GetPickupObjectSo();
-
         anim.CrossFadeInFixedTime(BP_Barista_Pickup_CustHash, CrossFadeDuration);
-  
         movementToggle = false;
 
         yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is done
 
-        Debug.Log("hello im a customer and im trying to be picked up");
         pickup.GetNavMeshAgent().enabled = false;
         pickup.GetCustomer().SetCustomerState(CustomerBase.CustomerState.PickedUp);
-
+        pickup.GetCustomer().isPickedUp = true;
         pickup.SetPickupObjectParent(this);
-
         pickup.DisablePickupColliders(pickup);
 
         if (pickup.GetCustomer().inLine == true)
