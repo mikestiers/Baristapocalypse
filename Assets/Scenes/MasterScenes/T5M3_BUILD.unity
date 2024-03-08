@@ -12033,6 +12033,22 @@ PrefabInstance:
       propertyPath: m_WholeNumbers
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1728252325, guid: 43fcf7eed79c2f94abf7a4d73cf79761, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9149597
+      objectReference: {fileID: 0}
+    - target: {fileID: 1728252325, guid: 43fcf7eed79c2f94abf7a4d73cf79761, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1728252325, guid: 43fcf7eed79c2f94abf7a4d73cf79761, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.40354517
+      objectReference: {fileID: 0}
+    - target: {fileID: 1728252325, guid: 43fcf7eed79c2f94abf7a4d73cf79761, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -47.6
+      objectReference: {fileID: 0}
     - target: {fileID: 1434535500077045754, guid: 43fcf7eed79c2f94abf7a4d73cf79761, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -12135,6 +12151,9 @@ MonoBehaviour:
   slider: {fileID: 1395824880}
   moveSpeed: 1
   box: {fileID: 874483914}
+  rotatingImage: {fileID: 881205342}
+  minRotationAngle: -47.6
+  maxRotationAngle: 229.1
   textPairs:
   - text1: {fileID: 912019548}
     text2: {fileID: 889422749}
@@ -12159,6 +12178,17 @@ BoxCollider:
   m_CorrespondingSourceObject: {fileID: 2161829252158180022, guid: 43fcf7eed79c2f94abf7a4d73cf79761, type: 3}
   m_PrefabInstance: {fileID: 874483909}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &881205342 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1728252326, guid: 43fcf7eed79c2f94abf7a4d73cf79761, type: 3}
+  m_PrefabInstance: {fileID: 874483909}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &889422749 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 889422749, guid: 43fcf7eed79c2f94abf7a4d73cf79761, type: 3}

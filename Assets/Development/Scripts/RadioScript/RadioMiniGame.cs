@@ -9,6 +9,9 @@ public class RadioMiniGame : MonoBehaviour
     [SerializeField] private Slider slider;
     [SerializeField] private float moveSpeed = 1f; // Speed at which the slider moves
     [SerializeField] private BoxCollider box;
+    [SerializeField] private Image rotatingImage;
+    [SerializeField] private float minRotationAngle = -47.6f; // Minimum rotation angle
+    [SerializeField] private float maxRotationAngle = 229.1f; // Maximum rotation angle
 
     [System.Serializable]
     public class TextPair
@@ -30,8 +33,11 @@ public class RadioMiniGame : MonoBehaviour
 
     void Start()
     {
-        
-        
+        // Set up slider
+        slider.minValue = 0f;
+        slider.maxValue = 25f;
+        slider.wholeNumbers = true;
+        slider.value = 0f; // Start at 0
 
         // Change text color to red for a randomly selected pair of TextMeshProUGUI objects
         ChangeRandomTextColorPair();
@@ -39,30 +45,28 @@ public class RadioMiniGame : MonoBehaviour
 
     void Update()
     {
-        // Check if the player is within range of a hitbox
+        // Check if the player hits Q or E to increment or decrement the slider value
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            MoveSlider(-moveSpeed); // Move slider left
+            MoveSlider(-1);
         }
         else if (Input.GetKeyDown(KeyCode.E))
         {
-            MoveSlider(moveSpeed); // Move slider right
+            MoveSlider(1);
         }
-    }
 
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
+        // Update image rotation based on slider value
+        float rotationAngle = Mathf.Lerp(minRotationAngle, maxRotationAngle, slider.normalizedValue);
+        rotatingImage.transform.rotation = Quaternion.Euler(0f, 0f, rotationAngle);
+
+        // Check if the slider value matches any of the goal values
+        foreach (TextPair pair in textPairs)
         {
-            // Move slider to the goal value associated with this pair
-            foreach (TextPair pair in textPairs)
+            if (Mathf.Approximately(slider.value, pair.goalValue))
             {
-                if (Mathf.Approximately(slider.value, pair.goalValue))
-                {
-                    // Turn text color white for the pair
-                    pair.text1.color = Color.white;
-                    pair.text2.color = Color.white;
-                }
+                // Turn text color white for the pair
+                pair.text1.color = Color.white;
+                pair.text2.color = Color.white;
             }
         }
     }
@@ -84,8 +88,8 @@ public class RadioMiniGame : MonoBehaviour
         }
     }
 
-    void MoveSlider(float direction)
+    void MoveSlider(int direction)
     {
-        slider.value = Mathf.Clamp01(slider.value + direction);
+        slider.value = Mathf.Clamp(slider.value + direction, slider.minValue, slider.maxValue);
     }
 }
