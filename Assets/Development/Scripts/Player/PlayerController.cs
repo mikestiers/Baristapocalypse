@@ -85,6 +85,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     private readonly int MovementWithCupHash = Animator.StringToHash("MovementWithCup");
     private readonly int MovementHash = Animator.StringToHash("Movement");
     private readonly int BP_Barista_Floor_PickupHash = Animator.StringToHash("BP_Barista_Floor_Pickup");
+    private readonly int BP_Barista_Pickup_VacHash = Animator.StringToHash("BP_Barista_Pickup_Vac");
+    private readonly int BP_Barista_Pickup_CustHash = Animator.StringToHash("BP_Barista_Pickup_Cust");
     private readonly int BP_Barista_Throw_CupHash = Animator.StringToHash("BP_Barista_Throw_Cup");
 
     private const float CrossFadeDuration = 0.1f;
@@ -766,7 +768,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         if (pickupSo != null)
         {
-            StartCoroutine(TrashPickUpAnimation(pickup)); // Play trash pick up and set trash parent
+            StartCoroutine(PickUpAnimation(pickup)); // Play trash pick up and set trash parent
         }
 
         if (pickup.IsCustomer && pickup.GetCustomer().GetCustomerState() == CustomerBase.CustomerState.Loitering)
@@ -915,6 +917,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
             anim.CrossFadeInFixedTime(MovementWithCupHash, CrossFadeDuration);
         }
+        else if ()
+        {
+
+        }
         else
         {
             anim.CrossFadeInFixedTime(MovementHash, CrossFadeDuration);
@@ -922,8 +928,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     }
 
     // Play trash pick up and set trash parent while new player statemachine is dead
-    private IEnumerator TrashPickUpAnimation(Pickup pickup)
+    private IEnumerator PickUpAnimation(Pickup pickup)
     {
+        
         anim.CrossFadeInFixedTime(BP_Barista_Floor_PickupHash, CrossFadeDuration);
         movementToggle = false;
 
