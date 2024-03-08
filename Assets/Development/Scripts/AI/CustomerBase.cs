@@ -143,8 +143,10 @@ public class CustomerBase : Base
         exit = CustomerManager.Instance.GetExit();
         if (distThreshold <= 0) distThreshold = 0.1f;
 
-        GetIngredientTransform().position = customerRandomizer.currentCustomerHoldPoint.transform.position;
         GetIngredientTransform().SetParent(customerRandomizer.currentCustomerHoldPoint.transform);
+        GetIngredientTransform().localPosition = new Vector3(0.067f, -0.121f, 0.055f);
+        GetIngredientTransform().localEulerAngles = new Vector3(0, 30, 90);
+
 
         customerReviewPanel = GameObject.FindGameObjectWithTag("CustomerReviewPanel");
     }
