@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using TMPro;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,17 +15,17 @@ public class RadioStation : BaseStation
     [SerializeField] private AudioClip BrokenSound;
     [SerializeField] private ParticleSystem interactParticle; // NOte could be deleted later
     [SerializeField] private GameObject eventLight;
+    bool eventIsOn = false;
     private int AudioIndex = 0;
 
     public override void Interact(PlayerController player)
     {
-        ChangeSongDownServerRpc();
-        EventOffServerRpc();
+         ChangeSongDownServerRpc();   
     }
 
     public override void InteractAlt(PlayerController player)
     {
-        ChangeSongUpServerRpc();
+         ChangeSongUpServerRpc(); 
     }
 
     [ServerRpc(RequireOwnership = false)] 
@@ -41,10 +42,18 @@ public class RadioStation : BaseStation
 
     private void ChangeSongDown()
     {
-        AudioIndex++;
-        AudioIndex %= Audios.Length; // should loop
-        MainAudio.clip = Audios[AudioIndex];
-        MainAudio.Play();
+        if(eventIsOn == true) 
+        {
+            
+           // do nothing
+        }
+        else 
+        {
+          AudioIndex++;
+          AudioIndex %= Audios.Length; // should loop
+          MainAudio.clip = Audios[AudioIndex];
+          MainAudio.Play();
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -61,10 +70,18 @@ public class RadioStation : BaseStation
 
     private void ChangeSongUp() 
     {
-        AudioIndex--;
-        AudioIndex = (AudioIndex + Audios.Length) % Audios.Length; // should loop
-        MainAudio.clip = Audios[AudioIndex];
-        MainAudio.Play();
+        if (eventIsOn == true) 
+        {
+            // do nothing
+        }
+        else 
+        {
+          AudioIndex--;
+          AudioIndex = (AudioIndex + Audios.Length) % Audios.Length; // should loop
+          MainAudio.clip = Audios[AudioIndex];
+          MainAudio.Play();
+        }
+        
     }
 
     [ClientRpc]
@@ -75,9 +92,12 @@ public class RadioStation : BaseStation
 
     public void EventOn() 
     {
+        eventIsOn = true;
         MainAudio.clip = BrokenSound;
         MainAudio.Play();
         eventLight.SetActive(true);
+        ChangeRandomTextColorPair();
+        Ui.gameObject.SetActive(true);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -94,10 +114,12 @@ public class RadioStation : BaseStation
 
     public void EventOff() 
     {
+        eventIsOn = false;
         eventLight.SetActive(false);
         GameManager.Instance.isEventActive.Value = false;
         MainAudio.clip = Audios[AudioIndex];
         MainAudio.Play();
+        Ui.gameObject.SetActive(false);
     }
 
 
@@ -107,6 +129,7 @@ public class RadioStation : BaseStation
     [SerializeField] private Image rotatingImage;
     [SerializeField] private float minRotationAngle = -47.6f; // Minimum rotation angle
     [SerializeField] private float maxRotationAngle = 229.1f; // Maximum rotation angle
+    [SerializeField] private GameObject Ui;
 
     [System.Serializable]
     public class TextPair
@@ -134,8 +157,6 @@ public class RadioStation : BaseStation
         slider.wholeNumbers = true;
         slider.value = 0f; // Start at 0
 
-        // Change text color to red for a randomly selected pair of TextMeshProUGUI objects
-        ChangeRandomTextColorPair();
     }
 
     void Update()
@@ -162,6 +183,7 @@ public class RadioStation : BaseStation
                 // Turn text color white for the pair
                 pair.text1.color = Color.white;
                 pair.text2.color = Color.white;
+                EventOffServerRpc();
             }
         }
     }
