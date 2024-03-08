@@ -192,7 +192,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
     [ServerRpc(RequireOwnership = false)]
     private void MinigameStartedServerRpc()
     {
-        animationWaitTime = 0.4f; //PlayerController.Instance.anim.GetCurrentAnimatorStateInfo(0).normalizedTime; this is giving a delay of like 1 sec , i believe is because i'm playimg the animation faster than original
+        animationWaitTime = 1f; //PlayerController.Instance.anim.GetCurrentAnimatorStateInfo(0).normalizedTime; this is giving a delay of like 1 sec , i believe is because i'm playimg the animation faster than original
         SpawnCoffeeDrinkServerRpc();
 
         Empty();
