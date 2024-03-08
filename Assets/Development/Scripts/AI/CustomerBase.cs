@@ -81,6 +81,8 @@ public class CustomerBase : Base
     private readonly int Customer_SitDownHash = Animator.StringToHash("Customer_SitDown");
     private List<int> customerBadDrinkChairHashList = new List<int>();
     private List<int> customerGoodDrinkChairHashList = new List<int>();
+    private List<int> customerImpatientHashList = new List<int>();
+    private bool isImpatient = false;
 
     [Header("Spills")]
     private bool hasDrink = false;
@@ -112,6 +114,12 @@ public class CustomerBase : Base
         customerGoodDrinkChairHashList.Add(Animator.StringToHash("Customer_Good_Drink_Chair_1"));
         customerGoodDrinkChairHashList.Add(Animator.StringToHash("Customer_Good_Drink_Chair_2"));
         customerGoodDrinkChairHashList.Add(Animator.StringToHash("Customer_Good_Drink_Chair_3"));
+
+        // Add Impatient Animation Reaction to list
+        customerImpatientHashList.Add(Animator.StringToHash("Customer_Impatient_1"));
+        customerImpatientHashList.Add(Animator.StringToHash("Customer_Impatient_2"));
+        customerImpatientHashList.Add(Animator.StringToHash("Customer_Impatient_3"));
+
     }
 
     public virtual void Start()
@@ -197,6 +205,8 @@ public class CustomerBase : Base
                 UpdateSitting();
                 break;
         }
+
+        Debug.LogWarning("CustomerState " + currentState.Value);
     }
 
 
@@ -212,12 +222,28 @@ public class CustomerBase : Base
 
     private void UpdateWaiting()
     {
+        
         //customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
         // To be implmented or removed
         if (makingAMess == true) SetCustomerState(CustomerState.Loitering);
 
-        if (inLine == true && lineTime == null) lineTime = 0.0f;
+        if (inLine == true && lineTime == null)
+        {
+            isImpatient = false;
+            lineTime = 0.0f;
+        }
         else if (inLine == false) lineTime = null;
+
+        if (lineTime > (maxInLineTime / 4) && !isImpatient)
+        {
+            isImpatient = true;
+            if (customerImpatientHashList.Count > 0)
+            {
+                int randomIndex = Random.Range(0, customerImpatientHashList.Count);
+                int randomHash = customerImpatientHashList[randomIndex];
+                customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
+            }
+        }
 
         if (inLine == true && lineTime > (maxInLineTime)) 
         {
@@ -232,8 +258,24 @@ public class CustomerBase : Base
 
     private void UpdateOrdering()
     {
-        if (inLine == true && lineTime == null) lineTime = 0.0f;
+        
+        if (inLine == true && lineTime == null)
+        {
+            isImpatient = false;
+            lineTime = 0.0f;
+        }
         else if (inLine == false) lineTime = null;
+
+        if (lineTime > (maxInLineTime / 4) && !isImpatient)
+        {
+            isImpatient = true;
+            if (customerImpatientHashList.Count > 0)
+            {
+                int randomIndex = Random.Range(0, customerImpatientHashList.Count);
+                int randomHash = customerImpatientHashList[randomIndex];
+                customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
+            }
+        }
 
         if (inLine == true && lineTime > (maxInLineTime))
         {
@@ -258,6 +300,8 @@ public class CustomerBase : Base
             if(inLine && frontofLine != true)
             {
                 customerAnimator.CrossFadeInFixedTime(Customer_IdleHash, CrossFadeDuration); // Customer1 idle animation
+
+
                 SetCustomerState(CustomerState.Waiting);
             }
             if (!inLine)
