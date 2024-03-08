@@ -72,6 +72,7 @@ public class Spill : NetworkBehaviour
                 }
                 if (cleaningProgress >= totalProgress)
                 {
+                    player.OnAnimationSwitch();
                     GameManager.Instance.RemoveSpill();
                     Destroy(gameObject);
                 } 
