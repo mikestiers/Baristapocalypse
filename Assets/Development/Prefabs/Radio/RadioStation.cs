@@ -21,13 +21,13 @@ public class RadioStation : BaseStation
     public override void Interact(PlayerController player)
     {
         if (eventIsOn == false) ChangeSongDownServerRpc();
-        else if (eventIsOn == true) { MoveSlider(1); }
+        else if (eventIsOn == true) { MoveSlider(-1); }
     }
 
     public override void InteractAlt(PlayerController player)
     {
         if (eventIsOn == false) ChangeSongUpServerRpc(); 
-        else if (eventIsOn == true) { MoveSlider(-1); }
+        else if (eventIsOn == true) { MoveSlider(1); }
     }
 
     [ServerRpc(RequireOwnership = false)] 
