@@ -18,6 +18,7 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private Button createPrivateLobbyButton;
     [SerializeField] private Button createPublicLobbyButton;
     [SerializeField] private Button backButton;
+    [SerializeField] private Button backToMain;
 
     [SerializeField] private TMP_Dropdown dropdownPlayers;
     private int selectedMaxPlayers;
@@ -27,9 +28,13 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private TMP_InputField maxPlayersInputField;
     [SerializeField] private TMP_InputField lobbyCodeInputField;
 
-
     [SerializeField] private Transform lobbyContainer;
     [SerializeField] private Transform lobbyTemplate;
+
+    [Header("Level Loader")]
+    [SerializeField] private LevelLoader levelLoader;
+
+    private bool isLobbyCreated = false;
 
     private void Awake()
     {
@@ -63,6 +68,7 @@ public class LobbyUI : MonoBehaviour
 
         if (createPrivateLobbyButton)
         {
+
             createPrivateLobbyButton.onClick.AddListener(() =>
             {
                 LobbyManager.Instance.CreateLobby(lobbyNameInputField.text, true, selectedMaxPlayers);
@@ -77,6 +83,10 @@ public class LobbyUI : MonoBehaviour
             });
         }
 
+        if (backToMain)
+        {
+            backToMain.onClick.AddListener(BackToMain);
+        }
         lobbyTemplate.gameObject.SetActive(false);
     }
 
@@ -99,6 +109,7 @@ public class LobbyUI : MonoBehaviour
 
     private void LobbyManager_OnLobbyListChanged(object sender, LobbyManager.OnLobbyListChangedEventArgs e)
     {
+        Debug.Log("LobbyManager_OnLobbyListChanged");
         UpdateLobbyList(e.lobbyList);
     }
 
@@ -123,6 +134,12 @@ public class LobbyUI : MonoBehaviour
         LobbyManager.Instance.OnLobbyListChanged -= LobbyManager_OnLobbyListChanged;
     }
 
-    
-
+    private void BackToMain()
+    {
+        if (!levelLoader.isActiveAndEnabled)
+        {
+            levelLoader.gameObject.SetActive(true);
+        }
+        levelLoader.PlaySceneTransition(((int)Loader.Scene.MainMenuScene));
+    }
 }

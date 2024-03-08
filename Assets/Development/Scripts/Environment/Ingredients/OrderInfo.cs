@@ -10,7 +10,8 @@ public class OrderInfo : INetworkSerializable, IEquatable<OrderInfo>
 {
     public FixedString32Bytes orderName;
     public int number;
-    public float orderTimer; 
+    public float orderTimer;
+    public float customerLeaveTime;
     public int coffeeAttributesSweetness;
     public int coffeeAttributesTemperature;
     public int coffeeAttributesSpiciness;
@@ -24,6 +25,7 @@ public class OrderInfo : INetworkSerializable, IEquatable<OrderInfo>
         orderName = new FixedString32Bytes(customerOrder.customerName.Value);
         number = customerOrder.customerNumber.Value;
         orderTimer = customerOrder.orderTimer;
+        customerLeaveTime = customerOrder.customerLeaveTime;
         coffeeAttributesSweetness = customerOrder.coffeeAttributes.GetSweetness();
         coffeeAttributesTemperature = customerOrder.coffeeAttributes.GetTemperature();
         coffeeAttributesSpiciness = customerOrder.coffeeAttributes.GetSpiciness();
@@ -46,6 +48,7 @@ public class OrderInfo : INetworkSerializable, IEquatable<OrderInfo>
         serializer.SerializeValue(ref orderName);
         serializer.SerializeValue(ref number);
         serializer.SerializeValue(ref orderTimer);
+        serializer.SerializeValue(ref customerLeaveTime);
         serializer.SerializeValue(ref coffeeAttributesSpiciness);
         serializer.SerializeValue(ref coffeeAttributesTemperature);
         serializer.SerializeValue(ref coffeeAttributesSweetness);
@@ -61,5 +64,4 @@ public class OrderInfo : INetworkSerializable, IEquatable<OrderInfo>
         }
         return false;
     }
-
 }

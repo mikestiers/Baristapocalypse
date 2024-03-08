@@ -47,6 +47,7 @@ public class GravityStation : NetworkBehaviour
         GameManager.Instance.isGravityStorm.Value = false;
 
         RandomEventBase randomEvent = GameManager.Instance.currentRandomEvent;
+        if (randomEvent == null) return;
         GravityStorm gravityStorm = randomEvent.gameObject.GetComponent<GravityStorm>();
         if (gravityStorm != null)
         {

@@ -90,7 +90,6 @@ public class Pickup : NetworkBehaviour
         
         //pickupObject.RemoveRigidBody();
         pickupObject.GetCollider().enabled = false;
-
     }
 
     public void EnablePickupColliders(Pickup pickup)
@@ -109,30 +108,14 @@ public class Pickup : NetworkBehaviour
     {
         pickupNetworkObjectReference.TryGet(out NetworkObject pickupNetworkObject);
         Pickup pickup = pickupNetworkObject.GetComponent<Pickup>();
-        // Disable the collider immediately after instantiation
-        Collider pickupCollider = pickup.GetComponent<Collider>();
-        if (pickupCollider != null)
-        {
-            pickupCollider.enabled = true;
-        }
+
+        pickup.GetCollider().enabled = true;
     }
 
 
     public PickupSO GetPickupObjectSo()
     {
         return pickupSo;
-    }
-    public void AddRigidbody()
-    {
-        transform.AddComponent<Rigidbody>();
-    }
-
-    public void RemoveRigidBody()
-    {
-        if (transform.TryGetComponent<Rigidbody>(out Rigidbody rb))
-        {
-            Destroy(rb);
-        }
     }
 
     public NavMeshAgent GetNavMeshAgent()
