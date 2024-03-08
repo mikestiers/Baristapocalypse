@@ -94,7 +94,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     private readonly int BP_Barista_Throw_CupHash = Animator.StringToHash("BP_Barista_Throw_Cup");
     private readonly int BP_Barista_Throw_CustHash = Animator.StringToHash("BP_Barista_Throw_Cust");
     private readonly int BP_Barista_Cleaning_VacHash = Animator.StringToHash("BP_Barista_Cleaning_Vac");
-
+    
     private const float CrossFadeDuration = 0.1f;
 
     private CinemachineVirtualCamera virtualCamera;
