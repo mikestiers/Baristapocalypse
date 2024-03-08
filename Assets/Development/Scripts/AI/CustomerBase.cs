@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Netcode;
 using Unity.VisualScripting;
@@ -60,6 +61,7 @@ public class CustomerBase : Base
     [Header("Customer Review")]
     public GameObject customerReviewPrefab;
     private GameObject customerReviewPanel;
+    private int customerInstanceReviewScore;
 
     // Animation interaction with brewing machine// dirty fix for when player controller is redone
     public event Action animationSwitch;
@@ -73,9 +75,15 @@ public class CustomerBase : Base
     [Header("Customer Animations")]
     [SerializeField] private GameObject bodiesContainerObject;
     private Animator customerAnimator;
-    private readonly int Customer1_IdleHash = Animator.StringToHash("Customer1_Idle");
-    private readonly int Customer1_WalkHash = Animator.StringToHash("Customer1_Walk");
-    private readonly int Customer1_StruggleHash = Animator.StringToHash("Customer1_Struggle");
+    private readonly int Customer_IdleHash = Animator.StringToHash("Customer_Idle");
+    private readonly int Customer_WalkHash = Animator.StringToHash("Customer_Walk");
+    private readonly int Customer_StruggleHash = Animator.StringToHash("Customer_Struggle");
+    private readonly int Customer_SitDownHash = Animator.StringToHash("Customer_SitDown");
+    private List<int> customerBadDrinkChairHashList = new List<int>();
+    private List<int> customerGoodDrinkChairHashList = new List<int>();
+    private List<int> customerImpatientHashList = new List<int>();
+    private bool isImpatient = false;
+    private CustomerRandomizer customerRandomizer;
 
     [Header("Spills")]
     private bool hasDrink = false;
@@ -96,6 +104,27 @@ public class CustomerBase : Base
         Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead, Drinking, Sitting
     }
 
+    public void Awake()
+    {
+        customerRandomizer = GetComponent<CustomerRandomizer>();
+
+        // Add Bad Drink Animation Reaction to list
+        customerBadDrinkChairHashList.Add(Animator.StringToHash("Customer_Bad_Drink_Chair_1"));
+        customerBadDrinkChairHashList.Add(Animator.StringToHash("Customer_Bad_Drink_Chair_2"));
+        customerBadDrinkChairHashList.Add(Animator.StringToHash("Customer_Bad_Drink_Chair_3"));
+
+        // Add Bad Drink Animation Reaction to list
+        customerGoodDrinkChairHashList.Add(Animator.StringToHash("Customer_Good_Drink_Chair_1"));
+        customerGoodDrinkChairHashList.Add(Animator.StringToHash("Customer_Good_Drink_Chair_2"));
+        customerGoodDrinkChairHashList.Add(Animator.StringToHash("Customer_Good_Drink_Chair_3"));
+
+        // Add Impatient Animation Reaction to list
+        customerImpatientHashList.Add(Animator.StringToHash("Customer_Impatient_1"));
+        customerImpatientHashList.Add(Animator.StringToHash("Customer_Impatient_2"));
+        customerImpatientHashList.Add(Animator.StringToHash("Customer_Impatient_3"));
+
+    }
+
     public virtual void Start()
     {
         if (IsOwner)
@@ -113,7 +142,11 @@ public class CustomerBase : Base
         agent = GetComponent<NavMeshAgent>();
         exit = CustomerManager.Instance.GetExit();
         if (distThreshold <= 0) distThreshold = 0.1f;
-        
+
+        GetIngredientTransform().SetParent(customerRandomizer.currentCustomerHoldPoint.transform);
+        GetIngredientTransform().localPosition = new Vector3(0.067f, -0.121f, 0.055f);
+        GetIngredientTransform().localEulerAngles = new Vector3(0, 30, 90);
+
 
         customerReviewPanel = GameObject.FindGameObjectWithTag("CustomerReviewPanel");
     }
@@ -179,6 +212,8 @@ public class CustomerBase : Base
                 UpdateSitting();
                 break;
         }
+
+        Debug.LogWarning("CustomerState " + currentState.Value);
     }
 
 
@@ -194,12 +229,28 @@ public class CustomerBase : Base
 
     private void UpdateWaiting()
     {
+        
         //customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
         // To be implmented or removed
         if (makingAMess == true) SetCustomerState(CustomerState.Loitering);
 
-        if (inLine == true && lineTime == null) lineTime = 0.0f;
+        if (inLine == true && lineTime == null)
+        {
+            isImpatient = false;
+            lineTime = 0.0f;
+        }
         else if (inLine == false) lineTime = null;
+
+        if (lineTime > (maxInLineTime / 4) && !isImpatient)
+        {
+            isImpatient = true;
+            if (customerImpatientHashList.Count > 0)
+            {
+                int randomIndex = Random.Range(0, customerImpatientHashList.Count);
+                int randomHash = customerImpatientHashList[randomIndex];
+                customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
+            }
+        }
 
         if (inLine == true && lineTime > (maxInLineTime)) 
         {
@@ -214,8 +265,24 @@ public class CustomerBase : Base
 
     private void UpdateOrdering()
     {
-        if (inLine == true && lineTime == null) lineTime = 0.0f;
+        
+        if (inLine == true && lineTime == null)
+        {
+            isImpatient = false;
+            lineTime = 0.0f;
+        }
         else if (inLine == false) lineTime = null;
+
+        if (lineTime > (maxInLineTime / 4) && !isImpatient)
+        {
+            isImpatient = true;
+            if (customerImpatientHashList.Count > 0)
+            {
+                int randomIndex = Random.Range(0, customerImpatientHashList.Count);
+                int randomHash = customerImpatientHashList[randomIndex];
+                customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
+            }
+        }
 
         if (inLine == true && lineTime > (maxInLineTime))
         {
@@ -234,12 +301,14 @@ public class CustomerBase : Base
             agent.isStopped = true;
             if (frontofLine == true)
             {
-                customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
+                customerAnimator.CrossFadeInFixedTime(Customer_IdleHash, CrossFadeDuration); // Customer1 idle animation
                 SetCustomerState(CustomerState.Ordering);
             }
             if(inLine && frontofLine != true)
             {
-                customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
+                customerAnimator.CrossFadeInFixedTime(Customer_IdleHash, CrossFadeDuration); // Customer1 idle animation
+
+
                 SetCustomerState(CustomerState.Waiting);
             }
             if (!inLine)
@@ -269,7 +338,7 @@ public class CustomerBase : Base
 
         if (atSit)
         {
-            customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration);
+            customerAnimator.CrossFadeInFixedTime(Customer_SitDownHash, CrossFadeDuration);
 
             if (orderTimer < 0)
             {
@@ -499,9 +568,28 @@ public class CustomerBase : Base
     private IEnumerator Drink()
     {
         SetCustomerState(CustomerState.Drinking);
-        //Start Animation for drinking
-        float drinkingDur = Random.Range(GameValueHolder.Instance.difficultySettings.GetMinDrinkingDurationTime(), GameValueHolder.Instance.difficultySettings.GetMaxDrinkingDurationTime());
 
+        // Start Random Drink Reaction Animation
+        if (customerInstanceReviewScore <= 3)
+        {
+            if (customerBadDrinkChairHashList.Count > 0)
+            {
+                int randomIndex = Random.Range(0, customerBadDrinkChairHashList.Count);
+                int randomHash = customerBadDrinkChairHashList[randomIndex];
+                customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
+            }
+        }
+        else if (customerInstanceReviewScore >= 4)
+        {
+            if (customerBadDrinkChairHashList.Count > 0)
+            {
+                int randomIndex = Random.Range(0, customerGoodDrinkChairHashList.Count);
+                int randomHash = customerGoodDrinkChairHashList[randomIndex];
+                customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
+            }
+        }
+
+        float drinkingDur = Random.Range(GameValueHolder.Instance.difficultySettings.GetMinDrinkingDurationTime(), GameValueHolder.Instance.difficultySettings.GetMaxDrinkingDurationTime());       
         yield return new WaitForSeconds(drinkingDur);
 
         CustomerLeave();
@@ -525,7 +613,7 @@ public class CustomerBase : Base
         else
         {
             Debug.LogError("Customer Leaving");
-            customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
+            customerAnimator.CrossFadeInFixedTime(Customer_WalkHash, CrossFadeDuration); // Customer1 walk animation
             agent.SetDestination(exit);
             SetCustomerState(CustomerState.Leaving);
         }
@@ -539,7 +627,7 @@ public class CustomerBase : Base
 
     public void Walkto(Vector3 Spot)
     {
-        customerAnimator.CrossFadeInFixedTime(Customer1_WalkHash, CrossFadeDuration); // Customer1 walk animation
+        customerAnimator.CrossFadeInFixedTime(Customer_WalkHash, CrossFadeDuration); // Customer1 walk animation
         SetCustomerState(CustomerState.Moving);
         moving = true;
         WalkToClientRpc(Spot.x, Spot.y, Spot.z);
@@ -571,6 +659,7 @@ public class CustomerBase : Base
         CustomerManager.Instance.customerServedIncrease();
         CustomerManager.Instance.ReduceCustomerLeftoServe();
         CustomerReviewManager.Instance.CustomerReviewEvent(this);
+        customerInstanceReviewScore = CustomerReviewManager.Instance.reviewScore;
         if (OnCustomerLeave != null) OnCustomerLeave?.Invoke(customerNumber.Value);
         OrderManager.Instance.FinishOrder(order);
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.yorpReview);

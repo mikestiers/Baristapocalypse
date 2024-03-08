@@ -12,6 +12,8 @@ public class CustomerRandomizer : NetworkBehaviour
     [SerializeField] public CustomerRaceSO[] Races;
     //public List<GameObject> heads = new List<GameObject>();
     public List<GameObject> bodies = new List<GameObject>();
+    public List<GameObject> cupHoldPointList = new List<GameObject>();
+    [HideInInspector] public GameObject currentCustomerHoldPoint;
     public GridLayoutGroup cheatIconsLayoutGroup;
 
     //public List<IngredientSO> temperature = new List<IngredientSO>();
@@ -82,6 +84,7 @@ public class CustomerRandomizer : NetworkBehaviour
 
         //int headIndex = Random.Range(0, heads.Count);
         int bodyIndex = Random.Range(0, bodies.Count);
+        currentCustomerHoldPoint = cupHoldPointList[bodyIndex];
 
         StartClientRpc(bodyIndex, accumulatedSpiciness, accumulatedStrength, accumulatedSweetness, accumulatedTemperature);
     }
