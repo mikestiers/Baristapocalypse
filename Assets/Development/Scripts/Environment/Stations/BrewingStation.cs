@@ -187,6 +187,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
     {
         minigameTimer.Value = 0f;
         isMinigameRunning.Value = false;
+        OnBrewingDone?.Invoke(this, EventArgs.Empty);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -205,8 +206,8 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
 
     public override void Interact(PlayerController player)
     {
-        Debug.LogWarning("Is minigame Ended Value " + isminigameEnded.Value);
-        Debug.LogWarning("Current player controller " + currentPlayerController);
+        if (player.HasIngredient()) return;
+        if (player.HasPickup()) return;
         //Setup brewing controller stuff
         if (currentPlayerController == null && isminigameEnded.Value && ingredientSOList.Count >= numIngredientsNeeded)
         {
