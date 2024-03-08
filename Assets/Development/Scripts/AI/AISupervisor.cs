@@ -54,11 +54,6 @@ public class AISupervisor : NetworkBehaviour
         {
             return;
         }
-
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            SupervisorMessageToDisplayEvent(stringTest);
-        }
     }
 
     private void InputUpdated(InputImagesSO inputImagesSO)

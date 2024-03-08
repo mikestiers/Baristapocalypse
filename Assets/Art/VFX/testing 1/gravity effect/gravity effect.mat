@@ -10,6 +10,7 @@ Material:
   m_Name: gravity effect
   m_Shader: {fileID: -6465566751694194690, guid: 0c75c6adf4fe21940b69547f10e4cee4, type: 3}
   m_ValidKeywords:
+  - _RECEIVE_SHADOWS_OFF
   - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords: []
   m_LightmapFlags: 2
@@ -20,6 +21,7 @@ Material:
     RenderType: Transparent
   disabledShaderPasses:
   - DepthOnly
+  - SHADOWCASTER
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -43,25 +45,38 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _Blend: 0
-    - _CastShadows: 1
+    - _CastShadows: 0
     - _Cull: 0
     - _DstBlend: 10
+    - _Float: 5
+    - _Float_1: 2
+    - _Float_2: 0
+    - _Origin: -0.1
+    - _Origin_BOTTOM: 0.1
+    - _Origin_TOP: 0.6
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _ReceiveShadows: 1
+    - _ReceiveShadows: 0
+    - _Spread: 0.1
     - _SrcBlend: 5
     - _Surface: 1
     - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 0
     - _ZWriteControl: 0
-    - _efect_depth: 1
+    - _efect_depth: 0
     - _efect_max: 1
     - _efect_min: 1
+    - _intersection_depth: 3.15
+    - _noise_scale: 500
     m_Colors:
-    - _scrollspeed: {r: 1, g: 2, b: 0, a: 0}
-    - _tiling: {r: 5, g: 2, b: 0, a: 0}
-    - _wave_color: {r: 3.4772296, g: 0, b: 16.603771, a: 0}
+    - _Alpha1: {r: 1, g: 0, b: 0, a: 0}
+    - _Alpha2: {r: 1, g: 0.95592266, b: 0, a: 0}
+    - _Intersection_color: {r: 0.54901963, g: 0, b: 2.6039217, a: 1}
+    - _noise_scrole_speed: {r: 0, g: 0.01, b: 0, a: 0}
+    - _scrollspeed: {r: 1, g: 1, b: 0, a: 0}
+    - _tiling: {r: 24.01, g: 4.4, b: 0, a: 0}
+    - _wave_color: {r: 4.4146347, g: 0, b: 46.84418, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &8337748040984928188
 MonoBehaviour:

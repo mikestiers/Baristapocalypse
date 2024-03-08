@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Profiling;
@@ -21,11 +22,28 @@ public class OrderManager : Singleton<OrderManager>
     public event EventHandler OnOrderSpawned;
     public event EventHandler OnOrderCompleted;
 
+    private void OnEnable()
+    {
+        CustomerBase.OnOrderTimerChanged += OrderInfo_OnOrderTimerChanged;
+    }
+
+    private void OnDisable()
+    {
+        CustomerBase.OnOrderTimerChanged -= OrderInfo_OnOrderTimerChanged;
+    }
+
+    private void OrderInfo_OnOrderTimerChanged(OrderInfo orderInfo, float timer)
+    {
+        if(orders.Contains(orderInfo))
+        {
+            orders[orders.IndexOf(orderInfo)].orderTimer = timer;
+        }
+    }
+
     public void SpawnOrder(CustomerBase customer)
     {
         OrderInfo newOrder = new OrderInfo(customer);
         customer.SetOrder(newOrder);
-
         AddOrder(newOrder);
     }
 

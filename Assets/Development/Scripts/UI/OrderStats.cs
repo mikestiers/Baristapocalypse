@@ -93,6 +93,7 @@ public class OrderStats : NetworkBehaviour
 
     private void CustomerBase_OnCustomerLeave(int customerIndex)
     {
+        if (currentOrder == null) return;
         if (currentOrder.number == customerIndex)
         {
             OrderCompleted(this, EventArgs.Empty);
@@ -103,7 +104,7 @@ public class OrderStats : NetworkBehaviour
     {
         if (orderInProgress == true)
         {
-            UpdateTimer();
+            if(IsServer) UpdateTimerServerRpc();
             SetTargetSegment(temperatureSegments, temperatureTargetValue, temperatureCumulativeValue);
             SetTargetSegment(sweetnessSegments, sweetnessTargetValue, sweetnessCumulativeValue);
             SetTargetSegment(spicinessSegments, spicinessTargetValue, spicinessCumulativeValue);
@@ -125,6 +126,12 @@ public class OrderStats : NetworkBehaviour
     }
 
     private void OrderCompleted(object sender, EventArgs e)
+    {
+        OrderCompletedServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void OrderCompletedServerRpc()
     {
         brewingStation.availableForOrder.Value = true;
         OrderCompletedClientRpc();
@@ -155,7 +162,6 @@ public class OrderStats : NetworkBehaviour
         customerInfoRoot.SetActive(true);
         customerNumberText.text = order.number.ToString();
         customerNameText.text = order.orderName.ToString();
-        orderTimer.value = order.orderTimer;
         temperatureTargetValue = MapValue(order.coffeeAttributesTemperature);
         sweetnessTargetValue = MapValue(order.coffeeAttributesSweetness);
         spicinessTargetValue = MapValue(order.coffeeAttributesSpiciness);
@@ -213,19 +219,17 @@ public class OrderStats : NetworkBehaviour
         }
     }
 
-    private void UpdateTimer()
+    [ServerRpc]
+    private void UpdateTimerServerRpc()
     {
-        /*if (orderOwner.GetCustomerState() != CustomerBase.CustomerState.Leaving)
-        {
-            orderTimer.value = - (orderOwner.customerLeaveTime - orderOwner.orderTimer) / orderOwner.customerLeaveTime;
-        }
-        else
-        {
-            brewingStation.Empty();
-            brewingStation.availableForOrder.Value = true;
-            orderInProgress = false;
-            OrderInProgress();
-        }*/
+        float timerValue = -(currentOrder.customerLeaveTime - OrderManager.Instance.GetOrdersList()[OrderManager.Instance.GetOrdersList().IndexOf(currentOrder)].orderTimer) / currentOrder.customerLeaveTime;
+        UpdateTimerClientRpc(timerValue);
+    }
+
+    [ClientRpc]
+    private void UpdateTimerClientRpc(float timerValue)
+    {
+        orderTimer.value = timerValue;
     }
 
     public List<PlayerController> GetActivePlayers()

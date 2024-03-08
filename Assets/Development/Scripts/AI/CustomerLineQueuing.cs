@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class CustomerLineQueuing
@@ -66,6 +67,7 @@ public class CustomerLineQueuing
         else
         {
             customerList.RemoveAt(LinePos);
+            Task.Delay(1000);
             RelocateAllCustomer(LinePos);
         }
     }
