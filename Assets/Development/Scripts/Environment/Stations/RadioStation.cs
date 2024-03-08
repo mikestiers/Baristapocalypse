@@ -20,12 +20,14 @@ public class RadioStation : BaseStation
 
     public override void Interact(PlayerController player)
     {
-         ChangeSongDownServerRpc();   
+        if (eventIsOn == false) ChangeSongDownServerRpc();
+        else if (eventIsOn == true) { MoveSlider(1); }
     }
 
     public override void InteractAlt(PlayerController player)
     {
-         ChangeSongUpServerRpc(); 
+        if (eventIsOn == false) ChangeSongUpServerRpc(); 
+        else if (eventIsOn == true) { MoveSlider(-1); }
     }
 
     [ServerRpc(RequireOwnership = false)] 
@@ -42,12 +44,6 @@ public class RadioStation : BaseStation
 
     private void ChangeSongDown()
     {
-        if(eventIsOn == true) 
-        {
-            
-           // do nothing
-        }
-        else 
         {
           AudioIndex++;
           AudioIndex %= Audios.Length; // should loop
@@ -70,11 +66,7 @@ public class RadioStation : BaseStation
 
     private void ChangeSongUp() 
     {
-        if (eventIsOn == true) 
-        {
-            // do nothing
-        }
-        else 
+   
         {
           AudioIndex--;
           AudioIndex = (AudioIndex + Audios.Length) % Audios.Length; // should loop
@@ -131,6 +123,9 @@ public class RadioStation : BaseStation
     [SerializeField] private float maxRotationAngle = 229.1f; // Maximum rotation angle
     [SerializeField] private GameObject Ui;
 
+    private float currentGoal;
+    private int currentRandomIndex;
+
     [System.Serializable]
     public class TextPair
     {
@@ -161,43 +156,45 @@ public class RadioStation : BaseStation
 
     void Update()
     {
-        // Check if the player hits Q or E to increment or decrement the slider value
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            MoveSlider(-1);
-        }
-        else if (Input.GetKeyDown(KeyCode.E))
-        {
-            MoveSlider(1);
-        }
-
+        // // Check if the player hits Q or E to increment or decrement the slider value
+        // if (Input.GetKeyDown(KeyCode.Z))
+        // {
+        //     MoveSlider(-1);
+        // }
+        // else if (Input.GetKeyDown(KeyCode.C))
+        // {
+        //     MoveSlider(1);
+        // }
+        //EventOffServerRpc();
         // Update image rotation based on slider value
-        float rotationAngle = Mathf.Lerp(minRotationAngle, maxRotationAngle, slider.normalizedValue);
-        rotatingImage.transform.rotation = Quaternion.Euler(0f, 0f, rotationAngle);
-
-        // Check if the slider value matches any of the goal values
-        foreach (TextPair pair in textPairs)
-        {
-            if (Mathf.Approximately(slider.value, pair.goalValue))
-            {
-                // Turn text color white for the pair
-                pair.text1.color = Color.white;
-                pair.text2.color = Color.white;
-                EventOffServerRpc();
-            }
-        }
+      //  float rotationAngle = Mathf.Lerp(minRotationAngle, maxRotationAngle, slider.normalizedValue);
+      //  rotatingImage.transform.rotation = Quaternion.Euler(0f, 0f, rotationAngle);
+      //
+      //  // Check if the slider value matches any of the goal values
+      //  foreach (TextPair pair in textPairs)
+      //  {
+      //      if (Mathf.Approximately(slider.value, pair.goalValue))
+      //      {
+      //          // Turn text color white for the pair
+      //          pair.text1.color = Color.white;
+      //          pair.text2.color = Color.white;
+      //           
+      //      }
+      //  }
     }
 
     void ChangeRandomTextColorPair()
     {
+
         if (textPairs.Count > 0)
         {
             // Choose a random index within the list
-            int randomIndex = Random.Range(0, textPairs.Count);
+           currentRandomIndex = RandomNumber(); Debug.LogWarning("current random Index" + currentRandomIndex);
 
             // Change the text color of both TextMeshProUGUI objects in the randomly selected pair to red
-            textPairs[randomIndex].text1.color = Color.red;
-            textPairs[randomIndex].text2.color = Color.red;
+            textPairs[currentRandomIndex].text1.color = Color.red;
+            textPairs[currentRandomIndex].text2.color = Color.red;
+            currentGoal = textPairs[currentRandomIndex].goalValue;
         }
         else
         {
@@ -205,8 +202,30 @@ public class RadioStation : BaseStation
         }
     }
 
+    private int RandomNumber() 
+    {
+        int randomIndex = Random.Range(0, textPairs.Count);
+        return randomIndex;
+    }
+
     void MoveSlider(int direction)
     {
         slider.value = Mathf.Clamp(slider.value + direction, slider.minValue, slider.maxValue);
+
+        float rotationAngle = Mathf.Lerp(minRotationAngle, maxRotationAngle, slider.normalizedValue);
+        rotatingImage.transform.rotation = Quaternion.Euler(0f, 0f, rotationAngle);
+
+        // Check if the slider value matches any of the goal values
+        
+        {
+            if (slider.value == currentGoal)
+            {
+                Debug.LogWarning("has entered white");// Turn text color white for the pair
+                textPairs[currentRandomIndex].text1.color = Color.white;
+                textPairs[currentRandomIndex].text2.color = Color.white;
+
+                EventOffServerRpc();
+            }
+        }
     }
 }
