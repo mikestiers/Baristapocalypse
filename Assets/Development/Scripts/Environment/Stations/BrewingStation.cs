@@ -38,6 +38,8 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
     private float minSweetSpotPosition = 0.1f;
     private float maxSweetSpotPosition = 0.9f;
     private NetworkVariable<float> sweetSpotPosition = new NetworkVariable<float>();
+    public NetworkVariable<bool> canEmptyBrewingStation = new NetworkVariable<bool>(true);
+    [SerializeField] public float brewingStationEmptyCooldown = 10.0f;
 
     [Header("Emissions")]
     [SerializeField] private EmissiveControl[] bioMatterTubing;
@@ -185,12 +187,13 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
     {
         minigameTimer.Value = 0f;
         isMinigameRunning.Value = false;
+        OnBrewingDone?.Invoke(this, EventArgs.Empty);
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void MinigameStartedServerRpc()
     {
-        animationWaitTime = 1.2f; //PlayerController.Instance.anim.GetCurrentAnimatorStateInfo(0).normalizedTime; this is giving a delay of like 1 sec , i believe is because i'm playimg the animation faster than original
+        animationWaitTime = 0.4f; //PlayerController.Instance.anim.GetCurrentAnimatorStateInfo(0).normalizedTime; this is giving a delay of like 1 sec , i believe is because i'm playimg the animation faster than original
         SpawnCoffeeDrinkServerRpc();
 
         Empty();
@@ -203,8 +206,8 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
 
     public override void Interact(PlayerController player)
     {
-        Debug.LogWarning("Is minigame Ended Value " + isminigameEnded.Value);
-        Debug.LogWarning("Current player controller " + currentPlayerController);
+        if (player.HasIngredient()) return;
+        if (player.HasPickup()) return;
         //Setup brewing controller stuff
         if (currentPlayerController == null && isminigameEnded.Value && ingredientSOList.Count >= numIngredientsNeeded)
         {

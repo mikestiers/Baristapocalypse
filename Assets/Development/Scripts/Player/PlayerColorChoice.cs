@@ -16,7 +16,6 @@ public class PlayerColorChoice : MonoBehaviour
         playerMaterial = new Material(baseMeshRenderer.material);
 
         baseMeshRenderer.material = playerMaterial;
-        baseMeshRenderer.material = playerMaterial;
     }
 
     public void SetPlayerColor(Color color)
