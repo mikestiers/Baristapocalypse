@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Netcode;
 using Unity.VisualScripting;
@@ -60,6 +61,7 @@ public class CustomerBase : Base
     [Header("Customer Review")]
     public GameObject customerReviewPrefab;
     private GameObject customerReviewPanel;
+    private int customerInstanceReviewScore;
 
     // Animation interaction with brewing machine// dirty fix for when player controller is redone
     public event Action animationSwitch;
@@ -77,9 +79,8 @@ public class CustomerBase : Base
     private readonly int Customer_WalkHash = Animator.StringToHash("Customer_Walk");
     private readonly int Customer_StruggleHash = Animator.StringToHash("Customer_Struggle");
     private readonly int Customer_SitDownHash = Animator.StringToHash("Customer_SitDown");
-
-
-    
+    private List<int> customerBadDrinkChairHashList = new List<int>();
+    private List<int> customerGoodDrinkChairHashList = new List<int>();
 
     [Header("Spills")]
     private bool hasDrink = false;
@@ -98,6 +99,19 @@ public class CustomerBase : Base
     public enum CustomerState
     {
         Wandering, Waiting, Ordering, Moving, Leaving, Insit, Init, Loitering, PickedUp, Dead, Drinking, Sitting
+    }
+
+    public void Awake()
+    {
+        // Add Bad Drink Animation Reaction to list
+        customerBadDrinkChairHashList.Add(Animator.StringToHash("Customer_Bad_Drink_Chair_1"));
+        customerBadDrinkChairHashList.Add(Animator.StringToHash("Customer_Bad_Drink_Chair_2"));
+        customerBadDrinkChairHashList.Add(Animator.StringToHash("Customer_Bad_Drink_Chair_3"));
+
+        // Add Bad Drink Animation Reaction to list
+        customerGoodDrinkChairHashList.Add(Animator.StringToHash("Customer_Good_Drink_Chair_1"));
+        customerGoodDrinkChairHashList.Add(Animator.StringToHash("Customer_Good_Drink_Chair_2"));
+        customerGoodDrinkChairHashList.Add(Animator.StringToHash("Customer_Good_Drink_Chair_3"));
     }
 
     public virtual void Start()
@@ -503,9 +517,28 @@ public class CustomerBase : Base
     private IEnumerator Drink()
     {
         SetCustomerState(CustomerState.Drinking);
-        //Start Animation for drinking
-        float drinkingDur = Random.Range(GameValueHolder.Instance.difficultySettings.GetMinDrinkingDurationTime(), GameValueHolder.Instance.difficultySettings.GetMaxDrinkingDurationTime());
 
+        // Start Random Drink Reaction Animation
+        if (customerInstanceReviewScore <= 3)
+        {
+            if (customerBadDrinkChairHashList.Count > 0)
+            {
+                int randomIndex = Random.Range(0, customerBadDrinkChairHashList.Count);
+                int randomHash = customerBadDrinkChairHashList[randomIndex];
+                customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
+            }
+        }
+        else if (customerInstanceReviewScore >= 4)
+        {
+            if (customerBadDrinkChairHashList.Count > 0)
+            {
+                int randomIndex = Random.Range(0, customerGoodDrinkChairHashList.Count);
+                int randomHash = customerGoodDrinkChairHashList[randomIndex];
+                customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
+            }
+        }
+
+        float drinkingDur = Random.Range(GameValueHolder.Instance.difficultySettings.GetMinDrinkingDurationTime(), GameValueHolder.Instance.difficultySettings.GetMaxDrinkingDurationTime());       
         yield return new WaitForSeconds(drinkingDur);
 
         CustomerLeave();
@@ -575,6 +608,7 @@ public class CustomerBase : Base
         CustomerManager.Instance.customerServedIncrease();
         CustomerManager.Instance.ReduceCustomerLeftoServe();
         CustomerReviewManager.Instance.CustomerReviewEvent(this);
+        customerInstanceReviewScore = CustomerReviewManager.Instance.reviewScore;
         if (OnCustomerLeave != null) OnCustomerLeave?.Invoke(customerNumber.Value);
         OrderManager.Instance.FinishOrder(order);
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.yorpReview);
