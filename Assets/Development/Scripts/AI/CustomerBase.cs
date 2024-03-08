@@ -83,6 +83,7 @@ public class CustomerBase : Base
     private List<int> customerGoodDrinkChairHashList = new List<int>();
     private List<int> customerImpatientHashList = new List<int>();
     private bool isImpatient = false;
+    private CustomerRandomizer customerRandomizer;
 
     [Header("Spills")]
     private bool hasDrink = false;
@@ -105,6 +106,8 @@ public class CustomerBase : Base
 
     public void Awake()
     {
+        customerRandomizer = GetComponent<CustomerRandomizer>();
+
         // Add Bad Drink Animation Reaction to list
         customerBadDrinkChairHashList.Add(Animator.StringToHash("Customer_Bad_Drink_Chair_1"));
         customerBadDrinkChairHashList.Add(Animator.StringToHash("Customer_Bad_Drink_Chair_2"));
@@ -139,7 +142,9 @@ public class CustomerBase : Base
         agent = GetComponent<NavMeshAgent>();
         exit = CustomerManager.Instance.GetExit();
         if (distThreshold <= 0) distThreshold = 0.1f;
-        
+
+        GetIngredientTransform().position = customerRandomizer.currentCustomerHoldPoint.transform.position;
+        GetIngredientTransform().SetParent(customerRandomizer.currentCustomerHoldPoint.transform);
 
         customerReviewPanel = GameObject.FindGameObjectWithTag("CustomerReviewPanel");
     }
