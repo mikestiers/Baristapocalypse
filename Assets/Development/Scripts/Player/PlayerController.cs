@@ -80,14 +80,18 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] public Transform pickupLocation;
     [SerializeField] private Pickup pickup;
     public float pickupThrowForce;
+    private string mopSoName = "Mop";
+    private string messCupSoName = "MessCup";
 
     // Animations
     private readonly int MovementWithCupHash = Animator.StringToHash("MovementWithCup");
     private readonly int MovementHash = Animator.StringToHash("Movement");
+    private readonly int MovementWithCustomerHash = Animator.StringToHash("Movement");
     private readonly int BP_Barista_Floor_PickupHash = Animator.StringToHash("BP_Barista_Floor_Pickup");
     private readonly int BP_Barista_Pickup_VacHash = Animator.StringToHash("BP_Barista_Pickup_Vac");
     private readonly int BP_Barista_Pickup_CustHash = Animator.StringToHash("BP_Barista_Pickup_Cust");
     private readonly int BP_Barista_Throw_CupHash = Animator.StringToHash("BP_Barista_Throw_Cup");
+    private readonly int BP_Barista_Throw_CustHash = Animator.StringToHash("BP_Barista_Throw_Cust");
 
     private const float CrossFadeDuration = 0.1f;
 
@@ -293,7 +297,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                 }
                 //else _hasMop = false;
 
-               
             }
         
             // Logic for Ingredient on floor Interaction 
@@ -756,9 +759,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if(!HasNoIngredients)return;
         
         spill.Interact(this);
-        
-        
+  
     }
+
     public void DoPickup(Pickup pickup)
     {
         if (HasPickup() || !HasNoIngredients)
@@ -770,23 +773,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
             StartCoroutine(PickUpAnimation(pickup)); // Play trash pick up and set trash parent
         }
-
-        if (pickup.IsCustomer && pickup.GetCustomer().GetCustomerState() == CustomerBase.CustomerState.Loitering)
+        else if (pickup.IsCustomer && pickup.GetCustomer().GetCustomerState() == CustomerBase.CustomerState.Loitering)
         {
-            Debug.Log("hello im a customer and im trying to be picked up");
-            pickup.GetNavMeshAgent().enabled = false;
-            pickup.GetCustomer().SetCustomerState(CustomerBase.CustomerState.PickedUp);
+            StartCoroutine(PickUpCustomerAnimation(pickup));
 
-            pickup.SetPickupObjectParent(this);
-
-            pickup.DisablePickupColliders(pickup);
-
-            if (pickup.GetCustomer().inLine == true)
-            {
-                int _CustomerPos = pickup.GetCustomer().currentPosInLine;
-                CustomerManager.Instance.LineQueue.RemoveCustomerInPos(_CustomerPos);
-                CustomerManager.Instance.ReduceCustomerLeftoServe();
-            }
         }
     }
 
@@ -917,9 +907,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
             anim.CrossFadeInFixedTime(MovementWithCupHash, CrossFadeDuration);
         }
-        else if ()
+        else if (GetPickup().IsCustomer)
         {
-
+            anim.CrossFadeInFixedTime(MovementWithCustomerHash, CrossFadeDuration);
         }
         else
         {
@@ -927,39 +917,105 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
     }
 
-    // Play trash pick up and set trash parent while new player statemachine is dead
+    // Play trash pick up and set trash parent while new player statemachine is done
     private IEnumerator PickUpAnimation(Pickup pickup)
     {
-        
-        anim.CrossFadeInFixedTime(BP_Barista_Floor_PickupHash, CrossFadeDuration);
+        PickupSO pickupSo = pickup.GetPickupObjectSo();
+
+        if (pickupSo.objectName == mopSoName)
+        {
+            anim.CrossFadeInFixedTime(BP_Barista_Pickup_VacHash, CrossFadeDuration);
+        }
+        else if (pickup.IsCustomer)
+        {
+            anim.CrossFadeInFixedTime(BP_Barista_Pickup_CustHash, CrossFadeDuration);
+        }
+        else
+        {
+            anim.CrossFadeInFixedTime(BP_Barista_Floor_PickupHash, CrossFadeDuration);
+        }
+
         movementToggle = false;
 
-        yield return new WaitForSeconds(1f); // hard coded while new player statemachine is dead
+        yield return new WaitForSeconds(1f); // hard coded while new player statemachine is done
 
+        if (pickup.IsCustomer)
+        {
+            Debug.Log("hello im a customer and im trying to be picked up");
+            pickup.GetNavMeshAgent().enabled = false;
+            pickup.GetCustomer().SetCustomerState(CustomerBase.CustomerState.PickedUp);
+
+            pickup.SetPickupObjectParent(this);
+
+            pickup.DisablePickupColliders(pickup);
+
+            if (pickup.GetCustomer().inLine == true)
+            {
+                int _CustomerPos = pickup.GetCustomer().currentPosInLine;
+                CustomerManager.Instance.LineQueue.RemoveCustomerInPos(_CustomerPos);
+                CustomerManager.Instance.ReduceCustomerLeftoServe();
+            }
+        }
+        else
+        {
+            pickup.SetPickupObjectParent(this);
+            pickup.DisablePickupColliders(pickup);
+        }
         movementToggle = true;
+    }
+
+    // Play customer pick up and set customer parent
+    private IEnumerator PickUpCustomerAnimation(Pickup pickup)
+    {
+        PickupSO pickupSo = pickup.GetPickupObjectSo();
+
+        anim.CrossFadeInFixedTime(BP_Barista_Pickup_CustHash, CrossFadeDuration);
+  
+        movementToggle = false;
+
+        yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is done
+
+        Debug.Log("hello im a customer and im trying to be picked up");
+        pickup.GetNavMeshAgent().enabled = false;
+        pickup.GetCustomer().SetCustomerState(CustomerBase.CustomerState.PickedUp);
+
         pickup.SetPickupObjectParent(this);
+
         pickup.DisablePickupColliders(pickup);
+
+        if (pickup.GetCustomer().inLine == true)
+        {
+            int _CustomerPos = pickup.GetCustomer().currentPosInLine;
+            CustomerManager.Instance.LineQueue.RemoveCustomerInPos(_CustomerPos);
+            CustomerManager.Instance.ReduceCustomerLeftoServe();
+        }
+        
+        movementToggle = true;
     }
 
     // Play throw pick up
     private IEnumerator ThrowPickUpAnimation()
     {
-        anim.CrossFadeInFixedTime(BP_Barista_Throw_CupHash, CrossFadeDuration);
+        if (pickup.IsCustomer)
+        {
+            anim.CrossFadeInFixedTime(BP_Barista_Throw_CustHash, CrossFadeDuration);
+        }
+        else
+        {
+            anim.CrossFadeInFixedTime(BP_Barista_Throw_CupHash, CrossFadeDuration);
+        }
         movementToggle = false;
 
-        yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is dead
+        yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is done
 
         if (pickup != null) 
         {
-            
             pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
             pickup.EnablePickupColliders(pickup);
 
             pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
             if (pickup.gameObject.GetComponent<MopBehavior>() != null) pickup.gameObject.GetComponent<MopBehavior>().ReturnMop();
-            pickup.ClearPickupOnParent();
-
-           
+            pickup.ClearPickupOnParent(); 
         }
         movementToggle = true;
     }
@@ -970,7 +1026,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         anim.CrossFadeInFixedTime(BP_Barista_Throw_CupHash, CrossFadeDuration);
         movementToggle = false;
 
-        yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is dead
+        yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is done
 
         for (int i = 0; i < ingredientsList.Count; i++)
         {
@@ -995,6 +1051,5 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             OnAnimationSwitch();
         }
         movementToggle = true;
-
     }
 }
