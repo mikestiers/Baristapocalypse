@@ -1,18 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-7635795345535185657
-MonoBehaviour:
-  m_ObjectHideFlags: 11
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 5
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -28,6 +15,7 @@ Material:
   - _METALLICSPECGLOSSMAP
   - _NORMALMAP
   - _OUTLINE
+  - _RIMLIGHTING_ON
   - _TOON_SHADING_ON
   m_InvalidKeywords:
   - _STEPVIARAMPTEXTURE_ON
@@ -42,11 +30,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 4a0d3fb9e88e1ad4581de09525a6c2f1, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2ee4574f64f3f794885c6e5acf6dc984, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 6654d10c628bf6b4f8d54c5526667d14, type: 3}
+        m_Texture: {fileID: 2800000, guid: 171506d8893d2cf448371a73cec9fb0f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -66,7 +54,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 2800000, guid: 6efa8657ca059fb45afd10ad89958828, type: 3}
+        m_Texture: {fileID: 2800000, guid: ef9f0a1c57834504a8a71095075523f9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FaceShadowMap:
@@ -90,11 +78,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 4a0d3fb9e88e1ad4581de09525a6c2f1, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2ee4574f64f3f794885c6e5acf6dc984, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
-        m_Texture: {fileID: 2800000, guid: cfe9a799ef52e014385ed86280d119ec, type: 3}
+        m_Texture: {fileID: 2800000, guid: 14dcf91014bf7564fb828775d7764464, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -106,7 +94,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RampTex:
-        m_Texture: {fileID: 2800000, guid: d5674c2ac82db1a4ab4cbb251d627e21, type: 3}
+        m_Texture: {fileID: 2800000, guid: 74c09d795d5e35c4da0e38e0440b62f3, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -179,16 +167,16 @@ Material:
     - _OcclusionStrength: 1
     - _OutlineEnabled: 1
     - _OutlineMode: 0
-    - _OutlineWidth: 3.23
+    - _OutlineWidth: 6.38
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _RimEnabled: 0
+    - _RimEnabled: 1
     - _RimLightAlign: 0
     - _RimLightSmoothness: 0
-    - _RimPower: 0.55
+    - _RimPower: 0.206
     - _SizeFalloff: 0
-    - _Smoothness: 0.5
+    - _Smoothness: 0.457
     - _SmoothnessTextureChannel: 0
     - _SpecClipMaskScale: 1
     - _SpecShadowStrength: 1
@@ -202,7 +190,7 @@ Material:
     - _StencilRef: 0
     - _StepViaRampTexture: 1
     - _Surface: 0
-    - _ToonBlending: 0.766
+    - _ToonBlending: 0.709
     - _ToonEnabled: 1
     - _UseRampColor: 0
     - _WorkflowMode: 1
@@ -216,10 +204,23 @@ Material:
     - _HairSpecColor: {r: 0, g: 0, b: 0, a: 1}
     - _HalfToneColor: {r: 0, g: 0, b: 0, a: 1}
     - _HatchingColor: {r: 0, g: 0, b: 0, a: 1}
-    - _OutlineColor: {r: 0.11320753, g: 0, b: 0.22641507, a: 1}
-    - _OutlineDistancFade: {r: -58.898308, g: 50, b: 0, a: 0}
-    - _RimColor: {r: 1, g: 1, b: 1, a: 1}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _OutlineDistancFade: {r: -106.355934, g: 5.9321976, b: 0, a: 0}
+    - _RimColor: {r: 0.32449162, g: 0.26873443, b: 0.5754717, a: 1}
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _SpherizeNormalOrigin: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
+--- !u!114 &1633503169438004837
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 5
