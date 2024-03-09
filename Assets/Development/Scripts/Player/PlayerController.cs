@@ -942,6 +942,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
             pickup.SetPickupObjectParent(this);
             pickup.DisablePickupColliders(pickup);
+            pickup.isOnFloor = false;
             movementToggle = true;
         } 
     }

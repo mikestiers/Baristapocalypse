@@ -7,17 +7,14 @@ using UnityEngine.Events;
 [RequireComponent(typeof(NavMeshAgent))]
 public class CleanupBot : MonoBehaviour
 {
-
     public UnityEvent<BotState, GameObject> onStateChanged;
-    NavMeshAgent agent;
+    private NavMeshAgent agent;
 
-    //Keep reference to player or target if aggro'd.
-    [SerializeField] private GameObject target;
     [SerializeField] private GameObject trashStation;
     [SerializeField] private Transform playerTransform;
     [SerializeField] private float distance = 30f;
-    [SerializeField] private float trashCounter = 0;
-    
+    [SerializeField] private float distToNextNode = 0.1f;
+    [SerializeField] private int trashCounter = 0;
 
     public enum BotState
     {
@@ -26,7 +23,7 @@ public class CleanupBot : MonoBehaviour
         Empty
     }
 
-    [SerializeField] BotState _currentState;
+    [SerializeField] private BotState _currentState;
 
     public BotState currentState
     {
@@ -38,14 +35,10 @@ public class CleanupBot : MonoBehaviour
         }
     }
 
-
     public GameObject[] path;
-    public int pathIndex = 0;
-    public float distToNextNode;
-    private float distToMess;
+    private int pathIndex = 0;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         _currentState = BotState.Roam;
@@ -54,85 +47,65 @@ public class CleanupBot : MonoBehaviour
         {
             path = GameObject.FindGameObjectsWithTag("Node");
         }
-
-        if (distToNextNode <= 0)
-        {
-            distToNextNode = 0.5f;
-        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        target = GameObject.FindGameObjectWithTag("Mess");
+        GameObject[] messes = GameObject.FindGameObjectsWithTag("Mess");
+        GameObject nearestMess = FindNearestMessOnFloor(messes);
 
-        if (target)
+        if (nearestMess != null)
         {
             _currentState = BotState.Cleanup;
+            agent.SetDestination(nearestMess.transform.position);
         }
         else if (trashCounter > 3)
         {
             _currentState = BotState.Empty;
+            agent.SetDestination(trashStation.transform.position);
         }
         else
         {
             _currentState = BotState.Roam;
-        }
-
-        if (_currentState == BotState.Roam)
-        {
-
-            if (target)
-                Debug.DrawLine(transform.position, target.transform.position, Color.blue);
 
             if (agent.remainingDistance < distToNextNode)
             {
                 pathIndex++;
-
                 pathIndex %= path.Length;
-
-                target = path[pathIndex];
+                agent.SetDestination(path[pathIndex].transform.position);
             }
-
-
-        }
-        else if (_currentState == BotState.Cleanup)
-        {
-            if (target.gameObject.tag == "Node")
-            {
-                target = GameObject.FindGameObjectWithTag("Mess");
-            }
-
-        }
-        else if (_currentState == BotState.Empty)
-        {
-            target = trashStation;
-            trashCounter = 0;
-        }
-        
-
-        if (target)
-            agent.SetDestination(target.transform.position);
-
-        if (target)
-            distToMess = Vector3.Distance(transform.position, target.transform.position);
-
-        if (distToMess > distance)
-        {
-            target = path[pathIndex];
-            _currentState = BotState.Roam;
-        }
-        if (distToMess < distance)
-        {
-            _currentState = BotState.Cleanup;
         }
     }
 
-    public void OnTriggerEnter(Collider other)
+    private GameObject FindNearestMessOnFloor(GameObject[] messes)
     {
-        if (other.gameObject == GameObject.FindGameObjectWithTag("Mess").gameObject)
+        GameObject nearestMess = null;
+        float shortestDistance = Mathf.Infinity;
 
+        foreach (GameObject mess in messes)
+        {
+            Pickup pickupComponent = mess.GetComponent<Pickup>();
+            if (pickupComponent != null && pickupComponent.isOnFloor)
+            {
+                float distanceToMess = Vector3.Distance(transform.position, mess.transform.position);
+                if (distanceToMess < shortestDistance)
+                {
+                    shortestDistance = distanceToMess;
+                    nearestMess = mess;
+                }
+            }
+        }
+
+        return nearestMess;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.GetComponent<Pickup>().Getpickup().objectName == "MessCup") 
+        {
+            GameObject messToDestroy = other.gameObject.GetComponent<Pickup>().gameObject;
             trashCounter++;
-            Destroy(other.gameObject);
+            Destroy(messToDestroy);
         }
     }
+}
