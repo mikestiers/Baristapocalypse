@@ -47,6 +47,7 @@ public class CustomerBase : Base
     public float customerLeaveTime;
     public float maxInLineTime;
     public float deadTimerSeconds = 5.0f;
+    private Coroutine randomPointCoroutine;
 
     [Header("Visuals")]
     [SerializeField] public Canvas customerNumberCanvas;
@@ -55,9 +56,9 @@ public class CustomerBase : Base
     [SerializeField] private ParticleSystem interactParticle;
     [SerializeField] private DetachedHead detachedHead;
     [SerializeField] private ScoreTimerManager scoreTimerManager;
-    
+
     [SerializeField] private PickupSO pickupSO;
-    
+
     [Header("Customer Review")]
     public GameObject customerReviewPrefab;
     private GameObject customerReviewPanel;
@@ -74,6 +75,7 @@ public class CustomerBase : Base
     // Customer Animations
     [Header("Customer Animations")]
     [SerializeField] private GameObject bodiesContainerObject;
+    [HideInInspector] public bool isPickedUp = false;
     private Animator customerAnimator;
     private readonly int Customer_IdleHash = Animator.StringToHash("Customer_Idle");
     private readonly int Customer_WalkHash = Animator.StringToHash("Customer_Walk");
@@ -147,7 +149,6 @@ public class CustomerBase : Base
         GetIngredientTransform().localPosition = new Vector3(0.067f, -0.121f, 0.055f);
         GetIngredientTransform().localEulerAngles = new Vector3(0, 30, 90);
 
-
         customerReviewPanel = GameObject.FindGameObjectWithTag("CustomerReviewPanel");
     }
 
@@ -161,8 +162,6 @@ public class CustomerBase : Base
                 OnOrderTimerChanged?.Invoke(order, orderTimer);
             }
 
-            //Debug.LogWarning("CustomerState " + currentState.Value);
-
             if (messTime != null)
                 messTime += Time.deltaTime;
 
@@ -172,7 +171,6 @@ public class CustomerBase : Base
             }
         }
 
-       
         switch (currentState.Value)
         {
             case CustomerState.Wandering:
@@ -362,7 +360,6 @@ public class CustomerBase : Base
             agent.SetDestination(exit);
         }
     
-
         // To be implmented or removed
         if(messTime >= GameValueHolder.Instance.difficultySettings.GetLoiterMessEverySec())
         {
@@ -370,7 +367,10 @@ public class CustomerBase : Base
             RestartMessTimer();
         }
 
-        StartCoroutine(TryGoToRandomPoint(5f));
+        if (randomPointCoroutine == null) 
+        {
+            randomPointCoroutine = StartCoroutine(TryGoToRandomPoint(5f));
+        }
     }
 
     private void UpdateDrinking()
@@ -409,8 +409,28 @@ public class CustomerBase : Base
         }
     }
 
+    private void StopRandomPointCoroutine()
+    {
+        if (randomPointCoroutine != null)
+        {
+            StopCoroutine(randomPointCoroutine);
+            randomPointCoroutine = null;
+        }
+    }
+
+    public void StopRandomPointCoroutineImmediately()
+    {
+        StopRandomPointCoroutine();
+    }
+
     private void UpdatePickedUp()
     {
+        if (isPickedUp == true) 
+        {
+            StopRandomPointCoroutineImmediately();
+            customerAnimator.CrossFadeInFixedTime(Customer_StruggleHash, CrossFadeDuration);
+            isPickedUp = false;
+        }
         //Remove order from list if picked up
         if (OnCustomerLeave != null)
         {

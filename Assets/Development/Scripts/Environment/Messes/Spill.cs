@@ -20,6 +20,8 @@ public class Spill : NetworkBehaviour
     [SerializeField] private GameObject imageHolder;
     [SerializeField] private Image imageFill;
     [SerializeField] private GameObject mopErrorHolder;
+    private readonly int BP_Barista_SlippingHash = Animator.StringToHash("BP_Barista_Slipping");
+    private const float CrossFadeDuration = 0.1f;
 
     private void Awake()
     {
@@ -72,6 +74,7 @@ public class Spill : NetworkBehaviour
                 }
                 if (cleaningProgress >= totalProgress)
                 {
+                    player.OnAnimationSwitch();
                     GameManager.Instance.RemoveSpill();
                     Destroy(gameObject);
                 } 
@@ -106,17 +109,34 @@ public class Spill : NetworkBehaviour
         _spillSpawnPoint.SetSpawnPointTransform(messObjectComponet.GetSpillTransform());
         
     }
-    
-    
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.GetComponent<PlayerController>())
+        {
+            PlayerController stateMachine = other.gameObject.GetComponent<PlayerController>();
+            stateMachine.anim.CrossFadeInFixedTime(BP_Barista_SlippingHash, CrossFadeDuration);
+        }
+    }
+
     private void OnTriggerStay(Collider other)
     {
         if (other.GetComponent<PlayerController>()) 
         { 
-             PlayerController stateMachine = other.gameObject.GetComponent<PlayerController>();
-             Rigidbody rb = stateMachine.rb;
-             Vector3 movedirection = rb.transform.forward;
-             rb.AddForce(movedirection * slipSpeed , ForceMode.VelocityChange);
-             //stateMachine.ThrowIngredient();
+            PlayerController stateMachine = other.gameObject.GetComponent<PlayerController>();
+            Rigidbody rb = stateMachine.rb;
+            Vector3 movedirection = rb.transform.forward;
+            rb.AddForce(movedirection * slipSpeed , ForceMode.VelocityChange);
+            //stateMachine.ThrowIngredient();
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.GetComponent<PlayerController>())
+        {
+            PlayerController stateMachine = other.gameObject.GetComponent<PlayerController>();
+            stateMachine.OnAnimationSwitch();
         }
     }
 
