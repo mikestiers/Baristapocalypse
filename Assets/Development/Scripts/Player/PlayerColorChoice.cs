@@ -5,10 +5,12 @@ using UnityEngine;
 public class PlayerColorChoice : MonoBehaviour
 {
     public SkinnedMeshRenderer baseMeshRenderer;
-    public SkinnedMeshRenderer jointMeshRenderer;
+    public MeshRenderer RingMeshRenderer;
 
     public Material playerMaterial;
-    public Color col;
+    public Material ringMaterial;
+    public string intersectionColorPropertyName = "_Intersection_color";
+    public Color intersectionColor;
 
     // Start is called before the first frame update
     private void Awake()
@@ -16,10 +18,17 @@ public class PlayerColorChoice : MonoBehaviour
         playerMaterial = new Material(baseMeshRenderer.material);
 
         baseMeshRenderer.material = playerMaterial;
+
+        intersectionColor = playerMaterial.color;
+        
+        baseMeshRenderer.material = playerMaterial; 
+        RingMeshRenderer.material.SetColor(intersectionColorPropertyName, intersectionColor); 
     }
 
-    public void SetPlayerColor(Color color)
-    {
-        playerMaterial.color = color;
-    }
+public void SetPlayerColor(Color color)
+{
+    // playerMaterial.color = color;
+    ringMaterial.color = color;
+    RingMeshRenderer.material.SetColor(intersectionColorPropertyName, color); 
+}
 }
