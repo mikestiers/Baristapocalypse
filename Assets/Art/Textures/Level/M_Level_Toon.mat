@@ -10,7 +10,6 @@ Material:
   m_Name: M_Level_Toon
   m_Shader: {fileID: 4800000, guid: 933f24cde1e3f6a41818f56d729421ab, type: 3}
   m_ValidKeywords:
-  - _ALPHATEST_ON
   - _HALFTONESHAPE_DOT
   - _METALLICSPECGLOSSMAP
   - _NORMALMAP
@@ -21,9 +20,9 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2450
+  m_CustomRenderQueue: 2000
   stringTagMap:
-    RenderType: TransparentCutout
+    RenderType: Opaque
   disabledShaderPasses:
   - SRPDEFAULTUNLIT
   m_SavedProperties:
@@ -148,7 +147,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _ActiveRenderFeature: 1
-    - _AlphaClip: 1
+    - _AlphaClip: 0
     - _Blend: 0
     - _BrushLowerCut: 0
     - _BrushSize: 0.8
@@ -312,10 +311,10 @@ Material:
     - _HatchColor: {r: 0, g: 0, b: 0, a: 1}
     - _HatchingColor: {r: 0, g: 0, b: 0, a: 1}
     - _LightmapDirection: {r: 0, g: 1, b: 0, a: 0}
-    - _OutlineColor: {r: 0.117022455, g: 0, b: 0.1792453, a: 1}
-    - _OutlineDistancFade: {r: -25, g: 50, b: 0, a: 0}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _OutlineDistancFade: {r: -160, g: 60, b: 0, a: 0}
     - _RimColor: {r: 0.80893326, g: 1, b: 0, a: 1}
-    - _ShadowColor: {r: 0.081796266, g: 0, b: 0.10377159, a: 1}
+    - _ShadowColor: {r: 0, g: 0, b: 0, a: 0.742}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _SpherizeNormalOrigin: {r: 0, g: 0, b: 0, a: 1}
     - _UnityShadowColor: {r: 0.85023, g: 0.85034, b: 0.85045, a: 0.85056}
