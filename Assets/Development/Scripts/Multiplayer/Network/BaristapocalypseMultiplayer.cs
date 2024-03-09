@@ -26,6 +26,7 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
 
     private NetworkList<PlayerData> playerDataNetworkList;
     public List<Color> playerColorList;
+    public List<Material> playerMaterials;
 
     private void Awake()
     {  

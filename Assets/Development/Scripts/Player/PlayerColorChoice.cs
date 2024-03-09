@@ -16,7 +16,8 @@ public class PlayerColorChoice : MonoBehaviour
     private void Awake()
     {
         playerMaterial = new Material(baseMeshRenderer.material);
-
+        ringMaterial = new Material(RingMeshRenderer.material);
+        
         baseMeshRenderer.material = playerMaterial;
 
         intersectionColor = playerMaterial.color;
