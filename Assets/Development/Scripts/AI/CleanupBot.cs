@@ -54,20 +54,60 @@ public class CleanupBot : MonoBehaviour
         GameObject[] messes = GameObject.FindGameObjectsWithTag("Mess");
         GameObject nearestMess = FindNearestMessOnFloor(messes);
 
+        switch (currentState)
+        {
+            case BotState.Cleanup:
+                Cleaning(nearestMess);
+                break;
+
+            case BotState.Empty:
+                Emptying();
+                break;
+
+            case BotState.Roam:
+                Roaming(nearestMess);
+                break;
+        }
+        //GameObject[] messes = GameObject.FindGameObjectsWithTag("Mess");
+        //GameObject nearestMess = FindNearestMessOnFloor(messes);
+
+        //if (nearestMess != null)
+        //{
+        //    _currentState = BotState.Cleanup;
+        //    agent.SetDestination(nearestMess.transform.position);
+        //}
+        //else if (trashCounter > 3)
+        //{
+        //    _currentState = BotState.Empty;
+        //    agent.SetDestination(trashStation.transform.position);
+        //}
+        //else
+        //{
+        //    _currentState = BotState.Roam;
+
+        //    if (agent.remainingDistance < distToNextNode)
+        //    {
+        //        pathIndex++;
+        //        pathIndex %= path.Length;
+        //        agent.SetDestination(path[pathIndex].transform.position);
+        //    }
+        //}
+    }
+
+    private void Roaming(GameObject nearestMess)
+    {
         if (nearestMess != null)
         {
-            _currentState = BotState.Cleanup;
+            currentState = BotState.Cleanup;
             agent.SetDestination(nearestMess.transform.position);
         }
         else if (trashCounter > 3)
         {
-            _currentState = BotState.Empty;
+            currentState = BotState.Empty;
             agent.SetDestination(trashStation.transform.position);
         }
         else
         {
-            _currentState = BotState.Roam;
-
             if (agent.remainingDistance < distToNextNode)
             {
                 pathIndex++;
@@ -75,6 +115,23 @@ public class CleanupBot : MonoBehaviour
                 agent.SetDestination(path[pathIndex].transform.position);
             }
         }
+    }
+
+    private void Cleaning(GameObject nearestMess)
+    {
+        if (nearestMess != null)
+        {
+            agent.SetDestination(nearestMess.transform.position);
+        }
+        else
+        {
+            currentState = BotState.Roam;
+        }
+    }
+
+    private void Emptying()
+    {
+        agent.SetDestination(trashStation.transform.position);
     }
 
     private GameObject FindNearestMessOnFloor(GameObject[] messes)
