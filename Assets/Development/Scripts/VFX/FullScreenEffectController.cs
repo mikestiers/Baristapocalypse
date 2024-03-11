@@ -98,6 +98,7 @@ public class FullScreenEffectController : MonoBehaviour
     #region Wifi Effect
     public void ToggleWifiEffect(bool activate)
     {
+        Debug.LogWarning("called"+ activate);
         activeEffect = activate;
         StopAllCoroutines();
         if (activeEffect == false)
@@ -143,6 +144,7 @@ public class FullScreenEffectController : MonoBehaviour
     }
     private void ResetWifiValue()
     {
+        activeEffect = false;
         currentWifiVignetteIntensity = activeEffect ? 0f : vignetteWifiIntensityStart;
         currentWifiEffectSpeed = activeEffect ? Vector2.zero : effectWifiSpeedStart;
         wifiMaterial.SetFloat(WifiIntensity, currentWifiVignetteIntensity);
@@ -155,7 +157,7 @@ public class FullScreenEffectController : MonoBehaviour
     {
         activeEffect = activate;
         StopAllCoroutines();
-        if (activeEffect == false)
+        if (activeEffect == true)
         {
             activeEffect = true;
             StartCoroutine(ActiveGravityEffect(true,fadeTime));
@@ -167,16 +169,16 @@ public class FullScreenEffectController : MonoBehaviour
         }
     }
 
-    private IEnumerator ActiveGravityEffect(bool fadein, float fadetime)
+    private IEnumerator ActiveGravityEffect(bool fadein, float fadeTime)
     {
         float startIntensity = fadein ? 0f : gravityVignetteIntensityStat;
         float endIntensity = fadein ? gravityVignetteIntensityStat : 0f; 
         float timer = 0f;
         fullScreenGravityEffect.SetActive(true);
-        while (timer < fadetime)
+        while (timer < fadeTime)
         {
             timer += Time.deltaTime;
-            currentGravityIntensity = Mathf.Lerp(startIntensity, endIntensity, timer / fadetime);
+            currentGravityIntensity = Mathf.Lerp(startIntensity, endIntensity, timer / fadeTime);
             gravityMaterial.SetFloat(gravityIntensity, currentGravityIntensity);
             activeEffect = true;
             yield return null;
@@ -199,6 +201,7 @@ public class FullScreenEffectController : MonoBehaviour
     }
     private void ResetGravityEffectValue()
     {
+        activeEffect = false;
         currentGravityIntensity = activeEffect ? 0f : gravityVignetteIntensityStat;
         currentGravitySpeed = activeEffect ? 0f : gravitySpeedEffectStat;
         gravityMaterial.SetFloat(gravityIntensity, currentGravityIntensity);
@@ -209,6 +212,7 @@ public class FullScreenEffectController : MonoBehaviour
     #region Radio Effect
     public void ToggleRadioEffect(bool b)
     {
+        //activeEffect = b;
         if (activeEffect == false)
         {
             activeEffect = true;
@@ -251,6 +255,7 @@ public class FullScreenEffectController : MonoBehaviour
     }
     private void ResetRadioEffect()
     {
+        activeEffect = false;
         currentRaidoIntensity = activeEffect ? 0f : radioVignetteIntesityStat;
         currentRadioSpeed = activeEffect ? Vector2.zero : radioSpeedStat;
         radioMaterial.SetFloat(radioIntensity, currentRaidoIntensity);

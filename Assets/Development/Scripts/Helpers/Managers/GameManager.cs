@@ -541,6 +541,7 @@ public class GameManager : NetworkBehaviour
         if (randomEvent.GetComponent<GravityStorm>()) 
         {
             GravityStorm gravityStorm = randomEvent.GetComponent<GravityStorm>();
+            
             isGravityStorm.Value = true;
             //randomEvent.GetComponent<GravityStorm>().GravityEventLights.SetActive(true);
             gravityStorm.SetEventBool(true);

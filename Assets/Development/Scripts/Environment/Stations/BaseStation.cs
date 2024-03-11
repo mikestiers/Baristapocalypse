@@ -8,7 +8,7 @@ public class BaseStation : NetworkBehaviour, IIngredientParent
     [SerializeField] private Transform stationTopPoint;
     
     private Ingredient ingredient;
-    protected FullScreenEffectController screenEffect;
+   [SerializeField] protected FullScreenEffectController screenEffect;
     public virtual void Interact(PlayerController player)
     {
         
