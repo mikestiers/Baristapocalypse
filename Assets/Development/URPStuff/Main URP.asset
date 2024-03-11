@@ -27,6 +27,33 @@ MonoBehaviour:
     dstTextureObject: {fileID: 0}
     overrideGraphicsFormat: 0
     graphicsFormat: 4
+--- !u!114 &-3559510655594233524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f698d2c6d42a0e4ab044cc5295df366, type: 3}
+  m_Name: ON FIRE
+  m_EditorClassIdentifier: 
+  m_Active: 0
+  settings:
+    Event: 600
+    blitMaterial: {fileID: 2100000, guid: acfdf2deb55d8fd409fcff74c56fa113, type: 2}
+    blitMaterialPassIndex: 0
+    setInverseViewMatrix: 0
+    requireDepthNormals: 0
+    srcType: 0
+    srcTextureId: _CameraColorTexture
+    srcTextureObject: {fileID: 0}
+    dstType: 0
+    dstTextureId: _BlitPassTexture
+    dstTextureObject: {fileID: 0}
+    overrideGraphicsFormat: 0
+    graphicsFormat: 4
 --- !u!114 &-1877168862536953756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75,7 +102,8 @@ MonoBehaviour:
   - {fileID: -5489984171287568998}
   - {fileID: 3081303782059417984}
   - {fileID: 7708810422545599526}
-  m_RendererFeatureMap: dcc6b550ed81de336627b895c515581064900f7dddf4f2e59a1de3bf7ba8cfb38021b8de76fdc22a26cca87c3c32fb6a
+  - {fileID: -3559510655594233524}
+  m_RendererFeatureMap: dcc6b550ed81de336627b895c515581064900f7dddf4f2e59a1de3bf7ba8cfb38021b8de76fdc22a26cca87c3c32fb6a4c8116f7ea139ace
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -125,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b4fbc344a9af2e498f1d17c4aff8b05, type: 3}
   m_Name: DepthNormals
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
 --- !u!114 &3081303782059417984
 MonoBehaviour:
   m_ObjectHideFlags: 0

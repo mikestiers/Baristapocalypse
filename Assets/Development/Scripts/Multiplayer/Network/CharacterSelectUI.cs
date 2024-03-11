@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,7 +20,8 @@ public class CharacterSelectUI : MonoBehaviour
             mainMenuButton.onClick.AddListener(() =>
             {
                 LobbyManager.Instance.LeaveLobby();
-                Loader.LoadNetwork(Loader.Scene.LobbyScene);
+                NetworkManager.Singleton.Shutdown();
+                Loader.LoadNetwork(Loader.Scene.MainMenuScene);
             });
         }
 

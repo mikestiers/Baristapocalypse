@@ -143,6 +143,8 @@ public class MainMenuManager : MonoBehaviour
         SetInteractableButtons(CreditsMenuButtons, false);
 
         creditsTextScroller.enabled = false;
+
+        EventSystem.current.SetSelectedGameObject(Gamepad.current != null ? StartGame.gameObject : null);
     }
 
     void ReturnFromSettings() 
@@ -152,7 +154,7 @@ public class MainMenuManager : MonoBehaviour
             SoundManager.Instance.PlayOneShot(backButtonPressedSound);
             SettingsCamera.Priority= 0;
             MainmenuCamera.Priority= 1;
-            EventSystem.current.SetSelectedGameObject(StartGame.gameObject);
+            EventSystem.current.SetSelectedGameObject(Gamepad.current != null ? StartGame.gameObject : null);
             SetInteractableButtons(MainMenuButtons, true);
             SetInteractableButtons(SettingsMenuButtons, false);
             SetInteractableSliders(SettingsMenuSliders, false);
@@ -169,7 +171,7 @@ public class MainMenuManager : MonoBehaviour
             rightDoorAnimator.SetBool("isOpen", false);
             PlayerSelectionCamera.Priority= 0;
             MainmenuCamera.Priority= 1;
-            EventSystem.current.SetSelectedGameObject(StartGame.gameObject);
+            EventSystem.current.SetSelectedGameObject(Gamepad.current != null ? StartGame.gameObject : null);
             SetInteractableButtons(MainMenuButtons, true);
             SetInteractableButtons(SettingsMenuButtons, false);
             SetInteractableSliders(SettingsMenuSliders, false);
@@ -186,7 +188,7 @@ public class MainMenuManager : MonoBehaviour
             SoundManager.Instance.PlayOneShot(backButtonPressedSound);
             CreditsCamera.Priority = 0;
             MainmenuCamera.Priority = 1;
-            EventSystem.current.SetSelectedGameObject(StartGame.gameObject);
+            EventSystem.current.SetSelectedGameObject(Gamepad.current != null ? StartGame.gameObject : null);
             creditsTextScroller.enabled = false;
             SetInteractableButtons(MainMenuButtons, true);
             SetInteractableButtons(SettingsMenuButtons, false);
@@ -205,7 +207,7 @@ public class MainMenuManager : MonoBehaviour
             rightDoorAnimator.SetBool("isOpen", true);
             MainmenuCamera.Priority = 0;
             SettingsCamera.Priority = 1;
-            EventSystem.current.SetSelectedGameObject(MainMenuFromSettings.gameObject);
+            EventSystem.current.SetSelectedGameObject(Gamepad.current != null ? MainMenuFromSettings.gameObject : null);
             SetInteractableButtons(MainMenuButtons, false);
             SetInteractableButtons(SettingsMenuButtons, true);
             SetInteractableSliders(SettingsMenuSliders, true);
@@ -222,7 +224,7 @@ public class MainMenuManager : MonoBehaviour
             SoundManager.Instance.PlayOneShot(nextButtonPressedSound);
             MainmenuCamera.Priority = 0;
             CreditsCamera.Priority = 1;
-            EventSystem.current.SetSelectedGameObject(MainMenuFromCredits.gameObject);
+            EventSystem.current.SetSelectedGameObject(Gamepad.current != null ? MainMenuFromCredits.gameObject : null);
             SetInteractableButtons(MainMenuButtons, false);
             SetInteractableButtons(SettingsMenuButtons, false);
             SetInteractableSliders(SettingsMenuSliders, false);
@@ -241,7 +243,7 @@ public class MainMenuManager : MonoBehaviour
             rightDoorAnimator.SetBool("isOpen", true);
             MainmenuCamera.Priority = 0;
             PlayerSelectionCamera.Priority = 1;
-            EventSystem.current.SetSelectedGameObject(singlePlayerButton.gameObject);
+            EventSystem.current.SetSelectedGameObject(Gamepad.current != null ? singlePlayerButton.gameObject : null);
             SetInteractableButtons(MainMenuButtons, false);
             SetInteractableButtons(SettingsMenuButtons, false);
             SetInteractableSliders(SettingsMenuSliders, false);
