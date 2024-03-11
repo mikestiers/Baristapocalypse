@@ -27,6 +27,14 @@ public class LobbyManager : MonoBehaviour
 
     public static LobbyManager Instance { get; private set; }
     public EventHandler<OnLobbyListChangedEventArgs> OnLobbyListChanged;
+
+    public event EventHandler OnCreateLobbyStarted;
+    public event EventHandler OnCreateLobbyFailed;
+    public event EventHandler OnJoinStarted;
+    public event EventHandler OnJoinFailed;
+    public event EventHandler OnQuickJoinFailed;
+
+
     public class OnLobbyListChangedEventArgs : EventArgs
     {
         public List<Lobby> lobbyList;
@@ -138,6 +146,7 @@ public class LobbyManager : MonoBehaviour
 
     public async void CreateLobby(string lobbyName, bool isPrivate, int maxPlayers)
     {
+        OnCreateLobbyStarted?.Invoke(this, EventArgs.Empty);
         try
         {
             CreateLobbyOptions createLobbyOptions = new CreateLobbyOptions
@@ -177,6 +186,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException e)
         {
             Debug.Log(e);
+            OnCreateLobbyFailed?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -212,6 +222,7 @@ public class LobbyManager : MonoBehaviour
 
     public async void JoinLobbyByCode(string lobbyCode)
     {
+        OnJoinStarted?.Invoke(this, EventArgs.Empty);
         try
         {
             JoinLobbyByCodeOptions joinLobbyByCodeOptions = new JoinLobbyByCodeOptions
@@ -234,6 +245,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException e)
         {
             Debug.Log(e);
+            OnJoinFailed?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -266,6 +278,7 @@ public class LobbyManager : MonoBehaviour
 
     public async void QuickJoinLobby()
     {
+        OnJoinStarted?.Invoke(this, EventArgs.Empty);
         try
         {
             joinedLobby = await LobbyService.Instance.QuickJoinLobbyAsync();
@@ -279,6 +292,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException e)
         {
             Debug.Log(e);
+            OnQuickJoinFailed?.Invoke(this, EventArgs.Empty);
         }
     }
 

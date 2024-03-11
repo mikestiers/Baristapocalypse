@@ -21,7 +21,8 @@ public class OrderManager : Singleton<OrderManager>
 
     public event EventHandler OnOrderSpawned;
     public event EventHandler OnOrderCompleted;
-
+    public delegate void OnOrderTimerChangedHandler(float timer);
+    public event OnOrderTimerChangedHandler OnOrderTimerChanged;
     private void OnEnable()
     {
         CustomerBase.OnOrderTimerChanged += OrderInfo_OnOrderTimerChanged;
@@ -36,7 +37,8 @@ public class OrderManager : Singleton<OrderManager>
     {
         if(orders.Contains(orderInfo))
         {
-            orders[orders.IndexOf(orderInfo)].orderTimer = timer;
+            int orderIndex = orders.IndexOf(orderInfo);
+            orders[orderIndex].orderTimer = timer;
         }
     }
 
