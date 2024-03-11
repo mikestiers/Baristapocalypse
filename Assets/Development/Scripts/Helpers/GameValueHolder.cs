@@ -15,7 +15,7 @@ public class GameValueHolder : Singleton<GameValueHolder>
     private void Start()
     {
         difficultySettings = new DifficultySettings();
-        SetCurrentDifficultyTo("Easy");
+        SetCurrentDifficultyTo("Medium");
     }
 
     public void SetCurrentDifficultyTo(string difficulty)
