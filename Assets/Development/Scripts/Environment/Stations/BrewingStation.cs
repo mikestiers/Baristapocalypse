@@ -18,6 +18,8 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
  
     [Header("Visuals")]
     [SerializeField] private ParticleSystem interactParticle;
+    [SerializeField] private Transform playerLerpingPosition;
+    private float playerLerpingDuration = 1.0f;
 
     [Header("Order")]
     private OrderInfo currentOrder;
@@ -254,10 +256,34 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
                 MinigameStartedServerRpc();
 
                 player.anim.CrossFadeInFixedTime(Barista_BrewingHash, CrossFadeDuration);
+                StartCoroutine(LerpPlayerToLerpingPoint(playerLerpingPosition.position, playerLerpingPosition.rotation, playerLerpingDuration, player));
                 player.movementToggle = false;
                 InteractLogicPlaceObjectOnBrewing();
             }
         }
+    }
+
+    IEnumerator LerpPlayerToLerpingPoint(Vector3 lerpPosition, Quaternion targetRotation, float duration, PlayerController player)
+    {
+        float time = 0;
+        Vector3 startPosition = player.transform.position;
+        Vector3 targetPositionNoY = new Vector3(lerpPosition.x, startPosition.y, lerpPosition.z);
+        Quaternion startRotation = player.transform.rotation;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float t = time / duration;
+            Vector3 lerpedPosition = Vector3.Lerp(startPosition, targetPositionNoY, t);
+            player.transform.position = new Vector3(lerpedPosition.x, player.transform.position.y, lerpedPosition.z);
+            player.transform.rotation = Quaternion.Lerp(startRotation, targetRotation, t);
+
+            yield return null;
+        }
+
+        // updateplayer reaches exactly the target position
+        player.transform.position = new Vector3(lerpPosition.x, player.transform.position.y, lerpPosition.z);
+        player.transform.rotation = targetRotation;
     }
 
     [ServerRpc(RequireOwnership = false)]
