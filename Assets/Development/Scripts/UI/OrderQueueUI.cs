@@ -8,6 +8,7 @@ public class OrderQueueUI : MonoBehaviour
 {
     [SerializeField] private Transform container;
     [SerializeField] private Transform queueTimerTemplate;
+    private OrderInfo currentOrder;
 
     private void Awake()
     {
@@ -51,8 +52,11 @@ public class OrderQueueUI : MonoBehaviour
         for (int i = 0; i < OrderManager.Instance.GetOrdersList().Count; i++)
         {
             if (i < 2) continue;
+            if (i > 4) break;
             Transform recipeTransform = Instantiate(queueTimerTemplate, container);
             recipeTransform.gameObject.SetActive(true);
+            recipeTransform.GetComponent<QueueTimerSlider>().customerLeaveTime = OrderManager.Instance.GetOrdersList()[i].customerLeaveTime;
+            recipeTransform.GetComponent<QueueTimerSlider>().orderIndex = i;
         }
     }
 }
