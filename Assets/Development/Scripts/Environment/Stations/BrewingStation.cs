@@ -60,12 +60,15 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
     public event OnBrewingEmptyHandler OnBrewingEmpty;
 
     // Animation interaction with brewing machine
-    public event Action animationSwitch;//*******************************
+    [SerializeField] private Animator leftBrewingAnimator;
+    [SerializeField] private Animator rightBrewingAnimator;
+    public event Action animationSwitch;
     private PlayerController currentPlayerController = null;
     private PlayerController brewingPlayer;
     private float previousFrameTime;
     private readonly int BP_Barista_PickUpHash = Animator.StringToHash("BP_Barista_PickUp");
     private readonly int Barista_BrewingHash = Animator.StringToHash("Barista_Brewing");
+    private readonly int BP_Barista_Brewer_Start_LeftHash = Animator.StringToHash("BP_Barista_Brewer_Start_Left");
     private const float CrossFadeDuration = 0.1f;
     private float animationWaitTime;
 
@@ -256,6 +259,8 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
                 MinigameStartedServerRpc();
 
                 player.anim.CrossFadeInFixedTime(Barista_BrewingHash, CrossFadeDuration);
+                if (leftBrewingAnimator)
+
                 StartCoroutine(LerpPlayerToLerpingPoint(playerLerpingPosition.position, playerLerpingPosition.rotation, playerLerpingDuration, player));
                 player.movementToggle = false;
                 InteractLogicPlaceObjectOnBrewing();
