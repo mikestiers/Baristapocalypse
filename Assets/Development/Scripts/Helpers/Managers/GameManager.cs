@@ -546,7 +546,7 @@ public class GameManager : NetworkBehaviour
             gravityStorm.SetEventBool(true);
             gravityStorm.ActivateDeactivateEvent();
             randomEventEffects.TurnOnOffEventEffectServerRpc(true);
-
+            
         }
         else if (randomEvent.GetComponent<WifiStation>()) 
         {

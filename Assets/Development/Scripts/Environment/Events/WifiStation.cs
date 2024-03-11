@@ -13,6 +13,7 @@ public class WifiStation : RandomEventBase
     public static event WifiEventHandler OnWifiEventStarting;
     public static event WifiEventHandler OnWifiEventStopping;
 
+    
     [ServerRpc(RequireOwnership = false)]
     public void WifiEventIsDoneServerRpc()
     {
@@ -31,6 +32,7 @@ public class WifiStation : RandomEventBase
         GameManager.Instance.isEventActive.Value = false;
         GameManager.Instance.isWifiEvent.Value = false;
         iseventover.Value = true;
+        
         eventLight.SetActive(false);
         Debug.Log("Wifi event is done");
         ChangeColorBasedOnEvent();
