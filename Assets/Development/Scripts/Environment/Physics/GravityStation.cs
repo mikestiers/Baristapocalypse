@@ -83,10 +83,10 @@ public class GravityStation : NetworkBehaviour
         randomEvent.SetEventBool(false);
         randomEvent.ActivateDeactivateEvent();
 
-        //foreach (GameObject bootParticle in PlayerController.Instance.bootsParticles)
-        //{
-        //    bootParticle.SetActive(GameManager.Instance.isEventActive);
-        //}
+        // foreach (GameObject bootParticle in PlayerController.Instance.bootsParticles)
+        // {
+        //     bootParticle.SetActive(GameManager.Instance.isEventActive);
+        // }
     }
 
 }
