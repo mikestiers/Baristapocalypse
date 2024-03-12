@@ -10,41 +10,50 @@ public class CustomerReactionIndicator : MonoBehaviour
     [SerializeField] private Image sadImage;
     [SerializeField] private Image angryImage;
 
+    [SerializeField] private GameObject paiteince_Fail;
+    [SerializeField] private GameObject paiteince_Stage1;
+    [SerializeField] private GameObject paiteince_Stage2;
+    [SerializeField] private GameObject paiteince_Succese;
     private void Awake()
     {
-        CustomerHappy();
+       // CustomerHappy();
+       DeactiveEffects();
     }
 
-    public void CustomerHappy() 
-   {
-      happyImage.gameObject.SetActive(true);
-
-      StartCoroutine(DeactivateImage()); 
-   }
-
-
-   private System.Collections.IEnumerator DeactivateImage()
-   {
-       // Wait for 3 seconds
-       yield return new WaitForSeconds(3f);
-
-       // Deactivate the happy image
-       happyImage.gameObject.SetActive(false);
-       sadImage.gameObject.SetActive(false);
-       angryImage.gameObject.SetActive(false);
-   }
-   public void CustomerSad() 
-   {
-        sadImage.gameObject.SetActive(true);
-
-        StartCoroutine(DeactivateImage());
+    private void DeactiveEffects()
+    {
+        
     }
-
-   public void CustomerAngry() 
-   {
-      angryImage.gameObject.SetActive(true);
-
-      StartCoroutine(DeactivateImage());
-   }
+   //  public void CustomerHappy() 
+   // {
+   //    happyImage.gameObject.SetActive(true);
+   //
+   //    StartCoroutine(DeactivateImage()); 
+   // }
+   //
+   //
+   // private IEnumerator DeactivateImage()
+   // {
+   //     // Wait for 3 seconds
+   //     yield return new WaitForSeconds(3f);
+   //
+   //     // Deactivate the happy image
+   //     happyImage.gameObject.SetActive(false);
+   //     sadImage.gameObject.SetActive(false);
+   //     angryImage.gameObject.SetActive(false);
+   // }
+   // public void CustomerSad() 
+   // {
+   //      sadImage.gameObject.SetActive(true);
+   //
+   //      StartCoroutine(DeactivateImage());
+   //  }
+   //
+   // public void CustomerAngry() 
+   // {
+   //    angryImage.gameObject.SetActive(true);
+   //
+   //    StartCoroutine(DeactivateImage());
+   // }
 
 }
