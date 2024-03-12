@@ -123,6 +123,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7760455076940039442}
   - component: {fileID: 1009713889143039821}
+  - component: {fileID: 5012410041280752279}
   m_Layer: 5
   m_Name: QueueTimerSlider
   m_TagString: Untagged
@@ -200,10 +201,24 @@ MonoBehaviour:
   m_MinValue: -1
   m_MaxValue: 0
   m_WholeNumbers: 0
-  m_Value: -0.13
+  m_Value: -0.38
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5012410041280752279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7185497445421488663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55b64960fac7aae4f9a869b06f155fe7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  customerLeaveTime: 0
+  orderIndex: 0
 --- !u!1 &7907691184267113095
 GameObject:
   m_ObjectHideFlags: 0

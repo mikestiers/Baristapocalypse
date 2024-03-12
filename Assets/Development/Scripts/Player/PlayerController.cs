@@ -94,7 +94,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     private readonly int BP_Barista_Throw_CupHash = Animator.StringToHash("BP_Barista_Throw_Cup");
     private readonly int BP_Barista_Throw_CustHash = Animator.StringToHash("BP_Barista_Throw_Cust");
     private readonly int BP_Barista_Cleaning_VacHash = Animator.StringToHash("BP_Barista_Cleaning_Vac");
-    
+
+    private bool isAnimating = false;
+
     private const float CrossFadeDuration = 0.1f;
 
     private CinemachineVirtualCamera virtualCamera;
@@ -185,7 +187,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.InteractEvent += Interact;
         inputManager.InteractAltEvent += InteractAlt;
         inputManager.DebugConsoleEvent += ShowDebugConsole;
-        inputManager.BrewingStationSelectEvent += OnChangeBrewingStationSelect;
+        inputManager.BrewingStationSelect1Event += OnChangeBrewingStationSelect1;
+        inputManager.BrewingStationSelect2Event += OnChangeBrewingStationSelect2;
         inputManager.BrewingStationEmptyEvent += OnBrewingStationEmptyServerRpc;
 
         if (AISupervisor.Instance)
@@ -201,7 +204,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.InteractEvent -= Interact;
         inputManager.InteractAltEvent -= InteractAlt;
         inputManager.DebugConsoleEvent -= ShowDebugConsole;
-        inputManager.BrewingStationSelectEvent -= OnChangeBrewingStationSelect;
+        inputManager.BrewingStationSelect1Event -= OnChangeBrewingStationSelect1;
+        inputManager.BrewingStationSelect2Event -= OnChangeBrewingStationSelect2;
         inputManager.BrewingStationEmptyEvent -= OnBrewingStationEmptyServerRpc;
 
         if (brewingStation1 != null)
@@ -622,6 +626,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [ClientRpc]
     private void ThrowIngredientClientRpc()
     {
+        if (isAnimating == true) return;
+        isAnimating = true;
         StartCoroutine(ThrowIngredientAnimation()); //Play throw ingredient
     }
 
@@ -768,9 +774,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public void DoPickup(Pickup pickup)
     {
-        if (HasPickup() || !HasNoIngredients)
+        if (HasPickup() || !HasNoIngredients || isAnimating == true)
             return;
 
+        isAnimating = true;
         PickupSO pickupSo = pickup.GetPickupObjectSo();
 
         if (pickupSo != null)
@@ -797,9 +804,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [ClientRpc]
     private void ThrowPickupClientRpc()
     {
-        if (!HasPickup())
+        if (!HasPickup() || isAnimating == true)
             return;
 
+        isAnimating = true;
         if (pickup.IsCustomer)
         {
             Debug.Log("Customer dead");
@@ -817,15 +825,27 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         UIManager.Instance.debugConsoleActive = !UIManager.Instance.debugConsoleActive;
     }
 
-    public void OnChangeBrewingStationSelect()
+    public void OnChangeBrewingStationSelect1()
     {
         if (OrderManager.Instance.brewingStations.Length > 1)
         {
             // Increment the currentBrewingStation index, wrapping around using modulo
-            int nextBrewingStation = (currentBrewingStation + 1) % OrderManager.Instance.brewingStations.Length;
-            OrderManager.Instance.orderStats[nextBrewingStation].selectedByPlayerImage.SetActive(true);
-            OrderManager.Instance.orderStats[currentBrewingStation].selectedByPlayerImage.SetActive(false);
-            currentBrewingStation = nextBrewingStation;
+            //int nextBrewingStation = (currentBrewingStation + 1) % OrderManager.Instance.brewingStations.Length;
+            OrderManager.Instance.orderStats[0].selectedByPlayerImage.SetActive(true);
+            OrderManager.Instance.orderStats[1].selectedByPlayerImage.SetActive(false);
+            currentBrewingStation = 0;
+        }
+    }
+    
+    public void OnChangeBrewingStationSelect2()
+    {
+        if (OrderManager.Instance.brewingStations.Length > 1)
+        {
+            // Increment the currentBrewingStation index, wrapping around using modulo
+            //int nextBrewingStation = (currentBrewingStation + 1) % OrderManager.Instance.brewingStations.Length;
+            OrderManager.Instance.orderStats[1].selectedByPlayerImage.SetActive(true);
+            OrderManager.Instance.orderStats[0].selectedByPlayerImage.SetActive(false);
+            currentBrewingStation = 1;
         }
     }
 
@@ -942,7 +962,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
             pickup.SetPickupObjectParent(this);
             pickup.DisablePickupColliders(pickup);
+            pickup.isOnFloor = false;
             movementToggle = true;
+            isAnimating = false;
         } 
     }
 
@@ -968,6 +990,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
         
         movementToggle = true;
+        isAnimating= false;
     }
 
     // Play throw pick up
@@ -995,6 +1018,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             pickup.ClearPickupOnParent(); 
         }
         movementToggle = true;
+        isAnimating = false;
     }
 
     // Play throw ingredient 
@@ -1028,5 +1052,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             OnAnimationSwitch();
         }
         movementToggle = true;
+        isAnimating = false;
     }
 }
