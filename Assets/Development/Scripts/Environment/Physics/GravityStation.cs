@@ -10,7 +10,7 @@ public class GravityStation : NetworkBehaviour
     [SerializeField] private GameObject gravityField;
     [SerializeField] private GameObject gravityButton;
     [SerializeField] private Material originalMaterial;
-
+    
 
     private void OnTriggerEnter(Collider other)
     {
@@ -82,12 +82,12 @@ public class GravityStation : NetworkBehaviour
         gravityButton.GetComponent<MeshRenderer>().material = originalMaterial;
         randomEvent.SetEventBool(false);
         randomEvent.ActivateDeactivateEvent();
-
         // foreach (GameObject bootParticle in PlayerController.Instance.bootsParticles)
         // {
         //     bootParticle.SetActive(GameManager.Instance.isEventActive);
         // }
     }
 
+    
 }
 
