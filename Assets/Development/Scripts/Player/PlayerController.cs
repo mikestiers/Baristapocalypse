@@ -187,7 +187,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.InteractEvent += Interact;
         inputManager.InteractAltEvent += InteractAlt;
         inputManager.DebugConsoleEvent += ShowDebugConsole;
-        inputManager.BrewingStationSelectEvent += OnChangeBrewingStationSelect;
+        inputManager.BrewingStationSelect1Event += OnChangeBrewingStationSelect1;
+        inputManager.BrewingStationSelect2Event += OnChangeBrewingStationSelect2;
         inputManager.BrewingStationEmptyEvent += OnBrewingStationEmptyServerRpc;
 
         if (AISupervisor.Instance)
@@ -203,7 +204,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.InteractEvent -= Interact;
         inputManager.InteractAltEvent -= InteractAlt;
         inputManager.DebugConsoleEvent -= ShowDebugConsole;
-        inputManager.BrewingStationSelectEvent -= OnChangeBrewingStationSelect;
+        inputManager.BrewingStationSelect1Event -= OnChangeBrewingStationSelect1;
+        inputManager.BrewingStationSelect2Event -= OnChangeBrewingStationSelect2;
         inputManager.BrewingStationEmptyEvent -= OnBrewingStationEmptyServerRpc;
 
         if (brewingStation1 != null)
@@ -823,15 +825,27 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         UIManager.Instance.debugConsoleActive = !UIManager.Instance.debugConsoleActive;
     }
 
-    public void OnChangeBrewingStationSelect()
+    public void OnChangeBrewingStationSelect1()
     {
         if (OrderManager.Instance.brewingStations.Length > 1)
         {
             // Increment the currentBrewingStation index, wrapping around using modulo
-            int nextBrewingStation = (currentBrewingStation + 1) % OrderManager.Instance.brewingStations.Length;
-            OrderManager.Instance.orderStats[nextBrewingStation].selectedByPlayerImage.SetActive(true);
-            OrderManager.Instance.orderStats[currentBrewingStation].selectedByPlayerImage.SetActive(false);
-            currentBrewingStation = nextBrewingStation;
+            //int nextBrewingStation = (currentBrewingStation + 1) % OrderManager.Instance.brewingStations.Length;
+            OrderManager.Instance.orderStats[0].selectedByPlayerImage.SetActive(true);
+            OrderManager.Instance.orderStats[1].selectedByPlayerImage.SetActive(false);
+            currentBrewingStation = 0;
+        }
+    }
+    
+    public void OnChangeBrewingStationSelect2()
+    {
+        if (OrderManager.Instance.brewingStations.Length > 1)
+        {
+            // Increment the currentBrewingStation index, wrapping around using modulo
+            //int nextBrewingStation = (currentBrewingStation + 1) % OrderManager.Instance.brewingStations.Length;
+            OrderManager.Instance.orderStats[1].selectedByPlayerImage.SetActive(true);
+            OrderManager.Instance.orderStats[0].selectedByPlayerImage.SetActive(false);
+            currentBrewingStation = 1;
         }
     }
 
