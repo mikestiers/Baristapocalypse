@@ -110,11 +110,8 @@ public class CleanupBot : MonoBehaviour
         agent.SetDestination(trashStation.transform.position);
         while (agent.pathPending && agent.remainingDistance > distToNextNode) return;
 
-        if (agent.remainingDistance < distToNextNode) 
-        {
-            trashCounter = 0;
-            currentState = BotState.Roam;
-        }
+        if (agent.remainingDistance < distToNextNode) trashCounter = 0;
+      
     }
 
     private GameObject FindNearestMessOnFloor(GameObject[] messes)
@@ -145,6 +142,8 @@ public class CleanupBot : MonoBehaviour
         {
             Pickup _CollidingPickup = other.gameObject.GetComponent<Pickup>();
 
+            if (_CollidingPickup.Getpickup() == null) return;
+
             if (_CollidingPickup.Getpickup().objectName == "MessCup")
             {
                 GameObject messToDestroy = _CollidingPickup.gameObject;
@@ -154,4 +153,5 @@ public class CleanupBot : MonoBehaviour
         }
        
     }
+
 }
