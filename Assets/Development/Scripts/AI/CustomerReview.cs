@@ -278,6 +278,16 @@ public class CustomerReview : MonoBehaviour
         reviewScore = CalculateReviewScore(cafeCleanliness, cafeCrowdedness, timeToServe, drinkScore);
     }
 
+    public void GenerateReview(CustomerBase customer, float starAmount)
+    {
+        orderOwner = customer;
+        drinkScore = starAmount;
+        cafeCleanliness = starAmount;
+        cafeCrowdedness = starAmount;
+        timeToServe = starAmount;
+        reviewScore = CalculateReviewScore(cafeCleanliness, cafeCrowdedness, timeToServe, drinkScore);
+    }
+
     //Calculates cafe cleanliness and assigns a score (Max 20)
     private float GetCafeCleanliness()
     {
@@ -376,80 +386,95 @@ public class CustomerReview : MonoBehaviour
         float totalScore = 0;
         Debug.Log($"Cleanliness: {cafeCleanliness} Crowdedness: {cafeCrowdedness} Time: {timeToServe} Drink: {drinkScore}");
 
-        //find the lowest score of all scores
-        List<float> scoreList = new List<float> { cafeCleanliness, cafeCrowdedness, timeToServe, drinkScore};
-        float minScore = scoreList.Min();
-
-        //check for multiple of the lowest score
-        List<int> minIndices = new List<int>();
-        for (int i = 0; i < scoreList.Count; i++)
+        //check to see if all the aspects of the score are the same and == 1 for a leaving customer
+        if (cafeCleanliness == 1 && cafeCrowdedness == 1 && timeToServe == 1 && drinkScore == 1)
         {
-            if (scoreList[i] == minScore)
+            System.Random random = new System.Random();
+            int randIndex = random.Next(3);
+            if (randIndex == 1)
+                reviewText = "This place is the slowest coffee shop I have EVER been to";
+            else if (randIndex == 2)
+                reviewText = "I should have stopped at Dark Matter Doughnuts instead :(";
+            else
+                reviewText = "I waited for SO LONG, had to leave to check if my oven was still on";
+            Debug.Log("1 star Review Activated");
+        }
+        else
+        {
+            //find the lowest score of all scores
+            List<float> scoreList = new List<float> { cafeCleanliness, cafeCrowdedness, timeToServe, drinkScore };
+            float minScore = scoreList.Min();
+
+            //check for multiple of the lowest score
+            List<int> minIndices = new List<int>();
+            for (int i = 0; i < scoreList.Count; i++)
             {
-                minIndices.Add(i);
+                if (scoreList[i] == minScore)
+                {
+                    minIndices.Add(i);
+                }
+            }
+
+            //if there are multiple with the same score it will choose randomly between them
+            System.Random random = new System.Random();
+            int chosenIndex = minIndices[random.Next(minIndices.Count)];
+            float chosenScore = scoreList[chosenIndex];
+
+            Debug.Log($"The minimum score is {chosenScore} at index {chosenIndex}");
+            //choose review text here 
+            if (chosenIndex == 0)
+            {
+                if (chosenScore <= 5)
+                    reviewText = "SO GROSS!!! Ew! This place is nasty!";
+                else if (chosenScore <= 10)
+                    reviewText = "Acceptable I guess, could use a mopping once and a while.";
+                else if (chosenScore <= 15)
+                    reviewText = "Meh, could be cleaner tbh smh";
+                else if (chosenScore == 20)
+                    reviewText = "Nice and tidy. No complaints";
+                else
+                    reviewText = "Sparkling clean! Could see myself in the reflection of the floor!";
+            }
+            else if (chosenIndex == 1)
+            {
+                if (chosenScore <= 5)
+                    reviewText = "No good seats. Too many liotering youngsters!";
+                else if (chosenScore <= 10)
+                    reviewText = "Hard to find a seat. No one seems to be leaving?";
+                else if (chosenScore <= 15)
+                    reviewText = "A very busy place but I managed to find a good seat!";
+                else if (chosenScore == 20)
+                    reviewText = "This place always has hundreds of people at the front but lots of room?? How?";
+                else
+                    reviewText = "Plenty of room to enjoy my morning brew! Nice work Milky Way!";
+            }
+            else if (chosenIndex == 2)
+            {
+                if (chosenScore <= 5)
+                    reviewText = "Ugh!! I was completely forgotten about!";
+                else if (chosenScore <= 10)
+                    reviewText = "Took the hunk-a-junk forever just to make ONE drink for me...";
+                else if (chosenScore <= 15)
+                    reviewText = "These robots take so long! Aren't they supposed to be faster?";
+                else if (chosenScore == 20)
+                    reviewText = "Quick service, very in and out!";
+                else
+                    reviewText = "Wow! It's like they had it premade, just for meeee :)";
+            }
+            else if (chosenIndex == 3)
+            {
+                if (chosenScore <= 5)
+                    reviewText = "Not what I wanted at all!! Ruined my day!1!1!!";
+                else if (chosenScore <= 10)
+                    reviewText = "I mean I guess this is my drink?? Smells weird tho-";
+                else if (chosenScore <= 15)
+                    reviewText = "Tastes good, not a bad flavour.";
+                else if (chosenScore == 20)
+                    reviewText = "What a brilliant combination! They should make this a permanent menu item.";
+                else
+                    reviewText = "Exactly what I was looking for!! Perfect perfect perfect!!";
             }
         }
-
-        //if there are multiple with the same score it will choose randomly between them
-        System.Random random = new System.Random();
-        int chosenIndex = minIndices[random.Next(minIndices.Count)];
-        float chosenScore = scoreList[chosenIndex];
-
-        Debug.Log($"The minimum score is {chosenScore} at index {chosenIndex}");
-        //choose review text here 
-        if (chosenIndex == 0)
-        {
-            if (chosenScore <= 5)
-                reviewText = "SO GROSS!!! Ew! This place is nasty!";
-            else if (chosenScore <= 10)
-                reviewText = "Acceptable I guess, could use a mopping once and a while.";
-            else if (chosenScore <= 15)
-                reviewText = "Meh, could be cleaner tbh smh";
-            else if (chosenScore == 20)
-                reviewText = "Nice and tidy. No complaints";
-            else
-                reviewText = "Sparkling clean! Could see myself in the reflection of the floor!";
-        }
-        else if (chosenIndex == 1)
-        {
-            if (chosenScore <= 5)
-                reviewText = "No good seats. Too many liotering youngsters!";
-            else if (chosenScore <= 10)
-                reviewText = "Hard to find a seat. No one seems to be leaving?";
-            else if (chosenScore <= 15)
-                reviewText = "A very busy place but I managed to find a good seat!";
-            else if (chosenScore == 20)
-                reviewText = "This place always has hundreds of people at the front but lots of room?? How?";
-            else
-                reviewText = "Plenty of room to enjoy my morning brew! Nice work Milky Way!";
-        }
-        else if (chosenIndex == 2)
-        {
-            if (chosenScore <= 5)
-                reviewText = "Ugh!! I was completely forgotten about!";
-            else if (chosenScore <= 10)
-                reviewText = "Took the hunk-a-junk forever just to make ONE drink for me...";
-            else if (chosenScore <= 15)
-                reviewText = "These robots take so long! Aren't they supposed to be faster?";
-            else if (chosenScore == 20)
-                reviewText = "Quick service, very in and out!";
-            else
-                reviewText = "Wow! It's like they had it premade, just for meeee :)";
-        }
-        else if (chosenIndex == 3)
-        {
-            if (chosenScore <= 5)
-                reviewText = "Not what I wanted at all!! Ruined my day!1!1!!";
-            else if (chosenScore <= 10)
-                reviewText = "I mean I guess this is my drink?? Smells weird tho-";
-            else if (chosenScore <= 15)
-                reviewText = "Tastes good, not a bad flavour.";
-            else if (chosenScore == 20)
-                reviewText = "What a brilliant combination! They should make this a permanent menu item.";
-            else
-                reviewText = "Exactly what I was looking for!! Perfect perfect perfect!!";
-        }
-
         //add up scores for final total score and convert into a star amount (max 80 points, max 5 star)
         totalScore = cafeCleanliness + cafeCrowdedness + timeToServe + drinkScore;
         if (totalScore == 80)
@@ -474,9 +499,12 @@ public class CustomerReview : MonoBehaviour
         }
         numReviews++;
         averageReviewScore += reviewScore;
-        //add gain money
-        GameManager.Instance.moneySystem.AdjustMoneyByAmount(GameManager.Instance.moneySystem.ComputeMoney(reviewScore), true);
-        GameManager.Instance.moneySystem.SetAverageReviewRating(GetAverageReviewScore());
+        if (reviewScore != 1)
+        {
+            //add gain money
+            GameManager.Instance.moneySystem.AdjustMoneyByAmount(GameManager.Instance.moneySystem.ComputeMoney(reviewScore), true);
+        }
+            GameManager.Instance.moneySystem.SetAverageReviewRating(GetAverageReviewScore());
         //if Order is perfect adds to streak
         if (drinkScore == 20)
         {
