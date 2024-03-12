@@ -479,13 +479,23 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     IEnumerator Dash()
     {
+        // Dash only if holding trash or cooffee cup
+        if (pickup != null)
+        {
+            if (pickup.GetPickupObjectSo().objectName == mopSoName || pickup.IsCustomer)
+            {
+                yield break;
+
+            }
+        }
+  
         isDashing = true;
         float startTime = Time.time;
 
         while (Time.time < startTime + dashTime)
         {
             rb.AddForce(moveDirection * dashForce * Time.deltaTime, ForceMode.Impulse);
-            if (ingredientsList.Count > 0  || HasPickup())
+            if (ingredientsList.Count > 0 || HasPickup())
             {
                 anim.SetBool("isDashingWithCup", isDashing);
             }
@@ -507,7 +517,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
             anim.SetBool("isDashing", isDashing);
         }
-
+        
     }
 
     public void OnThrow()
