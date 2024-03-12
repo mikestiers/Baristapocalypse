@@ -30,6 +30,8 @@ public class ShiftEvaluationUI : NetworkBehaviour
 
     public List<Image> starImages;
     public List<GameObject> containers;
+    public Sprite starEmpty;
+    public Sprite starFull;
 
     public delegate void ShiftEvaluationHandler();
     public static event ShiftEvaluationHandler OnShiftEvaluation;
@@ -160,7 +162,11 @@ public class ShiftEvaluationUI : NetworkBehaviour
         {
             if (i >= reviewScore)
             {
-                starImages[i].color = Color.black;
+                starImages[i].sprite = starEmpty;
+            }
+            else
+            {
+                starImages[i].sprite = starFull;
             }
         }
     }
