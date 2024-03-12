@@ -636,6 +636,9 @@ public class CustomerBase : Base
             customerAnimator.CrossFadeInFixedTime(Customer_WalkHash, CrossFadeDuration); // Customer1 walk animation
             agent.SetDestination(exit);
             SetCustomerState(CustomerState.Leaving);
+
+            CustomerReviewManager.Instance.CustomerReviewEvent(this, 1);
+            customerInstanceReviewScore = CustomerReviewManager.Instance.reviewScore;
         }
 
         if (OnCustomerLeave != null)
