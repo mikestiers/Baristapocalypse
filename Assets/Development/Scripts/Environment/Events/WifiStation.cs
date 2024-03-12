@@ -13,6 +13,7 @@ public class WifiStation : RandomEventBase
     public static event WifiEventHandler OnWifiEventStarting;
     public static event WifiEventHandler OnWifiEventStopping;
 
+    
     [ServerRpc(RequireOwnership = false)]
     public void WifiEventIsDoneServerRpc()
     {
@@ -31,6 +32,7 @@ public class WifiStation : RandomEventBase
         GameManager.Instance.isEventActive.Value = false;
         GameManager.Instance.isWifiEvent.Value = false;
         iseventover.Value = true;
+        screenEffect.ToggleWifiEffect(iseventover.Value);
         eventLight.SetActive(false);
         Debug.Log("Wifi event is done");
         ChangeColorBasedOnEvent();
@@ -53,6 +55,7 @@ public class WifiStation : RandomEventBase
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.wifiOff);
         iseventover.Value = false;
+        screenEffect.ToggleWifiEffect(iseventover.Value);
         GameManager.Instance.isWifiEvent.Value = true;
         eventLight.SetActive(true);
         Debug.Log("Wifi event is Starting");

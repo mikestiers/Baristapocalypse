@@ -6,7 +6,7 @@ using UnityEngine;
 public class RandomEventEffects : NetworkBehaviour
 {
     [SerializeField] private GameObject gravityLights;
-
+    [SerializeField] private FullScreenEffectController screenFX;
     [ServerRpc(RequireOwnership = false)]
     public void TurnOnOffEventEffectServerRpc(bool trueOrFalse)
     {
@@ -14,13 +14,15 @@ public class RandomEventEffects : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void TurnOnOffEventEffectClientRpc(bool trueOrFalse)
+    private void TurnOnOffEventEffectClientRpc(bool trueOrFalse)
     {
         TurnOnOffEventEffect(trueOrFalse);
     }
 
-    public void TurnOnOffEventEffect(bool trueOrFalse)
+    private void TurnOnOffEventEffect(bool trueOrFalse)
     {
         gravityLights.SetActive(trueOrFalse);
+        screenFX.ToggleGravityEffect(trueOrFalse);
+        Debug.LogWarning(trueOrFalse);
     }
 }

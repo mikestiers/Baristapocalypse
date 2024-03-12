@@ -153,7 +153,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &115195021
 RectTransform:
   m_ObjectHideFlags: 0
@@ -622,8 +622,8 @@ RectTransform:
   m_Father: {fileID: 2106370671}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1874,8 +1874,8 @@ RectTransform:
   m_Father: {fileID: 264122604}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -14032,7 +14032,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stationTopPoint: {fileID: 0}
-  Audios: []
+  screenEffect: {fileID: 0}
+  Audios:
+  - {fileID: 8300000, guid: 6947e887045360c42852565100349c6f, type: 3}
+  - {fileID: 8300000, guid: c288b79df0c2f0f4ebd6d42695f1141c, type: 3}
+  - {fileID: 8300000, guid: c6594339a628ced4da750a0ea18f260a, type: 3}
+  - {fileID: 8300000, guid: f258a932ba21dd84697b0a2922d28626, type: 3}
+  - {fileID: 8300000, guid: 4edf0381dba74a5489e8a65d8da7a154, type: 3}
   MainAudio: {fileID: 0}
   ChangeSound: {fileID: 8300000, guid: 1bd65760e3c80af47a69fef9fe9c91b5, type: 3}
   BrokenSound: {fileID: 8300000, guid: 6139dbe5288e8844c9ed2d6c3c5470cd, type: 3}
@@ -14093,6 +14099,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <RandomEventSO>k__BackingField: {fileID: 11400000, guid: cf01872d880ccd648865bf92d35959f4, type: 2}
+  screenEffect: {fileID: 0}
   radioStation: {fileID: 1797054837799654982}
 --- !u!1001 &2196757915301955878
 PrefabInstance:

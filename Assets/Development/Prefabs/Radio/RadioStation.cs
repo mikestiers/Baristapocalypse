@@ -84,12 +84,14 @@ public class RadioStation : BaseStation
 
     public void EventOn() 
     {
+        screenEffect.ToggleRadioEffect(eventIsOn);
         eventIsOn = true;
         MainAudio.clip = BrokenSound;
         MainAudio.Play();
         eventLight.SetActive(true);
         ChangeRandomTextColorPair();
         Ui.gameObject.SetActive(true);
+        
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -107,6 +109,7 @@ public class RadioStation : BaseStation
     public void EventOff() 
     {
         eventIsOn = false;
+        screenEffect.ToggleRadioEffect(eventIsOn);
         eventLight.SetActive(false);
         GameManager.Instance.isEventActive.Value = false;
         MainAudio.clip = Audios[AudioIndex];
