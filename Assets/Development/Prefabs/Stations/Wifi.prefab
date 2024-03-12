@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5025202931549306937}
   - component: {fileID: 142268411867899382}
-  - component: {fileID: 1789641708456251429}
   m_Layer: 0
   m_Name: Wifi
   m_TagString: Untagged
@@ -52,22 +51,6 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!114 &1789641708456251429
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5025202931549306942}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b972d276cfa683f488ed86240ec9cb93, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <RandomEventSO>k__BackingField: {fileID: 11400000, guid: 889cd374e73640246becee484b48a148, type: 2}
-  Color: {r: 0, g: 0, b: 0, a: 1}
-  Color2: {r: 0.5294118, g: 0.6313726, b: 0.2784314, a: 1}
-  eventLight: {fileID: 5025202931603245960}
 --- !u!1 &5025202931603245960
 GameObject:
   m_ObjectHideFlags: 0
@@ -262,7 +245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82f6ef1754e410a4fb2ce771830cb73c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Wifi: {fileID: 0}
+  Wifi: {fileID: 5025202932204576997}
 --- !u!1 &5025202932204577018
 GameObject:
   m_ObjectHideFlags: 0
@@ -275,6 +258,7 @@ GameObject:
   - component: {fileID: 5025202932204576998}
   - component: {fileID: 5025202932204576999}
   - component: {fileID: 5025202932204576996}
+  - component: {fileID: 5025202932204576997}
   m_Layer: 0
   m_Name: Router
   m_TagString: Untagged
@@ -360,6 +344,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5025202932204576997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5025202932204577018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b972d276cfa683f488ed86240ec9cb93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <RandomEventSO>k__BackingField: {fileID: 11400000, guid: 889cd374e73640246becee484b48a148, type: 2}
+  Color: {r: 0, g: 0, b: 0, a: 1}
+  Color2: {r: 0.5294118, g: 0.6313726, b: 0.2784314, a: 1}
+  eventLight: {fileID: 5025202931603245960}
 --- !u!1 &5900018604860057608
 GameObject:
   m_ObjectHideFlags: 0

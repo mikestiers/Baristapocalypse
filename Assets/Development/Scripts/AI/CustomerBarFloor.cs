@@ -24,7 +24,6 @@ public class CustomerBarFloor
             emptyChair.SetCustomer(customer);
             customer.Walkto(emptyChair.GetPosition());
         }
-        else customer.CustomerLeave();
         //Add If there are no empty chairs get them to roam instead
     }
 

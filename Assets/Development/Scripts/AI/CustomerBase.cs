@@ -297,11 +297,6 @@ public class CustomerBase : Base
         if (agent.remainingDistance < distThreshold)
         {
             agent.isStopped = true;
-            if (makingAMess == true) 
-            {
-                customerAnimator.CrossFadeInFixedTime(Customer_IdleHash, CrossFadeDuration);
-                SetCustomerState(CustomerState.Waiting);
-            } 
             if (frontofLine == true)
             {
                 customerAnimator.CrossFadeInFixedTime(Customer_IdleHash, CrossFadeDuration); // Customer1 idle animation
@@ -309,10 +304,12 @@ public class CustomerBase : Base
             }
             if(inLine && frontofLine != true)
             {
-                customerAnimator.CrossFadeInFixedTime(Customer_IdleHash, CrossFadeDuration); // Customer1 idle animatio
+                customerAnimator.CrossFadeInFixedTime(Customer_IdleHash, CrossFadeDuration); // Customer1 idle animation
+
+
                 SetCustomerState(CustomerState.Waiting);
             }
-            if (!inLine && makingAMess == false)
+            if (!inLine)
             {
                 SetCustomerState(CustomerState.Insit);
             }
@@ -326,6 +323,11 @@ public class CustomerBase : Base
         if (!IsServer) return;
         messTime = null;
         leaving = true;
+
+        if (agent.remainingDistance < distThreshold)
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void UpdateInsit()
@@ -352,6 +354,12 @@ public class CustomerBase : Base
 
     private void UpdateLoitering()
     {
+        if (leaving == true)
+        {
+            SetCustomerState(CustomerState.Leaving);
+            agent.SetDestination(exit);
+        }
+    
         // To be implmented or removed
         if(messTime >= GameValueHolder.Instance.difficultySettings.GetLoiterMessEverySec())
         {
@@ -359,12 +367,10 @@ public class CustomerBase : Base
             RestartMessTimer();
         }
 
-        if (randomPointCoroutine == null)
+        if (randomPointCoroutine == null) 
         {
             randomPointCoroutine = StartCoroutine(TryGoToRandomPoint(5f));
         }
-        else StartCoroutine(TryGoToRandomPoint(5f));
-
     }
 
     private void UpdateDrinking()
@@ -617,7 +623,7 @@ public class CustomerBase : Base
         atSit = false;
 
         if (GetCustomerState() == CustomerState.Drinking && Random.Range(0, 100) <= GameValueHolder.Instance.difficultySettings.GetChanceToMess()) CreateMess();
-        if (GetCustomerState() == CustomerState.Drinking && Random.Range(0, 100) < GameValueHolder.Instance.difficultySettings.GetChanceToLoiter())
+        if (Random.Range(0, 100) < GameValueHolder.Instance.difficultySettings.GetChanceToLoiter())
         {
             messTime = 0f;
             makingAMess = true;
@@ -626,6 +632,7 @@ public class CustomerBase : Base
         }
         else
         {
+            Debug.LogError("Customer Leaving");
             customerAnimator.CrossFadeInFixedTime(Customer_WalkHash, CrossFadeDuration); // Customer1 walk animation
             agent.SetDestination(exit);
             SetCustomerState(CustomerState.Leaving);
