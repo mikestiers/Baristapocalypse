@@ -109,9 +109,18 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""BrewingStationSelect"",
+                    ""name"": ""BrewingStationSelect1"",
                     ""type"": ""Button"",
                     ""id"": ""175210a5-27eb-417d-8da4-cc71303a0303"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""BrewingStationSelect2"",
+                    ""type"": ""Button"",
+                    ""id"": ""202474d9-71d6-4d18-bf9b-43eeda4f1938"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -426,18 +435,7 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""BrewingStationSelect"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""831de6c7-8887-4874-9ed4-b1323c64808a"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""BrewingStationSelect"",
+                    ""action"": ""BrewingStationSelect1"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -448,18 +446,7 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
-                    ""action"": ""BrewingStationSelect"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""cfb19027-1ed0-4e0d-871d-7d7c0d54b106"",
-                    ""path"": ""<Keyboard>/2"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard and Mouse"",
-                    ""action"": ""BrewingStationSelect"",
+                    ""action"": ""BrewingStationSelect1"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -702,6 +689,28 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
                     ""action"": ""KeyboardDetection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5724ff75-4d16-4060-8c03-aa1794704848"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""BrewingStationSelect2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4e2f00b4-c591-4e81-ba22-4c345fdb78a9"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""BrewingStationSelect2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1111,7 +1120,8 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
         m_Player_Grab = m_Player.FindAction("Grab", throwIfNotFound: true);
         m_Player_Throw = m_Player.FindAction("Throw", throwIfNotFound: true);
         m_Player_DebugConsole = m_Player.FindAction("DebugConsole", throwIfNotFound: true);
-        m_Player_BrewingStationSelect = m_Player.FindAction("BrewingStationSelect", throwIfNotFound: true);
+        m_Player_BrewingStationSelect1 = m_Player.FindAction("BrewingStationSelect1", throwIfNotFound: true);
+        m_Player_BrewingStationSelect2 = m_Player.FindAction("BrewingStationSelect2", throwIfNotFound: true);
         m_Player_BrewingStationEmpty = m_Player.FindAction("BrewingStationEmpty", throwIfNotFound: true);
         m_Player_MouseDetection = m_Player.FindAction("MouseDetection", throwIfNotFound: true);
         m_Player_GamepadDetection = m_Player.FindAction("GamepadDetection", throwIfNotFound: true);
@@ -1196,7 +1206,8 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Grab;
     private readonly InputAction m_Player_Throw;
     private readonly InputAction m_Player_DebugConsole;
-    private readonly InputAction m_Player_BrewingStationSelect;
+    private readonly InputAction m_Player_BrewingStationSelect1;
+    private readonly InputAction m_Player_BrewingStationSelect2;
     private readonly InputAction m_Player_BrewingStationEmpty;
     private readonly InputAction m_Player_MouseDetection;
     private readonly InputAction m_Player_GamepadDetection;
@@ -1214,7 +1225,8 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
         public InputAction @Grab => m_Wrapper.m_Player_Grab;
         public InputAction @Throw => m_Wrapper.m_Player_Throw;
         public InputAction @DebugConsole => m_Wrapper.m_Player_DebugConsole;
-        public InputAction @BrewingStationSelect => m_Wrapper.m_Player_BrewingStationSelect;
+        public InputAction @BrewingStationSelect1 => m_Wrapper.m_Player_BrewingStationSelect1;
+        public InputAction @BrewingStationSelect2 => m_Wrapper.m_Player_BrewingStationSelect2;
         public InputAction @BrewingStationEmpty => m_Wrapper.m_Player_BrewingStationEmpty;
         public InputAction @MouseDetection => m_Wrapper.m_Player_MouseDetection;
         public InputAction @GamepadDetection => m_Wrapper.m_Player_GamepadDetection;
@@ -1255,9 +1267,12 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                 @DebugConsole.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugConsole;
                 @DebugConsole.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugConsole;
                 @DebugConsole.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugConsole;
-                @BrewingStationSelect.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBrewingStationSelect;
-                @BrewingStationSelect.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBrewingStationSelect;
-                @BrewingStationSelect.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBrewingStationSelect;
+                @BrewingStationSelect1.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBrewingStationSelect1;
+                @BrewingStationSelect1.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBrewingStationSelect1;
+                @BrewingStationSelect1.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBrewingStationSelect1;
+                @BrewingStationSelect2.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBrewingStationSelect2;
+                @BrewingStationSelect2.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBrewingStationSelect2;
+                @BrewingStationSelect2.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBrewingStationSelect2;
                 @BrewingStationEmpty.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBrewingStationEmpty;
                 @BrewingStationEmpty.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBrewingStationEmpty;
                 @BrewingStationEmpty.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBrewingStationEmpty;
@@ -1301,9 +1316,12 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
                 @DebugConsole.started += instance.OnDebugConsole;
                 @DebugConsole.performed += instance.OnDebugConsole;
                 @DebugConsole.canceled += instance.OnDebugConsole;
-                @BrewingStationSelect.started += instance.OnBrewingStationSelect;
-                @BrewingStationSelect.performed += instance.OnBrewingStationSelect;
-                @BrewingStationSelect.canceled += instance.OnBrewingStationSelect;
+                @BrewingStationSelect1.started += instance.OnBrewingStationSelect1;
+                @BrewingStationSelect1.performed += instance.OnBrewingStationSelect1;
+                @BrewingStationSelect1.canceled += instance.OnBrewingStationSelect1;
+                @BrewingStationSelect2.started += instance.OnBrewingStationSelect2;
+                @BrewingStationSelect2.performed += instance.OnBrewingStationSelect2;
+                @BrewingStationSelect2.canceled += instance.OnBrewingStationSelect2;
                 @BrewingStationEmpty.started += instance.OnBrewingStationEmpty;
                 @BrewingStationEmpty.performed += instance.OnBrewingStationEmpty;
                 @BrewingStationEmpty.canceled += instance.OnBrewingStationEmpty;
@@ -1454,7 +1472,8 @@ public partial class @ControllerInputs : IInputActionCollection2, IDisposable
         void OnGrab(InputAction.CallbackContext context);
         void OnThrow(InputAction.CallbackContext context);
         void OnDebugConsole(InputAction.CallbackContext context);
-        void OnBrewingStationSelect(InputAction.CallbackContext context);
+        void OnBrewingStationSelect1(InputAction.CallbackContext context);
+        void OnBrewingStationSelect2(InputAction.CallbackContext context);
         void OnBrewingStationEmpty(InputAction.CallbackContext context);
         void OnMouseDetection(InputAction.CallbackContext context);
         void OnGamepadDetection(InputAction.CallbackContext context);
