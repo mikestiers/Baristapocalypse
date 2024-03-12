@@ -224,11 +224,11 @@ public class IngredientSelectionUI : BaseStation
         if (other.tag == "Player")
         {
             player = other.GetComponent<PlayerController>();
-            GetComponentInParent<CameraStation1>().SwitchCameraOff();
 
             if (player.IsLocalPlayer)
             {
                 // Hide UI ingredient menu
+                GetComponentInParent<CameraStation1>().SwitchCameraOff();
                 EventSystem.current.SetSelectedGameObject(null);
                 StartCoroutine(CloseMenu());
                 isInUse = false;
