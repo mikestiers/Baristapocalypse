@@ -60,6 +60,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
     public event OnBrewingEmptyHandler OnBrewingEmpty;
 
     // Animation interaction with brewing machine
+    [Header("Animations")]
     [SerializeField] private Animator leftBrewingAnimator;
     [SerializeField] private Animator rightBrewingAnimator;
     public event Action animationSwitch;
@@ -67,8 +68,11 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
     private PlayerController brewingPlayer;
     private float previousFrameTime;
     private readonly int BP_Barista_PickUpHash = Animator.StringToHash("BP_Barista_PickUp");
-    private readonly int Barista_BrewingHash = Animator.StringToHash("Barista_Brewing");
+    private readonly int Barista_BrewingHash = Animator.StringToHash("Barista_Brewing"); // Player Start Brewing animation
+    private readonly int BP_Barista_Brew_End_LeftHash = Animator.StringToHash("BP_Barista_Brew_End_Left"); // Player End Brewing animation
+
     private readonly int BP_Barista_Brewer_Start_LeftHash = Animator.StringToHash("BP_Barista_Brewer_Start_Left");
+    private readonly int BP_Barista_Brewer_End_LeftHash = Animator.StringToHash("BP_Barista_Brewer_End_Left");
     private const float CrossFadeDuration = 0.1f;
     private float animationWaitTime;
 
@@ -198,7 +202,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
     [ServerRpc(RequireOwnership = false)]
     private void MinigameStartedServerRpc()
     {
-        animationWaitTime = 1f; //PlayerController.Instance.anim.GetCurrentAnimatorStateInfo(0).normalizedTime; this is giving a delay of like 1 sec , i believe is because i'm playimg the animation faster than original
+        animationWaitTime = 0.5f; //PlayerController.Instance.anim.GetCurrentAnimatorStateInfo(0).normalizedTime; this is giving a delay of like 1 sec , i believe is because i'm playimg the animation faster than original
         SpawnCoffeeDrinkServerRpc();
 
         Empty();
@@ -257,9 +261,16 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
             {
                 Debug.LogWarning("Beginning Brewing minigame");
                 MinigameStartedServerRpc();
-
+                player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY;
                 player.anim.CrossFadeInFixedTime(Barista_BrewingHash, CrossFadeDuration);
                 if (leftBrewingAnimator)
+                {
+                    leftBrewingAnimator.CrossFadeInFixedTime(BP_Barista_Brewer_Start_LeftHash, CrossFadeDuration);
+                }
+                else if (rightBrewingAnimator)
+                {
+                    Debug.Log("right animator not set up yet)");
+                }
 
                 StartCoroutine(LerpPlayerToLerpingPoint(playerLerpingPosition.position, playerLerpingPosition.rotation, playerLerpingDuration, player));
                 player.movementToggle = false;
@@ -430,12 +441,28 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
 
     private IEnumerator ResetAnimation()
     {
+
+        if (leftBrewingAnimator)
+        {
+            leftBrewingAnimator.CrossFadeInFixedTime(BP_Barista_Brewer_End_LeftHash, CrossFadeDuration);
+            currentPlayerController.anim.CrossFadeInFixedTime(BP_Barista_Brew_End_LeftHash, CrossFadeDuration);
+            
+            yield return new WaitForSeconds(1.0f);
+
+        }
+        else if (rightBrewingAnimator)
+        {
+            Debug.Log("right animator not set up yet)");
+        }
+
         currentPlayerController.anim.CrossFadeInFixedTime(BP_Barista_PickUpHash, CrossFadeDuration);
+
         currentPlayerController.movementToggle = false;
 
         yield return new WaitForSeconds(animationWaitTime);
         GetIngredient().SetIngredientParent(currentPlayerController);
         animationSwitch?.Invoke();
+        currentPlayerController.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None | RigidbodyConstraints.None | RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY;
         currentPlayerController.movementToggle = true;
         currentPlayerController = null;
         SetIsMinigameEndedServerRpc(true);

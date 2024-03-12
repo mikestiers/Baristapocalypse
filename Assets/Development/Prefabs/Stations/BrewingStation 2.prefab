@@ -5124,7 +5124,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8984576740229602012
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5229,6 +5229,37 @@ MonoBehaviour:
   timingMarker: {fileID: 8603174877971901750}
   startPoint: {fileID: 8365175135966822477}
   endPoint: {fileID: 6534681719792994520}
+--- !u!1 &6265447387251349955
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6358324851539888735}
+  m_Layer: 6
+  m_Name: LerpPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6358324851539888735
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6265447387251349955}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0.09, y: -4.37, z: 3.15}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1036486352520963965}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &7038466826186217830
 GameObject:
   m_ObjectHideFlags: 0
@@ -5255,7 +5286,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7038466826186217830}
-  m_LocalRotation: {x: -0, y: -0.008673094, z: -0, w: 0.9999624}
+  m_LocalRotation: {x: 0, y: -0.008674223, z: 0, w: 0.9999624}
   m_LocalPosition: {x: -8.648, y: 0.969, z: -0.738}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5266,6 +5297,7 @@ Transform:
   - {fileID: 8984576740229602012}
   - {fileID: 1269349482829416604}
   - {fileID: 8851113258651312166}
+  - {fileID: 6358324851539888735}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -0.994, z: 0}
@@ -5312,6 +5344,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stationTopPoint: {fileID: 4011556409973372566}
   interactParticle: {fileID: 5424732104952764367}
+  playerLerpingPosition: {fileID: 6358324851539888735}
   ingredientSOList: []
   ingredientsIndicatorText: {fileID: 1269349482829416605}
   currentIngredientSOList: 
@@ -5323,14 +5356,28 @@ MonoBehaviour:
   canEmptyBrewingStation:
     m_InternalValue: 1
   brewingStationEmptyCooldown: 10
-  bioMatterTubing: []
+  bioMatterTubing:
+  - {fileID: 6071642059841425349}
+  - {fileID: 0}
+  - {fileID: 0}
   bioMatterFloorPlate: {fileID: 0}
-  liquidTubing: []
+  liquidTubing:
+  - {fileID: 1536019885310031383}
+  - {fileID: 0}
+  - {fileID: 0}
   liquidFloorPlate: {fileID: 0}
-  coffeeBeanTubing: []
+  coffeeBeanTubing:
+  - {fileID: 8018043227495154174}
+  - {fileID: 0}
+  - {fileID: 0}
   coffeeBeanFloorPlate: {fileID: 0}
-  sweetenerTubing: []
+  sweetenerTubing:
+  - {fileID: 5559017728309633581}
+  - {fileID: 0}
+  - {fileID: 0}
   sweetenerFloorPlate: {fileID: 0}
+  leftBrewingAnimator: {fileID: 0}
+  rightBrewingAnimator: {fileID: 458528354}
 --- !u!1 &7748571396432406622
 GameObject:
   m_ObjectHideFlags: 0
@@ -5633,6 +5680,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 81c17b6cf47a1b54f8027238766b01bf, type: 2}
     - target: {fileID: -2487128442710785268, guid: 329c6863a9141394aa4e5eb17641f8ec, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -2487128442710785268, guid: 329c6863a9141394aa4e5eb17641f8ec, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 15038757535b15341a0f3dbbca367c27, type: 2}
@@ -5640,6 +5691,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: eed2719486ebb654f8fdf8eb19289f18, type: 2}
+    - target: {fileID: -1196653242121477998, guid: 329c6863a9141394aa4e5eb17641f8ec, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: -1196653242121477998, guid: 329c6863a9141394aa4e5eb17641f8ec, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -5649,13 +5704,37 @@ PrefabInstance:
       value: Brew2_low
       objectReference: {fileID: 0}
     - target: {fileID: 1909217355860743640, guid: 329c6863a9141394aa4e5eb17641f8ec, type: 3}
+      propertyPath: m_ReceiveGI
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1909217355860743640, guid: 329c6863a9141394aa4e5eb17641f8ec, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1909217355860743640, guid: 329c6863a9141394aa4e5eb17641f8ec, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: de63c07e6f602ac4d8652dc0edd304a5, type: 2}
+    - target: {fileID: 3285950388386207219, guid: 329c6863a9141394aa4e5eb17641f8ec, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4657271429462724370, guid: 329c6863a9141394aa4e5eb17641f8ec, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4657271429462724370, guid: 329c6863a9141394aa4e5eb17641f8ec, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 817c104f3bfd8d145a84fbb5f78af0cf, type: 2}
+    - target: {fileID: 6740164613247890255, guid: 329c6863a9141394aa4e5eb17641f8ec, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8789935205226622870, guid: 329c6863a9141394aa4e5eb17641f8ec, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 329c6863a9141394aa4e5eb17641f8ec, type: 3}
 --- !u!1 &88512885413249119 stripped
@@ -5712,6 +5791,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   emissiveMaterial: {fileID: 2100000, guid: 817c104f3bfd8d145a84fbb5f78af0cf, type: 2}
+--- !u!1 &8257726320475284471 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 329c6863a9141394aa4e5eb17641f8ec, type: 3}
+  m_PrefabInstance: {fileID: 9104096498808757926}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &458528354
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8257726320475284471}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &8260449342530700281 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8287963142311813793, guid: 329c6863a9141394aa4e5eb17641f8ec, type: 3}
