@@ -11,6 +11,8 @@ public class GameOverUI : MonoBehaviour
 {
     [SerializeField] private List<GameObject> containers;
     [SerializeField] private List<Image> starImages;
+    [SerializeField] private Sprite starEmpty;
+    [SerializeField] private Sprite starFull;
 
     [Header("Values")]
     [SerializeField] private TextMeshProUGUI customersServedValue;
@@ -101,7 +103,11 @@ public class GameOverUI : MonoBehaviour
         {
             if (i >= reviewScore)
             {
-                starImages[i].color = Color.black;
+                starImages[i].sprite = starEmpty;
+            }
+            else
+            {
+                starImages[i].sprite = starFull;
             }
         }
     }
