@@ -635,10 +635,12 @@ public class CustomerBase : Base
             Debug.LogError("Customer Leaving");
             customerAnimator.CrossFadeInFixedTime(Customer_WalkHash, CrossFadeDuration); // Customer1 walk animation
             agent.SetDestination(exit);
+            if (currentState.Value == CustomerState.Sitting || currentState.Value == CustomerState.Ordering)
+            {
+                CustomerReviewManager.Instance.CustomerReviewEvent(this, 1);
+                customerInstanceReviewScore = CustomerReviewManager.Instance.reviewScore;
+            }
             SetCustomerState(CustomerState.Leaving);
-
-            CustomerReviewManager.Instance.CustomerReviewEvent(this, 1);
-            customerInstanceReviewScore = CustomerReviewManager.Instance.reviewScore;
         }
 
         if (OnCustomerLeave != null)
