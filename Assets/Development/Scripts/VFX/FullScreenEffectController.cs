@@ -77,28 +77,28 @@ public class FullScreenEffectController : MonoBehaviour
         fullScreenRadioEffect.SetActive(false);
         fullScreenWifiEffect.SetActive(false);
     }
-    // private void Update()// for testing please remove when done
-    // {
-    //     if (Keyboard.current.hKey.wasPressedThisFrame)
-    //     {
-    //         ToggleGravityEffect(activeEffect);
-    //     }
-    //
-    //     if (Keyboard.current.jKey.wasPressedThisFrame)
-    //     {
-    //         ToggleWifiEffect(activeEffect);
-    //     }
-    //
-    //     if (Keyboard.current.kKey.wasPressedThisFrame)
-    //     {
-    //         ToggleRadioEffect(activeEffect);
-    //     }
-    // }
+    private void Update()// for testing please remove when done
+    {
+        if (Keyboard.current.hKey.wasPressedThisFrame)
+        {
+            ToggleGravityEffect(activeEffect);
+        }
+
+        if (Keyboard.current.jKey.wasPressedThisFrame)
+        {
+            ToggleWifiEffect(activeEffect);
+        }
+
+        if (Keyboard.current.kKey.wasPressedThisFrame)
+        {
+            ToggleRadioEffect(activeEffect);
+        }
+    }
 
     #region Wifi Effect
     public void ToggleWifiEffect(bool activate)
     {
-       
+        Debug.LogWarning("called"+ activate);
         activeEffect = activate;
         StopAllCoroutines();
         if (activeEffect == false)
