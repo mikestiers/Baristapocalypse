@@ -1,14 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.Services.Lobbies.Models;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class TrashStation : BaseStation
 {
     [SerializeField] private ParticleSystem interactParticle;
-    private Ingredient ingredient;
+    [SerializeField] private GameObject interactImage;
+    private Ingredient trashIngredient;
     private Pickup pickup;
+    private PlayerController player;
     private string mop = "Mop";
+
+    private void OnEnable()
+    {
+        InputManager.OnInputChanged += InputUpdated;
+    }
+
+    private void OnDisable()
+    {
+        InputManager.OnInputChanged -= InputUpdated;
+    }
+
+    private void InputUpdated(InputImagesSO inputImagesSO)
+    {
+        interactImage.GetComponentInChildren<Image>().sprite = inputImagesSO.interact;
+    }
 
     public override void Interact(PlayerController player)
     {
@@ -18,7 +38,7 @@ public class TrashStation : BaseStation
             {
                 Debug.Log("trashinggggg");
                 player.RemoveIngredientInListByReference(i);
-                ingredient = i;
+                trashIngredient = i;
                 InteractServerRpc();
                 player.OnAnimationSwitch();// setup animation here, OnAnimationSwitch() just reset the animation
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactStation);
@@ -53,7 +73,7 @@ public class TrashStation : BaseStation
     [ClientRpc]
     private void InteractClientRpc()
     {
-        Ingredient.DestroyIngredient(ingredient);
+        Ingredient.DestroyIngredient(trashIngredient);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -66,6 +86,28 @@ public class TrashStation : BaseStation
     private void TrashPickupClientRpc()
     {
         Pickup.DestroyPickup(pickup);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Player")
+        {
+            player = other.GetComponent<PlayerController>();
+
+            if (player.IsLocalPlayer)
+                interactImage.SetActive(true);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Player")
+        {
+            player = other.GetComponent<PlayerController>();
+
+            if (player.IsLocalPlayer)
+                interactImage.SetActive(false);
+        }
     }
 
 }

@@ -80,13 +80,21 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] public Transform pickupLocation;
     [SerializeField] private Pickup pickup;
     public float pickupThrowForce;
+    private string mopSoName = "Mop";
+    private string messCupSoName = "MessCup";
 
     // Animations
     private readonly int MovementWithCupHash = Animator.StringToHash("MovementWithCup");
     private readonly int MovementHash = Animator.StringToHash("Movement");
+    private readonly int MovementWithCustomerHash = Animator.StringToHash("MovementWithCustomer");
+    private readonly int MovementWithVacHash = Animator.StringToHash("MovementWithVac");
     private readonly int BP_Barista_Floor_PickupHash = Animator.StringToHash("BP_Barista_Floor_Pickup");
+    private readonly int BP_Barista_Pickup_VacHash = Animator.StringToHash("BP_Barista_Pickup_Vac");
+    private readonly int BP_Barista_Pickup_CustHash = Animator.StringToHash("BP_Barista_Pickup_Cust");
     private readonly int BP_Barista_Throw_CupHash = Animator.StringToHash("BP_Barista_Throw_Cup");
-
+    private readonly int BP_Barista_Throw_CustHash = Animator.StringToHash("BP_Barista_Throw_Cust");
+    private readonly int BP_Barista_Cleaning_VacHash = Animator.StringToHash("BP_Barista_Cleaning_Vac");
+    
     private const float CrossFadeDuration = 0.1f;
 
     private CinemachineVirtualCamera virtualCamera;
@@ -177,8 +185,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.InteractEvent += Interact;
         inputManager.InteractAltEvent += InteractAlt;
         inputManager.DebugConsoleEvent += ShowDebugConsole;
-        inputManager.BrewingStationSelectEvent += OnChangeBrewingStationSelect;
-        inputManager.BrewingStationEmptyEvent += OnBrewingStationEmpty;
+        inputManager.BrewingStationSelect1Event += OnChangeBrewingStationSelect1;
+        inputManager.BrewingStationSelect2Event += OnChangeBrewingStationSelect2;
+        inputManager.BrewingStationEmptyEvent += OnBrewingStationEmptyServerRpc;
 
         if (AISupervisor.Instance)
         {
@@ -193,8 +202,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         inputManager.InteractEvent -= Interact;
         inputManager.InteractAltEvent -= InteractAlt;
         inputManager.DebugConsoleEvent -= ShowDebugConsole;
-        inputManager.BrewingStationSelectEvent -= OnChangeBrewingStationSelect;
-        inputManager.BrewingStationEmptyEvent -= OnBrewingStationEmpty;
+        inputManager.BrewingStationSelect1Event -= OnChangeBrewingStationSelect1;
+        inputManager.BrewingStationSelect2Event -= OnChangeBrewingStationSelect2;
+        inputManager.BrewingStationEmptyEvent -= OnBrewingStationEmptyServerRpc;
 
         if (brewingStation1 != null)
             brewingStation1.animationSwitch -= OnAnimationSwitch;
@@ -291,7 +301,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                 }
                 //else _hasMop = false;
 
-               
             }
         
             // Logic for Ingredient on floor Interaction 
@@ -317,9 +326,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             if (selectedSpill != null)
             {
                 selectedSpill.HideUi();
+                OnAnimationSwitch();
             }
-            SetSelectedSpill(null);
+           
             // No interactable object hit, clear selected objects.
+            SetSelectedSpill(null);
             SetSelectedStation(null);
             //Hide(visualGameObject);
         }
@@ -752,11 +763,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     public void DoMop(Spill spill)
     {
         if(!HasNoIngredients)return;
-        
+        anim.CrossFadeInFixedTime(BP_Barista_Cleaning_VacHash, CrossFadeDuration);
         spill.Interact(this);
-        
-        
+  
     }
+
     public void DoPickup(Pickup pickup)
     {
         if (HasPickup() || !HasNoIngredients)
@@ -766,25 +777,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         if (pickupSo != null)
         {
-            StartCoroutine(TrashPickUpAnimation(pickup)); // Play trash pick up and set trash parent
+            StartCoroutine(PickUpAnimation(pickup)); // Play trash pick up and set trash parent
         }
-
-        if (pickup.IsCustomer && pickup.GetCustomer().GetCustomerState() == CustomerBase.CustomerState.Loitering)
+        else if (pickup.IsCustomer && pickup.GetCustomer().GetCustomerState() == CustomerBase.CustomerState.Loitering)
         {
-            Debug.Log("hello im a customer and im trying to be picked up");
-            pickup.GetNavMeshAgent().enabled = false;
-            pickup.GetCustomer().SetCustomerState(CustomerBase.CustomerState.PickedUp);
-
-            pickup.SetPickupObjectParent(this);
-
-            pickup.DisablePickupColliders(pickup);
-
-            if (pickup.GetCustomer().inLine == true)
-            {
-                int _CustomerPos = pickup.GetCustomer().currentPosInLine;
-                CustomerManager.Instance.LineQueue.RemoveCustomerInPos(_CustomerPos);
-                CustomerManager.Instance.ReduceCustomerLeftoServe();
-            }
+            StartCoroutine(PickUpCustomerAnimation(pickup));
         }
     }
 
@@ -822,27 +819,48 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         UIManager.Instance.debugConsoleActive = !UIManager.Instance.debugConsoleActive;
     }
 
-    public void OnChangeBrewingStationSelect()
+    public void OnChangeBrewingStationSelect1()
     {
         if (OrderManager.Instance.brewingStations.Length > 1)
         {
             // Increment the currentBrewingStation index, wrapping around using modulo
-            int nextBrewingStation = (currentBrewingStation + 1) % OrderManager.Instance.brewingStations.Length;
-            OrderManager.Instance.orderStats[nextBrewingStation].selectedByPlayerImage.SetActive(true);
-            OrderManager.Instance.orderStats[currentBrewingStation].selectedByPlayerImage.SetActive(false);
-            currentBrewingStation = nextBrewingStation;
+            //int nextBrewingStation = (currentBrewingStation + 1) % OrderManager.Instance.brewingStations.Length;
+            OrderManager.Instance.orderStats[0].selectedByPlayerImage.SetActive(true);
+            OrderManager.Instance.orderStats[1].selectedByPlayerImage.SetActive(false);
+            currentBrewingStation = 0;
+        }
+    }
+    
+    public void OnChangeBrewingStationSelect2()
+    {
+        if (OrderManager.Instance.brewingStations.Length > 1)
+        {
+            // Increment the currentBrewingStation index, wrapping around using modulo
+            //int nextBrewingStation = (currentBrewingStation + 1) % OrderManager.Instance.brewingStations.Length;
+            OrderManager.Instance.orderStats[1].selectedByPlayerImage.SetActive(true);
+            OrderManager.Instance.orderStats[0].selectedByPlayerImage.SetActive(false);
+            currentBrewingStation = 1;
         }
     }
 
-    public void OnBrewingStationEmpty()
+    [ServerRpc(RequireOwnership = false)]
+    public void OnBrewingStationEmptyServerRpc()
     {
-        if (OrderManager.Instance.brewingStations[currentBrewingStation].ingredientSOList.Count > 0)
+        if (OrderManager.Instance.brewingStations[currentBrewingStation].ingredientSOList.Count > 0 && OrderManager.Instance.brewingStations[currentBrewingStation].canEmptyBrewingStation.Value)
         {
             AISupervisor.Instance.SupervisorMessageToDisplay("Throwing away product? I'm taking that out of your tips!");
             GameManager.Instance.moneySystem.AdjustMoneyByAmount(3, false);
+            OrderManager.Instance.brewingStations[currentBrewingStation].Empty();
+            OrderManager.Instance.orderStats[currentBrewingStation].ResetAll();
+            OrderManager.Instance.brewingStations[currentBrewingStation].canEmptyBrewingStation.Value = false;
+            StartCoroutine(CanEmptyBrewingStation());
         }
-        OrderManager.Instance.brewingStations[currentBrewingStation].Empty();
-        OrderManager.Instance.orderStats[currentBrewingStation].ResetAll();
+    }
+
+    private IEnumerator CanEmptyBrewingStation()
+    {
+        yield return new WaitForSeconds(OrderManager.Instance.brewingStations[currentBrewingStation].brewingStationEmptyCooldown);
+        OrderManager.Instance.brewingStations[currentBrewingStation].canEmptyBrewingStation.Value = true;
     }
 
     public override void OnNetworkSpawn()
@@ -876,8 +894,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             Time.timeScale = 0f;
     }
 
-    // Temporary Animation Implementation
-
     // Normalized time to handle animations
     public float GetNormalizedTime(Animator animator, string tag)
     {
@@ -904,44 +920,93 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
             anim.CrossFadeInFixedTime(MovementWithCupHash, CrossFadeDuration);
         }
+        else if(GetPickup()!= null && GetPickup().GetPickupObjectSo().objectName == mopSoName)
+        {
+            anim.CrossFadeInFixedTime(MovementWithVacHash, CrossFadeDuration);
+        }
+        else if (GetPickup() != null && GetPickup().IsCustomer)
+        {
+            anim.CrossFadeInFixedTime(MovementWithCustomerHash, CrossFadeDuration);
+        }
         else
         {
             anim.CrossFadeInFixedTime(MovementHash, CrossFadeDuration);
         }
     }
 
-    // Play trash pick up and set trash parent while new player statemachine is dead
-    private IEnumerator TrashPickUpAnimation(Pickup pickup)
+    // Play trash pick up and set trash parent while new player statemachine is done
+    private IEnumerator PickUpAnimation(Pickup pickup)
     {
-        anim.CrossFadeInFixedTime(BP_Barista_Floor_PickupHash, CrossFadeDuration);
+        if (!pickup.IsCustomer)
+        {
+            PickupSO pickupSo = pickup.GetPickupObjectSo();
+
+            if (pickupSo.objectName == mopSoName)
+            {
+                anim.CrossFadeInFixedTime(BP_Barista_Pickup_VacHash, CrossFadeDuration);
+            }
+            else
+            {
+                anim.CrossFadeInFixedTime(BP_Barista_Floor_PickupHash, CrossFadeDuration);
+            }
+
+            movementToggle = false;
+
+            yield return new WaitForSeconds(1f); // hard coded while new player statemachine is done
+
+            pickup.SetPickupObjectParent(this);
+            pickup.DisablePickupColliders(pickup);
+            movementToggle = true;
+        } 
+    }
+
+    // Play customer pick up and set customer parent
+    private IEnumerator PickUpCustomerAnimation(Pickup pickup)
+    {
+        anim.CrossFadeInFixedTime(BP_Barista_Pickup_CustHash, CrossFadeDuration);
         movementToggle = false;
 
-        yield return new WaitForSeconds(1f); // hard coded while new player statemachine is dead
+        yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is done
 
-        movementToggle = true;
+        pickup.GetNavMeshAgent().enabled = false;
+        pickup.GetCustomer().SetCustomerState(CustomerBase.CustomerState.PickedUp);
+        pickup.GetCustomer().isPickedUp = true;
         pickup.SetPickupObjectParent(this);
         pickup.DisablePickupColliders(pickup);
+
+        if (pickup.GetCustomer().inLine == true)
+        {
+            int _CustomerPos = pickup.GetCustomer().currentPosInLine;
+            CustomerManager.Instance.LineQueue.RemoveCustomerInPos(_CustomerPos);
+            CustomerManager.Instance.ReduceCustomerLeftoServe();
+        }
+        
+        movementToggle = true;
     }
 
     // Play throw pick up
     private IEnumerator ThrowPickUpAnimation()
     {
-        anim.CrossFadeInFixedTime(BP_Barista_Throw_CupHash, CrossFadeDuration);
+        if (pickup.IsCustomer)
+        {
+            anim.CrossFadeInFixedTime(BP_Barista_Throw_CustHash, CrossFadeDuration);
+        }
+        else
+        {
+            anim.CrossFadeInFixedTime(BP_Barista_Throw_CupHash, CrossFadeDuration);
+        }
         movementToggle = false;
 
-        yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is dead
+        yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is done
 
         if (pickup != null) 
         {
-            
             pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
             pickup.EnablePickupColliders(pickup);
 
             pickup.transform.GetComponent<Rigidbody>().AddForce(transform.forward * (pickupThrowForce * pickup.GetThrowForceMultiplier()));
             if (pickup.gameObject.GetComponent<MopBehavior>() != null) pickup.gameObject.GetComponent<MopBehavior>().ReturnMop();
-            pickup.ClearPickupOnParent();
-
-           
+            pickup.ClearPickupOnParent(); 
         }
         movementToggle = true;
     }
@@ -952,7 +1017,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         anim.CrossFadeInFixedTime(BP_Barista_Throw_CupHash, CrossFadeDuration);
         movementToggle = false;
 
-        yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is dead
+        yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is done
 
         for (int i = 0; i < ingredientsList.Count; i++)
         {
@@ -977,6 +1042,5 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             OnAnimationSwitch();
         }
         movementToggle = true;
-
     }
 }
