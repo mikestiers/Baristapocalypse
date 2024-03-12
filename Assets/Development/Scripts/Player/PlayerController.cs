@@ -779,7 +779,12 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if(!HasNoIngredients)return;
         anim.CrossFadeInFixedTime(BP_Barista_Cleaning_VacHash, CrossFadeDuration);
         spill.Interact(this);
-  
+
+        if (spill == null)
+        {
+            Debug.LogWarning("Player lost reference to pickup ");
+            OnAnimationSwitch();
+        }
     }
 
     public void DoPickup(Pickup pickup)
@@ -797,6 +802,12 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         else if (pickup.IsCustomer && pickup.GetCustomer().GetCustomerState() == CustomerBase.CustomerState.Loitering)
         {
             StartCoroutine(PickUpCustomerAnimation(pickup));
+        }
+
+        if (pickup == null)
+        {
+            Debug.LogWarning("Player lost reference to pickup");
+            OnAnimationSwitch();
         }
     }
 
@@ -932,6 +943,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public void OnAnimationSwitch()
     {
+        if (!movementToggle) movementToggle = true;
+
         if (HasIngredient())
         {
             anim.CrossFadeInFixedTime(MovementWithCupHash, CrossFadeDuration);
@@ -975,7 +988,15 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             pickup.isOnFloor = false;
             movementToggle = true;
             isAnimating = false;
-        } 
+
+        }
+
+        if (pickup == null)
+        {
+            Debug.LogWarning("Player lost reference to pickup ");
+            OnAnimationSwitch();
+        }
+
     }
 
     // Play customer pick up and set customer parent
@@ -1001,6 +1022,12 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         
         movementToggle = true;
         isAnimating= false;
+
+        if (pickup == null)
+        {
+            Debug.LogWarning("Player lost reference to pickup");
+            OnAnimationSwitch();
+        }
     }
 
     // Play throw pick up
