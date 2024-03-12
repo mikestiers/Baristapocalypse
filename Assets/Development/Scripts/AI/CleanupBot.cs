@@ -108,6 +108,7 @@ public class CleanupBot : MonoBehaviour
     private void Emptying()
     {
         agent.SetDestination(trashStation.transform.position);
+
     }
 
     private GameObject FindNearestMessOnFloor(GameObject[] messes)
