@@ -11,7 +11,7 @@ public class Pickup : NetworkBehaviour
     [Header("Properties")]
     public List<PickupAttribute> attributes = new List<PickupAttribute>();
     public Vector3 holdingPosition;
-    public Vector3 holdingRotation;
+    public Quaternion holdingRotation;
 
     [Header("Components")]
     [SerializeField] private CustomerBase customer;
@@ -71,6 +71,8 @@ public class Pickup : NetworkBehaviour
         pickupObjectParent.SetPickup(this);
 
         followTransform.SetTargetTransform(pickupObjectParent.GetPickupTransform());
+        followTransform.AdjustTargetTransform(holdingPosition, holdingRotation);
+        
     }
 
     public void DisablePickupColliders(Pickup pickup)

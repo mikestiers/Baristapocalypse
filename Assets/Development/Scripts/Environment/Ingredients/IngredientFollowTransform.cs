@@ -11,6 +11,12 @@ public class IngredientFollowTransform : MonoBehaviour
         this.targetTransform = targetTransform;
     }
 
+    public void AdjustTargetTransform(Vector3 holdPos , Quaternion holdRot)
+    {
+        targetTransform.localPosition = holdPos;
+        targetTransform.localRotation = holdRot;
+    }
+
     private void LateUpdate()
     {
         if (targetTransform == null)

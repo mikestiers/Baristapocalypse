@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1033185995602436673
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6376507363974481443}
+  m_Layer: 10
+  m_Name: Holpoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6376507363974481443
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1033185995602436673}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3366720151648082664}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3366720150155353536
 GameObject:
   m_ObjectHideFlags: 0
@@ -102,6 +133,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3366720150155353537}
+  - {fileID: 6376507363974481443}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -133,14 +165,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attributes: 00000000
-  holdingPosition: {x: 0, y: -0.59, z: 0.9}
-  holdingRotation: {x: -30, y: 0, z: 0}
+  holdingPosition: {x: 0, y: 0, z: -1.5}
+  holdingRotation: {x: 0.70710677, y: 0, z: 0, w: 0.70710677}
   customer: {fileID: 0}
   collider: {fileID: 7237732476668811835}
   navMeshAgent: {fileID: 0}
   throwForceMultiplier: 1
   <pickupSo>k__BackingField: {fileID: 11400000, guid: b7e9e5a75daece7478950f9e7ad02106, type: 2}
   followTransform: {fileID: 0}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  isOnFloor: 0
 --- !u!114 &3907308811520950312
 MonoBehaviour:
   m_ObjectHideFlags: 0
