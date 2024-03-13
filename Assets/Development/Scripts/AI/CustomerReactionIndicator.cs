@@ -11,6 +11,7 @@ public class CustomerReactionIndicator : MonoBehaviour
     [SerializeField] private GameObject Failparticles;
     [SerializeField] private GameObject SucceseParticles;
     [SerializeField] private float fadeInTime = 0.5f;
+    
     private bool hasDrink;
     private void Awake()
     {
