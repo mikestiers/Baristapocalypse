@@ -6,6 +6,7 @@ using Unity.Netcode;
 using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
+using UnityEngine.InputSystem;
 
 [DefaultExecutionOrder(-1)]
 public class GameManager : NetworkBehaviour
@@ -200,6 +201,8 @@ public class GameManager : NetworkBehaviour
 
                 timeSinceStart += Time.deltaTime;
 
+                if (Input.GetKeyDown(KeyCode.G)) iSEndGame = true;
+
                 if (currentDifficulty != null)
                 {
                     // Adjust the difficulty based on time passed
@@ -224,10 +227,11 @@ public class GameManager : NetworkBehaviour
                 break;
 
             case GameState.GameOver:
-               // Debug.LogWarning("Game Over......");
-               // PlayerController playerController = FindObjectOfType<PlayerController>();
-               // playerController.anim.CrossFadeInFixedTime(BP_Barista_SufferHash, CrossFadeDuration);
-               // playerController.movementToggle = false;
+                Debug.LogWarning("Game Over......");
+                PlayerController playerController = FindObjectOfType<PlayerController>();
+                playerController.anim.CrossFadeInFixedTime(BP_Barista_SufferHash, CrossFadeDuration);
+                playerController.movementToggle = false;
+                CustomerManager.Instance.BarClosing();
                 break; 
         }
 
@@ -261,11 +265,6 @@ public class GameManager : NetworkBehaviour
 
     public bool IsGameOver()
     {
-        Debug.LogWarning("Game Over......");
-        PlayerController playerController = FindObjectOfType<PlayerController>();
-        playerController.anim.CrossFadeInFixedTime(BP_Barista_SufferHash, CrossFadeDuration);
-        playerController.movementToggle = false;
-
         return gameState.Value == GameState.GameOver;
     }
 
