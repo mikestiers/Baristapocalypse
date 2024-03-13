@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -13,7 +14,13 @@ public class WifiStation : RandomEventBase
     public static event WifiEventHandler OnWifiEventStarting;
     public static event WifiEventHandler OnWifiEventStopping;
 
-    
+   [SerializeField] private PlayerColorChoice FX;
+
+    private void Start()
+    {
+        FX = FindObjectOfType<PlayerColorChoice>();
+    }
+
     [ServerRpc(RequireOwnership = false)]
     public void WifiEventIsDoneServerRpc()
     {
@@ -31,6 +38,7 @@ public class WifiStation : RandomEventBase
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.wifiOn);
         GameManager.Instance.isEventActive.Value = false;
         GameManager.Instance.isWifiEvent.Value = false;
+        FX.StartnEndFireworks();
         iseventover.Value = true;
         screenEffect.ToggleWifiEffect(iseventover.Value);
         eventLight.SetActive(false);

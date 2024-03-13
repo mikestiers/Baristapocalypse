@@ -13,9 +13,13 @@ public class PlayerColorChoice : MonoBehaviour
     public string intersectionColorPropertyName = "_Intersection_color";
     public Color intersectionColor;
 
+    [SerializeField] private GameObject fireworks;
+
+    [SerializeField] private float FXTime = 3f;
     // Start is called before the first frame update
     private void Awake()
     {
+        fireworks.SetActive(false);
         playerMaterial = new Material(baseMeshRenderer.material);
         ringMaterial = new Material(RingMeshRenderer.material);
         
@@ -27,15 +31,23 @@ public class PlayerColorChoice : MonoBehaviour
 
     }
 
-    public void SetPlayerColor(Material material)
+    public void SetPlayerColor(Color color)
     {
-        baseMeshRenderer.material = material;
+    // playerMaterial.color = color;
+    ringMaterial.color = color;
+    RingMeshRenderer.material.SetColor(intersectionColorPropertyName, color); 
     }
 
-    public void SetRingColor(Color color)
+    public void StartnEndFireworks()
     {
-        ringMaterial.color = color;
-        RingMeshRenderer.material.SetColor(intersectionColorPropertyName, color); 
+        StartCoroutine(FireworksEffect());
+    }
 
+    private IEnumerator FireworksEffect()
+    {
+        fireworks.SetActive(true);
+        yield return new WaitForSeconds(FXTime);
+        
+        fireworks.SetActive(false);
     }
 }
