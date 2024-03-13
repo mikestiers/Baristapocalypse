@@ -197,4 +197,11 @@ public class DifficultySettings
     {
         return maxInLineWaitTime;
     }
+
+    public void Reset()
+    {
+        UpdateDifficulty();
+        Shift = 1;
+    }
+
 }
