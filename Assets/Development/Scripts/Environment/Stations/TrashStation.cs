@@ -12,6 +12,8 @@ public class TrashStation : BaseStation
     [SerializeField] private ParticleSystem interactParticle;
     [SerializeField] private GameObject interactImage;
     [SerializeField] private PlayableDirector playableDirector;
+    [SerializeField] private PlayableAsset trashOpenAnimation;
+    [SerializeField] private PlayableAsset trashCloseAnimation;
     private Ingredient trashIngredient;
     private Pickup pickup;
     private PlayerController player;
@@ -59,7 +61,6 @@ public class TrashStation : BaseStation
             Debug.Log("Destroying garbage cup");
             pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
             pickup.ClearPickupOnParent();
-            playableDirector.Play();
             TrashPickupServerRpc();
             player.OnAnimationSwitch();// setup animation here, OnAnimationSwitch() just reset the animation
         }
@@ -96,7 +97,10 @@ public class TrashStation : BaseStation
             player = other.GetComponent<PlayerController>();
 
             if (player.IsLocalPlayer)
+            {
                 interactImage.SetActive(true);
+                playableDirector.Play(trashOpenAnimation);
+            }
         }
     }
 
@@ -107,7 +111,10 @@ public class TrashStation : BaseStation
             player = other.GetComponent<PlayerController>();
 
             if (player.IsLocalPlayer)
+            {
                 interactImage.SetActive(false);
+                playableDirector.Play(trashCloseAnimation);
+            }
         }
     }
 
