@@ -86,6 +86,7 @@ public class CustomerBase : Base
     private List<int> customerImpatientHashList = new List<int>();
     private bool isImpatient = false;
     private CustomerRandomizer customerRandomizer;
+    [SerializeField] private List<GameObject> heads = new List<GameObject>(); 
 
     [Header("Spills")]
     private bool hasDrink = false;
@@ -144,7 +145,7 @@ public class CustomerBase : Base
         agent = GetComponent<NavMeshAgent>();
         exit = CustomerManager.Instance.GetExit();
         if (distThreshold <= 0) distThreshold = 0.1f;
-
+        
         GetIngredientTransform().SetParent(customerRandomizer.currentCustomerHoldPoint.transform);
         GetIngredientTransform().localPosition = new Vector3(0.067f, -0.121f, 0.055f);
         GetIngredientTransform().localEulerAngles = new Vector3(0, 30, 90);
@@ -281,8 +282,7 @@ public class CustomerBase : Base
                 customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
             }
         }
-        _reactionIndicator.CustomerSad(isImpatient);
-
+        
         if (inLine == true && lineTime > (maxInLineTime))
         {
             CustomerManager.Instance.customerLeaveIncrease();
@@ -291,6 +291,16 @@ public class CustomerBase : Base
             CustomerLeave();
             inLine = false;
             _reactionIndicator.CustomerMad();
+        }
+
+        if (isImpatient == true && inLine == true)
+        {
+            _reactionIndicator.CustomerSad(isImpatient);
+        }
+        else
+        {
+            isImpatient = false;
+            _reactionIndicator.CustomerSad(isImpatient);
         }
     }
 
@@ -593,7 +603,7 @@ public class CustomerBase : Base
                 int randomIndex = Random.Range(0, customerBadDrinkChairHashList.Count);
                 int randomHash = customerBadDrinkChairHashList[randomIndex];
                 customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
-                _reactionIndicator.CustomerMad();
+                _reactionIndicator.CustomerDrinkFail();
             }
         }
         else if (customerInstanceReviewScore >= 4)
