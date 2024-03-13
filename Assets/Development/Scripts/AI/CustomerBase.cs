@@ -56,7 +56,7 @@ public class CustomerBase : Base
     [SerializeField] private ParticleSystem interactParticle;
     [SerializeField] private DetachedHead detachedHead;
     [SerializeField] private ScoreTimerManager scoreTimerManager;
-
+    [SerializeField] private CustomerReactionIndicator _reactionIndicator;
     [SerializeField] private PickupSO pickupSO;
 
     [Header("Customer Review")]
@@ -281,6 +281,7 @@ public class CustomerBase : Base
                 customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
             }
         }
+        _reactionIndicator.CustomerSad(isImpatient);
 
         if (inLine == true && lineTime > (maxInLineTime))
         {
@@ -289,6 +290,7 @@ public class CustomerBase : Base
             CustomerManager.Instance.LineQueue.RemoveCustomerInPos(currentPosInLine);
             CustomerLeave();
             inLine = false;
+            _reactionIndicator.CustomerMad();
         }
     }
 
@@ -352,6 +354,7 @@ public class CustomerBase : Base
 
     private void UpdateLoitering()
     {
+        _reactionIndicator.IsLoitering();
         // To be implmented or removed
         if(messTime >= GameValueHolder.Instance.difficultySettings.GetLoiterMessEverySec())
         {
@@ -590,6 +593,7 @@ public class CustomerBase : Base
                 int randomIndex = Random.Range(0, customerBadDrinkChairHashList.Count);
                 int randomHash = customerBadDrinkChairHashList[randomIndex];
                 customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
+                _reactionIndicator.CustomerMad();
             }
         }
         else if (customerInstanceReviewScore >= 4)
@@ -599,6 +603,7 @@ public class CustomerBase : Base
                 int randomIndex = Random.Range(0, customerGoodDrinkChairHashList.Count);
                 int randomHash = customerGoodDrinkChairHashList[randomIndex];
                 customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
+                _reactionIndicator.HappycCustomerEffect();
             }
         }
 
