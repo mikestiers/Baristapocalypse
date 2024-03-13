@@ -308,6 +308,7 @@ public class UIManager : Singleton<UIManager>
             GameManager.Instance.SetLocalPlayerReady();
             closeTutorial.GetComponentInChildren<Text>().text = "Close";
             ReturnToGame();
+            FindObjectOfType<PlayerController>().movementToggle = true;
             return;
         }
         ShowPause();
