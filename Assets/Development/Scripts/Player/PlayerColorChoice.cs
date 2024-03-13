@@ -6,7 +6,6 @@ public class PlayerColorChoice : MonoBehaviour
 {
     public SkinnedMeshRenderer baseMeshRenderer;
     public MeshRenderer RingMeshRenderer;
-    public GameObject playerVisualMaterial;
 
     public Material playerMaterial;
     public Material ringMaterial;
@@ -23,12 +22,12 @@ public class PlayerColorChoice : MonoBehaviour
         playerMaterial = new Material(baseMeshRenderer.material);
         ringMaterial = new Material(RingMeshRenderer.material);
         
-        //baseMeshRenderer.material = playerMaterial;
-        baseMeshRenderer.material = playerMaterial; 
-        RingMeshRenderer.material.SetColor(intersectionColorPropertyName, intersectionColor);
-        intersectionColor = playerMaterial.color;
-        //intersectionColor = baseMeshRenderer.material.GetColor("_EmissionColor");
+        baseMeshRenderer.material = playerMaterial;
 
+        intersectionColor = playerMaterial.color;
+        
+        baseMeshRenderer.material = playerMaterial; 
+        RingMeshRenderer.material.SetColor(intersectionColorPropertyName, intersectionColor); 
     }
 
     public void SetPlayerColor(Color color)
@@ -46,7 +45,6 @@ public class PlayerColorChoice : MonoBehaviour
     private IEnumerator FireworksEffect()
     {
         fireworks.SetActive(true);
-        
         yield return new WaitForSeconds(FXTime);
         
         fireworks.SetActive(false);
