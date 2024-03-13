@@ -8,6 +8,7 @@ public class EmissiveControl : NetworkBehaviour
 {
     public Material emissiveMaterial;
     private bool isEmissiveOn = false;
+    [SerializeField] private float emissionIntensity = 1.0f;
 
     private void Start()
     {
@@ -28,7 +29,7 @@ public class EmissiveControl : NetworkBehaviour
     {
         if (emissiveMaterial == null) return;
         MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-        propertyBlock.SetColor("_EmissionColor", isActive ? Color.white : Color.black);
+        propertyBlock.SetColor("_EmissionColor", isActive ? Color.white * emissionIntensity : Color.black);
         propertyBlock.SetFloat("_EmissionScaleUI", isActive ? 1.0f : 0.0f);
         GetComponent<Renderer>().SetPropertyBlock(propertyBlock);
     }
