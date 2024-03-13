@@ -86,7 +86,6 @@ public class CustomerBase : Base
     private List<int> customerImpatientHashList = new List<int>();
     private bool isImpatient = false;
     private CustomerRandomizer customerRandomizer;
-    [SerializeField] private List<GameObject> heads = new List<GameObject>(); 
 
     [Header("Spills")]
     private bool hasDrink = false;
@@ -270,7 +269,7 @@ public class CustomerBase : Base
             isImpatient = false;
             lineTime = 0.0f;
         }
-        else if (inLine == false) lineTime = null;
+        else if (inLine == false && isImpatient == false) lineTime = null;
 
         if (lineTime > (maxInLineTime / 4) && !isImpatient)
         {
@@ -280,6 +279,7 @@ public class CustomerBase : Base
                 int randomIndex = Random.Range(0, customerImpatientHashList.Count);
                 int randomHash = customerImpatientHashList[randomIndex];
                 customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
+                _reactionIndicator.CustomerSad(isImpatient);
             }
         }
         
@@ -290,18 +290,12 @@ public class CustomerBase : Base
             CustomerManager.Instance.LineQueue.RemoveCustomerInPos(currentPosInLine);
             CustomerLeave();
             inLine = false;
+            isImpatient = false;
+            _reactionIndicator.CustomerSad(isImpatient);
             _reactionIndicator.CustomerMad();
         }
 
-        if (isImpatient == true && inLine == true)
-        {
-            _reactionIndicator.CustomerSad(isImpatient);
-        }
-        else
-        {
-            isImpatient = false;
-            _reactionIndicator.CustomerSad(isImpatient);
-        }
+        
     }
 
     private void UpdateMoving()
