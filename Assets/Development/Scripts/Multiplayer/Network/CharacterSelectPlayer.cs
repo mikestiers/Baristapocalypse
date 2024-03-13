@@ -36,7 +36,7 @@ public class CharacterSelectPlayer : MonoBehaviour
             PlayerData playerData = BaristapocalypseMultiplayer.Instance.GetPlayerDataFromPlayerIndex(playerIndex);
             readyText.SetActive(CharacterSelectReady.Instance.IsPlayerReady(playerData.clientId));
 
-            playerVisual.SetPlayerColor(BaristapocalypseMultiplayer.Instance.GetPlayerColor(playerData.colorId));
+            playerVisual.SetPlayerColor(BaristapocalypseMultiplayer.Instance.GetPlayerColor(playerData.colorId).color);
         }
         else
         {
