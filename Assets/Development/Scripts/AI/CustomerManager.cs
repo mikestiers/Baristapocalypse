@@ -383,6 +383,18 @@ public class CustomerManager : Singleton<CustomerManager>
         return result;
     }
 
+    public void BarClosing()
+    {
+        CustomerBase[] _customersInStore = FindObjectsOfType<CustomerBase>();
+
+        for (int i = 0; i < _customersInStore.Length; i++)
+        {
+            CustomerBase _customerInStore = _customersInStore[i];
+            _customerInStore.GameOverLeave();
+        }
+    }
+
+
     public int GetCustomerLefttoServe()
     {
         return customersLefttoServe;

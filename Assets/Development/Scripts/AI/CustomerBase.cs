@@ -815,6 +815,14 @@ public class CustomerBase : Base
         player.movementToggle = true;
     }
 
+    public void GameOverLeave() 
+    {
+        customerAnimator.CrossFadeInFixedTime(Customer_WalkHash, CrossFadeDuration); // Customer1 walk animation
+        agent.SetDestination(exit);
+        SetCustomerState(CustomerState.Leaving);
+    }
+
+
     public override void OnDestroy()
     {
         Debug.Log("destroying customer");
