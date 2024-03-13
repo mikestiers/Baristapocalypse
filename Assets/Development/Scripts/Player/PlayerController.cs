@@ -373,13 +373,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public void Move(float moveSpeed)
     {
-        if (inputManager.moveDir == Vector3.zero)
-        {
-            anim.SetFloat("vertical", 0);
-            anim.SetFloat("horizontal", 0);
-            return;
-        }
-
+     
         //curMoveInput = inputManager.moveDir * moveSpeed * Time.deltaTime; // movement does not take camera position into calculation so the map has to be rotated in a certain way
         //curMoveInput = Camera.main.transform.forward * inputManager.moveDir.z * moveSpeed * Time.deltaTime;
         //curMoveInput += Camera.main.transform.right * inputManager.moveDir.x * moveSpeed * Time.deltaTime;
@@ -387,7 +381,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         Vector3 moveInput = new Vector3(inputManager.moveDir.x, 0, inputManager.moveDir.z);
         moveDirection = Camera.main.transform.TransformDirection(moveInput);
         moveDirection.y = 0; // stay grounded
-        Vector3 curMoveInput = moveDirection.normalized * moveSpeed * Time.deltaTime;
+        Vector3 curMoveInput = moveDirection.normalized * moveSpeed;
 
         if (moveDirection != Vector3.zero)
         {
@@ -399,7 +393,12 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
 
-        rb.MovePosition(rb.position + curMoveInput);
+        //rb.MovePosition(rb.position + curMoveInput);
+        if (!isDashing)
+        {
+            curMoveInput.y = rb.velocity.y;
+            rb.velocity = curMoveInput;
+        }
 
         //transform.forward = inputManager.moveDir;
 
@@ -411,6 +410,12 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         anim.SetFloat("vertical", forwardDot);
         anim.SetFloat("horizontal", rightDot);
 
+        if (inputManager.moveDir == Vector3.zero)
+        {
+            anim.SetFloat("vertical", 0);
+            anim.SetFloat("horizontal", 0);
+            return;
+        }
         //rb.MovePosition(rb.position + curMoveInput);
     }
 
@@ -494,7 +499,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         while (Time.time < startTime + dashTime)
         {
-            rb.AddForce(moveDirection * dashForce * Time.deltaTime, ForceMode.Impulse);
+            bool isMoving = moveDirection != Vector3.zero;
+            Vector3 dashDirection = isMoving ? moveDirection : transform.forward;
+            rb.AddForce(dashDirection * dashForce * Time.deltaTime, ForceMode.Impulse);
             if (ingredientsList.Count > 0 || HasPickup())
             {
                 anim.SetBool("isDashingWithCup", isDashing);
