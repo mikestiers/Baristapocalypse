@@ -224,9 +224,10 @@ public class GameManager : NetworkBehaviour
                 break;
 
             case GameState.GameOver:
-                Debug.LogWarning("Game Over......");
-                PlayerController playerController = FindObjectOfType<PlayerController>();
-                playerController.anim.CrossFadeInFixedTime(BP_Barista_SufferHash, CrossFadeDuration);
+               // Debug.LogWarning("Game Over......");
+               // PlayerController playerController = FindObjectOfType<PlayerController>();
+               // playerController.anim.CrossFadeInFixedTime(BP_Barista_SufferHash, CrossFadeDuration);
+               // playerController.movementToggle = false;
                 break; 
         }
 
@@ -260,6 +261,11 @@ public class GameManager : NetworkBehaviour
 
     public bool IsGameOver()
     {
+        Debug.LogWarning("Game Over......");
+        PlayerController playerController = FindObjectOfType<PlayerController>();
+        playerController.anim.CrossFadeInFixedTime(BP_Barista_SufferHash, CrossFadeDuration);
+        playerController.movementToggle = false;
+
         return gameState.Value == GameState.GameOver;
     }
 
