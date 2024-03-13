@@ -10,10 +10,12 @@ using UnityEngine.UI;
 public class CustomerRandomizer : NetworkBehaviour
 {
     [SerializeField] public CustomerRaceSO[] Races;
-    //public List<GameObject> heads = new List<GameObject>();
+    public List<GameObject> heads = new List<GameObject>();
     public List<GameObject> bodies = new List<GameObject>();
     public List<GameObject> cupHoldPointList = new List<GameObject>();
     [HideInInspector] public GameObject currentCustomerHoldPoint;
+    public GameObject currentVFXHoldPoint;
+    public GameObject currentHead;
     public GridLayoutGroup cheatIconsLayoutGroup;
 
     //public List<IngredientSO> temperature = new List<IngredientSO>();
@@ -63,11 +65,7 @@ public class CustomerRandomizer : NetworkBehaviour
         //strenthIngredient.icon.transform.SetParent(cheatIconsLayoutGroup.transform);
         //spicinessIngredient.icon.transform.SetParent(cheatIconsLayoutGroup.transform);
         
-        Debug.Log($"ISO Temperature {this.name}: {temperatureIngredient.name}");
-        Debug.Log($"ISO Sweetness {this.name}: {sweetnessIngredient.name}");
-        Debug.Log($"ISO Strength {this.name}: {strenthIngredient.name}");
-        Debug.Log($"ISO Spiciness {this.name}: {spicinessIngredient.name}");
-
+        
         // DELETE AFTER TESTING //
         sweet = sweetnessIngredient;
         str = strenthIngredient;
@@ -86,6 +84,10 @@ public class CustomerRandomizer : NetworkBehaviour
         int bodyIndex = Random.Range(0, bodies.Count);
         currentCustomerHoldPoint = cupHoldPointList[bodyIndex];
 
+        currentHead = heads[bodyIndex];
+        currentVFXHoldPoint.transform.SetParent(currentHead.transform);
+        
+        
         StartClientRpc(bodyIndex, accumulatedSpiciness, accumulatedStrength, accumulatedSweetness, accumulatedTemperature);
     }
 
