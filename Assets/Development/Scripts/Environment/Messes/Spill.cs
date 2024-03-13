@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.VisualScripting;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -116,6 +117,7 @@ public class Spill : NetworkBehaviour
         {
             PlayerController stateMachine = other.gameObject.GetComponent<PlayerController>();
             stateMachine.anim.CrossFadeInFixedTime(BP_Barista_SlippingHash, CrossFadeDuration);
+            stateMachine.additionalForce = stateMachine.rb.transform.forward * slipSpeed;
         }
     }
 
@@ -126,7 +128,8 @@ public class Spill : NetworkBehaviour
             PlayerController stateMachine = other.gameObject.GetComponent<PlayerController>();
             Rigidbody rb = stateMachine.rb;
             Vector3 movedirection = rb.transform.forward;
-            rb.AddForce(movedirection * slipSpeed , ForceMode.VelocityChange);
+
+            //rb.AddForce(movedirection * slipSpeed , ForceMode.VelocityChange);
             //stateMachine.ThrowIngredient();
         }
     }
@@ -137,6 +140,7 @@ public class Spill : NetworkBehaviour
         {
             PlayerController stateMachine = other.gameObject.GetComponent<PlayerController>();
             stateMachine.OnAnimationSwitch();
+            
         }
     }
 

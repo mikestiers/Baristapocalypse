@@ -15,12 +15,14 @@ public class CleanupBot : MonoBehaviour
     [SerializeField] private float distance = 30f;
     [SerializeField] private float distToNextNode = 0.1f;
     [SerializeField] private int trashCounter = 0;
+    private RoombotConsole console;
 
     public enum BotState
     {
-        Roam,
+        Roaming,
         Cleanup,
-        Empty
+        Emptying,
+        Standby
     }
 
     [SerializeField] private BotState _currentState;
@@ -32,6 +34,7 @@ public class CleanupBot : MonoBehaviour
         {
             _currentState = value;
             onStateChanged.Invoke(_currentState, gameObject);
+            if (console != null) console.SetUIBotMode(_currentState.ToString());
         }
     }
 
@@ -41,7 +44,7 @@ public class CleanupBot : MonoBehaviour
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        _currentState = BotState.Roam;
+        _currentState = BotState.Roaming;
 
         if (path.Length <= 0)
         {
@@ -60,18 +63,23 @@ public class CleanupBot : MonoBehaviour
                 Cleaning(nearestMess);
                 break;
 
-            case BotState.Empty:
+            case BotState.Emptying:
                 Emptying();
                 break;
 
-            case BotState.Roam:
+            case BotState.Roaming:
                 Roaming(nearestMess);
+                break;
+
+            case BotState.Standby:
+                Standby();
                 break;
         }
     }
 
     private void Roaming(GameObject nearestMess)
     {
+        
         if (nearestMess != null)
         {
             currentState = BotState.Cleanup;
@@ -79,7 +87,7 @@ public class CleanupBot : MonoBehaviour
         }
         else if (trashCounter > 3)
         {
-            currentState = BotState.Empty;
+            currentState = BotState.Emptying;
             agent.SetDestination(trashStation.transform.position);
         }
         else
@@ -101,7 +109,7 @@ public class CleanupBot : MonoBehaviour
         }
         else
         {
-            currentState = BotState.Roam;
+            currentState = BotState.Roaming;
         }
     }
 
@@ -110,8 +118,17 @@ public class CleanupBot : MonoBehaviour
         agent.SetDestination(trashStation.transform.position);
         while (agent.pathPending && agent.remainingDistance > distToNextNode) return;
 
-        if (agent.remainingDistance < distToNextNode) trashCounter = 0;
+        if (agent.remainingDistance < distToNextNode) 
+        {
+            trashCounter = 0;
+            currentState = BotState.Standby;
+        } 
       
+    }
+
+    private void Standby()
+    {
+        //TBD
     }
 
     private GameObject FindNearestMessOnFloor(GameObject[] messes)
@@ -154,4 +171,8 @@ public class CleanupBot : MonoBehaviour
        
     }
 
+    public void SetConsole(RoombotConsole console)
+    {
+        this.console = console;
+    }
 }

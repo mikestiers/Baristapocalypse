@@ -47,4 +47,9 @@ public class GameValueHolder : Singleton<GameValueHolder>
     {
         difficultySettings.SetAmountOfPlayers(playerAmt);
     }
+
+    public void Reset()
+    {
+        if(difficultySettings != null) difficultySettings.Reset();
+    }
 }
