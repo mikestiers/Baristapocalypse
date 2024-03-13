@@ -25,6 +25,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] private float gravityMoveSpeed;
     [SerializeField] private float jumpForce;
     [SerializeField] private float ingredientThrowForce;
+    [SerializeField] private float acceleration = 20.0f;
+    [SerializeField] private float maxSpeed;
+    public Vector3 additionalForce;
 
     [Header("Ground Check")]
     [SerializeField] private LayerMask isGroundLayer;
@@ -159,9 +162,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if (moveSpeed <= 0) moveSpeed = 7.5f;
         if (gravityMoveSpeed <= 0) gravityMoveSpeed = 4.0f;
         if (jumpForce <= 0) jumpForce = 200.0f;
-        if (dashForce <= 0) dashForce = 130.0f;
+        if (dashForce <= 0) dashForce = 18.0f;
         if (dashTime <= 0) dashTime = 0.1f;
-        if (dashCooldownTime <= 0) dashCooldownTime = 1.0f;
+        if (dashCooldownTime <= 0) dashCooldownTime = 0.5f;
         if (ingredientThrowForce <= 0) ingredientThrowForce = 10f;
         if (groundCheckRadius <= 0) groundCheckRadius = 0.05f;
         if (stationsSphereCastRadius <= 0) stationsSphereCastRadius = 0.5F;
@@ -226,15 +229,17 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             return;
         }
 
+        HandleExtraForces();
+
         if (SceneManager.GetActiveScene().name != Loader.Scene.T5M3_BUILD.ToString()) { return; }
 
         // Ground Check
         IsGrounded();
         // player movement
-
+        HandleSpeed();
         // Gravity Storm Effect on player
         if (movementToggle && !GameManager.Instance.isGravityStorm.Value)
-            Move(moveSpeed);
+            Move(isDashing ? dashForce : moveSpeed);
         else if (movementToggle && GameManager.Instance.isGravityStorm.Value)
             Move(gravityMoveSpeed);
 
@@ -365,6 +370,20 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward * customerInteractDistance, Color.red);
     }
 
+    private void HandleSpeed()
+    {
+        bool isMoving = moveDirection != Vector3.zero;
+        float targetSpeed = isMoving ? maxSpeed : 0.0f;
+        float targetAccel = acceleration;
+        moveSpeed = Mathf.MoveTowards(moveSpeed, targetSpeed, targetAccel * Time.deltaTime);
+
+    }
+
+    private void HandleExtraForces()
+    {
+        additionalForce = Vector3.MoveTowards(additionalForce, Vector3.zero, 2 * Time.deltaTime);
+    }
+
     public bool IsGrounded()
     {
         isGrounded = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, isGroundLayer).Length > 0;
@@ -392,12 +411,19 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             // Interpolate between the current rotation and the target rotation
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
-
-        //rb.MovePosition(rb.position + curMoveInput);
-        if (!isDashing)
+        
+        if (isDashing && moveDirection == Vector3.zero)
         {
+            //moveDirection = transform.forward;
+            Vector3 dashMovement = transform.forward * moveSpeed;
+            dashMovement.y = rb.velocity.y;
+            rb.velocity = dashMovement;
+        }
+        else
+        {
+            //rb.MovePosition(rb.position + curMoveInput);
             curMoveInput.y = rb.velocity.y;
-            rb.velocity = curMoveInput;
+            rb.velocity = curMoveInput + additionalForce;
         }
 
         //transform.forward = inputManager.moveDir;
