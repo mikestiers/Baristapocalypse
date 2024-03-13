@@ -177,6 +177,8 @@ public class CustomerManager : Singleton<CustomerManager>
     {
         yield return new WaitForSeconds(delayS);
 
+        if (GameManager.Instance.IsGamePlaying() == false) yield break;
+
         //while(gameObject is playin) set timer
         if (customerPrefab != null)
         {

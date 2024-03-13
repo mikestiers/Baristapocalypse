@@ -817,9 +817,8 @@ public class CustomerBase : Base
 
     public void GameOverLeave() 
     {
-        customerAnimator.CrossFadeInFixedTime(Customer_WalkHash, CrossFadeDuration); // Customer1 walk animation
         if (agent.isStopped) agent.isStopped = false;
-        agent.SetDestination(exit);
+        Walkto(exit);
         SetCustomerState(CustomerState.Leaving);
     }
 

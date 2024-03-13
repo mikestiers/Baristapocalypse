@@ -201,7 +201,6 @@ public class GameManager : NetworkBehaviour
 
                 timeSinceStart += Time.deltaTime;
 
-                if (Input.GetKeyDown(KeyCode.G)) iSEndGame = true;
 
                 if (currentDifficulty != null)
                 {
@@ -227,11 +226,7 @@ public class GameManager : NetworkBehaviour
                 break;
 
             case GameState.GameOver:
-                Debug.LogWarning("Game Over......");
-                PlayerController playerController = FindObjectOfType<PlayerController>();
-                playerController.anim.CrossFadeInFixedTime(BP_Barista_SufferHash, CrossFadeDuration);
-                playerController.movementToggle = false;
-                CustomerManager.Instance.BarClosing();
+                
                 break; 
         }
 
@@ -319,6 +314,16 @@ public class GameManager : NetworkBehaviour
             Transform playerTransform = Instantiate(player1Prefab, playerSpawnPoints[(int)clientId]);
             playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
         }
+    }
+
+    public void GameOver()
+    {
+        Debug.LogWarning("Game Over......");
+        PlayerController playerController = FindObjectOfType<PlayerController>();
+        //playerController.anim.CrossFadeInFixedTime(BP_Barista_SufferHash, CrossFadeDuration);
+        playerController.movementToggle = false;
+        CustomerManager.Instance.BarClosing();
+        iSEndGame = true;
     }
 
     public void TogglePauseGame()
