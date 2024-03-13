@@ -28,7 +28,7 @@ public class PlayerColorChoice : MonoBehaviour
 
 public void SetPlayerColor(Color color)
 {
-    // playerMaterial.color = color;
+    playerMaterial.color = color;
     ringMaterial.color = color;
     RingMeshRenderer.material.SetColor(intersectionColorPropertyName, color); 
 }
