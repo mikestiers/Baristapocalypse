@@ -465,6 +465,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
             tutorialMessageActive = false;
             Time.timeScale = 1.0f;
+            movementToggle = true;
         }
 
     }
@@ -951,7 +952,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     {
         tutorialMessageActive = true;
         if (tutorialMessageActive)
+        {
             Time.timeScale = 0f;
+            //Disable player inputs
+            movementToggle = false;
+        }
     }
 
     // Normalized time to handle animations
