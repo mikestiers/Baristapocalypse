@@ -155,13 +155,19 @@ public class GameManager : NetworkBehaviour
 
         if (allClientsReady) 
         {
-            PlayerController[] playerControllers = FindObjectsOfType<PlayerController>();
-            for (int i = 0; i < playerControllers.Length; i++)
-            {
-                playerControllers[i].movementToggle = true;
-                Debug.Log($"Player {i} has been movement enabled");
-            }
+            ActivateClientsMovementClientRpc();
             gameState.Value = GameState.CountdownToStart;
+        }
+    }
+
+    [ClientRpc]
+    private void ActivateClientsMovementClientRpc()
+    {
+        PlayerController[] playerControllers = FindObjectsOfType<PlayerController>();
+        for (int i = 0; i < playerControllers.Length; i++)
+        {
+            playerControllers[i].movementToggle = true;
+            Debug.Log($"Player {i} has been movement enabled");
         }
     }
 
