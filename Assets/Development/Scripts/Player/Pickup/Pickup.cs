@@ -71,7 +71,6 @@ public class Pickup : NetworkBehaviour
         pickupObjectParent.SetPickup(this);
 
         followTransform.SetTargetTransform(pickupObjectParent.GetPickupTransform());
-        followTransform.AdjustTargetTransform(holdingPosition, holdingRotation);
         
     }
 
