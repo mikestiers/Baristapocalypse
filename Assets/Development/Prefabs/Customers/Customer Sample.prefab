@@ -309,7 +309,6 @@ Transform:
   - {fileID: 6906051944928253266}
   - {fileID: 794287433751275001}
   - {fileID: 3470295482527500932}
-  m_Father: {fileID: 8619207827057886684}
   - {fileID: 4268897593932416512}
   m_Father: {fileID: 5640675751676341536}
   m_RootOrder: 0
@@ -1679,7 +1678,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6523125881497465146}
   m_CullTransparentMesh: 1
---- !u!1 &7702142156548486562
+--- !u!1 &6601219351477664651
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1804,36 +1803,47 @@ GameObject:
   - component: {fileID: 4501027600571855750}
   m_Layer: 0
   m_Name: Customer VFX
-  - component: {fileID: 8619207827057886684}
-  m_Layer: 10
-  m_Name: CarryPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8619207827057886684
+--- !u!4 &4268897593932416512
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7702142156548486562}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_GameObject: {fileID: 6921117146633435465}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.237, y: 0.74999976, z: -0.5169555}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5249093044415968319}
-  - {fileID: 3680093825556947777}
-  - {fileID: 2456312928997377149}
-  - {fileID: 7989365666301272899}
-  - {fileID: 8028185746511386370}
-  - {fileID: 4961381447448103050}
-  - {fileID: 652586481719592064}
-  m_Father: {fileID: 5640675751676341536}
-  m_RootOrder: 0
+  - {fileID: 5716626609484163556}
+  - {fileID: 8580402929984177480}
+  - {fileID: 3257975493206141812}
+  - {fileID: 8652690884291890995}
+  m_Father: {fileID: 5249093044415968319}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4501027600571855750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6921117146633435465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72a76eb3a000fa047ad6fcf8ef29a84d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AngryParticles: {fileID: 5757206964215150727}
+  CryingParticles: {fileID: 5130508175421651113}
+  Failparticles: {fileID: 6601219351477664651}
+  SucceseParticles: {fileID: 5323354162918537156}
+  fadeInTime: 0.5
 --- !u!1 &8571327297907685429
 GameObject:
   m_ObjectHideFlags: 0
