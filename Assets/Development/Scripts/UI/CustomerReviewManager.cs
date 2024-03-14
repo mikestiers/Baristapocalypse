@@ -23,12 +23,16 @@ public class CustomerReviewManager : NetworkBehaviour
     public float rPSpeed;
     public float rPArrivalThreshold;
     public float popOutReviewTime;
+    public bool gameOverBool;
     private bool reviewInProgress;
     private TextMeshProUGUI customerReviewText;
 
     // Event to receive Supervisor Message
     public delegate void CustomerReviewHandler(CustomerBase customer);
     public static event CustomerReviewHandler OnCustomerReviewReceived;
+
+    public delegate void OneStarCustomerReviewHandler(CustomerBase customer, float starAmount);
+    public static event OneStarCustomerReviewHandler OnOneStarCustomerReviewReceived;
     [HideInInspector] public int reviewScore { get; private set; }
 
 
@@ -36,21 +40,54 @@ public class CustomerReviewManager : NetworkBehaviour
     {
         Instance = this;
         OnCustomerReviewReceived += HandleCustomerReview;
+        OnOneStarCustomerReviewReceived += OneStarHandleCustomerReview;
     }
 
     public override void OnDestroy()
     {
         OnCustomerReviewReceived -= HandleCustomerReview;
+        OnOneStarCustomerReviewReceived -= OneStarHandleCustomerReview;
     }
 
     private void HandleCustomerReview(CustomerBase customer)
     {
        ShowCustomerReview(customer);
     }
+    private void OneStarHandleCustomerReview(CustomerBase customer, float starAmount)
+    {
+        ShowCustomerReview(customer, starAmount);
+    }
 
     public void CustomerReviewEvent(CustomerBase customer)
     {
         OnCustomerReviewReceived?.Invoke(customer);
+    }
+    public void CustomerReviewEvent(CustomerBase customer, float starAmount)
+    {
+        OnOneStarCustomerReviewReceived?.Invoke(customer, starAmount);
+    }
+
+    public void ShowCustomerReview(CustomerBase customer, float starAmount)
+    {
+        if (gameOverBool == true) 
+            return;
+
+        if (reviewInProgress == false)
+        {
+            customerReviewText = customerReview.GetComponentInChildren<TextMeshProUGUI>();
+            CustomerReview customerReviewInstance = customerReview.GetComponent<CustomerReview>();
+            customerReviewInstance.GenerateReview(customer, starAmount);
+            reviewScore = customerReviewInstance.ReviewScore;
+        }
+        else
+        {
+            customerReviewText = customerReview2.GetComponentInChildren<TextMeshProUGUI>();
+            CustomerReview customerReviewInstance = customerReview2.GetComponent<CustomerReview>();
+            customerReviewInstance.GenerateReview(customer, starAmount);
+            reviewScore = customerReviewInstance.ReviewScore;
+        }
+
+        CustomerReviewDisplayClientRpc();
     }
 
     public void ShowCustomerReview(CustomerBase customer)

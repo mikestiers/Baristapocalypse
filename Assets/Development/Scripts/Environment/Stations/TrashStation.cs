@@ -4,12 +4,16 @@ using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Playables;
 using UnityEngine.UI;
 
 public class TrashStation : BaseStation
 {
     [SerializeField] private ParticleSystem interactParticle;
     [SerializeField] private GameObject interactImage;
+    [SerializeField] private PlayableDirector playableDirector;
+    [SerializeField] private PlayableAsset trashOpenAnimation;
+    [SerializeField] private PlayableAsset trashCloseAnimation;
     private Ingredient trashIngredient;
     private Pickup pickup;
     private PlayerController player;
@@ -36,7 +40,6 @@ public class TrashStation : BaseStation
         {
             foreach(Ingredient i in player.GetIngredientsList())
             {
-                Debug.Log("trashinggggg");
                 player.RemoveIngredientInListByReference(i);
                 trashIngredient = i;
                 InteractServerRpc();
@@ -58,7 +61,6 @@ public class TrashStation : BaseStation
             Debug.Log("Destroying garbage cup");
             pickup.GetComponent<IngredientFollowTransform>().SetTargetTransform(pickup.transform);
             pickup.ClearPickupOnParent();
-
             TrashPickupServerRpc();
             player.OnAnimationSwitch();// setup animation here, OnAnimationSwitch() just reset the animation
         }
@@ -95,7 +97,10 @@ public class TrashStation : BaseStation
             player = other.GetComponent<PlayerController>();
 
             if (player.IsLocalPlayer)
+            {
                 interactImage.SetActive(true);
+                playableDirector.Play(trashOpenAnimation);
+            }
         }
     }
 
@@ -106,7 +111,10 @@ public class TrashStation : BaseStation
             player = other.GetComponent<PlayerController>();
 
             if (player.IsLocalPlayer)
+            {
                 interactImage.SetActive(false);
+                playableDirector.Play(trashCloseAnimation);
+            }
         }
     }
 

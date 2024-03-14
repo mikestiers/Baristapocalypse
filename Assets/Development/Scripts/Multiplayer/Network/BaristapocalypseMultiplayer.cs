@@ -25,7 +25,8 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     public int test;
 
     private NetworkList<PlayerData> playerDataNetworkList;
-    public List<Color> playerColorList;
+    //public List<Color> playerColorList;
+    public List<Material> playerColorMaterialList;
     public List<Material> playerMaterials;
 
     private void Awake()
@@ -36,6 +37,7 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
 
         playerDataNetworkList = new NetworkList<PlayerData>();
         playerDataNetworkList.OnListChanged += PlayerDataNetworkList_OnListChanged;
+
     }
 
     private void Start()
@@ -246,9 +248,15 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
         return playerDataNetworkList[playerIndex];  
     }
 
-    public Color GetPlayerColor(int colorId)
+    public Material GetPlayerColor(int colorId)
     {
-        return playerColorList[colorId];
+        return playerColorMaterialList[colorId];
+    }
+
+    public Color GetPlayerEmissionColor(int colorId)
+    {
+        Color color = playerColorMaterialList[colorId].GetColor("_EmissionColor");
+        return color;
     }
 
     public void ChangePlayerColor(int colorId)
@@ -289,7 +297,7 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
 
      private int GetFirstUnusedColorId()
      {
-        for (int i=0; i < playerColorList.Count; i++)
+        for (int i=0; i < playerColorMaterialList.Count; i++)
         {
             if (isColorAvailable(i))
             {

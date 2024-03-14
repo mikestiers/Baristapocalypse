@@ -11,7 +11,7 @@ public class Pickup : NetworkBehaviour
     [Header("Properties")]
     public List<PickupAttribute> attributes = new List<PickupAttribute>();
     public Vector3 holdingPosition;
-    public Vector3 holdingRotation;
+    public Quaternion holdingRotation;
 
     [Header("Components")]
     [SerializeField] private CustomerBase customer;
@@ -24,6 +24,8 @@ public class Pickup : NetworkBehaviour
     private IPickupObjectParent pickupObjectParent;
     [field: SerializeField] public PickupSO pickupSo { get;  private set; }
     [SerializeField] private IngredientFollowTransform followTransform;
+    [SerializeField] private LayerMask groundLayer;
+    public bool isOnFloor = false;
 
     public PickupSO Getpickup()
     {
@@ -69,6 +71,7 @@ public class Pickup : NetworkBehaviour
         pickupObjectParent.SetPickup(this);
 
         followTransform.SetTargetTransform(pickupObjectParent.GetPickupTransform());
+        
     }
 
     public void DisablePickupColliders(Pickup pickup)
@@ -162,5 +165,14 @@ public class Pickup : NetworkBehaviour
     {
         CleansUpSpills,
         KillsCustomer,
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (((1 << collision.gameObject.layer) & groundLayer) != 0)
+        {
+            isOnFloor = true;
+            Debug.LogWarning("Mess on cup " + isOnFloor);
+        }
     }
 }

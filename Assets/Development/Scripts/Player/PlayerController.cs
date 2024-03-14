@@ -25,6 +25,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [SerializeField] private float gravityMoveSpeed;
     [SerializeField] private float jumpForce;
     [SerializeField] private float ingredientThrowForce;
+    [SerializeField] private float acceleration = 20.0f;
+    [SerializeField] private float maxSpeed;
+    public Vector3 additionalForce;
 
     [Header("Ground Check")]
     [SerializeField] private LayerMask isGroundLayer;
@@ -94,7 +97,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     private readonly int BP_Barista_Throw_CupHash = Animator.StringToHash("BP_Barista_Throw_Cup");
     private readonly int BP_Barista_Throw_CustHash = Animator.StringToHash("BP_Barista_Throw_Cust");
     private readonly int BP_Barista_Cleaning_VacHash = Animator.StringToHash("BP_Barista_Cleaning_Vac");
-    
+
+    private bool isAnimating = false;
+
     private const float CrossFadeDuration = 0.1f;
 
     private CinemachineVirtualCamera virtualCamera;
@@ -142,6 +147,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     private void Start()
     {
+        movementToggle = false;
+
         if (IsOwner && SceneManager.GetActiveScene().name == Loader.Scene.T5M3_BUILD.ToString())
         {
             virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
@@ -157,9 +164,9 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if (moveSpeed <= 0) moveSpeed = 7.5f;
         if (gravityMoveSpeed <= 0) gravityMoveSpeed = 4.0f;
         if (jumpForce <= 0) jumpForce = 200.0f;
-        if (dashForce <= 0) dashForce = 130.0f;
+        if (dashForce <= 0) dashForce = 18.0f;
         if (dashTime <= 0) dashTime = 0.1f;
-        if (dashCooldownTime <= 0) dashCooldownTime = 1.0f;
+        if (dashCooldownTime <= 0) dashCooldownTime = 0.5f;
         if (ingredientThrowForce <= 0) ingredientThrowForce = 10f;
         if (groundCheckRadius <= 0) groundCheckRadius = 0.05f;
         if (stationsSphereCastRadius <= 0) stationsSphereCastRadius = 0.5F;
@@ -175,6 +182,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         // Set color of the player based on color selection at the lobby
         PlayerData playerData = BaristapocalypseMultiplayer.Instance.GetPlayerDataFromClientId(OwnerClientId);
         playerVisual.SetPlayerColor(BaristapocalypseMultiplayer.Instance.GetPlayerColor(playerData.colorId));
+        playerVisual.SetRingColor(BaristapocalypseMultiplayer.Instance.GetPlayerEmissionColor((playerData.colorId)));
         SetSelectedSpill(null);
     }
 
@@ -224,15 +232,17 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             return;
         }
 
+        HandleExtraForces();
+
         if (SceneManager.GetActiveScene().name != Loader.Scene.T5M3_BUILD.ToString()) { return; }
 
         // Ground Check
         IsGrounded();
         // player movement
-
+        HandleSpeed();
         // Gravity Storm Effect on player
         if (movementToggle && !GameManager.Instance.isGravityStorm.Value)
-            Move(moveSpeed);
+            Move(isDashing ? dashForce : moveSpeed);
         else if (movementToggle && GameManager.Instance.isGravityStorm.Value)
             Move(gravityMoveSpeed);
 
@@ -363,6 +373,20 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         Debug.DrawRay(transform.position + RayCastOffset, transform.forward * customerInteractDistance, Color.red);
     }
 
+    private void HandleSpeed()
+    {
+        bool isMoving = moveDirection != Vector3.zero;
+        float targetSpeed = isMoving ? maxSpeed : 0.0f;
+        float targetAccel = acceleration;
+        moveSpeed = Mathf.MoveTowards(moveSpeed, targetSpeed, targetAccel * Time.deltaTime);
+
+    }
+
+    private void HandleExtraForces()
+    {
+        additionalForce = Vector3.MoveTowards(additionalForce, Vector3.zero, 2 * Time.deltaTime);
+    }
+
     public bool IsGrounded()
     {
         isGrounded = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, isGroundLayer).Length > 0;
@@ -371,13 +395,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public void Move(float moveSpeed)
     {
-        if (inputManager.moveDir == Vector3.zero)
-        {
-            anim.SetFloat("vertical", 0);
-            anim.SetFloat("horizontal", 0);
-            return;
-        }
-
+     
         //curMoveInput = inputManager.moveDir * moveSpeed * Time.deltaTime; // movement does not take camera position into calculation so the map has to be rotated in a certain way
         //curMoveInput = Camera.main.transform.forward * inputManager.moveDir.z * moveSpeed * Time.deltaTime;
         //curMoveInput += Camera.main.transform.right * inputManager.moveDir.x * moveSpeed * Time.deltaTime;
@@ -385,7 +403,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         Vector3 moveInput = new Vector3(inputManager.moveDir.x, 0, inputManager.moveDir.z);
         moveDirection = Camera.main.transform.TransformDirection(moveInput);
         moveDirection.y = 0; // stay grounded
-        Vector3 curMoveInput = moveDirection.normalized * moveSpeed * Time.deltaTime;
+        Vector3 curMoveInput = moveDirection.normalized * moveSpeed;
 
         if (moveDirection != Vector3.zero)
         {
@@ -396,8 +414,20 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             // Interpolate between the current rotation and the target rotation
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
-
-        rb.MovePosition(rb.position + curMoveInput);
+        
+        if (isDashing && moveDirection == Vector3.zero)
+        {
+            //moveDirection = transform.forward;
+            Vector3 dashMovement = transform.forward * moveSpeed;
+            dashMovement.y = rb.velocity.y;
+            rb.velocity = dashMovement;
+        }
+        else
+        {
+            //rb.MovePosition(rb.position + curMoveInput);
+            curMoveInput.y = rb.velocity.y;
+            rb.velocity = curMoveInput + additionalForce;
+        }
 
         //transform.forward = inputManager.moveDir;
 
@@ -409,6 +439,12 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         anim.SetFloat("vertical", forwardDot);
         anim.SetFloat("horizontal", rightDot);
 
+        if (inputManager.moveDir == Vector3.zero)
+        {
+            anim.SetFloat("vertical", 0);
+            anim.SetFloat("horizontal", 0);
+            return;
+        }
         //rb.MovePosition(rb.position + curMoveInput);
     }
 
@@ -432,6 +468,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
             tutorialMessageActive = false;
             Time.timeScale = 1.0f;
+            movementToggle = true;
         }
 
     }
@@ -477,13 +514,25 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     IEnumerator Dash()
     {
+        // Dash only if holding trash or cooffee cup
+        if (pickup != null)
+        {
+            if (pickup.GetPickupObjectSo().objectName == mopSoName || pickup.IsCustomer)
+            {
+                yield break;
+
+            }
+        }
+  
         isDashing = true;
         float startTime = Time.time;
 
         while (Time.time < startTime + dashTime)
         {
-            rb.AddForce(moveDirection * dashForce * Time.deltaTime, ForceMode.Impulse);
-            if (ingredientsList.Count > 0  || HasPickup())
+            bool isMoving = moveDirection != Vector3.zero;
+            Vector3 dashDirection = isMoving ? moveDirection : transform.forward;
+            rb.AddForce(dashDirection * dashForce * Time.deltaTime, ForceMode.Impulse);
+            if (ingredientsList.Count > 0 || HasPickup())
             {
                 anim.SetBool("isDashingWithCup", isDashing);
             }
@@ -505,7 +554,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
             anim.SetBool("isDashing", isDashing);
         }
-
+        
     }
 
     public void OnThrow()
@@ -624,6 +673,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [ClientRpc]
     private void ThrowIngredientClientRpc()
     {
+        if (isAnimating == true) return;
+        isAnimating = true;
         StartCoroutine(ThrowIngredientAnimation()); //Play throw ingredient
     }
 
@@ -765,23 +816,35 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if(!HasNoIngredients)return;
         anim.CrossFadeInFixedTime(BP_Barista_Cleaning_VacHash, CrossFadeDuration);
         spill.Interact(this);
-  
+
+        if (spill == null)
+        {
+            Debug.LogWarning("Player lost reference to pickup ");
+            OnAnimationSwitch();
+        }
     }
 
     public void DoPickup(Pickup pickup)
     {
-        if (HasPickup() || !HasNoIngredients)
+        if (HasPickup() || !HasNoIngredients || isAnimating == true)
             return;
 
+        isAnimating = true;
         PickupSO pickupSo = pickup.GetPickupObjectSo();
 
         if (pickupSo != null)
         {
             StartCoroutine(PickUpAnimation(pickup)); // Play trash pick up and set trash parent
         }
-        else if (pickup.IsCustomer && pickup.GetCustomer().GetCustomerState() == CustomerBase.CustomerState.Loitering)
+        else if (pickup.IsCustomer && pickup.GetCustomer().makingAMess == true)
         {
             StartCoroutine(PickUpCustomerAnimation(pickup));
+        }
+
+        if (pickup == null)
+        {
+            Debug.LogWarning("Player lost reference to pickup");
+            OnAnimationSwitch();
         }
     }
 
@@ -799,9 +862,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     [ClientRpc]
     private void ThrowPickupClientRpc()
     {
-        if (!HasPickup())
+        if (!HasPickup() || isAnimating == true)
             return;
 
+        isAnimating = true;
         if (pickup.IsCustomer)
         {
             Debug.Log("Customer dead");
@@ -891,7 +955,11 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     {
         tutorialMessageActive = true;
         if (tutorialMessageActive)
+        {
             Time.timeScale = 0f;
+            //Disable player inputs
+            movementToggle = false;
+        }
     }
 
     // Normalized time to handle animations
@@ -916,6 +984,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public void OnAnimationSwitch()
     {
+        if (!movementToggle) movementToggle = true;
+
         if (HasIngredient())
         {
             anim.CrossFadeInFixedTime(MovementWithCupHash, CrossFadeDuration);
@@ -956,8 +1026,18 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
             pickup.SetPickupObjectParent(this);
             pickup.DisablePickupColliders(pickup);
+            pickup.isOnFloor = false;
             movementToggle = true;
-        } 
+            isAnimating = false;
+
+        }
+
+        if (pickup == null)
+        {
+            Debug.LogWarning("Player lost reference to pickup ");
+            OnAnimationSwitch();
+        }
+
     }
 
     // Play customer pick up and set customer parent
@@ -973,6 +1053,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         pickup.GetCustomer().isPickedUp = true;
         pickup.SetPickupObjectParent(this);
         pickup.DisablePickupColliders(pickup);
+        pickup.GetCustomer().holdPoint.transform.localPosition = new Vector3(0, -3, 0);
+        pickup.GetCustomer().holdPoint.transform.localRotation = pickup.GetCustomer().transform.rotation;
 
         if (pickup.GetCustomer().inLine == true)
         {
@@ -982,6 +1064,13 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
         
         movementToggle = true;
+        isAnimating= false;
+
+        if (pickup == null)
+        {
+            Debug.LogWarning("Player lost reference to pickup");
+            OnAnimationSwitch();
+        }
     }
 
     // Play throw pick up
@@ -1009,6 +1098,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             pickup.ClearPickupOnParent(); 
         }
         movementToggle = true;
+        isAnimating = false;
     }
 
     // Play throw ingredient 
@@ -1042,5 +1132,6 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             OnAnimationSwitch();
         }
         movementToggle = true;
+        isAnimating = false;
     }
 }

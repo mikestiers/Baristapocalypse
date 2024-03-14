@@ -6,6 +6,7 @@ public class PlayerColorChoice : MonoBehaviour
 {
     public SkinnedMeshRenderer baseMeshRenderer;
     public MeshRenderer RingMeshRenderer;
+    public GameObject playerVisualMaterial;
 
     public Material playerMaterial;
     public Material ringMaterial;
@@ -18,18 +19,23 @@ public class PlayerColorChoice : MonoBehaviour
         playerMaterial = new Material(baseMeshRenderer.material);
         ringMaterial = new Material(RingMeshRenderer.material);
         
-        baseMeshRenderer.material = playerMaterial;
-
-        intersectionColor = playerMaterial.color;
-        
+        //baseMeshRenderer.material = playerMaterial;
         baseMeshRenderer.material = playerMaterial; 
-        RingMeshRenderer.material.SetColor(intersectionColorPropertyName, intersectionColor); 
+        RingMeshRenderer.material.SetColor(intersectionColorPropertyName, intersectionColor);
+        intersectionColor = playerMaterial.color;
+        //intersectionColor = baseMeshRenderer.material.GetColor("_EmissionColor");
+
     }
 
-public void SetPlayerColor(Color color)
-{
-    // playerMaterial.color = color;
-    ringMaterial.color = color;
-    RingMeshRenderer.material.SetColor(intersectionColorPropertyName, color); 
-}
+    public void SetPlayerColor(Material material)
+    {
+        baseMeshRenderer.material = material;
+    }
+
+    public void SetRingColor(Color color)
+    {
+        ringMaterial.color = color;
+        RingMeshRenderer.material.SetColor(intersectionColorPropertyName, color); 
+
+    }
 }

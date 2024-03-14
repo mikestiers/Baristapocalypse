@@ -68,11 +68,15 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
     private PlayerController brewingPlayer;
     private float previousFrameTime;
     private readonly int BP_Barista_PickUpHash = Animator.StringToHash("BP_Barista_PickUp");
-    private readonly int Barista_BrewingHash = Animator.StringToHash("Barista_Brewing"); // Player Start Brewing animation
-    private readonly int BP_Barista_Brew_End_LeftHash = Animator.StringToHash("BP_Barista_Brew_End_Left"); // Player End Brewing animation
-
+    private readonly int Barista_BrewingHash = Animator.StringToHash("Barista_Brewing"); // Player Start Brewing animation left Brewer
+    private readonly int BP_Barista_Brew_End_LeftHash = Animator.StringToHash("BP_Barista_Brew_End_Left"); // Player End Brewing animation left Brewer
+    private readonly int BP_Barista_Brew_Start_RightHash = Animator.StringToHash("BP_Barista_Brew_Start_Right"); // Player Start Brewing animation right Brewer
+    private readonly int BP_Barista_Brew_End_RighttHash = Animator.StringToHash("BP_Barista_Brew_End_Right"); // Player End Brewing animation right Brewer
     private readonly int BP_Barista_Brewer_Start_LeftHash = Animator.StringToHash("BP_Barista_Brewer_Start_Left");
     private readonly int BP_Barista_Brewer_End_LeftHash = Animator.StringToHash("BP_Barista_Brewer_End_Left");
+    private readonly int BP_Brewer_Start_RightHash = Animator.StringToHash("BP_Brewer_Start_Right");
+    private readonly int BP_Brewer_End_RightHash = Animator.StringToHash("BP_Brewer_End_Right");
+
     private const float CrossFadeDuration = 0.1f;
     private float animationWaitTime;
 
@@ -83,6 +87,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
         TurnAllEmissiveOff();
         RaiseBrewingEmpty();
         Empty();
+
     }
 
     private void Awake()
@@ -262,14 +267,16 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
                 Debug.LogWarning("Beginning Brewing minigame");
                 MinigameStartedServerRpc();
                 player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY;
-                player.anim.CrossFadeInFixedTime(Barista_BrewingHash, CrossFadeDuration);
                 if (leftBrewingAnimator)
                 {
+                    player.anim.CrossFadeInFixedTime(Barista_BrewingHash, CrossFadeDuration);
                     leftBrewingAnimator.CrossFadeInFixedTime(BP_Barista_Brewer_Start_LeftHash, CrossFadeDuration);
                 }
                 else if (rightBrewingAnimator)
                 {
-                    Debug.Log("right animator not set up yet)");
+                    player.anim.CrossFadeInFixedTime(BP_Barista_Brew_Start_RightHash, CrossFadeDuration);
+                    rightBrewingAnimator.CrossFadeInFixedTime(BP_Brewer_Start_RightHash, CrossFadeDuration);
+                    
                 }
 
                 StartCoroutine(LerpPlayerToLerpingPoint(playerLerpingPosition.position, playerLerpingPosition.rotation, playerLerpingDuration, player));
@@ -446,14 +453,14 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
         {
             leftBrewingAnimator.CrossFadeInFixedTime(BP_Barista_Brewer_End_LeftHash, CrossFadeDuration);
             currentPlayerController.anim.CrossFadeInFixedTime(BP_Barista_Brew_End_LeftHash, CrossFadeDuration);
-            
-            yield return new WaitForSeconds(1.0f);
-
         }
         else if (rightBrewingAnimator)
         {
-            Debug.Log("right animator not set up yet)");
+            rightBrewingAnimator.CrossFadeInFixedTime(BP_Brewer_End_RightHash, CrossFadeDuration);
+            currentPlayerController.anim.CrossFadeInFixedTime(BP_Barista_Brew_End_RighttHash, CrossFadeDuration); 
         }
+
+        yield return new WaitForSeconds(1.0f);
 
         currentPlayerController.anim.CrossFadeInFixedTime(BP_Barista_PickUpHash, CrossFadeDuration);
 
@@ -466,6 +473,12 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
         currentPlayerController.movementToggle = true;
         currentPlayerController = null;
         SetIsMinigameEndedServerRpc(true);
+
+        //If player get to this point and loose reference to the coffee cup reset animation
+        if (!currentPlayerController.HasIngredient())
+        {
+            animationSwitch?.Invoke();
+        }
     }
 
     private void TurnAllEmissiveOff()

@@ -23,6 +23,6 @@ public class RandomEventEffects : NetworkBehaviour
     {
         gravityLights.SetActive(trueOrFalse);
         screenFX.ToggleGravityEffect(trueOrFalse);
-        Debug.LogWarning(trueOrFalse);
+        
     }
 }

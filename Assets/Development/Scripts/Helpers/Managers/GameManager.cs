@@ -6,6 +6,7 @@ using Unity.Netcode;
 using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
+using UnityEngine.InputSystem;
 
 [DefaultExecutionOrder(-1)]
 public class GameManager : NetworkBehaviour
@@ -154,7 +155,19 @@ public class GameManager : NetworkBehaviour
 
         if (allClientsReady) 
         {
+            ActivateClientsMovementClientRpc();
             gameState.Value = GameState.CountdownToStart;
+        }
+    }
+
+    [ClientRpc]
+    private void ActivateClientsMovementClientRpc()
+    {
+        PlayerController[] playerControllers = FindObjectsOfType<PlayerController>();
+        for (int i = 0; i < playerControllers.Length; i++)
+        {
+            playerControllers[i].movementToggle = true;
+            Debug.Log($"Player {i} has been movement enabled");
         }
     }
 
@@ -200,6 +213,7 @@ public class GameManager : NetworkBehaviour
 
                 timeSinceStart += Time.deltaTime;
 
+
                 if (currentDifficulty != null)
                 {
                     // Adjust the difficulty based on time passed
@@ -224,9 +238,7 @@ public class GameManager : NetworkBehaviour
                 break;
 
             case GameState.GameOver:
-                Debug.LogWarning("Game Over......");
-                PlayerController playerController = FindObjectOfType<PlayerController>();
-                playerController.anim.CrossFadeInFixedTime(BP_Barista_SufferHash, CrossFadeDuration);
+                
                 break; 
         }
 
@@ -314,6 +326,16 @@ public class GameManager : NetworkBehaviour
             Transform playerTransform = Instantiate(player1Prefab, playerSpawnPoints[(int)clientId]);
             playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
         }
+    }
+
+    public void GameOver()
+    {
+        Debug.LogWarning("Game Over......");
+        PlayerController playerController = FindObjectOfType<PlayerController>();
+        //playerController.anim.CrossFadeInFixedTime(BP_Barista_SufferHash, CrossFadeDuration);
+        playerController.movementToggle = false;
+        CustomerManager.Instance.BarClosing();
+        iSEndGame = true;
     }
 
     public void TogglePauseGame()

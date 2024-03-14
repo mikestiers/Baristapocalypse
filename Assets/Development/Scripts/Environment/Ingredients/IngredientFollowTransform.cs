@@ -10,7 +10,6 @@ public class IngredientFollowTransform : MonoBehaviour
     {
         this.targetTransform = targetTransform;
     }
-
     private void LateUpdate()
     {
         if (targetTransform == null)

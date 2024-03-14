@@ -95,7 +95,7 @@ public class DifficultySettings
         if (Shift >= MaxShift)
         {
             //Trigger End Game
-            GameManager.Instance.iSEndGame = true;
+            GameManager.Instance.GameOver();
             UIManager.Instance.shiftEvaluationUI.SetActive(false);
 
             return;
@@ -197,4 +197,11 @@ public class DifficultySettings
     {
         return maxInLineWaitTime;
     }
+
+    public void Reset()
+    {
+        UpdateDifficulty();
+        Shift = 1;
+    }
+
 }
