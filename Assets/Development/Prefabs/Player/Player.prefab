@@ -423,7 +423,6 @@ MonoBehaviour:
   jumpForce: 0
   ingredientThrowForce: 0
   acceleration: 20
-  decceleration: 50
   maxSpeed: 7.5
   additionalForce: {x: 0, y: 0, z: 0}
   isGroundLayer:
@@ -1499,6 +1498,10 @@ PrefabInstance:
       propertyPath: jointMeshRenderer
       value: 
       objectReference: {fileID: 707575766053362076}
+    - target: {fileID: 1688089145265230259, guid: 1c5dda3c7cd3cf742afcade5419faeab, type: 3}
+      propertyPath: playerVisualMaterial
+      value: 
+      objectReference: {fileID: 227728015971744435}
     - target: {fileID: 1705904632192657051, guid: 1c5dda3c7cd3cf742afcade5419faeab, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.99402285
@@ -3605,6 +3608,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1c5dda3c7cd3cf742afcade5419faeab, type: 3}
+--- !u!1 &227728015971744435 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 310348407157389932, guid: 1c5dda3c7cd3cf742afcade5419faeab, type: 3}
+  m_PrefabInstance: {fileID: 533563683773546719}
+  m_PrefabAsset: {fileID: 0}
 --- !u!137 &707575766053362076 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1060115296806115651, guid: 1c5dda3c7cd3cf742afcade5419faeab, type: 3}
