@@ -159,6 +159,7 @@ public class GameManager : NetworkBehaviour
             for (int i = 0; i < playerControllers.Length; i++)
             {
                 playerControllers[i].movementToggle = true;
+                Debug.Log($"Player {i} has been movement enabled");
             }
             gameState.Value = GameState.CountdownToStart;
         }
