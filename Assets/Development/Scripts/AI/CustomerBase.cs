@@ -71,6 +71,7 @@ public class CustomerBase : Base
     private const float CrossFadeDuration = 0.1f;
     private float animationWaitTime = 1.2f;
     private bool isGivingOrderToCustomer = false;
+    public GameObject holdPoint;
 
     // Customer Animations
     [Header("Customer Animations")]

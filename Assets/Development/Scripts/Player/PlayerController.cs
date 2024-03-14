@@ -836,7 +836,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         {
             StartCoroutine(PickUpAnimation(pickup)); // Play trash pick up and set trash parent
         }
-        else if (pickup.IsCustomer && pickup.GetCustomer().GetCustomerState() == CustomerBase.CustomerState.Loitering)
+        else if (pickup.IsCustomer && pickup.GetCustomer().makingAMess == true)
         {
             StartCoroutine(PickUpCustomerAnimation(pickup));
         }
@@ -1053,6 +1053,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         pickup.GetCustomer().isPickedUp = true;
         pickup.SetPickupObjectParent(this);
         pickup.DisablePickupColliders(pickup);
+        pickup.GetCustomer().holdPoint.transform.localPosition = new Vector3(0, -3, 0);
+        pickup.GetCustomer().holdPoint.transform.localRotation = pickup.GetCustomer().transform.rotation;
 
         if (pickup.GetCustomer().inLine == true)
         {
