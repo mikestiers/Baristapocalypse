@@ -180,6 +180,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         // Set color of the player based on color selection at the lobby
         PlayerData playerData = BaristapocalypseMultiplayer.Instance.GetPlayerDataFromClientId(OwnerClientId);
         playerVisual.SetPlayerColor(BaristapocalypseMultiplayer.Instance.GetPlayerColor(playerData.colorId));
+        playerVisual.SetRingColor(BaristapocalypseMultiplayer.Instance.GetPlayerEmissionColor((playerData.colorId)));
         SetSelectedSpill(null);
     }
 

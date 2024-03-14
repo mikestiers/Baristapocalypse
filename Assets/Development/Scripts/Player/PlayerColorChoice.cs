@@ -19,13 +19,12 @@ public class PlayerColorChoice : MonoBehaviour
         playerMaterial = new Material(baseMeshRenderer.material);
         ringMaterial = new Material(RingMeshRenderer.material);
         
-        baseMeshRenderer.material = playerMaterial;
-
-        intersectionColor = playerMaterial.color;
-        
+        //baseMeshRenderer.material = playerMaterial;
         baseMeshRenderer.material = playerMaterial; 
-        RingMeshRenderer.material.SetColor(intersectionColorPropertyName, intersectionColor); 
-        
+        RingMeshRenderer.material.SetColor(intersectionColorPropertyName, intersectionColor);
+        intersectionColor = playerMaterial.color;
+        //intersectionColor = baseMeshRenderer.material.GetColor("_EmissionColor");
+
     }
 
     public void SetPlayerColor(Material material)
