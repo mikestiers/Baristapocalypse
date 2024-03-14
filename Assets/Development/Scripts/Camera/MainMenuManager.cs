@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using System;
+using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
@@ -64,10 +65,14 @@ public class MainMenuManager : MonoBehaviour
     [Header("Level Loader")]
     [SerializeField] private LevelLoader levelLoader;
 
+
+    [Header("Button Text")]
+    public TextMeshProUGUI screen;
     private void Awake()
     {
         SceneHelper.Instance.ResetGame();
 
+        
         if (SceneHelper.Instance.isRestartGame)
         {
             if (!BaristapocalypseMultiplayer.playMultiplayer)
@@ -118,8 +123,8 @@ public class MainMenuManager : MonoBehaviour
         if (FullScreenButton)
             FullScreenButton.onClick.AddListener(SetFullScreen);
 
-        if (WindowModeButton)
-            WindowModeButton.onClick.AddListener(SetWindowMode);
+        // if (WindowModeButton)
+        //     WindowModeButton.onClick.AddListener(SetWindowMode);
 
         if (EasyButton)
             EasyButton.onClick.AddListener(() => SetDifficulty("Easy"));
@@ -288,17 +293,31 @@ public class MainMenuManager : MonoBehaviour
 
     void SetFullScreen()
     {
-        FullScreenGO.SetActive(false);
-        WindowModeGO.SetActive(true);
-        Screen.fullScreen = true;     
+        //FullScreenGO.SetActive(false);
+       // WindowModeGO.SetActive(true);
+       Screen.fullScreen = !Screen.fullScreen;
+       UpdateButton();   
     }
-
-    void SetWindowMode() 
+    void UpdateButton()
     {
-        WindowModeGO.SetActive(false);
-        FullScreenGO.SetActive(true);    
-        Screen.fullScreen = false;       
+        bool isFullscreen = Screen.fullScreen;
+        
+        if (isFullscreen)
+        {
+            screen.text = "Fullscreen";
+        }
+        else
+        {
+            screen.text = "Windowed";
+        }
     }
+    
+    // void SetWindowMode() 
+    // {
+    //     WindowModeGO.SetActive(false);
+    //     FullScreenGO.SetActive(true);    
+    //     Screen.fullScreen = false;       
+    // }
 
     public void SetDifficulty(string Difficulty)
     {
