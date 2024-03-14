@@ -815,6 +815,14 @@ public class CustomerBase : Base
         player.movementToggle = true;
     }
 
+    public void GameOverLeave() 
+    {
+        if (agent.isStopped) agent.isStopped = false;
+        Walkto(exit);
+        SetCustomerState(CustomerState.Leaving);
+    }
+
+
     public override void OnDestroy()
     {
         Debug.Log("destroying customer");

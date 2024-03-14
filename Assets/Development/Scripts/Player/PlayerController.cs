@@ -147,6 +147,8 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     private void Start()
     {
+        movementToggle = false;
+
         if (IsOwner && SceneManager.GetActiveScene().name == Loader.Scene.T5M3_BUILD.ToString())
         {
             virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();

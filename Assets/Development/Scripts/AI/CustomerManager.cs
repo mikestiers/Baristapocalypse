@@ -177,6 +177,8 @@ public class CustomerManager : Singleton<CustomerManager>
     {
         yield return new WaitForSeconds(delayS);
 
+        if (GameManager.Instance.IsGamePlaying() == false) yield break;
+
         //while(gameObject is playin) set timer
         if (customerPrefab != null)
         {
@@ -382,6 +384,18 @@ public class CustomerManager : Singleton<CustomerManager>
 
         return result;
     }
+
+    public void BarClosing()
+    {
+        CustomerBase[] _customersInStore = FindObjectsOfType<CustomerBase>();
+
+        for (int i = 0; i < _customersInStore.Length; i++)
+        {
+            CustomerBase _customerInStore = _customersInStore[i];
+            _customerInStore.GameOverLeave();
+        }
+    }
+
 
     public int GetCustomerLefttoServe()
     {
