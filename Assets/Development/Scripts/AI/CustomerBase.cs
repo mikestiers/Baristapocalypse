@@ -77,7 +77,7 @@ public class CustomerBase : Base
     [Header("Customer Animations")]
     [SerializeField] private GameObject bodiesContainerObject;
     [HideInInspector] public bool isPickedUp = false;
-    private Animator customerAnimator;
+    [HideInInspector] public Animator customerAnimator;
     private readonly int Customer_IdleHash = Animator.StringToHash("Customer_Idle");
     private readonly int Customer_WalkHash = Animator.StringToHash("Customer_Walk");
     private readonly int Customer_StruggleHash = Animator.StringToHash("Customer_Struggle");
@@ -335,7 +335,7 @@ public class CustomerBase : Base
 
         if (atSit)
         {
-            customerAnimator.CrossFadeInFixedTime(Customer_SitDownHash, CrossFadeDuration);
+            //customerAnimator.CrossFadeInFixedTime(Customer_SitDownHash, CrossFadeDuration);
 
             if (orderTimer < 0)
             {
