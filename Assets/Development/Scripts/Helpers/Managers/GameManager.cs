@@ -297,11 +297,23 @@ public class GameManager : NetworkBehaviour
     {
         if (isGamePaused.Value) 
         {
+            PlayerController[] playerControllers = FindObjectsOfType<PlayerController>();
+            for (int i = 0; i < playerControllers.Length; i++)
+            {
+                playerControllers[i].movementToggle = false;
+            }
+
             Time.timeScale = 0f;
             OnMultiplayerGamePaused?.Invoke(this, EventArgs.Empty);
         }
         else
         {
+            PlayerController[] playerControllers = FindObjectsOfType<PlayerController>();
+            for (int i = 0; i < playerControllers.Length; i++)
+            {
+                playerControllers[i].movementToggle = true;
+            }
+
             Time.timeScale = 1f;
             OnMultiplayerGameUnpaused?.Invoke(this, EventArgs.Empty);
         }
