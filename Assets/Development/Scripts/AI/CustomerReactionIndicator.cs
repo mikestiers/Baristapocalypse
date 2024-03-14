@@ -43,8 +43,8 @@ public class CustomerReactionIndicator : MonoBehaviour
     }
     public void CustomerSad(bool b)
     {
-        hasDrink = b;
-        StartCoroutine(CustomercryingEffect(hasDrink));
+        b = hasDrink ;
+        StartCoroutine(CustomercryingEffect(b));
     }
 
     private IEnumerator CustomercryingEffect(bool hasDrink)
