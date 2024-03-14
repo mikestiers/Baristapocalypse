@@ -111,10 +111,12 @@ public class RadioStation : BaseStation
         eventIsOn = false;
         screenEffect.ToggleRadioEffect(eventIsOn);
         eventLight.SetActive(false);
+        fx.StartnEndFireworks();
         GameManager.Instance.isEventActive.Value = false;
         MainAudio.clip = Audios[AudioIndex];
         MainAudio.Play();
         Ui.gameObject.SetActive(false);
+        
     }
 
 
