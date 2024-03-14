@@ -26,10 +26,15 @@ public class PlayerColorChoice : MonoBehaviour
         RingMeshRenderer.material.SetColor(intersectionColorPropertyName, intersectionColor); 
     }
 
-public void SetPlayerColor(Color color)
-{
-    playerMaterial.color = color;
-    ringMaterial.color = color;
-    RingMeshRenderer.material.SetColor(intersectionColorPropertyName, color); 
-}
+    public void SetPlayerColor(Color color)
+    {
+        playerMaterial.color = color;
+    }
+
+    public void SetRingColor(Color color)
+    {
+        ringMaterial.color = color;
+        RingMeshRenderer.material.SetColor(intersectionColorPropertyName, color); 
+
+    }
 }

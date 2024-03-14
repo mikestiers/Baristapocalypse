@@ -87,6 +87,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
         TurnAllEmissiveOff();
         RaiseBrewingEmpty();
         Empty();
+
     }
 
     private void Awake()
@@ -472,6 +473,12 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
         currentPlayerController.movementToggle = true;
         currentPlayerController = null;
         SetIsMinigameEndedServerRpc(true);
+
+        //If player get to this point and loose reference to the coffee cup reset animation
+        if (!currentPlayerController.HasIngredient())
+        {
+            animationSwitch?.Invoke();
+        }
     }
 
     private void TurnAllEmissiveOff()

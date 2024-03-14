@@ -37,6 +37,7 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
 
         playerDataNetworkList = new NetworkList<PlayerData>();
         playerDataNetworkList.OnListChanged += PlayerDataNetworkList_OnListChanged;
+
     }
 
     private void Start()
@@ -250,6 +251,12 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     public Material GetPlayerColor(int colorId)
     {
         return playerColorMaterialList[colorId];
+    }
+
+    public Color GetPlayerEmissionColor(int colorId)
+    {
+        Color color = playerColorMaterialList[colorId].GetColor("_EmissionColor");
+        return color;
     }
 
     public void ChangePlayerColor(int colorId)
