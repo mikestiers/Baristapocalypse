@@ -3,9 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class GamePauseUI : MonoBehaviour
 {
+    public Button toGame;
+
     private void Awake()
     {
         // add buttons functionality
@@ -34,6 +39,7 @@ public class GamePauseUI : MonoBehaviour
     private void Show()
     {
         gameObject.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(Gamepad.current != null ? toGame.gameObject : null);
     }
 
     private void Hide()
