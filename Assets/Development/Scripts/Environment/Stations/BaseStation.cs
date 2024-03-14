@@ -9,6 +9,7 @@ public class BaseStation : NetworkBehaviour, IIngredientParent
     
     private Ingredient ingredient;
    [SerializeField] protected FullScreenEffectController screenEffect;
+   [SerializeField] protected PlayerColorChoice fx;
     public virtual void Interact(PlayerController player)
     {
         

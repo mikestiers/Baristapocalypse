@@ -45,6 +45,7 @@ public class PlayerColorChoice : MonoBehaviour
     private IEnumerator FireworksEffect()
     {
         fireworks.SetActive(true);
+        
         yield return new WaitForSeconds(FXTime);
         
         fireworks.SetActive(false);
