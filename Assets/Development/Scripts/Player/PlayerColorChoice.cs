@@ -6,6 +6,7 @@ public class PlayerColorChoice : MonoBehaviour
 {
     public SkinnedMeshRenderer baseMeshRenderer;
     public MeshRenderer RingMeshRenderer;
+    public GameObject playerVisualMaterial;
 
     public Material playerMaterial;
     public Material ringMaterial;
@@ -24,11 +25,12 @@ public class PlayerColorChoice : MonoBehaviour
         
         baseMeshRenderer.material = playerMaterial; 
         RingMeshRenderer.material.SetColor(intersectionColorPropertyName, intersectionColor); 
+        
     }
 
-    public void SetPlayerColor(Color color)
+    public void SetPlayerColor(Material material)
     {
-        playerMaterial.color = color;
+        baseMeshRenderer.material = material;
     }
 
     public void SetRingColor(Color color)
