@@ -302,6 +302,8 @@ public class CustomerBase : Base
     {
         if (agent.remainingDistance < distThreshold)
         {
+            isImpatient = false;
+            _reactionIndicator.CustomerSad(isImpatient);
             agent.isStopped = true;
             if(makingAMess == true)
             {
