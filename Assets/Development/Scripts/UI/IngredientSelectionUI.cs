@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
+using Unity.Netcode;
 
 public class IngredientSelectionUI : BaseStation
 {
@@ -40,7 +41,7 @@ public class IngredientSelectionUI : BaseStation
     {
         InputManager.OnInputChanged -= InputUpdated;
         WifiStation.OnWifiEventStarting -= RebuildButtonUI;
-        WifiStation.OnWifiEventStopping += RebuildButtonUI;
+        WifiStation.OnWifiEventStopping -= RebuildButtonUI;
     }
 
     private void InputUpdated(InputImagesSO inputImagesSO)
@@ -148,8 +149,10 @@ public class IngredientSelectionUI : BaseStation
         }
     }
 
-    private void RebuildButtonUI()
+    private void RebuildButtonUI(bool isWifiEvent = false)
     {
+        Debug.Log("rebuilding ui");
+        Debug.Log("Game manager wifi value: " + isWifiEvent);
         for (int i = 0; i < ingredientButtons.Length; i++)
         {
             if (i >= ingredientList.ingredientSOList.Count)
@@ -158,9 +161,9 @@ public class IngredientSelectionUI : BaseStation
             }
             else
             {
-                ingredientButtons[i].GetComponent<Image>().sprite = !GameManager.Instance.isWifiEvent.Value ? ingredientList.ingredientSOList[i].icon : wifiEvent;
+                ingredientButtons[i].GetComponent<Image>().sprite = !isWifiEvent ? ingredientList.ingredientSOList[i].icon : wifiEvent;
                 ingredientButtons[i].name = ingredientList.ingredientSOList[i].name;
-                ingredientButtons[i].interactable = !GameManager.Instance.isWifiEvent.Value;
+                ingredientButtons[i].interactable = !isWifiEvent;
             }
         }
     }

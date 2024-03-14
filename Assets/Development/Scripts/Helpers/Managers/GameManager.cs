@@ -22,7 +22,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private float maxRandomTime = 2f;
     [HideInInspector] public NetworkVariable<bool> isEventActive = new NetworkVariable<bool>(false);
     [HideInInspector] public NetworkVariable<bool> isGravityStorm = new NetworkVariable<bool>(false);
-    [HideInInspector] public NetworkVariable<bool> isWifiEvent = new NetworkVariable<bool>(false);
+    public NetworkVariable<bool> isWifiEvent = new NetworkVariable<bool>(false);
     [HideInInspector] public RandomEventBase currentRandomEvent;
     [HideInInspector] public bool isEvaluationOn = false;
     private float evaluationTimer = 9.0f;
@@ -510,23 +510,7 @@ public class GameManager : NetworkBehaviour
     }
     private void HandleRandomEvent()
     {
-        ActivateRandomEventClientRpc();
-    }
-
-    private void TriggerRandomEvent()
-    {
-        OnRandomEventTriggered?.Invoke();
-    }
-
-    [ClientRpc]
-    private void ActivateRandomEventClientRpc()
-    {
-        ActivateRandomEvent();
-    }
-
-    // Activate random Event after x amount of random time, will add the time variable after testing
-    private void ActivateRandomEvent()
-    {
+        if (!IsServer) return;
         if (!isEventActive.Value && !isEvaluationOn)
         {
             Debug.LogWarning("Triggering event");
@@ -537,6 +521,11 @@ public class GameManager : NetworkBehaviour
                 AISupervisor.Instance.SupervisorMessageToDisplay(currentRandomEvent.GetRandomEvent().supervisorMessageOnEventTriggered);
             }
         }
+    }
+
+    private void TriggerRandomEvent()
+    {
+        OnRandomEventTriggered?.Invoke();
     }
 
     // Get a random Event from the Random Event List
@@ -559,6 +548,7 @@ public class GameManager : NetworkBehaviour
 
     public void ActivateEvent(RandomEventBase randomEvent)
     {
+        if (!IsServer) return;
         isEventActive.Value = true;
         if (randomEvent.GetComponent<GravityStorm>()) 
         {
@@ -573,8 +563,8 @@ public class GameManager : NetworkBehaviour
         }
         else if (randomEvent.GetComponent<WifiStation>()) 
         {
-            randomEvent.gameObject.GetComponent<WifiStation>().WifiEventIsStartingServerRpc();
             isWifiEvent.Value = true;
+            randomEvent.gameObject.GetComponent<WifiStation>().WifiEventIsStarting();
         }
         else if (randomEvent.GetComponent<RadioStation>()) 
         {
@@ -596,7 +586,7 @@ public class GameManager : NetworkBehaviour
         }
         else if (randomEvent.GetComponent<WifiStation>()) 
         {
-            randomEvent.gameObject.GetComponent<WifiStation>().WifiEventIsDoneServerRpc();
+            randomEvent.gameObject.GetComponent<WifiStation>().WifiEventIsDone();
             isWifiEvent.Value = false;
         }
         else if (randomEvent.GetComponent<RadioStation>()) 
