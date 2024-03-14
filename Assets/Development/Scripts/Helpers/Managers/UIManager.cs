@@ -150,11 +150,6 @@ public class UIManager : Singleton<UIManager>
         pauseMenu.SetActive(false);
         PauseMenuMultiplayer.SetActive(false);
         GameManager.Instance.isLocalGamePaused = false;
-        PlayerController[] playerControllers = FindObjectsOfType<PlayerController>();
-        for (int i = 0; i < playerControllers.Length; i++)
-        {
-            playerControllers[i].movementToggle = true;
-        }
         Time.timeScale = 1f;
     }
 
