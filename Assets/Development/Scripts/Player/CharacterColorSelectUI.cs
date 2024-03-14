@@ -20,7 +20,7 @@ public class CharacterColorSelectUI : MonoBehaviour
     private void Start()
     {
         BaristapocalypseMultiplayer.Instance.OnPlayerDataNetworkListChanged += BaristapocalypseMultiplayer_OnPlayerDataNetworkListChanged;  
-        image.color = BaristapocalypseMultiplayer.Instance.GetPlayerColor(colorId).color;
+        image.color = BaristapocalypseMultiplayer.Instance.GetPlayerEmissionColor(colorId);
         UpdataIsSelected();
     }
 

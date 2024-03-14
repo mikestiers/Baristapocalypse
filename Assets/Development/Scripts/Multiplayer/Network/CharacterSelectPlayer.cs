@@ -37,6 +37,7 @@ public class CharacterSelectPlayer : MonoBehaviour
             readyText.SetActive(CharacterSelectReady.Instance.IsPlayerReady(playerData.clientId));
 
             playerVisual.SetPlayerColor(BaristapocalypseMultiplayer.Instance.GetPlayerColor(playerData.colorId).color);
+            playerVisual.SetRingColor(BaristapocalypseMultiplayer.Instance.GetPlayerEmissionColor((playerData.colorId)));
         }
         else
         {
