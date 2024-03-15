@@ -11052,6 +11052,37 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 5, y: 5, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &1069979586
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1069979587}
+  m_Layer: 0
+  m_Name: ScoochPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1069979587
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1069979586}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1327322387}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1073394027
 GameObject:
   m_ObjectHideFlags: 0
@@ -11191,6 +11222,7 @@ MonoBehaviour:
   rPSpeed: 10
   rPArrivalThreshold: 0.1
   popOutReviewTime: 3
+  gameOverBool: 0
 --- !u!114 &1117884789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12444,6 +12476,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   emissiveMaterial: {fileID: 2100000, guid: d27e1fe8a677ae94c8b2c248ae271972, type: 2}
   emissionIntensity: 1
+--- !u!4 &1327322387 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6990035506201583680, guid: 405466483f3e6f541b499eaa95bca32e, type: 3}
+  m_PrefabInstance: {fileID: 2042069261}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1328153428
 GameObject:
   m_ObjectHideFlags: 0
@@ -17178,6 +17215,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 466725766}
     m_Modifications:
+    - target: {fileID: 242087691006740298, guid: 405466483f3e6f541b499eaa95bca32e, type: 3}
+      propertyPath: scoochPoint
+      value: 
+      objectReference: {fileID: 1069979586}
+    - target: {fileID: 354075425429509556, guid: 405466483f3e6f541b499eaa95bca32e, type: 3}
+      propertyPath: scoochPoint
+      value: 
+      objectReference: {fileID: 1069979586}
+    - target: {fileID: 6985445515666563207, guid: 405466483f3e6f541b499eaa95bca32e, type: 3}
+      propertyPath: scoochPoint
+      value: 
+      objectReference: {fileID: 1069979586}
     - target: {fileID: 7101438248866822538, guid: 405466483f3e6f541b499eaa95bca32e, type: 3}
       propertyPath: m_Name
       value: Map01

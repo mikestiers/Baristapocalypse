@@ -78,15 +78,18 @@ public class CustomerBase : Base
     [SerializeField] private GameObject bodiesContainerObject;
     [HideInInspector] public bool isPickedUp = false;
     [HideInInspector] public Animator customerAnimator;
+    [HideInInspector] public NetworkVariable<bool> isSittingAtBooth = new NetworkVariable<bool>(false);
     private readonly int Customer_IdleHash = Animator.StringToHash("Customer_Idle");
     private readonly int Customer_WalkHash = Animator.StringToHash("Customer_Walk");
     private readonly int Customer_StruggleHash = Animator.StringToHash("Customer_Struggle");
     private readonly int Customer_SitDownHash = Animator.StringToHash("Customer_SitDown");
+    private readonly int Customer_ScoochHash = Animator.StringToHash("Customer_Scooch");
     private List<int> customerBadDrinkChairHashList = new List<int>();
     private List<int> customerGoodDrinkChairHashList = new List<int>();
     private List<int> customerImpatientHashList = new List<int>();
     private bool isImpatient = false;
     private CustomerRandomizer customerRandomizer;
+
 
     [Header("Spills")]
     private bool hasDrink = false;
@@ -335,7 +338,14 @@ public class CustomerBase : Base
 
         if (atSit)
         {
-            //customerAnimator.CrossFadeInFixedTime(Customer_SitDownHash, CrossFadeDuration);
+            if (isSittingAtBooth.Value == true) 
+            {
+                customerAnimator.CrossFadeInFixedTime(Customer_ScoochHash, CrossFadeDuration);
+            }
+            else
+            {
+                customerAnimator.CrossFadeInFixedTime(Customer_SitDownHash, CrossFadeDuration);
+            }
 
             if (orderTimer < 0)
             {
