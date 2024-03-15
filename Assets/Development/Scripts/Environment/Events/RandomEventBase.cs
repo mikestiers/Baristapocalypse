@@ -22,7 +22,6 @@ public class RandomEventBase : NetworkBehaviour
     public void SetEventBool(bool trueOrFalse)
     {
         isEvent.Value = trueOrFalse;
-        isEvent = new NetworkVariable<bool>(trueOrFalse);
     }
 
     public void ActivateDeactivateEvent()
