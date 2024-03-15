@@ -71,6 +71,11 @@ public class FullScreenEffectController : MonoBehaviour
         radioMaterial.SetVector(radioSpeed,currentRadioSpeed);
     }
 
+    private void OnDestroy()
+    {
+        DisableFullScreenEffects();
+    }
+
     private void DisableFullScreenEffects()
     {
         fullScreenGravityEffect.SetActive(false);
