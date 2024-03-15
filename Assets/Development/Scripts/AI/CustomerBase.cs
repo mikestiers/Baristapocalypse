@@ -69,7 +69,7 @@ public class CustomerBase : Base
     private readonly int BP_Brista_PutDown_LowHash = Animator.StringToHash("BP_Brista_PutDown_Low");
     private readonly int MovementHash = Animator.StringToHash("Movement");
     private const float CrossFadeDuration = 0.1f;
-    private float animationWaitTime = 1.2f;
+    private float animationWaitTime = 0.7f;
     private bool isGivingOrderToCustomer = false;
     public GameObject holdPoint;
 
