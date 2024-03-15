@@ -10,6 +10,7 @@ using System;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 using Unity.Netcode;
+using UnityEngine.InputSystem;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -168,11 +169,13 @@ public class UIManager : Singleton<UIManager>
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;
     }
+
     private void ShowPause()
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         tutorialMenu.SetActive(false);
         pauseMenu.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(Gamepad.current != null ? toGame.gameObject : null);
     }
 
     private void ShowTutorial()
@@ -180,6 +183,7 @@ public class UIManager : Singleton<UIManager>
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         pauseMenu.SetActive(false);
         tutorialMenu.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(Gamepad.current != null ? closeTutorial.gameObject : null);
     }
 
     private void ShowMainMenu()
@@ -211,6 +215,7 @@ public class UIManager : Singleton<UIManager>
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.menuClicks);
         mainMenu.SetActive(false);
         audioSettings.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(Gamepad.current != null ? closeAudioSettings.gameObject : null);
     }
 
     private void CloseAudioSettings()
