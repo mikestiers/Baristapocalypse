@@ -31,13 +31,16 @@ public class PlayerColorChoice : MonoBehaviour
 
     }
 
-    public void SetPlayerColor(Color color)
+    public void SetPlayerColor(Material material)
     {
-    // playerMaterial.color = color;
-    ringMaterial.color = color;
-    RingMeshRenderer.material.SetColor(intersectionColorPropertyName, color); 
+        baseMeshRenderer.material = material;
     }
+    public void SetRingColor(Color color)
+    {
+        ringMaterial.color = color;
+        RingMeshRenderer.material.SetColor(intersectionColorPropertyName, color); 
 
+    }
     public void StartnEndFireworks()
     {
         StartCoroutine(FireworksEffect());
