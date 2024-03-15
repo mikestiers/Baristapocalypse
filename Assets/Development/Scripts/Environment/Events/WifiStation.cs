@@ -8,60 +8,60 @@ public class WifiStation : RandomEventBase
     public Color Color = Color.white;
     public Color Color2 = Color.black;
     [SerializeField] private GameObject eventLight;
-    [HideInInspector] NetworkVariable<bool> iseventover = new NetworkVariable<bool>(false);
-    public delegate void WifiEventHandler();
+    [SerializeField] private NetworkVariable<bool> iseventover = new NetworkVariable<bool>(false);
+    public delegate void WifiEventHandler(bool isWifiOn);
     public static event WifiEventHandler OnWifiEventStarting;
     public static event WifiEventHandler OnWifiEventStopping;
 
-    
-    [ServerRpc(RequireOwnership = false)]
-    public void WifiEventIsDoneServerRpc()
+    public void WifiEventIsDone()
     {
-        WifiEventIsDoneClientRpc();
+        WifiEventIsDoneServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void WifiEventIsDoneServerRpc()
+    {
+        GameManager.Instance.isEventActive.Value = false;
+        GameManager.Instance.isWifiEvent.Value = false;
+        iseventover.Value = true;
+        WifiEventIsDoneClientRpc();  
     }
 
     [ClientRpc]
     private void WifiEventIsDoneClientRpc()
     {
-        WifiEventIsDone();
-    }
-
-    private void WifiEventIsDone()
-    {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.wifiOn);
-        GameManager.Instance.isEventActive.Value = false;
-        GameManager.Instance.isWifiEvent.Value = false;
-        iseventover.Value = true;
         screenEffect.ToggleWifiEffect(iseventover.Value);
         eventLight.SetActive(false);
         Debug.Log("Wifi event is done");
         ChangeColorBasedOnEvent();
-        OnWifiEventStopping?.Invoke();
+        OnWifiEventStopping?.Invoke(false);
+    }
+
+    public void WifiEventIsStarting()
+    {
+        WifiEventIsStartingServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void WifiEventIsStartingServerRpc()
+    private void WifiEventIsStartingServerRpc()
     {
+        iseventover.Value = false;
         WifiEventIsStartingClientRpc();
     }
 
     [ClientRpc]
     private void WifiEventIsStartingClientRpc()
     {
-        WifiEventIsStarting();
-    }
-
-    private void WifiEventIsStarting() 
-    {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.wifiOff);
-        iseventover.Value = false;
         screenEffect.ToggleWifiEffect(iseventover.Value);
-        GameManager.Instance.isWifiEvent.Value = true;
         eventLight.SetActive(true);
         Debug.Log("Wifi event is Starting");
         ChangeColorBasedOnEvent();
-        OnWifiEventStarting?.Invoke();
+        OnWifiEventStarting?.Invoke(true);
     }
+
+    
 
     private void ChangeColorBasedOnEvent()
     {
