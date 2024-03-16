@@ -33,6 +33,7 @@ public class WifiStation : RandomEventBase
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.wifiOn);
         screenEffect.ToggleWifiEffect(iseventover.Value);
         eventLight.SetActive(false);
+        playerFX.StartnEndFireworks();
         Debug.Log("Wifi event is done");
         ChangeColorBasedOnEvent();
         OnWifiEventStopping?.Invoke(false);

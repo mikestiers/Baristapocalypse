@@ -18,6 +18,10 @@ public class RadioStation : BaseStation
     bool eventIsOn = false;
     private int AudioIndex = 0;
 
+    public void start()
+    {
+        fx = FindObjectOfType<PlayerColorChoice>();
+    }
     public override void Interact(PlayerController player)
     {
         if (eventIsOn == false) ChangeSongDownServerRpc();
