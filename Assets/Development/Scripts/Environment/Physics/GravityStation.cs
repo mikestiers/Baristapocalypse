@@ -42,50 +42,52 @@ public class GravityStation : NetworkBehaviour
 
     private void DeactivateStormEvent()
     {
+        if(GameManager.Instance.isEventActive.Value && GameManager.Instance.isGravityStorm.Value) {
+            GameManager.Instance.isEventActive.Value = false;
+            GameManager.Instance.isGravityStorm.Value = false;
 
-        GameManager.Instance.isEventActive.Value = false;
-        GameManager.Instance.isGravityStorm.Value = false;
-
-        RandomEventBase randomEvent = GameManager.Instance.currentRandomEvent;
-        if (randomEvent == null) return;
-        GravityStorm gravityStorm = randomEvent.gameObject.GetComponent<GravityStorm>();
-        if (gravityStorm != null)
-        {
-            GameManager.Instance.randomEventEffects.TurnOnOffEventEffectServerRpc(false);
-            // Populate objectsToMoveList before conversion
-            gravityStorm.objectsToMoveList.Clear(); // Clear the list before populating
-            foreach (var obj in gravityStorm.objectsToMove)
+            RandomEventBase randomEvent = GameManager.Instance.currentRandomEvent;
+            if (randomEvent == null) return;
+            GravityStorm gravityStorm = randomEvent.gameObject.GetComponent<GravityStorm>();
+            if (gravityStorm != null)
             {
-                gravityStorm.objectsToMoveList.Add(obj);
-            }
-
-            gravityStorm.ConvertListToArray();
-             
-            // Stop physics simulation for each object
-            foreach (var obj in gravityStorm.objectsToMove)
-            {
-                Rigidbody objRigidbody = obj.GetComponent<Rigidbody>();
-                Collider objCollider = obj.GetComponent<Collider>();
-                if (objRigidbody != null)
+                GameManager.Instance.randomEventEffects.TurnOnOffEventEffectServerRpc(false);
+                // Populate objectsToMoveList before conversion
+                gravityStorm.objectsToMoveList.Clear(); // Clear the list before populating
+                foreach (var obj in gravityStorm.objectsToMove)
                 {
-                    objCollider.isTrigger = false;
-                    objRigidbody.useGravity = true;
-                    //objRigidbody.Sleep();
+                    gravityStorm.objectsToMoveList.Add(obj);
+                }
+
+                gravityStorm.ConvertListToArray();
+
+                // Stop physics simulation for each object
+                foreach (var obj in gravityStorm.objectsToMove)
+                {
+                    Rigidbody objRigidbody = obj.GetComponent<Rigidbody>();
+                    Collider objCollider = obj.GetComponent<Collider>();
+                    if (objRigidbody != null)
+                    {
+                        objCollider.isTrigger = false;
+                        objRigidbody.useGravity = true;
+                        //objRigidbody.Sleep();
+                    }
                 }
             }
+            if (!randomEvent.GetNetworkObject().IsSpawned)
+            {
+                randomEvent.GetNetworkObject().Spawn();
+            }
+            Debug.LogWarning("DeactivateRandomEvent " + randomEvent.name);
+            gravityButton.GetComponent<MeshRenderer>().material = originalMaterial;
+            randomEvent.SetEventBool(false);
+            randomEvent.ActivateDeactivateEvent();
+            // foreach (GameObject bootParticle in PlayerController.Instance.bootsParticles)
+            // {
+            //     bootParticle.SetActive(GameManager.Instance.isEventActive);
+            // }
         }
-        if (!randomEvent.GetNetworkObject().IsSpawned)
-        {
-            randomEvent.GetNetworkObject().Spawn();
-        }
-        Debug.LogWarning("DeactivateRandomEvent " + randomEvent.name);
-        gravityButton.GetComponent<MeshRenderer>().material = originalMaterial;
-        randomEvent.SetEventBool(false);
-        randomEvent.ActivateDeactivateEvent();
-        // foreach (GameObject bootParticle in PlayerController.Instance.bootsParticles)
-        // {
-        //     bootParticle.SetActive(GameManager.Instance.isEventActive);
-        // }
+
     }
 
     
