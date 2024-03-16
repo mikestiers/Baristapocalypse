@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -9,6 +10,15 @@ public class RandomEventBase : NetworkBehaviour
     //private bool isEvent;
     private NetworkVariable<bool> isEvent = new NetworkVariable<bool>(false);
     [SerializeField] protected FullScreenEffectController screenEffect;
+    protected PlayerColorChoice playerFX;
+    
+
+    private void Start()
+    {
+        playerFX = FindObjectOfType<PlayerColorChoice>();
+        screenEffect = FindObjectOfType<FullScreenEffectController>();
+    }
+
     public RandomEventSO GetRandomEvent()
     {
         return RandomEventSO;
