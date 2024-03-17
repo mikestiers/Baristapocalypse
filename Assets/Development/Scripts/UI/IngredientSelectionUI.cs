@@ -8,6 +8,7 @@ using System.Linq;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using Unity.Netcode;
+using UnityEngine.Playables;
 
 public class IngredientSelectionUI : BaseStation
 {
@@ -21,6 +22,8 @@ public class IngredientSelectionUI : BaseStation
     [SerializeField] private Button[] ingredientButtons;
     [SerializeField] private GameObject[] selectedBGImages;
     [SerializeField] private GameObject interactImage;
+    [SerializeField] private PlayableDirector playableDirector;
+    [SerializeField] private List<PlayableAsset> ingredientSelectionAnimations;
     public IngredientStationType ingredientStationType;
     public IngredientListSO ingredientList;
     private int ingredientListIndex;
@@ -204,7 +207,8 @@ public class IngredientSelectionUI : BaseStation
         {
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.bioMatterMachine);
         }
-        //StartCoroutine(CloseMenu());
+
+        playableDirector.Play(ingredientSelectionAnimations[UnityEngine.Random.Range(0, ingredientSelectionAnimations.Count)]);
     }
 
     private void OnTriggerEnter(Collider other)
