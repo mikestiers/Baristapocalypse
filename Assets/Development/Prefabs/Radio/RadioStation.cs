@@ -45,10 +45,12 @@ public class RadioStation : BaseStation
     private void ChangeSongDown()
     {
         {
-          AudioIndex++;
-          AudioIndex %= Audios.Length; // should loop
-          MainAudio.clip = Audios[AudioIndex];
-          MainAudio.Play();
+            AudioIndex++;
+            AudioIndex %= Audios.Length; // should loop
+            MainAudio.clip = Audios[AudioIndex];
+            float randomTime = Random.Range(0f, Audios[AudioIndex].length);
+            MainAudio.time = randomTime;
+            MainAudio.Play();
         }
     }
 
@@ -68,10 +70,12 @@ public class RadioStation : BaseStation
     {
    
         {
-          AudioIndex--;
-          AudioIndex = (AudioIndex + Audios.Length) % Audios.Length; // should loop
-          MainAudio.clip = Audios[AudioIndex];
-          MainAudio.Play();
+            AudioIndex--;
+            AudioIndex = (AudioIndex + Audios.Length) % Audios.Length; // should loop
+            MainAudio.clip = Audios[AudioIndex];
+            float randomTime = Random.Range(0f, Audios[AudioIndex].length);
+            MainAudio.time = randomTime;
+            MainAudio.Play();
         }
         
     }
@@ -155,6 +159,7 @@ public class RadioStation : BaseStation
         slider.wholeNumbers = true;
         slider.value = 0f; // Start at 0
 
+        ChangeSongUpServerRpc();
     }
 
   
