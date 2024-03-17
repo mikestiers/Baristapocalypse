@@ -10,10 +10,12 @@ using UnityEngine.UI;
 public class CustomerRandomizer : NetworkBehaviour
 {
     [SerializeField] public CustomerRaceSO[] Races;
-    //public List<GameObject> heads = new List<GameObject>();
+    public List<GameObject> heads = new List<GameObject>();
     public List<GameObject> bodies = new List<GameObject>();
     public List<GameObject> cupHoldPointList = new List<GameObject>();
     [HideInInspector] public GameObject currentCustomerHoldPoint;
+    [HideInInspector] public GameObject currentCustomerHead;
+    public GameObject currentVFXHoldPoint;
     public GridLayoutGroup cheatIconsLayoutGroup;
 
     //public List<IngredientSO> temperature = new List<IngredientSO>();
@@ -86,6 +88,9 @@ public class CustomerRandomizer : NetworkBehaviour
         int bodyIndex = Random.Range(0, bodies.Count);
         currentCustomerHoldPoint = cupHoldPointList[bodyIndex];
 
+        currentCustomerHead = heads[bodyIndex];
+        currentVFXHoldPoint.transform.SetParent(currentCustomerHead.transform);
+        
         StartClientRpc(bodyIndex, accumulatedSpiciness, accumulatedStrength, accumulatedSweetness, accumulatedTemperature);
     }
 
