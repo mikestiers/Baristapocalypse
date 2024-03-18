@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using TMPro;
 using Unity.Netcode;
+using Unity.Services.Lobbies.Models;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class RadioStation : BaseStation
@@ -126,6 +128,8 @@ public class RadioStation : BaseStation
     [SerializeField] private float maxRotationAngle = 229.1f; // Maximum rotation angle
     [SerializeField] private GameObject Ui;
 
+    private PlayerController player;
+
     private float currentGoal;
     private int currentRandomIndex;
 
@@ -204,4 +208,39 @@ public class RadioStation : BaseStation
             }
         }
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Player")
+        {
+            player = other.GetComponent<PlayerController>();
+
+            //Display UI ingredient menu
+            if (player.IsLocalPlayer)
+            {
+                if(eventIsOn == true) 
+                {
+                    GetComponentInParent<CameraStation1>().SwitchCameraOn(); 
+                }
+            }
+        }
+    }
+                
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Player" )
+        {
+            player = other.GetComponent<PlayerController>();
+
+            if (player.IsLocalPlayer )
+            {
+               if (eventIsOn == false) 
+                {
+                    GetComponentInParent<CameraStation1>().SwitchCameraOff();
+                }
+            }
+        }
+    }
 }
+                
+              
