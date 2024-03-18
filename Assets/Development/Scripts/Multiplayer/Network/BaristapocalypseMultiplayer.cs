@@ -352,9 +352,6 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
         PlayerController messObjectParent = messObjectParentNetworkObject.GetComponent<PlayerController>();
         
         spillNetworkObject.transform.position = messObjectParent.GetSpillTransform().position;
-        
-
-        // PlayerCreateSpillClientRpc(spillNetworkObjectReference);
     }
     
     
