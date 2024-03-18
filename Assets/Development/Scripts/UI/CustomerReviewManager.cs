@@ -208,6 +208,7 @@ public class CustomerReviewManager : NetworkBehaviour
         // change stars color based on review (5 stars max)
         for (int i = 0; i < starPrefabs.Count; i++)
         {
+            starPrefabs[i].GetComponent<Image>().color = Color.white;
             if (i >= reviewScore)
             {
                 starPrefabs[i].GetComponent<Image>().color = Color.black;
