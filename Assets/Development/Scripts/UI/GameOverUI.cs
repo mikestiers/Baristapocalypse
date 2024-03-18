@@ -6,8 +6,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
+using Unity.Netcode;
 
-public class GameOverUI : MonoBehaviour
+public class GameOverUI : NetworkBehaviour
 {
     [SerializeField] private List<GameObject> containers;
     [SerializeField] private List<Image> starImages;
@@ -47,28 +48,48 @@ public class GameOverUI : MonoBehaviour
 
     private void ComputeEndGameStats()
     {
+        DisplayEndGameStatsServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DisplayEndGameStatsServerRpc()
+    {
         int currentRatings = Mathf.FloorToInt(GameManager.Instance.moneySystem.GetAverageReviewrating());
-        bool iSWin = (GameManager.Instance.moneySystem.GetCurrentMoney() >= GameValueHolder.Instance.difficultySettings.GetMoneyToPass());
+        bool isWin = (GameManager.Instance.moneySystem.GetCurrentMoney() >= GameValueHolder.Instance.difficultySettings.GetMoneyToPass());
 
-        customersServedValue.text = CustomerManager.Instance.GetCustomerServed().ToString();
-        customersLeaveValue.text = CustomerManager.Instance.GetCustomerLeave().ToString();
-        tipsAcquiredValue.text = (("$") + GameManager.Instance.moneySystem.GetCurrentMoney().ToString());
-        tipsNeededValue.text = (("$") + GameValueHolder.Instance.difficultySettings.GetMoneyToPass().ToString());
+        DisplayEndGameStatsClientRpc(currentRatings, isWin, CustomerManager.Instance.GetCustomerServed(), CustomerManager.Instance.GetCustomerLeave(), GameManager.Instance.moneySystem.GetCurrentMoney(), GameValueHolder.Instance.difficultySettings.GetMoneyToPass());
 
-        string difference = iSWin ? "+" : " ";
+        
+    }
 
-        tipsDifferenceValue.text = difference + (GameManager.Instance.moneySystem.GetCurrentMoney() - GameValueHolder.Instance.difficultySettings.GetMoneyToPass()).ToString();
-        tipsDifferenceValue.color = iSWin ? Color.green : Color.red;
+    [ClientRpc]
+    private void DisplayEndGameStatsClientRpc(int currentRatings, bool isWin, int customersServed, int customersLeaved, int tipsAcquired, int tipsNeeded)
+    {
+        customersServedValue.text = customersServed.ToString();
+        customersLeaveValue.text = customersLeaved.ToString();
+        tipsAcquiredValue.text = (("$") + tipsAcquired.ToString());
+        tipsNeededValue.text = (("$") + tipsNeeded.ToString());
 
-        TipsDiffernceText.text = iSWin ? "Extra Tips" : "Tips Short";
+        string difference = isWin ? "+" : " ";
 
-        winLoseText.text = iSWin ? "Coffee Shop Escape!" : "Vacation Brewsponed!";
+        tipsDifferenceValue.text = difference + (tipsAcquired - tipsNeeded).ToString();
+        tipsDifferenceValue.color = isWin ? Color.green : Color.red;
+
+        TipsDiffernceText.text = isWin ? "Extra Tips" : "Tips Short";
+
+        winLoseText.text = isWin ? "Coffee Shop Escape!" : "Vacation Brewsponed!";
 
         UpdateStarRating(currentRatings);
         StartCoroutine(ShowElements());
     }
 
     private void Show()
+    {
+        ShowClientRpc();   
+    }
+
+    [ClientRpc]
+    private void ShowClientRpc()
     {
         gameObject.SetActive(true);
     }

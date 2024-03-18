@@ -52,6 +52,10 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
     [SerializeField] private EmissiveControl coffeeBeanFloorPlate;
     [SerializeField] private EmissiveControl[] sweetenerTubing;
     [SerializeField] private EmissiveControl sweetenerFloorPlate;
+    [SerializeField] private BuldgeControl bioBuldge;
+    [SerializeField] private BuldgeControl liquidBuldge;
+    [SerializeField] private BuldgeControl beanBuldge;
+    [SerializeField] private BuldgeControl sweetenerBuldge;
 
     public delegate void OnBrewingDoneHandler(object sender, EventArgs e);
     public event OnBrewingDoneHandler OnBrewingDone;
@@ -516,6 +520,10 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
         liquidFloorPlate.SetEmissive(false);
         coffeeBeanFloorPlate.SetEmissive(false);
         sweetenerFloorPlate.SetEmissive(false);
+        bioBuldge.SetBuldge(false);
+        liquidBuldge.SetBuldge(false);
+        beanBuldge.SetBuldge(false);
+        sweetenerBuldge.SetBuldge(false);
     }
 
     private void TurnOnEmissive(IngredientSO ingredientSO)
@@ -535,6 +543,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
                     sweetenerTubing[i].SetEmissive(true);
                 }
                 sweetenerFloorPlate.SetEmissive(true);
+                sweetenerBuldge.SetBuldge(true);
                 break;
             case "Milk":
                 for (int i = 0; i < liquidTubing.Length; i++)
@@ -542,6 +551,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
                     liquidTubing[i].SetEmissive(true);
                 }
                 liquidFloorPlate.SetEmissive(true);
+                liquidBuldge.SetBuldge(true);
                 break;
             case "BioMatter":
                 for (int i = 0; i < bioMatterTubing.Length; i++)
@@ -549,6 +559,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
                     bioMatterTubing[i].SetEmissive(true);
                 }
                 bioMatterFloorPlate.SetEmissive(true);
+                bioBuldge.SetBuldge(true);
                 break;
             case "CoffeeGrind":
                 for (int i = 0; i < coffeeBeanTubing.Length; i++)
@@ -556,6 +567,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
                     coffeeBeanTubing[i].SetEmissive(true);
                 }
                 coffeeBeanFloorPlate.SetEmissive(true);
+                beanBuldge.SetBuldge(true);
                 break;
             default:
                 Debug.LogWarning("Emissive tag wrong");
