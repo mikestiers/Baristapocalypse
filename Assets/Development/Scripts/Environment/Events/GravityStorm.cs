@@ -18,10 +18,11 @@ public class GravityStorm : RandomEventBase
     private Collider eventCollider;
     private Vector3[] objectVelocities;
     private Rigidbody[] objectRigidbodies;
-
+   
     private void Awake()
     {
         eventCollider = GetComponent<Collider>();
+
         gravityButton.GetComponent<MeshRenderer>().material = gravityButtonMaterial;
         //isEffectOn.Value = true;
         //TurnOnOffEventEffect(true);
