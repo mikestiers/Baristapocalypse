@@ -22,7 +22,7 @@ public class CustomerBase : Base
     public bool inLine;
     public bool atSit = false; //for tables customer rotation orientation 
     public bool leaving = false;
-    public bool makingAMess = false;
+    public NetworkVariable<bool> makingAMess = new NetworkVariable<bool>(false);
     public bool moving;
     public float distThreshold;
     public GameObject[] Line;
@@ -46,7 +46,7 @@ public class CustomerBase : Base
     public float? lineTime = null;
     public float customerLeaveTime;
     public float maxInLineTime;
-    public float deadTimerSeconds = 5.0f;
+    public float deadTimerSeconds = 2.0f;
     private Coroutine randomPointCoroutine;
 
     [Header("Visuals")]
@@ -76,7 +76,7 @@ public class CustomerBase : Base
     // Customer Animations
     [Header("Customer Animations")]
     [SerializeField] private GameObject bodiesContainerObject;
-    [HideInInspector] public bool isPickedUp = false;
+    [HideInInspector] public NetworkVariable<bool> isPickedUp = new NetworkVariable<bool>(false);
     private Animator customerAnimator;
     private readonly int Customer_IdleHash = Animator.StringToHash("Customer_Idle");
     private readonly int Customer_WalkHash = Animator.StringToHash("Customer_Walk");
@@ -231,7 +231,7 @@ public class CustomerBase : Base
         
         //customerAnimator.CrossFadeInFixedTime(Customer1_IdleHash, CrossFadeDuration); // Customer1 idle animation
         // To be implmented or removed
-        if (makingAMess == true) SetCustomerState(CustomerState.Loitering);
+        if (makingAMess.Value == true) SetCustomerState(CustomerState.Loitering);
 
         if (inLine == true && lineTime == null)
         {
@@ -298,7 +298,7 @@ public class CustomerBase : Base
         if (agent.remainingDistance < distThreshold)
         {
             agent.isStopped = true;
-            if(makingAMess == true)
+            if(makingAMess.Value == true)
             {
                 customerAnimator.CrossFadeInFixedTime(Customer_IdleHash, CrossFadeDuration);
                 SetCustomerState(CustomerState.Waiting);
@@ -313,7 +313,7 @@ public class CustomerBase : Base
                 customerAnimator.CrossFadeInFixedTime(Customer_IdleHash, CrossFadeDuration); // Customer1 idle animation
                 SetCustomerState(CustomerState.Waiting);
             }
-            if (!inLine && makingAMess == false)
+            if (!inLine && makingAMess.Value == false)
             {
                 SetCustomerState(CustomerState.Insit);
             }
@@ -383,6 +383,8 @@ public class CustomerBase : Base
 
         yield return new WaitForSeconds(delay);
 
+        if(GetCustomerState() == CustomerState.PickedUp) yield break;
+
         float _radius = 5f;
 
         Vector3 randomPoint = Random.insideUnitSphere * _radius;
@@ -419,17 +421,11 @@ public class CustomerBase : Base
 
     private void UpdatePickedUp()
     {
-        if (isPickedUp == true) 
+        if (isPickedUp.Value == true) 
         {
-            StopRandomPointCoroutineImmediately();
-            customerAnimator.CrossFadeInFixedTime(Customer_StruggleHash, CrossFadeDuration);
-            isPickedUp = false;
         }
         //Remove order from list if picked up
-        if (OnCustomerLeave != null)
-        {
-            OnCustomerLeave?.Invoke(customerNumber.Value);
-        }
+       
     }
 
     private void UpdateSitting()
@@ -458,6 +454,29 @@ public class CustomerBase : Base
     private void UpdateDead()
     {
         // To be implmented or removed
+    }
+
+    public void PickUp()
+    {
+        PickUpServerRpc();
+        SetCustomerState(CustomerState.PickedUp);
+        if (OnCustomerLeave != null)
+        {
+            OnCustomerLeave?.Invoke(customerNumber.Value);
+        }
+    }
+    [ServerRpc(RequireOwnership = false)]
+    private void PickUpServerRpc()
+    {
+        PickUpClientRpc();
+    }
+    [ClientRpc]
+    private void PickUpClientRpc()
+    { 
+        StopRandomPointCoroutineImmediately();
+        customerAnimator.CrossFadeInFixedTime(Customer_StruggleHash, CrossFadeDuration);
+        holdPoint.transform.localPosition = new Vector3(0, -3, 0);
+        holdPoint.transform.localRotation = transform.rotation;
     }
 
     // INTERACTION
@@ -620,7 +639,7 @@ public class CustomerBase : Base
         if (GetCustomerState() == CustomerState.Drinking && Random.Range(0, 100) <= GameValueHolder.Instance.difficultySettings.GetChanceToLoiter())
         {
             messTime = 0f;
-            makingAMess = true;
+            SetMakingMessServerRpc();
             moving = false;
             SetCustomerState(CustomerState.Loitering);
         }
@@ -642,6 +661,19 @@ public class CustomerBase : Base
             OrderManager.Instance.FinishOrder(order);
         }
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetMakingMessServerRpc()
+    {
+        SetMakingMessClientRpc();
+    }
+
+    [ClientRpc]
+    private void SetMakingMessClientRpc()
+    {
+        makingAMess.Value = true;
+    }
+
 
     public void Walkto(Vector3 Spot)
     {
