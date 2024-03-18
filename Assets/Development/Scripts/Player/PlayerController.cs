@@ -98,7 +98,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     private readonly int BP_Barista_Throw_CustHash = Animator.StringToHash("BP_Barista_Throw_Cust");
     private readonly int BP_Barista_Cleaning_VacHash = Animator.StringToHash("BP_Barista_Cleaning_Vac");
 
-    private bool isAnimating = false;
+    [SerializeField]private bool isAnimating = false;
 
     private const float CrossFadeDuration = 0.1f;
 
@@ -829,15 +829,17 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if (HasPickup() || !HasNoIngredients || isAnimating == true)
             return;
 
-        isAnimating = true;
+       
         PickupSO pickupSo = pickup.GetPickupObjectSo();
 
         if (pickupSo != null)
         {
+            isAnimating = true;
             StartCoroutine(PickUpAnimation(pickup)); // Play trash pick up and set trash parent
         }
-        else if (pickup.IsCustomer && pickup.GetCustomer().makingAMess == true)
+        else if (pickup.IsCustomer && pickup.GetCustomer().makingAMess.Value == true)
         {
+            isAnimating = true;
             StartCoroutine(PickUpCustomerAnimation(pickup));
         }
 
@@ -1107,7 +1109,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         anim.CrossFadeInFixedTime(BP_Barista_Throw_CupHash, CrossFadeDuration);
         movementToggle = false;
 
-        yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is done
+        yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is d one
 
         for (int i = 0; i < ingredientsList.Count; i++)
         {
