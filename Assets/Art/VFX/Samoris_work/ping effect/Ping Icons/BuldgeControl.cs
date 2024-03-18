@@ -7,7 +7,6 @@ using UnityEngine;
 public class BuldgeControl : MonoBehaviour
 {
     public Material buldgeMaterial;
-    private bool isBuldgeOn = false;
     [SerializeField] private Color buldgeColor = Color.white;
     [SerializeField] private float emissionIntensity = 1.0f;
     [SerializeField] private float buldgeStrength = 0.007f;
@@ -24,16 +23,7 @@ public class BuldgeControl : MonoBehaviour
             }
         }
 
-        SetBuldge(isBuldgeOn);
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.N))
-        {
-            SetBuldge(!isBuldgeOn);
-
-        }
+        SetBuldge(false);
     }
 
     public void SetBuldge(bool isActive)

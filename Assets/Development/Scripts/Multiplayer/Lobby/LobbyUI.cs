@@ -39,6 +39,7 @@ public class LobbyUI : MonoBehaviour
     private void Awake()
     {
         selectedMaxPlayers = int.Parse(dropdownPlayers.options[dropdownPlayers.value].text);
+        lobbyNameInputField.text = CreateLobbyName();
         if (hostLobbyButton)
         {
             hostLobbyButton.onClick.AddListener(() =>
@@ -88,6 +89,15 @@ public class LobbyUI : MonoBehaviour
             backToMain.onClick.AddListener(BackToMain);
         }
         lobbyTemplate.gameObject.SetActive(false);
+    }
+
+    private string CreateLobbyName()
+    {
+        int roomNumber = UnityEngine.Random.Range(1, 101);
+
+        string randomName = $"Room:{roomNumber}";
+
+        return randomName;
     }
 
     private void OnDropdownValueChanged(int numPlayers)

@@ -575,12 +575,13 @@ public class GameManager : NetworkBehaviour
         }
         else if (randomEvent.GetComponent<RadioStation>()) 
         {
-            randomEvent.gameObject.GetComponent<RadioStation>().EventOnClientRpc();
+            randomEvent.gameObject.GetComponent<RadioStation>().EventOn();
         }
     }
 
     public void DeactivateEvent(RandomEventBase randomEvent)
     {
+        if (!IsServer) return;
         isEventActive.Value = false;
         if (randomEvent.GetComponent<GravityStorm>()) 
         {
@@ -598,7 +599,7 @@ public class GameManager : NetworkBehaviour
         }
         else if (randomEvent.GetComponent<RadioStation>()) 
         {
-            randomEvent.gameObject.GetComponent<RadioStation>().EventOffServerRpc();
+            randomEvent.gameObject.GetComponent<RadioStation>().EventOff();
         }
 
     }
