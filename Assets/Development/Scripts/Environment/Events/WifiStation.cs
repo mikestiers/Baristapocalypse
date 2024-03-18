@@ -13,7 +13,7 @@ public class WifiStation : RandomEventBase
     public static event WifiEventHandler OnWifiEventStarting;
     public static event WifiEventHandler OnWifiEventStopping;
 
-    public void start()
+    protected override void Start()
     {
         base.Start();
     }
@@ -36,10 +36,10 @@ public class WifiStation : RandomEventBase
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.wifiOn);
         screenEffect.ToggleWifiEffect(iseventover.Value);
-        fx.StartnEndFireworks();
+        //fx.StartnEndFireworks();
         eventLight.SetActive(false);
         Debug.Log("Wifi event is done");
-        ChangeColorBasedOnEvent();
+        ChangeColorBasedOnEvent(true);
         OnWifiEventStopping?.Invoke(false);
     }
 
@@ -62,13 +62,13 @@ public class WifiStation : RandomEventBase
         screenEffect.ToggleWifiEffect(iseventover.Value);
         eventLight.SetActive(true);
         Debug.Log("Wifi event is Starting");
-        ChangeColorBasedOnEvent();
+        ChangeColorBasedOnEvent(false);
         OnWifiEventStarting?.Invoke(true);
     }
 
     
 
-    private void ChangeColorBasedOnEvent()
+    private void ChangeColorBasedOnEvent(bool eventOver)
     {
         Renderer renderer = GetComponent<Renderer>();
 
@@ -77,7 +77,7 @@ public class WifiStation : RandomEventBase
             Material material = renderer.material;
 
             // Check the boolean condition
-            if (iseventover.Value)
+            if (eventOver)
             {
                 material.color = Color2;
                 Debug.Log("Changed color to white");

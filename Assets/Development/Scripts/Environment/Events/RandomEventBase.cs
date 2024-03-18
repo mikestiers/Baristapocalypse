@@ -12,7 +12,7 @@ public class RandomEventBase : NetworkBehaviour
     [SerializeField] protected FullScreenEffectController screenEffect;
     protected PlayerColorChoice fx;
 
-    protected void Start()
+    protected virtual void Start()
     {
         fx = FindObjectOfType<PlayerColorChoice>();
     }
