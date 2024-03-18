@@ -645,7 +645,8 @@ public class CustomerBase : Base
             agent.SetDestination(exit);
             if (currentState.Value == CustomerState.Sitting || currentState.Value == CustomerState.Ordering)
             {
-                JustLeftClientRpc();
+                CustomerReviewManager.Instance.CustomerReviewEvent(this, 1);
+                customerInstanceReviewScore = CustomerReviewManager.Instance.reviewScore;
             }
             SetCustomerState(CustomerState.Leaving);
         }
@@ -655,13 +656,6 @@ public class CustomerBase : Base
             OnCustomerLeave?.Invoke(customerNumber.Value);
             OrderManager.Instance.FinishOrder(order);
         }
-    }
-
-    [ClientRpc]
-    private void JustLeftClientRpc()
-    {
-        CustomerReviewManager.Instance.CustomerReviewEvent(this, 1);
-        customerInstanceReviewScore = CustomerReviewManager.Instance.reviewScore;
     }
 
     public void Walkto(Vector3 Spot)
