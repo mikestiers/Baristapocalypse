@@ -572,31 +572,6 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public void DeactivateEvent(RandomEventBase randomEvent)
-    {
-        if (!IsServer) return;
-        isEventActive.Value = false;
-        if (randomEvent.GetComponent<GravityStorm>()) 
-        {
-            GravityStorm gravityStorm = randomEvent.GetComponent<GravityStorm>();
-            isGravityStorm.Value = false;
-            //gravityStorm.TurnOnOffEventEffectServerRpc(false);
-            gravityStorm.SetEventBool(false);
-            gravityStorm.ActivateDeactivateEvent();
-            randomEventEffects.TurnOnOffEventEffectServerRpc(true);
-        }
-        else if (randomEvent.GetComponent<WifiStation>()) 
-        {
-            randomEvent.gameObject.GetComponent<WifiStation>().WifiEventIsDone();
-            isWifiEvent.Value = false;
-        }
-        else if (randomEvent.GetComponent<RadioStation>()) 
-        {
-            randomEvent.gameObject.GetComponent<RadioStation>().EventOff();
-        }
-
-    }
-
     [ClientRpc]
     public void UpdateClientRpc(int numberOfPlayers)
     {

@@ -21,17 +21,12 @@ public class WifiEvent : MonoBehaviour
         {
             if(GameManager.Instance.isWifiEvent.Value)
             {
-                DeactivateRandomEvent();
+                DeactivateWifiEvent();
             }
         }
     }
 
-    private void GameManager_OnPlayerDeactivateEvent(object sender, EventArgs e)
-    {
-        DeactivateRandomEvent();
-    }
-
-    private void DeactivateRandomEvent()
+    private void DeactivateWifiEvent()
     {
         Wifi.WifiEventIsDone();
     }
