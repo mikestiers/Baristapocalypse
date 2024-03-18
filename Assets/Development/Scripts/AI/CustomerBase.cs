@@ -76,7 +76,7 @@ public class CustomerBase : Base
     // Customer Animations
     [Header("Customer Animations")]
     [SerializeField] private GameObject bodiesContainerObject;
-    [HideInInspector] public bool isPickedUp = false;
+    [HideInInspector] public NetworkVariable<bool> isPickedUp = new NetworkVariable<bool>(false);
     private Animator customerAnimator;
     private readonly int Customer_IdleHash = Animator.StringToHash("Customer_Idle");
     private readonly int Customer_WalkHash = Animator.StringToHash("Customer_Walk");
@@ -421,11 +421,13 @@ public class CustomerBase : Base
 
     private void UpdatePickedUp()
     {
-        if (isPickedUp == true) 
+        if (isPickedUp.Value == true) 
         {
             StopRandomPointCoroutineImmediately();
             customerAnimator.CrossFadeInFixedTime(Customer_StruggleHash, CrossFadeDuration);
-            isPickedUp = false;
+            holdPoint.transform.localPosition = new Vector3(0, -3, 0);
+            holdPoint.transform.localRotation = transform.rotation;
+            ChangeCustomerPickupBool(false);
         }
         //Remove order from list if picked up
         if (OnCustomerLeave != null)
@@ -461,6 +463,24 @@ public class CustomerBase : Base
     {
         // To be implmented or removed
     }
+
+    public void ChangeCustomerPickupBool(bool isTrue)
+    {
+        ChangeCustomerPickupBoolServerRpc(isTrue);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ChangeCustomerPickupBoolServerRpc(bool isTrue)
+    {
+        ChangeCustomerPickupBoolClientRpc(isTrue);
+    }
+
+    [ClientRpc]
+    private void ChangeCustomerPickupBoolClientRpc(bool isTrue)
+    {
+        isPickedUp.Value = isTrue;
+    }
+
 
     // INTERACTION
     // Anything related to interacting with the customer goes here
@@ -647,6 +667,12 @@ public class CustomerBase : Base
 
     [ServerRpc(RequireOwnership = false)]
     private void SetMakingMessServerRpc()
+    {
+        SetMakingMessClientRpc();
+    }
+
+    [ClientRpc]
+    private void SetMakingMessClientRpc()
     {
         makingAMess.Value = true;
     }

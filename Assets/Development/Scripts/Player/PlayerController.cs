@@ -1052,11 +1052,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         pickup.GetNavMeshAgent().enabled = false;
         pickup.GetCustomer().SetCustomerState(CustomerBase.CustomerState.PickedUp);
-        pickup.GetCustomer().isPickedUp = true;
+        pickup.GetCustomer().ChangeCustomerPickupBool(true);
         pickup.SetPickupObjectParent(this);
         pickup.DisablePickupColliders(pickup);
-        pickup.GetCustomer().holdPoint.transform.localPosition = new Vector3(0, -3, 0);
-        pickup.GetCustomer().holdPoint.transform.localRotation = pickup.GetCustomer().transform.rotation;
+       
 
         if (pickup.GetCustomer().inLine == true)
         {
