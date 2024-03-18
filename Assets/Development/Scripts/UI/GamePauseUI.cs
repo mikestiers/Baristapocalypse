@@ -23,6 +23,8 @@ public class GamePauseUI : MonoBehaviour
         GameManager.Instance.OnLocalGamePaused += GameManager_OnLocalGamePaused;
         GameManager.Instance.OnLocalGameUnpaused += GameManager_OnLocalGameUnpaused;
 
+        toGame.onClick.AddListener(ResumeGame);
+
         Hide();
     }
 
@@ -36,6 +38,11 @@ public class GamePauseUI : MonoBehaviour
         Show();
     }
 
+    private void ResumeGame()
+    {
+        GameManager.Instance.TogglePauseGame();
+    }
+
     private void Show()
     {
         gameObject.SetActive(true);
@@ -46,4 +53,6 @@ public class GamePauseUI : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+
+
 }
