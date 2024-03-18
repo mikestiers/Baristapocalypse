@@ -106,6 +106,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     public PlayerColorChoice playerVisual;
     private bool tutorialMessageActive = false;
 
+    [Header("SoundStuff")]
+    public Transform listener; // The listener (usually the player)
+    private float maxSoundDistance = 30f; // Maximum distance at which the sound can be heard
+
     [HideInInspector]
     public Pickup Pickup
     {
@@ -233,6 +237,32 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
 
         HandleExtraForces();
+
+        if (listener == null) // If listener is not set, use Camera.main as the listener
+        {
+            listener = Camera.main.transform;
+        }
+        GameObject[] customers = GameObject.FindGameObjectsWithTag("Customer");
+        if (customers != null)
+        {
+            for (int i = 0; i < customers.Length; i++)
+            {
+                float customerFootstepVolume;
+                float distanceFromCustomer = Vector3.Distance(transform.position, customers[i].transform.position);
+                if (distanceFromCustomer > maxSoundDistance)
+                {
+                    customerFootstepVolume = 0f;// Sound is beyond max distance, set volume to 0
+                    if (customers[i].GetComponentInChildren<Footstep>() != null)
+                        customers[i].GetComponentInChildren<Footstep>().volume = customerFootstepVolume;
+                }
+                else
+                {
+                    customerFootstepVolume = 0.2f - (distanceFromCustomer / maxSoundDistance); // Linearly decrease volume based on distance
+                    if (customers[i].GetComponentInChildren<Footstep>() != null)
+                        customers[i].GetComponentInChildren<Footstep>().volume = customerFootstepVolume;
+                }
+            }
+        }
 
         if (SceneManager.GetActiveScene().name != Loader.Scene.T5M3_BUILD.ToString()) { return; }
 
@@ -491,7 +521,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         if (movementToggle)
             StartCoroutine(Dash());
-        //SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
         //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
 
         // left for testing just incase we need to change something

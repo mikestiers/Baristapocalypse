@@ -63,6 +63,8 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
     public delegate void OnBrewingEmptyHandler(object sender, EventArgs e);
     public event OnBrewingEmptyHandler OnBrewingEmpty;
 
+    private AudioSource brewingAudioSource;
+
     // Animation interaction with brewing machine
     [Header("Animations")]
     [SerializeField] private Animator leftBrewingAnimator;
@@ -244,19 +246,24 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
             if (isMinigameRunning.Value)
             {
                 Debug.LogWarning("Ending Brewing minigame");
+                BrewingSoundStop(brewingAudioSource);
+                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.drinkReady);
                 float timingPressed = Mathf.Abs((minigameTimer.Value / maxMinigameTimer) - sweetSpotPosition.Value);
                 bool minigameResult = false;
                 if (timingPressed <= 0.1f)
                 {
                     minigameResult = true;
+                    SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.drinkMinigameHit);
                 }
                 else if ((minigameTimer.Value / maxMinigameTimer) < sweetSpotPosition.Value)
                 {
                     minigameResult = false;
+                    SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.drinkMinigameMiss);
                 }
                 else if ((minigameTimer.Value / maxMinigameTimer) > sweetSpotPosition.Value)
                 {
                     minigameResult = false;
+                    SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.drinkMinigameMiss);
                 }
                 if (GetIngredient().GetComponent<CoffeeAttributes>() != null)
                 {
@@ -270,6 +277,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
             if (!isMinigameRunning.Value && ingredientSOList.Count >= numIngredientsNeeded)
             {
                 Debug.LogWarning("Beginning Brewing minigame");
+                brewingAudioSource = BrewingSoundStart();
                 MinigameStartedServerRpc();
                 player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY;
                 if (leftBrewingAnimator)
@@ -290,6 +298,18 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
                 InteractLogicPlaceObjectOnBrewing();
             }
         }
+    }
+
+    private AudioSource BrewingSoundStart()
+    {
+        AudioSource brewingAudioSource = SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.drinkBrewing, true);
+        return brewingAudioSource;
+    }
+
+    private void BrewingSoundStop(AudioSource brewingAudioSource)
+    {
+        SoundManager.Instance.currentAudioSources.Remove(brewingAudioSource);
+        Destroy(brewingAudioSource);
     }
 
     IEnumerator LerpPlayerToLerpingPoint(Vector3 lerpPosition, Quaternion targetRotation, float duration, PlayerController player)

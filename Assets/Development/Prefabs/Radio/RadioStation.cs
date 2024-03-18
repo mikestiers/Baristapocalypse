@@ -11,12 +11,17 @@ using UnityEngine.UI;
 
 public class RadioStation : BaseStation
 {
-    [SerializeField] private AudioClip[] Audios;
+    public MusicScriptableObject musicRefsSO;
+    public AudioClip currentSong;
+    [SerializeField] private AudioClip[] Stations;
     [SerializeField] private AudioSource MainAudio;
     [SerializeField] private AudioClip ChangeSound;
     [SerializeField] private AudioClip BrokenSound;
-    [SerializeField] private ParticleSystem interactParticle; // NOte could be deleted later
+    [SerializeField] private ParticleSystem interactParticle; // Note could be deleted later
     [SerializeField] private GameObject eventLight;
+    private bool guaranteeSong = false;
+    private bool ignoreRandom = false;
+    private bool guaranteeAd = false;
     [SerializeField] private NetworkVariable<bool> eventIsOn = new NetworkVariable<bool>(false);
     private int AudioIndex = 0;
 
@@ -47,9 +52,31 @@ public class RadioStation : BaseStation
     private void ChangeSongDown()
     {
         AudioIndex++;
-        AudioIndex %= Audios.Length; // should loop
-        MainAudio.clip = Audios[AudioIndex];
-        MainAudio.Play();
+        AudioIndex %= musicRefsSO.numOfStations;
+        Debug.Log(AudioIndex);
+        if (AudioIndex == 0)
+        {
+            currentSong = musicRefsSO.metalMusics[Random.Range(0, musicRefsSO.metalMusics.Length)];
+            MainAudio.clip = currentSong;
+            float randomTime = Random.Range(0f, currentSong.length);
+            MainAudio.time = randomTime;
+            MainAudio.Play();
+        }
+        else if (AudioIndex == 1)
+        {
+            currentSong = musicRefsSO.perseusMusics[Random.Range(0, musicRefsSO.perseusMusics.Length)];
+            MainAudio.clip = currentSong;
+            float randomTime = Random.Range(0f, currentSong.length);
+            MainAudio.time = randomTime;
+            MainAudio.Play();
+        }
+        else
+        {
+            currentSong = musicRefsSO.synthwaveMusics[Random.Range(0, musicRefsSO.synthwaveMusics.Length)];
+            MainAudio.clip = currentSong;
+            MainAudio.Play();
+        }
+
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -64,13 +91,34 @@ public class RadioStation : BaseStation
         ChangeSongUp();
     }
 
-    private void ChangeSongUp() 
+    private void ChangeSongUp()
     {
         AudioIndex--;
-        AudioIndex = (AudioIndex + Audios.Length) % Audios.Length; // should loop
-        MainAudio.clip = Audios[AudioIndex];
-        MainAudio.Play();
-        
+        AudioIndex %= musicRefsSO.numOfStations;
+        if (AudioIndex == 0)
+        {
+            currentSong = musicRefsSO.metalMusics[Random.Range(0, musicRefsSO.metalMusics.Length)];
+            MainAudio.clip = currentSong;
+            float randomTime = Random.Range(0f, currentSong.length);
+            MainAudio.time = randomTime;
+            MainAudio.Play();
+        }
+        else if (AudioIndex == 1)
+        {
+            currentSong = musicRefsSO.perseusMusics[Random.Range(0, musicRefsSO.perseusMusics.Length)];
+            MainAudio.clip = currentSong;
+            float randomTime = Random.Range(0f, currentSong.length);
+            MainAudio.time = randomTime;
+            MainAudio.Play();
+        }
+        else
+        {
+            currentSong = musicRefsSO.synthwaveMusics[Random.Range(0, musicRefsSO.synthwaveMusics.Length)];
+            MainAudio.clip = currentSong;
+            float randomTime = Random.Range(0f, currentSong.length);
+            MainAudio.time = randomTime;
+            MainAudio.Play();
+        }
     }
 
     public void EventOn()
@@ -119,7 +167,8 @@ public class RadioStation : BaseStation
         textPairs[currentRandomIndex].text2.color = Color.white;
         screenEffect.ToggleRadioEffect(eventIsOn.Value);
         eventLight.SetActive(false);
-        MainAudio.clip = Audios[AudioIndex];
+        GameManager.Instance.isEventActive.Value = false;
+        MainAudio.clip = Stations[AudioIndex];
         MainAudio.Play();
         Ui.gameObject.SetActive(false);
     }
@@ -165,6 +214,7 @@ public class RadioStation : BaseStation
         slider.wholeNumbers = true;
         slider.value = 0f; // Start at 0
 
+        ChangeSongUpServerRpc();
     }
 
     private void ChangeRandomTextColorPair()
@@ -248,6 +298,102 @@ public class RadioStation : BaseStation
             {
                 GetComponentInParent<CameraStation1>().SwitchCameraOff();
             }
+        }
+    }
+
+    private void Update()
+    {
+        if (currentSong != null)
+        {
+            if (!MainAudio.isPlaying)
+            {
+                OnAudioFinished();
+            }
+        }
+    }
+
+    void OnAudioFinished()
+    {
+        float randomChance = Random.Range(0, 4);
+
+        //Random chance for a ad at song end
+        if(randomChance == 0 && ignoreRandom != true)
+        {
+            if (AudioIndex == 0)
+            {
+                currentSong = musicRefsSO.metalSponsor[Random.Range(0, musicRefsSO.metalSponsor.Length)];
+                MainAudio.clip = currentSong;
+                MainAudio.Play();
+            }
+            else if (AudioIndex == 1)
+            {
+                currentSong = musicRefsSO.perseusSponsor[Random.Range(0, musicRefsSO.perseusSponsor.Length)];
+                MainAudio.clip = currentSong;
+                MainAudio.Play();
+            }
+            else
+            {
+                //currently doesnt have a ad read
+            }
+            ignoreRandom = true;
+            guaranteeAd = true;
+        }
+
+        else if (ignoreRandom == true && guaranteeAd == true)
+        { 
+            currentSong = musicRefsSO.ads[Random.Range(0, musicRefsSO.ads.Length)];
+            MainAudio.clip = currentSong;
+            MainAudio.Play();
+            guaranteeAd = false;
+        }
+
+        //guarenteed song after a ad plays
+        else if (guaranteeSong == true)
+        {
+            if (AudioIndex == 0)
+            {
+                currentSong = musicRefsSO.metalMusics[Random.Range(0, musicRefsSO.metalMusics.Length)];
+                MainAudio.clip = currentSong;
+                MainAudio.Play();
+            }
+            else if (AudioIndex == 1)
+            {
+                currentSong = musicRefsSO.perseusMusics[Random.Range(0, musicRefsSO.perseusMusics.Length)];
+                MainAudio.clip = currentSong;
+                MainAudio.Play();
+            }
+            else
+            {
+                currentSong = musicRefsSO.synthwaveMusics[Random.Range(0, musicRefsSO.synthwaveMusics.Length)];
+                MainAudio.clip = currentSong;
+                MainAudio.Play();
+            }
+            guaranteeSong = false;
+            ignoreRandom = false;
+        }
+
+        //intros for the next song
+        else
+        {
+            if (AudioIndex == 0)
+            {
+                currentSong = musicRefsSO.metalIntros[Random.Range(0, musicRefsSO.metalIntros.Length)];
+                MainAudio.clip = currentSong;
+                MainAudio.Play();
+            }
+            else if (AudioIndex == 1)
+            {
+                currentSong = musicRefsSO.perseusIntros[Random.Range(0, musicRefsSO.perseusIntros.Length)];
+                MainAudio.clip = currentSong;
+                MainAudio.Play();
+            }
+            else
+            {
+                currentSong = musicRefsSO.synthwaveIntros[Random.Range(0, musicRefsSO.synthwaveIntros.Length)];
+                MainAudio.clip = currentSong;
+                MainAudio.Play();
+            }
+            guaranteeSong = true;
         }
     }
 }

@@ -2339,7 +2339,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioClipRefsSO: {fileID: 11400000, guid: d130e19404f3b2940b08508d186373f0, type: 2}
+  currentAudioSources: []
   sFXMixerGroup: {fileID: 0}
+  voicesMixerGroup: {fileID: 0}
 --- !u!4 &360375824
 Transform:
   m_ObjectHideFlags: 0
@@ -11211,6 +11213,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1944063226}
     - target: {fileID: 1797054837799654982, guid: 8f3444ede66b10a4c8f9568333adc09e, type: 3}
+      propertyPath: musicRefsSO
+      value: 
+      objectReference: {fileID: 11400000, guid: fe73cbafcb655ad448a84ad0c0d80b60, type: 2}
+    - target: {fileID: 1797054837799654982, guid: 8f3444ede66b10a4c8f9568333adc09e, type: 3}
       propertyPath: screenEffect
       value: 
       objectReference: {fileID: 1447028020}
@@ -18528,7 +18534,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 7932454930221866299, guid: 706d11347a7f6dd43a4c406c59e7b7e8, type: 2}
-  m_audioClip: {fileID: 8300000, guid: 6947e887045360c42852565100349c6f, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1

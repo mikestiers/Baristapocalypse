@@ -135,6 +135,7 @@ public class CustomerBase : Base
             SetCustomerState(CustomerState.Init);
         }
 
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.customerEnters);
         customerAnimator = bodiesContainerObject.GetComponentInChildren<Animator>();
 
         SetCustomerVisualIdentifiers();
@@ -499,7 +500,7 @@ public class CustomerBase : Base
             if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstBrewStarted)
                 TutorialManager.Instance.StartFirstBrew(order);
             LeaveLineServerRpc();
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.interactCustomer);
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.takeOrder);
             interactParticle.Play();
         }
 

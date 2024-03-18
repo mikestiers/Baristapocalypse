@@ -17,12 +17,18 @@ public class AudioClipRefsSO : ScriptableObject
     public AudioClip tipAdded;
     public AudioClip goodGameover;
     public AudioClip badGameover;
+    public AudioClip fiveSecCountdown;
     [Header("PlayerSounds")]
     public AudioClip dash;
     public AudioClip jump;
-    public AudioClip playerFootsteps;
+    public AudioClip[] playerFootsteps;
     public AudioClip mopping;
+    public AudioClip slipOnSpill;
     public List<AudioClip> spills;
+    [Header("MultiplayerSounds")]
+    public AudioClip playerJoins;
+    public AudioClip playerLeaves;
+    public AudioClip playerColorSelect;
     [Header("Machine sounds")]
     public AudioClip interactStation;
     public AudioClip liquidMachine;
@@ -33,6 +39,7 @@ public class AudioClipRefsSO : ScriptableObject
     public AudioClip drinkBrewing;
     public AudioClip drinkMinigameHit;
     public AudioClip drinkMinigameMiss;
+    public AudioClip radioMalfunction;
     [Header("Pickups")]
     public AudioClip pickUp;
     public AudioClip throwIngredient;
@@ -42,9 +49,15 @@ public class AudioClipRefsSO : ScriptableObject
     public AudioClip doorOpen;
     public AudioClip doorClose;
     [Header("Customer Interactions")]
+    public AudioClip customerEnters;
+    public AudioClip[] customerFootsteps;
+    public AudioClip takeOrder;
     public AudioClip interactCustomer;
     public AudioClip failedInteration;
     public AudioClip customerThrown;
     public List<AudioClip> customerPickedUpList;
     public List<AudioClip> customerSipsList;
+    [Header("VolumeCheckSounds")]
+    public AudioClip voiceCheck;
+
 }
