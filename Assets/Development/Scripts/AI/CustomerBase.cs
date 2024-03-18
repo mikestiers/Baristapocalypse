@@ -56,7 +56,7 @@ public class CustomerBase : Base
     [SerializeField] private ParticleSystem interactParticle;
     [SerializeField] private DetachedHead detachedHead;
     [SerializeField] private ScoreTimerManager scoreTimerManager;
-    [SerializeField] private CustomerReactionIndicator _customerReaction;
+
     [SerializeField] private PickupSO pickupSO;
 
     [Header("Customer Review")]
@@ -151,7 +151,6 @@ public class CustomerBase : Base
         GetIngredientTransform().localEulerAngles = new Vector3(0, 30, 90);
 
         customerReviewPanel = GameObject.FindGameObjectWithTag("CustomerReviewPanel");
-       // _customerReaction = FindObjectOfType<CustomerReactionIndicator>();
     }
 
     public virtual void Update()
@@ -281,7 +280,6 @@ public class CustomerBase : Base
                 int randomIndex = Random.Range(0, customerImpatientHashList.Count);
                 int randomHash = customerImpatientHashList[randomIndex];
                 customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
-                _customerReaction.CustomerSad(isImpatient);
             }
         }
 
@@ -292,9 +290,6 @@ public class CustomerBase : Base
             CustomerManager.Instance.LineQueue.RemoveCustomerInPos(currentPosInLine);
             CustomerLeave();
             inLine = false;
-            isImpatient = false;
-            _customerReaction.CustomerSad(isImpatient);
-            _customerReaction.CustomerMad();
         }
     }
 
@@ -303,7 +298,6 @@ public class CustomerBase : Base
         if (agent.remainingDistance < distThreshold)
         {
             agent.isStopped = true;
-            
             if(makingAMess == true)
             {
                 customerAnimator.CrossFadeInFixedTime(Customer_IdleHash, CrossFadeDuration);
@@ -322,12 +316,6 @@ public class CustomerBase : Base
             if (!inLine && makingAMess == false)
             {
                 SetCustomerState(CustomerState.Insit);
-            }
-
-            if (isImpatient == true)
-            {
-                isImpatient = false;
-                _customerReaction.CustomerSad(isImpatient);
             }
 
             moving = false;
@@ -370,7 +358,6 @@ public class CustomerBase : Base
         {
             CreateMess();
             RestartMessTimer();
-            _customerReaction.DeactiveEffects();
         }
 
         if (randomPointCoroutine == null) 
@@ -604,7 +591,6 @@ public class CustomerBase : Base
                 int randomIndex = Random.Range(0, customerBadDrinkChairHashList.Count);
                 int randomHash = customerBadDrinkChairHashList[randomIndex];
                 customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
-                _customerReaction.CustomerDrinkFail();
             }
         }
         else if (customerInstanceReviewScore >= 4)
@@ -614,7 +600,6 @@ public class CustomerBase : Base
                 int randomIndex = Random.Range(0, customerGoodDrinkChairHashList.Count);
                 int randomHash = customerGoodDrinkChairHashList[randomIndex];
                 customerAnimator.CrossFadeInFixedTime(randomHash, CrossFadeDuration);
-                _customerReaction.HappycCustomerEffect();
             }
         }
 
