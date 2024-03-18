@@ -257,7 +257,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                 }
                 else
                 {
-                    customerFootstepVolume = 0.75f - (distanceFromCustomer / maxSoundDistance); // Linearly decrease volume based on distance
+                    customerFootstepVolume = 0.2f - (distanceFromCustomer / maxSoundDistance); // Linearly decrease volume based on distance
                     if (customers[i].GetComponentInChildren<Footstep>() != null)
                         customers[i].GetComponentInChildren<Footstep>().volume = customerFootstepVolume;
                 }

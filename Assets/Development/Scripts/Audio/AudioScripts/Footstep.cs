@@ -17,7 +17,7 @@ public class Footstep : MonoBehaviour
     public void stepSound()
     {
         int temp = Random.Range(0, SoundManager.Instance.audioClipRefsSO.playerFootsteps.Length);
-        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.playerFootsteps[temp], 0.3f);
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.playerFootsteps[temp], 0.15f);
     }
     
     public void customerStepSound()
