@@ -423,17 +423,9 @@ public class CustomerBase : Base
     {
         if (isPickedUp.Value == true) 
         {
-            StopRandomPointCoroutineImmediately();
-            customerAnimator.CrossFadeInFixedTime(Customer_StruggleHash, CrossFadeDuration);
-            holdPoint.transform.localPosition = new Vector3(0, -3, 0);
-            holdPoint.transform.localRotation = transform.rotation;
-            ChangeCustomerPickupBool(false);
         }
         //Remove order from list if picked up
-        if (OnCustomerLeave != null)
-        {
-            OnCustomerLeave?.Invoke(customerNumber.Value);
-        }
+       
     }
 
     private void UpdateSitting()
@@ -464,23 +456,29 @@ public class CustomerBase : Base
         // To be implmented or removed
     }
 
-    public void ChangeCustomerPickupBool(bool isTrue)
+    public void PickUp()
     {
-        ChangeCustomerPickupBoolServerRpc(isTrue);
-    }
+        PickUpServerRpc();
 
+        if (OnCustomerLeave != null)
+        {
+            OnCustomerLeave?.Invoke(customerNumber.Value);
+        }
+    }
     [ServerRpc(RequireOwnership = false)]
-    private void ChangeCustomerPickupBoolServerRpc(bool isTrue)
+    private void PickUpServerRpc()
     {
-        ChangeCustomerPickupBoolClientRpc(isTrue);
+        PickUpClientRpc();
     }
-
     [ClientRpc]
-    private void ChangeCustomerPickupBoolClientRpc(bool isTrue)
+    private void PickUpClientRpc()
     {
-        isPickedUp.Value = isTrue;
-    }
 
+        StopRandomPointCoroutineImmediately();
+        customerAnimator.CrossFadeInFixedTime(Customer_StruggleHash, CrossFadeDuration);
+        holdPoint.transform.localPosition = new Vector3(0, -3, 0);
+        holdPoint.transform.localRotation = transform.rotation;
+    }
 
     // INTERACTION
     // Anything related to interacting with the customer goes here

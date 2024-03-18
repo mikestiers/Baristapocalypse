@@ -1051,8 +1051,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is done
 
         pickup.GetNavMeshAgent().enabled = false;
-        pickup.GetCustomer().SetCustomerState(CustomerBase.CustomerState.PickedUp);
-        pickup.GetCustomer().ChangeCustomerPickupBool(true);
+        pickup.GetCustomer().PickUp();
         pickup.SetPickupObjectParent(this);
         pickup.DisablePickupColliders(pickup);
        
