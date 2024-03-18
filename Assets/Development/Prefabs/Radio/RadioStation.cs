@@ -9,11 +9,12 @@ using UnityEngine.UI;
 
 public class RadioStation : BaseStation
 {
+    [SerializeField] private AudioClip[] Musics;
     [SerializeField] private AudioClip[] Audios;
     [SerializeField] private AudioSource MainAudio;
     [SerializeField] private AudioClip ChangeSound;
     [SerializeField] private AudioClip BrokenSound;
-    [SerializeField] private ParticleSystem interactParticle; // NOte could be deleted later
+    [SerializeField] private ParticleSystem interactParticle; // Note could be deleted later
     [SerializeField] private GameObject eventLight;
     bool eventIsOn = false;
     private int AudioIndex = 0;
@@ -207,6 +208,16 @@ public class RadioStation : BaseStation
 
                 EventOffServerRpc();
             }
+        }
+    }
+
+    void OnAudioFinished()
+    {
+        float randomChance = Random.Range(0, 2);
+        if(randomChance == 0)
+        {
+            //MainAudio.clip = Audios[AudioIndex];
+            //MainAudio.Play();
         }
     }
 }
