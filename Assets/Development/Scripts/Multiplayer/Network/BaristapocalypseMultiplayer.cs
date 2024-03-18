@@ -343,16 +343,15 @@ public class BaristapocalypseMultiplayer  : NetworkBehaviour
     private void PlayerCreateSpillServerRpc(int MessIndex, NetworkObjectReference spillNetworkObjectReference)
     {
         MessSO spillPrefab = GetMessSoFromIndex(MessIndex);
-        GameObject messGameObject = Instantiate(spillPrefab.prefab);
+        Transform messGameObject = Instantiate(spillPrefab.prefab.transform);
 
         NetworkObject spillNetworkObject = messGameObject.GetComponent<NetworkObject>();
         spillNetworkObject.Spawn(true);
-        Spill Mess = messGameObject.GetComponent<Spill>();
 
         spillNetworkObjectReference.TryGet(out NetworkObject messObjectParentNetworkObject);
-        ISpill messObjectParent = messObjectParentNetworkObject.GetComponent<ISpill>();
+        PlayerController messObjectParent = messObjectParentNetworkObject.GetComponent<PlayerController>();
         
-        Mess.SetSpillPosition(messObjectParent);
+        spillNetworkObject.transform.position = messObjectParent.GetSpillTransform().position;
         
 
         // PlayerCreateSpillClientRpc(spillNetworkObjectReference);
