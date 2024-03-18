@@ -58,7 +58,6 @@ public class SceneHelper : MonoBehaviour
     public void ResetGame()
     {
         Debug.Log("Reset Game Function Called");
-        LobbyManager.Instance.LeaveLobby();
         ShutdownAndDestroy<NetworkManager>();
         FindObjectOfType<CustomerManager>()?.ResetSingleton();
         FindObjectOfType<ScoreTimerManager>()?.ResetSingleton();
