@@ -135,6 +135,7 @@ public class CustomerBase : Base
             SetCustomerState(CustomerState.Init);
         }
 
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.customerEnters);
         customerAnimator = bodiesContainerObject.GetComponentInChildren<Animator>();
 
         SetCustomerVisualIdentifiers();

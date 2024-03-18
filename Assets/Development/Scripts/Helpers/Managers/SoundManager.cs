@@ -65,7 +65,7 @@ public class SoundManager : Singleton<SoundManager>
             {
                 break;
             }
-            source.PlayOneShot(clip,volume);
+            source.PlayOneShot(clip, volume);
             return;
         }
 

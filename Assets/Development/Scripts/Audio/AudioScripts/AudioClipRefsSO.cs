@@ -49,6 +49,7 @@ public class AudioClipRefsSO : ScriptableObject
     public AudioClip doorOpen;
     public AudioClip doorClose;
     [Header("Customer Interactions")]
+    public AudioClip customerEnters;
     public AudioClip[] customerFootsteps;
     public AudioClip takeOrder;
     public AudioClip interactCustomer;
