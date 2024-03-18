@@ -459,7 +459,7 @@ public class CustomerBase : Base
     public void PickUp()
     {
         PickUpServerRpc();
-
+        SetCustomerState(CustomerState.PickedUp);
         if (OnCustomerLeave != null)
         {
             OnCustomerLeave?.Invoke(customerNumber.Value);
@@ -472,8 +472,7 @@ public class CustomerBase : Base
     }
     [ClientRpc]
     private void PickUpClientRpc()
-    {
-
+    { 
         StopRandomPointCoroutineImmediately();
         customerAnimator.CrossFadeInFixedTime(Customer_StruggleHash, CrossFadeDuration);
         holdPoint.transform.localPosition = new Vector3(0, -3, 0);
