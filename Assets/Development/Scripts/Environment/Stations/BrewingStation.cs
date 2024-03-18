@@ -15,7 +15,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
     public event EventHandler<IHasMinigameTiming.OnMinigameTimingEventArgs> OnMinigameTimingStarted;
 
     //[SerializeField] private MinigameQTE minigameQTE;
- 
+
     [Header("Visuals")]
     [SerializeField] private ParticleSystem interactParticle;
     [SerializeField] private Transform playerLerpingPosition;
@@ -52,6 +52,10 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
     [SerializeField] private EmissiveControl coffeeBeanFloorPlate;
     [SerializeField] private EmissiveControl[] sweetenerTubing;
     [SerializeField] private EmissiveControl sweetenerFloorPlate;
+    [SerializeField] private BuldgeControl bioBuldge;
+    [SerializeField] private BuldgeControl liquidBuldge;
+    [SerializeField] private BuldgeControl beanBuldge;
+    [SerializeField] private BuldgeControl sweetenerBuldge;
 
     public delegate void OnBrewingDoneHandler(object sender, EventArgs e);
     public event OnBrewingDoneHandler OnBrewingDone;
@@ -79,6 +83,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
 
     private const float CrossFadeDuration = 0.1f;
     private float animationWaitTime;
+    private PlayerController player;
 
     private NetworkVariable<bool> isminigameEnded = new NetworkVariable<bool>(true);
 
@@ -214,7 +219,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
 
         minigameTimer.Value = 0f;
         isMinigameRunning.Value = true;
-        
+
         sweetSpotPosition.Value = UnityEngine.Random.Range(minSweetSpotPosition, maxSweetSpotPosition);
     }
 
@@ -271,12 +276,13 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
                 {
                     player.anim.CrossFadeInFixedTime(Barista_BrewingHash, CrossFadeDuration);
                     leftBrewingAnimator.CrossFadeInFixedTime(BP_Barista_Brewer_Start_LeftHash, CrossFadeDuration);
+                    GetComponentInParent<CameraStation1>().SwitchCameraOn();
                 }
                 else if (rightBrewingAnimator)
                 {
                     player.anim.CrossFadeInFixedTime(BP_Barista_Brew_Start_RightHash, CrossFadeDuration);
                     rightBrewingAnimator.CrossFadeInFixedTime(BP_Brewer_Start_RightHash, CrossFadeDuration);
-                    
+                    GetComponentInParent<CameraStation1>().SwitchCameraOn();
                 }
 
                 StartCoroutine(LerpPlayerToLerpingPoint(playerLerpingPosition.position, playerLerpingPosition.rotation, playerLerpingDuration, player));
@@ -307,6 +313,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
         // updateplayer reaches exactly the target position
         player.transform.position = new Vector3(lerpPosition.x, player.transform.position.y, lerpPosition.z);
         player.transform.rotation = targetRotation;
+
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -316,13 +323,14 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
     }
 
     public void MinigameEnded()
-    { 
+    {
         if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstDrinkReady)
             TutorialManager.Instance.FirstDrinkReady();
 
         PickCupAnimationServerRpc();// plays animation and sets cup in hand (SetIngredientParent(player))
         MinigameDoneServerRpc();
         PrintHeldIngredientList();
+
     }
 
     public void InteractLogicPlaceObjectOnBrewing()
@@ -429,7 +437,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
         ingredientSOList.Clear();
     }
 
-    [ServerRpc(RequireOwnership =false)]
+    [ServerRpc(RequireOwnership = false)]
     private void PickCupAnimationServerRpc()
     {
         PickCupAnimationClientRpc();
@@ -453,11 +461,13 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
         {
             leftBrewingAnimator.CrossFadeInFixedTime(BP_Barista_Brewer_End_LeftHash, CrossFadeDuration);
             currentPlayerController.anim.CrossFadeInFixedTime(BP_Barista_Brew_End_LeftHash, CrossFadeDuration);
-        }
+            GetComponentInParent<CameraStation1>().SwitchCameraOff();
+        }    
         else if (rightBrewingAnimator)
         {
             rightBrewingAnimator.CrossFadeInFixedTime(BP_Brewer_End_RightHash, CrossFadeDuration);
-            currentPlayerController.anim.CrossFadeInFixedTime(BP_Barista_Brew_End_RighttHash, CrossFadeDuration); 
+            currentPlayerController.anim.CrossFadeInFixedTime(BP_Barista_Brew_End_RighttHash, CrossFadeDuration);
+            GetComponentInParent<CameraStation1>().SwitchCameraOff();  
         }
 
         yield return new WaitForSeconds(1.0f);
@@ -510,6 +520,10 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
         liquidFloorPlate.SetEmissive(false);
         coffeeBeanFloorPlate.SetEmissive(false);
         sweetenerFloorPlate.SetEmissive(false);
+        bioBuldge.SetBuldge(false);
+        liquidBuldge.SetBuldge(false);
+        beanBuldge.SetBuldge(false);
+        sweetenerBuldge.SetBuldge(false);
     }
 
     private void TurnOnEmissive(IngredientSO ingredientSO)
@@ -529,6 +543,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
                     sweetenerTubing[i].SetEmissive(true);
                 }
                 sweetenerFloorPlate.SetEmissive(true);
+                sweetenerBuldge.SetBuldge(true);
                 break;
             case "Milk":
                 for (int i = 0; i < liquidTubing.Length; i++)
@@ -536,6 +551,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
                     liquidTubing[i].SetEmissive(true);
                 }
                 liquidFloorPlate.SetEmissive(true);
+                liquidBuldge.SetBuldge(true);
                 break;
             case "BioMatter":
                 for (int i = 0; i < bioMatterTubing.Length; i++)
@@ -543,6 +559,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
                     bioMatterTubing[i].SetEmissive(true);
                 }
                 bioMatterFloorPlate.SetEmissive(true);
+                bioBuldge.SetBuldge(true);
                 break;
             case "CoffeeGrind":
                 for (int i = 0; i < coffeeBeanTubing.Length; i++)
@@ -550,6 +567,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
                     coffeeBeanTubing[i].SetEmissive(true);
                 }
                 coffeeBeanFloorPlate.SetEmissive(true);
+                beanBuldge.SetBuldge(true);
                 break;
             default:
                 Debug.LogWarning("Emissive tag wrong");

@@ -9,6 +9,12 @@ public class RandomEventBase : NetworkBehaviour
     //private bool isEvent;
     private NetworkVariable<bool> isEvent = new NetworkVariable<bool>(false);
     [SerializeField] protected FullScreenEffectController screenEffect;
+
+    protected virtual void Start()
+    {
+      
+    }
+
     public RandomEventSO GetRandomEvent()
     {
         return RandomEventSO;

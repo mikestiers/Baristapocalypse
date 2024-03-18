@@ -17,19 +17,19 @@ public class RadioStation : BaseStation
     [SerializeField] private AudioClip BrokenSound;
     [SerializeField] private ParticleSystem interactParticle; // NOte could be deleted later
     [SerializeField] private GameObject eventLight;
-    bool eventIsOn = false;
+    [SerializeField] private NetworkVariable<bool> eventIsOn = new NetworkVariable<bool>(false);
     private int AudioIndex = 0;
 
     public override void Interact(PlayerController player)
     {
-        if (eventIsOn == false) ChangeSongDownServerRpc();
-        else if (eventIsOn == true) { MoveSlider(-1); }
+        if (eventIsOn.Value == false) ChangeSongDownServerRpc();
+        else if (eventIsOn.Value == true) { MoveSlider(-1); }
     }
 
     public override void InteractAlt(PlayerController player)
     {
-        if (eventIsOn == false) ChangeSongUpServerRpc(); 
-        else if (eventIsOn == true) { MoveSlider(1); }
+        if (eventIsOn.Value == false) ChangeSongUpServerRpc(); 
+        else if (eventIsOn.Value == true) { MoveSlider(1); }
     }
 
     [ServerRpc(RequireOwnership = false)] 
@@ -46,12 +46,10 @@ public class RadioStation : BaseStation
 
     private void ChangeSongDown()
     {
-        {
-          AudioIndex++;
-          AudioIndex %= Audios.Length; // should loop
-          MainAudio.clip = Audios[AudioIndex];
-          MainAudio.Play();
-        }
+        AudioIndex++;
+        AudioIndex %= Audios.Length; // should loop
+        MainAudio.clip = Audios[AudioIndex];
+        MainAudio.Play();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -68,57 +66,65 @@ public class RadioStation : BaseStation
 
     private void ChangeSongUp() 
     {
-   
-        {
-          AudioIndex--;
-          AudioIndex = (AudioIndex + Audios.Length) % Audios.Length; // should loop
-          MainAudio.clip = Audios[AudioIndex];
-          MainAudio.Play();
-        }
-        
-    }
-
-    [ClientRpc]
-    public void EventOnClientRpc()
-    {
-        EventOn();
-    }
-
-    public void EventOn() 
-    {
-        screenEffect.ToggleRadioEffect(eventIsOn);
-        eventIsOn = true;
-        MainAudio.clip = BrokenSound;
+        AudioIndex--;
+        AudioIndex = (AudioIndex + Audios.Length) % Audios.Length; // should loop
+        MainAudio.clip = Audios[AudioIndex];
         MainAudio.Play();
-        eventLight.SetActive(true);
-        ChangeRandomTextColorPair();
-        Ui.gameObject.SetActive(true);
         
+    }
+
+    public void EventOn()
+    {
+        EventOnServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void EventOffServerRpc()
+    private void EventOnServerRpc()
     {
+        eventIsOn.Value = true;
+        ChangeRandomTextColorPair();
+        EventOnClientRpc();
+    }
+
+    [ClientRpc]
+    private void EventOnClientRpc()
+    {
+        screenEffect.ToggleRadioEffect(eventIsOn.Value);
+        MainAudio.clip = BrokenSound;
+        MainAudio.Play();
+        eventLight.SetActive(true);
+        Ui.gameObject.SetActive(true);
+    }
+
+    
+
+    public void EventOff()
+    {
+        EventOffServerRpc();
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    private void EventOffServerRpc()
+    {
+        GameManager.Instance.isEventActive.Value = false;
+        eventIsOn.Value = false;
         EventOffClientRpc();
     }
 
     [ClientRpc]
-    public void EventOffClientRpc()
+    private void EventOffClientRpc()
     {
-        EventOff();
-    }
-
-    public void EventOff() 
-    {
-        eventIsOn = false;
-        screenEffect.ToggleRadioEffect(eventIsOn);
+        textPairs[currentRandomIndex].text1.color = Color.white;
+        textPairs[currentRandomIndex].text2.color = Color.white;
+        screenEffect.ToggleRadioEffect(eventIsOn.Value);
         eventLight.SetActive(false);
-        GameManager.Instance.isEventActive.Value = false;
         MainAudio.clip = Audios[AudioIndex];
         MainAudio.Play();
         Ui.gameObject.SetActive(false);
     }
 
+    
 
     [SerializeField] private Slider slider;
     [SerializeField] private float moveSpeed = 1f; // Speed at which the slider moves
@@ -151,7 +157,7 @@ public class RadioStation : BaseStation
 
     public List<TextPair> textPairs = new List<TextPair>();
 
-    void Start()
+    private void Start()
     {
         // Set up slider
         slider.minValue = 0f;
@@ -161,20 +167,19 @@ public class RadioStation : BaseStation
 
     }
 
-  
-
-    void ChangeRandomTextColorPair()
+    private void ChangeRandomTextColorPair()
     {
+        ChangeRandomTextColorPairServerRpc();
+    }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void ChangeRandomTextColorPairServerRpc()
+    {
         if (textPairs.Count > 0)
         {
             // Choose a random index within the list
-           currentRandomIndex = RandomNumber(); Debug.LogWarning("current random Index" + currentRandomIndex);
-
-            // Change the text color of both TextMeshProUGUI objects in the randomly selected pair to red
-            textPairs[currentRandomIndex].text1.color = Color.red;
-            textPairs[currentRandomIndex].text2.color = Color.red;
-            currentGoal = textPairs[currentRandomIndex].goalValue;
+            int randomNum = RandomNumber();
+            ChangeRandomTextColorPairClientRpc(randomNum);
         }
         else
         {
@@ -182,13 +187,26 @@ public class RadioStation : BaseStation
         }
     }
 
+    [ClientRpc]
+    private void ChangeRandomTextColorPairClientRpc(int index)
+    {
+        // Change the text color of both TextMeshProUGUI objects in the randomly selected pair to red
+        currentRandomIndex = index;
+        textPairs[index].text1.color = Color.red;
+        textPairs[index].text2.color = Color.red;
+        currentGoal = textPairs[index].goalValue;
+    }
+
+
     private int RandomNumber() 
     {
         int randomIndex = Random.Range(0, textPairs.Count);
         return randomIndex;
     }
 
-    void MoveSlider(int direction)
+
+
+    private void MoveSlider(int direction)
     {
         slider.value = Mathf.Clamp(slider.value + direction, slider.minValue, slider.maxValue);
 
@@ -196,18 +214,12 @@ public class RadioStation : BaseStation
         rotatingImage.transform.rotation = Quaternion.Euler(0f, 0f, rotationAngle);
 
         // Check if the slider value matches any of the goal values
-        
+        if (slider.value == currentGoal)
         {
-            if (slider.value == currentGoal)
-            {
-                Debug.LogWarning("has entered white");// Turn text color white for the pair
-                textPairs[currentRandomIndex].text1.color = Color.white;
-                textPairs[currentRandomIndex].text2.color = Color.white;
-
-                EventOffServerRpc();
-            }
+            EventOff();
         }
     }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player")
@@ -217,7 +229,7 @@ public class RadioStation : BaseStation
             //Display UI ingredient menu
             if (player.IsLocalPlayer)
             {
-                if(eventIsOn == true) 
+                if(eventIsOn.Value == true) 
                 {
                     GetComponentInParent<CameraStation1>().SwitchCameraOn(); 
                 }
@@ -234,10 +246,7 @@ public class RadioStation : BaseStation
 
             if (player.IsLocalPlayer )
             {
-               if (eventIsOn == false) 
-                {
-                    GetComponentInParent<CameraStation1>().SwitchCameraOff();
-                }
+                GetComponentInParent<CameraStation1>().SwitchCameraOff();
             }
         }
     }

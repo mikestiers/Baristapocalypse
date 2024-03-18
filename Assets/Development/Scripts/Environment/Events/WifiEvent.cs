@@ -19,9 +19,10 @@ public class WifiEvent : MonoBehaviour
     {
         if (other.GetComponent<PlayerController>())
         {
-           
-            DeactivateRandomEvent();
-            
+            if(GameManager.Instance.isWifiEvent.Value)
+            {
+                DeactivateRandomEvent();
+            }
         }
     }
 
@@ -32,18 +33,6 @@ public class WifiEvent : MonoBehaviour
 
     private void DeactivateRandomEvent()
     {
-
         Wifi.WifiEventIsDone();
-      // GameManager.Instance.isEventActive = false;
-      // RandomEventBase randomEvent = GameManager.Instance.currentRandomEvent;
-      //
-      // if (!randomEvent.GetNetworkObject().IsSpawned)
-      // {
-      //     randomEvent.GetNetworkObject().Spawn();
-      // }
-      //
-      // //  Debug.LogWarning("DeactivateRandomEvent " + randomEvent.name);
-      //  randomEvent.SetEventBool(false);
-      //  randomEvent.ActivateDeactivateEvent();
     }
 }

@@ -701,8 +701,6 @@ public class CustomerBase : Base
     IEnumerator DeadTimer()
     {
         yield return new WaitForSeconds(deadTimerSeconds);
-        CustomerManager.Instance.LineQueue.GetFirstInQueue(); // moves everyone up one and pops out position 0
-        CustomerManager.Instance.LineQueue.RemoveFromQueue(this);
         Destroy(gameObject);
     }
 
