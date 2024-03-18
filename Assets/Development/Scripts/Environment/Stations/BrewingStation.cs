@@ -15,7 +15,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
     public event EventHandler<IHasMinigameTiming.OnMinigameTimingEventArgs> OnMinigameTimingStarted;
 
     //[SerializeField] private MinigameQTE minigameQTE;
- 
+
     [Header("Visuals")]
     [SerializeField] private ParticleSystem interactParticle;
     [SerializeField] private Transform playerLerpingPosition;
@@ -79,6 +79,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
 
     private const float CrossFadeDuration = 0.1f;
     private float animationWaitTime;
+    private PlayerController player;
 
     private NetworkVariable<bool> isminigameEnded = new NetworkVariable<bool>(true);
 
@@ -214,7 +215,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
 
         minigameTimer.Value = 0f;
         isMinigameRunning.Value = true;
-        
+
         sweetSpotPosition.Value = UnityEngine.Random.Range(minSweetSpotPosition, maxSweetSpotPosition);
     }
 
@@ -308,7 +309,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
         // updateplayer reaches exactly the target position
         player.transform.position = new Vector3(lerpPosition.x, player.transform.position.y, lerpPosition.z);
         player.transform.rotation = targetRotation;
-        
+
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -318,14 +319,14 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
     }
 
     public void MinigameEnded()
-    { 
+    {
         if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstDrinkReady)
             TutorialManager.Instance.FirstDrinkReady();
 
         PickCupAnimationServerRpc();// plays animation and sets cup in hand (SetIngredientParent(player))
         MinigameDoneServerRpc();
         PrintHeldIngredientList();
-      
+
     }
 
     public void InteractLogicPlaceObjectOnBrewing()
@@ -432,7 +433,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
         ingredientSOList.Clear();
     }
 
-    [ServerRpc(RequireOwnership =false)]
+    [ServerRpc(RequireOwnership = false)]
     private void PickCupAnimationServerRpc()
     {
         PickCupAnimationClientRpc();
@@ -457,12 +458,12 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
             leftBrewingAnimator.CrossFadeInFixedTime(BP_Barista_Brewer_End_LeftHash, CrossFadeDuration);
             currentPlayerController.anim.CrossFadeInFixedTime(BP_Barista_Brew_End_LeftHash, CrossFadeDuration);
             GetComponentInParent<CameraStation1>().SwitchCameraOff();
-        }
+        }    
         else if (rightBrewingAnimator)
         {
             rightBrewingAnimator.CrossFadeInFixedTime(BP_Brewer_End_RightHash, CrossFadeDuration);
             currentPlayerController.anim.CrossFadeInFixedTime(BP_Barista_Brew_End_RighttHash, CrossFadeDuration);
-            GetComponentInParent<CameraStation1>().SwitchCameraOff();
+            GetComponentInParent<CameraStation1>().SwitchCameraOff();  
         }
 
         yield return new WaitForSeconds(1.0f);
