@@ -7,8 +7,14 @@ public class RandomEventEffects : NetworkBehaviour
 {
     [SerializeField] private GameObject gravityLights;
     [SerializeField] private FullScreenEffectController screenFX;
+
+    public void TurnOnOffEventEffect(bool trueOrFalse)
+    {
+        TurnOnOffEventEffectServerRpc(trueOrFalse);
+    }
+
     [ServerRpc(RequireOwnership = false)]
-    public void TurnOnOffEventEffectServerRpc(bool trueOrFalse)
+    private void TurnOnOffEventEffectServerRpc(bool trueOrFalse)
     {
         TurnOnOffEventEffectClientRpc(trueOrFalse);
     }
@@ -16,13 +22,9 @@ public class RandomEventEffects : NetworkBehaviour
     [ClientRpc]
     private void TurnOnOffEventEffectClientRpc(bool trueOrFalse)
     {
-        TurnOnOffEventEffect(trueOrFalse);
-    }
-
-    private void TurnOnOffEventEffect(bool trueOrFalse)
-    {
         gravityLights.SetActive(trueOrFalse);
         screenFX.ToggleGravityEffect(trueOrFalse);
-        
     }
+
+    
 }

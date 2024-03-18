@@ -53,7 +53,7 @@ public class GravityStation : NetworkBehaviour
         GravityStorm gravityStorm = randomEvent.gameObject.GetComponent<GravityStorm>();
         if (gravityStorm != null)
         {
-            GameManager.Instance.randomEventEffects.TurnOnOffEventEffectServerRpc(false);
+            GameManager.Instance.randomEventEffects.TurnOnOffEventEffect(false);
             // Populate objectsToMoveList before conversion
             gravityStorm.objectsToMoveList.Clear(); // Clear the list before populating
             foreach (var obj in gravityStorm.objectsToMove)
