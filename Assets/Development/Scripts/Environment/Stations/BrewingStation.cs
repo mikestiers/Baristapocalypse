@@ -327,7 +327,8 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
         if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstDrinkReady)
             TutorialManager.Instance.FirstDrinkReady();
 
-        PickCupAnimationServerRpc();// plays animation and sets cup in hand (SetIngredientParent(player))
+        //PickCupAnimationServerRpc();// plays animation and sets cup in hand (SetIngredientParent(player))
+        PickCupAnimation();
         MinigameDoneServerRpc();
         PrintHeldIngredientList();
 
@@ -437,6 +438,11 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
         ingredientSOList.Clear();
     }
 
+    private void PickCupAnimation()
+    {
+        PickCupAnimationServerRpc();
+    }
+
     [ServerRpc(RequireOwnership = false)]
     private void PickCupAnimationServerRpc()
     {
@@ -445,11 +451,6 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
 
     [ClientRpc]
     private void PickCupAnimationClientRpc()
-    {
-        PickCupAnimation();
-    }
-
-    private void PickCupAnimation()
     {
         StartCoroutine(ResetAnimation());
     }
@@ -481,14 +482,15 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
         animationSwitch?.Invoke();
         currentPlayerController.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None | RigidbodyConstraints.None | RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY;
         currentPlayerController.movementToggle = true;
-        currentPlayerController = null;
-        SetIsMinigameEndedServerRpc(true);
 
         //If player get to this point and loose reference to the coffee cup reset animation
         if (!currentPlayerController.HasIngredient())
         {
             animationSwitch?.Invoke();
         }
+
+        currentPlayerController = null;
+        SetIsMinigameEndedServerRpc(true);
     }
 
     private void TurnAllEmissiveOff()

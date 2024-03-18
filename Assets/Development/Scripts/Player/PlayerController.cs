@@ -984,13 +984,25 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
     public void OnAnimationSwitch()
     {
+        OnAnimationSwitchServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void OnAnimationSwitchServerRpc()
+    {
+        OnAnimationSwitchClientRpc();
+    }
+
+    [ClientRpc]
+    private void OnAnimationSwitchClientRpc()
+    {
         if (!movementToggle) movementToggle = true;
 
         if (HasIngredient())
         {
             anim.CrossFadeInFixedTime(MovementWithCupHash, CrossFadeDuration);
         }
-        else if(GetPickup()!= null && GetPickup().GetPickupObjectSo().objectName == mopSoName)
+        else if (GetPickup() != null && GetPickup().GetPickupObjectSo().objectName == mopSoName)
         {
             anim.CrossFadeInFixedTime(MovementWithVacHash, CrossFadeDuration);
         }
@@ -1003,6 +1015,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
             anim.CrossFadeInFixedTime(MovementHash, CrossFadeDuration);
         }
     }
+
 
     // Play trash pick up and set trash parent while new player statemachine is done
     private IEnumerator PickUpAnimation(Pickup pickup)
