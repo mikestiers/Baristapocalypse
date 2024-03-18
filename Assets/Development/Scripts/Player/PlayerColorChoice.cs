@@ -12,12 +12,6 @@ public class PlayerColorChoice : MonoBehaviour
     public Material ringMaterial;
     public string intersectionColorPropertyName = "_Intersection_color";
     public Color intersectionColor;
-<<<<<<< HEAD
-
-   [SerializeField] private GameObject fireworks;
-   [SerializeField] private float FXTime;
-=======
->>>>>>> parent of 582d6a99 (Merge pull request #550 from mikestiers/redoing-cusVFX)
 
     // Start is called before the first frame update
     private void Awake()

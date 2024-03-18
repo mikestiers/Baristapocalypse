@@ -13,13 +13,10 @@ public class WifiStation : RandomEventBase
     public static event WifiEventHandler OnWifiEventStarting;
     public static event WifiEventHandler OnWifiEventStopping;
 
-<<<<<<< HEAD
     protected override void Start()
     {
         base.Start();
     }
-=======
->>>>>>> parent of 582d6a99 (Merge pull request #550 from mikestiers/redoing-cusVFX)
     public void WifiEventIsDone()
     {
         WifiEventIsDoneServerRpc();
@@ -39,10 +36,6 @@ public class WifiStation : RandomEventBase
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.wifiOn);
         screenEffect.ToggleWifiEffect(iseventover.Value);
-<<<<<<< HEAD
-        //fx.StartnEndFireworks();
-=======
->>>>>>> parent of 582d6a99 (Merge pull request #550 from mikestiers/redoing-cusVFX)
         eventLight.SetActive(false);
         Debug.Log("Wifi event is done");
         ChangeColorBasedOnEvent(true);
