@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -10,6 +9,7 @@ public class RandomEventBase : NetworkBehaviour
     //private bool isEvent;
     private NetworkVariable<bool> isEvent = new NetworkVariable<bool>(false);
     [SerializeField] protected FullScreenEffectController screenEffect;
+<<<<<<< HEAD
     protected PlayerColorChoice fx;
 
     protected virtual void Start()
@@ -17,6 +17,8 @@ public class RandomEventBase : NetworkBehaviour
         fx = FindObjectOfType<PlayerColorChoice>();
     }
 
+=======
+>>>>>>> parent of 582d6a99 (Merge pull request #550 from mikestiers/redoing-cusVFX)
     public RandomEventSO GetRandomEvent()
     {
         return RandomEventSO;

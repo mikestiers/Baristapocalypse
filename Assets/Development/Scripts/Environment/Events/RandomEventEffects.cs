@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -8,12 +7,6 @@ public class RandomEventEffects : NetworkBehaviour
 {
     [SerializeField] private GameObject gravityLights;
     [SerializeField] private FullScreenEffectController screenFX;
-    [SerializeField] private PlayerColorChoice fx;
-
-    private void Start()
-    {
-        fx = FindObjectOfType<PlayerColorChoice>();
-    }
     [ServerRpc(RequireOwnership = false)]
     public void TurnOnOffEventEffectServerRpc(bool trueOrFalse)
     {
