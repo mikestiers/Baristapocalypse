@@ -21,7 +21,7 @@ public class AudioClipRefsSO : ScriptableObject
     [Header("PlayerSounds")]
     public AudioClip dash;
     public AudioClip jump;
-    public AudioClip playerFootsteps;
+    public AudioClip[] playerFootsteps;
     public AudioClip mopping;
     public AudioClip slipOnSpill;
     public List<AudioClip> spills;
@@ -49,6 +49,7 @@ public class AudioClipRefsSO : ScriptableObject
     public AudioClip doorOpen;
     public AudioClip doorClose;
     [Header("Customer Interactions")]
+    public AudioClip[] customerFootsteps;
     public AudioClip takeOrder;
     public AudioClip interactCustomer;
     public AudioClip failedInteration;
