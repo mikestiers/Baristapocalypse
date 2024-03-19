@@ -72,6 +72,8 @@ public class GameManager : NetworkBehaviour
 
     public MoneySystem moneySystem;
 
+    private bool countdownSoundStarted;
+
     //bool for endgame -> please update code
     public bool iSEndGame = false;
 
@@ -181,6 +183,11 @@ public class GameManager : NetworkBehaviour
 
             case GameState.CountdownToStart:
                 countdownToStartTimer.Value -= Time.deltaTime;
+                if (countdownSoundStarted != true)
+                {
+                    SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.fiveSecCountdown, 0.2f);
+                    countdownSoundStarted = true;
+                }
                 if (countdownToStartTimer.Value < 0f)
                 {
                     gameState.Value = GameState.GamePlaying;
@@ -200,7 +207,7 @@ public class GameManager : NetworkBehaviour
                 if (iSEndGame == true) gameState.Value = GameState.GameOver;
 
                 timeSinceStart += Time.deltaTime;
-
+                countdownSoundStarted = false;
 
                 if (currentDifficulty != null)
                 {

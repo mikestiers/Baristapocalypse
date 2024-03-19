@@ -98,13 +98,17 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
     private readonly int BP_Barista_Throw_CustHash = Animator.StringToHash("BP_Barista_Throw_Cust");
     private readonly int BP_Barista_Cleaning_VacHash = Animator.StringToHash("BP_Barista_Cleaning_Vac");
 
-    private bool isAnimating = false;
+    [SerializeField]private bool isAnimating = false;
 
     private const float CrossFadeDuration = 0.1f;
 
     private CinemachineVirtualCamera virtualCamera;
     public PlayerColorChoice playerVisual;
     private bool tutorialMessageActive = false;
+
+    [Header("SoundStuff")]
+    public Transform listener; // The listener (usually the player)
+    private float maxSoundDistance = 30f; // Maximum distance at which the sound can be heard
 
     [HideInInspector]
     public Pickup Pickup
@@ -233,6 +237,32 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
 
         HandleExtraForces();
+
+        if (listener == null) // If listener is not set, use Camera.main as the listener
+        {
+            listener = Camera.main.transform;
+        }
+        GameObject[] customers = GameObject.FindGameObjectsWithTag("Customer");
+        if (customers != null)
+        {
+            for (int i = 0; i < customers.Length; i++)
+            {
+                float customerFootstepVolume;
+                float distanceFromCustomer = Vector3.Distance(transform.position, customers[i].transform.position);
+                if (distanceFromCustomer > maxSoundDistance)
+                {
+                    customerFootstepVolume = 0f;// Sound is beyond max distance, set volume to 0
+                    if (customers[i].GetComponentInChildren<Footstep>() != null)
+                        customers[i].GetComponentInChildren<Footstep>().volume = customerFootstepVolume;
+                }
+                else
+                {
+                    customerFootstepVolume = 0.2f - (distanceFromCustomer / maxSoundDistance); // Linearly decrease volume based on distance
+                    if (customers[i].GetComponentInChildren<Footstep>() != null)
+                        customers[i].GetComponentInChildren<Footstep>().volume = customerFootstepVolume;
+                }
+            }
+        }
 
         if (SceneManager.GetActiveScene().name != Loader.Scene.T5M3_BUILD.ToString()) { return; }
 
@@ -491,7 +521,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         if (movementToggle)
             StartCoroutine(Dash());
-        //SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
         //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
 
         // left for testing just incase we need to change something
@@ -816,6 +846,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if(!HasNoIngredients)return;
         anim.CrossFadeInFixedTime(BP_Barista_Cleaning_VacHash, CrossFadeDuration);
         spill.Interact(this);
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.mopping);
 
         if (spill == null)
         {
@@ -829,15 +860,17 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if (HasPickup() || !HasNoIngredients || isAnimating == true)
             return;
 
-        isAnimating = true;
+       
         PickupSO pickupSo = pickup.GetPickupObjectSo();
 
         if (pickupSo != null)
         {
+            isAnimating = true;
             StartCoroutine(PickUpAnimation(pickup)); // Play trash pick up and set trash parent
         }
-        else if (pickup.IsCustomer && pickup.GetCustomer().makingAMess == true)
+        else if (pickup.IsCustomer && pickup.GetCustomer().makingAMess.Value == true)
         {
+            isAnimating = true;
             StartCoroutine(PickUpCustomerAnimation(pickup));
         }
 
@@ -1062,12 +1095,10 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is done
 
         pickup.GetNavMeshAgent().enabled = false;
-        pickup.GetCustomer().SetCustomerState(CustomerBase.CustomerState.PickedUp);
-        pickup.GetCustomer().isPickedUp = true;
+        pickup.GetCustomer().PickUp();
         pickup.SetPickupObjectParent(this);
         pickup.DisablePickupColliders(pickup);
-        pickup.GetCustomer().holdPoint.transform.localPosition = new Vector3(0, -3, 0);
-        pickup.GetCustomer().holdPoint.transform.localRotation = pickup.GetCustomer().transform.rotation;
+       
 
         if (pickup.GetCustomer().inLine == true)
         {
@@ -1120,7 +1151,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         anim.CrossFadeInFixedTime(BP_Barista_Throw_CupHash, CrossFadeDuration);
         movementToggle = false;
 
-        yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is done
+        yield return new WaitForSeconds(1.0f); // hard coded while new player statemachine is d one
 
         for (int i = 0; i < ingredientsList.Count; i++)
         {

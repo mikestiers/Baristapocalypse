@@ -3644,7 +3644,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1203842832793825525}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -3727,7 +3727,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1203910428734090083}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -3810,7 +3810,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1203913324863696013}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -3922,7 +3922,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1203934167668511975}
-  m_Mesh: {fileID: 4300010, guid: 0f647580c37a271478c42c6b15467c44, type: 3}
+  m_Mesh: {fileID: 0}
 --- !u!23 &1216863457602563239
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3930,7 +3930,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1203934167668511975}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -4013,7 +4013,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1204179182042779933}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -4096,7 +4096,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1204276076498573293}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -14013,7 +14013,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8946261014034885089}
-  m_Material: {fileID: 13400000, guid: 42d0bd083f916374aa4207c9d8c63929, type: 2}
+  m_Material: {fileID: 13400000, guid: cbd1a75fd331c8c4b953955d50412f04, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -14033,17 +14033,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stationTopPoint: {fileID: 0}
   screenEffect: {fileID: 0}
-  Audios:
-  - {fileID: 8300000, guid: 6947e887045360c42852565100349c6f, type: 3}
-  - {fileID: 8300000, guid: c288b79df0c2f0f4ebd6d42695f1141c, type: 3}
-  - {fileID: 8300000, guid: c6594339a628ced4da750a0ea18f260a, type: 3}
-  - {fileID: 8300000, guid: f258a932ba21dd84697b0a2922d28626, type: 3}
-  - {fileID: 8300000, guid: 4edf0381dba74a5489e8a65d8da7a154, type: 3}
+  musicRefsSO: {fileID: 0}
+  currentSong: {fileID: 0}
+  Stations: []
   MainAudio: {fileID: 0}
   ChangeSound: {fileID: 8300000, guid: 1bd65760e3c80af47a69fef9fe9c91b5, type: 3}
   BrokenSound: {fileID: 8300000, guid: 6139dbe5288e8844c9ed2d6c3c5470cd, type: 3}
   interactParticle: {fileID: 6650199810314842004, guid: 3b7f2c753d435d647a80f1f047a113e3, type: 3}
   eventLight: {fileID: 1784490655}
+  eventIsOn:
+    m_InternalValue: 0
   slider: {fileID: 1395824880}
   moveSpeed: 1
   box: {fileID: 2161829252158180022}

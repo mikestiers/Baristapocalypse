@@ -7,15 +7,35 @@ using UnityEngine.Audio;
 public class SoundManager : Singleton<SoundManager>
 {
     public AudioClipRefsSO audioClipRefsSO;
-    List<AudioSource> currentAudioSources = new List<AudioSource>();
+    public List<AudioSource> currentAudioSources = new List<AudioSource>();
 
     public AudioMixerGroup sFXMixerGroup;
+    public AudioMixerGroup voicesMixerGroup;
 
 
     // Start is called before the first frame update
     void Start()
     {
         currentAudioSources.Add(gameObject.GetComponent<AudioSource>());
+    }
+
+    public void PlayOneShot(AudioClip clip, AudioMixerGroup audioMixerGroup)
+    {
+        foreach (AudioSource source in currentAudioSources)
+        {
+            if (source.isPlaying)
+            {
+                break;
+            }
+            source.PlayOneShot(clip);
+            return;
+        }
+
+        AudioSource temp = gameObject.AddComponent<AudioSource>();
+        temp.outputAudioMixerGroup = audioMixerGroup;
+        currentAudioSources.Add(temp);
+        temp.PlayOneShot(clip);
+        StartCoroutine(WaitForOneShot(clip,temp));
     }
 
     public void PlayOneShot(AudioClip clip)
@@ -34,7 +54,47 @@ public class SoundManager : Singleton<SoundManager>
         temp.outputAudioMixerGroup = sFXMixerGroup;
         currentAudioSources.Add(temp);
         temp.PlayOneShot(clip);
-        StartCoroutine(WaitForOneShot(clip,temp));
+        StartCoroutine(WaitForOneShot(clip, temp));
+    }
+
+    public void PlayOneShot(AudioClip clip, float volume)
+    {
+        foreach (AudioSource source in currentAudioSources)
+        {
+            if (source.isPlaying)
+            {
+                break;
+            }
+            source.PlayOneShot(clip, volume);
+            return;
+        }
+
+        AudioSource temp = gameObject.AddComponent<AudioSource>();
+        temp.outputAudioMixerGroup = sFXMixerGroup;
+        temp.volume = volume;
+        currentAudioSources.Add(temp);
+        temp.PlayOneShot(clip);
+        StartCoroutine(WaitForOneShot(clip, temp));
+    }
+
+    public AudioSource PlayOneShot(AudioClip clip, bool returnBool)
+    {
+        foreach (AudioSource source in currentAudioSources)
+        {
+            if (source.isPlaying)
+            {
+                break;
+            }
+            source.PlayOneShot(clip);
+            return source;
+        }
+
+        AudioSource temp = gameObject.AddComponent<AudioSource>();
+        temp.outputAudioMixerGroup = sFXMixerGroup;
+        currentAudioSources.Add(temp);
+        temp.PlayOneShot(clip);
+        StartCoroutine(WaitForOneShot(clip, temp));
+        return temp;
     }
 
     IEnumerator WaitForOneShot(AudioClip clip, AudioSource audioSource)
