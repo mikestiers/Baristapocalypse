@@ -8,13 +8,21 @@ public class PingManager : Singleton<PingManager>
     public GameObject pingIndicator; // The ping visual prefab
     public ParticleSystem pingEffect; // The ping effect
 
+    public void Start()
+    {
+        if (BaristapocalypseMultiplayer.playMultiplayer)
+        {
+            Destroy(this);
+        }
+    }
+
     public void CreatePing(GameObject target)
     {
         if (target != null && pingIndicator != null)
         {
             Bounds bounds = GetBounds(target);
             float targetHeight = bounds.size.y;
-            Vector3 instantiatePosition = target.transform.position + new Vector3(0, targetHeight / 2, 0);
+            Vector3 instantiatePosition = target.transform.position + new Vector3(0, 0, 0);
             Instantiate(pingIndicator, instantiatePosition, target.transform.rotation, target.transform);
             if (pingEffect != null)
             {
