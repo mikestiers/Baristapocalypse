@@ -104,7 +104,6 @@ public class FullScreenEffectController : MonoBehaviour
     public void ToggleWifiEffect(bool activate)
     {
         activeEffect = activate;
-        StopAllCoroutines();
         if (activeEffect == false)
         {
             activeEffect = true;
@@ -160,7 +159,6 @@ public class FullScreenEffectController : MonoBehaviour
     public void ToggleGravityEffect(bool activate)
     {
         activeEffect = activate;
-        StopAllCoroutines();
         if (activeEffect == true)
         {
             activeEffect = true;
