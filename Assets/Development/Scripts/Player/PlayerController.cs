@@ -846,6 +846,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if(!HasNoIngredients)return;
         anim.CrossFadeInFixedTime(BP_Barista_Cleaning_VacHash, CrossFadeDuration);
         spill.Interact(this);
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.mopping);
 
         if (spill == null)
         {
