@@ -8,7 +8,7 @@ public class PingCollider : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Destroy(gameObject); // Destroy this GameObject
+            Destroy(gameObject);
         }
     }
 }
