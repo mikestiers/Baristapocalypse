@@ -174,18 +174,6 @@ public class GameManager : NetworkBehaviour
     private void Update()
     {
         if (!IsServer) { return; }
-
-        // Temporary for Testing Random Events
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            TriggerRandomEvent();
-
-            //Debug.Log("randomEventObject " + randomEventList[0].name); 
-            //randomEventList[0].SetEventBool(true);
-            //randomEventList[0].ActivateDeactivateEvent();
-
-        }
-
         switch (gameState.Value) 
         { 
             case GameState.WaitingToStart:
