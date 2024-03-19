@@ -426,5 +426,18 @@ public class CustomerManager : Singleton<CustomerManager>
     {
         return customerLeave.Value;
     }
+
+    public CustomerBase GetCustomerByNumber(int orderNumber)
+    {
+        CustomerBase[] customers = FindObjectsOfType<CustomerBase>();
+
+        foreach (CustomerBase customer in customers)
+        {
+            if (customer.customerNumber.Value == orderNumber)
+                return customer;
+        }
+
+        return null;
+    }
 }
 

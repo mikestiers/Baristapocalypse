@@ -15,7 +15,7 @@ public class PingManager : Singleton<PingManager>
             Bounds bounds = GetBounds(target);
             float targetHeight = bounds.size.y;
             Vector3 instantiatePosition = target.transform.position + new Vector3(0, targetHeight / 2, 0);
-            Instantiate(pingIndicator, instantiatePosition, target.transform.rotation);
+            Instantiate(pingIndicator, instantiatePosition, target.transform.rotation, target.transform);
             if (pingEffect != null)
             {
                 pingEffect.Play();
@@ -38,13 +38,5 @@ public class PingManager : Singleton<PingManager>
         }
 
         return new Bounds();
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            Destroy(gameObject); // Destroy this GameObject
-        }
     }
 }
