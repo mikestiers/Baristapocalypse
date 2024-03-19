@@ -153,7 +153,7 @@ public class Pickup : NetworkBehaviour
 
     public void ClearPickupOnParent()
     {
-        pickupObjectParent.ClearPickup();
+        if(pickupObjectParent != null) pickupObjectParent.ClearPickup();
     }
 
     public NetworkObject GetNetworkObject()

@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 287560339212257430}
   - component: {fileID: 287560339212257425}
   - component: {fileID: 287560339212257424}
-  - component: {fileID: 7340530932157842826}
+  - component: {fileID: 3197626166305169383}
+  - component: {fileID: 2770639662035932356}
   m_Layer: 0
   m_Name: CleanupBot
   m_TagString: Untagged
@@ -134,10 +135,28 @@ MonoBehaviour:
   playerTransform: {fileID: 0}
   distance: 30
   distToNextNode: 0.1
-  trashCounter: 0
-  _currentState: 0
+  trashCounter:
+    m_InternalValue: 0
+  _currentState:
+    m_InternalValue: 0
   path: []
---- !u!114 &7340530932157842826
+--- !u!114 &3197626166305169383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 287560339212257426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+--- !u!114 &2770639662035932356
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

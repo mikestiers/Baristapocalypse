@@ -1,20 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 using UnityEngine.AI;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class CleanupBot : MonoBehaviour
+public class CleanupBot : NetworkBehaviour
 {
     public UnityEvent<BotState, GameObject> onStateChanged;
     private NavMeshAgent agent;
 
+    [SerializeField] private GameObject[] nodes;
     [SerializeField] private GameObject trashStation;
     [SerializeField] private Transform playerTransform;
     [SerializeField] private float distance = 30f;
     [SerializeField] private float distToNextNode = 0.1f;
-    [SerializeField] private int trashCounter = 0;
+    [SerializeField] private NetworkVariable<int> trashCounter = new NetworkVariable<int>(0);
     private RoombotConsole console;
 
     public enum BotState
@@ -33,7 +35,7 @@ public class CleanupBot : MonoBehaviour
         set
         {
             _currentState = value;
-            onStateChanged.Invoke(_currentState, gameObject);
+            onStateChanged?.Invoke(_currentState, gameObject);
             if (console != null) console.SetUIBotMode(_currentState.ToString());
         }
     }
@@ -48,19 +50,17 @@ public class CleanupBot : MonoBehaviour
 
         if (path.Length <= 0)
         {
-            path = GameObject.FindGameObjectsWithTag("Node");
+            path = nodes;
+            agent.SetDestination(path[pathIndex].transform.position);
         }
     }
 
     private void Update()
     {
-        GameObject[] messes = GameObject.FindGameObjectsWithTag("Mess");
-        GameObject nearestMess = FindNearestMessOnFloor(messes);
-
-        switch (currentState)
+        switch (_currentState)
         {
             case BotState.Cleanup:
-                Cleaning(nearestMess);
+                Cleaning();
                 break;
 
             case BotState.Emptying:
@@ -68,7 +68,7 @@ public class CleanupBot : MonoBehaviour
                 break;
 
             case BotState.Roaming:
-                Roaming(nearestMess);
+                Roaming();
                 break;
 
             case BotState.Standby:
@@ -77,58 +77,83 @@ public class CleanupBot : MonoBehaviour
         }
     }
 
-    private void Roaming(GameObject nearestMess)
+    private void Roaming()
     {
-        
+        RoamingClientRpc();
+    }
+
+    [ClientRpc]
+    private void RoamingClientRpc()
+    {
+        GameObject[] messes = GameObject.FindGameObjectsWithTag("Mess");
+        GameObject nearestMess = FindNearestMessOnFloor(messes);
+
         if (nearestMess != null)
         {
-            currentState = BotState.Cleanup;
+            _currentState = BotState.Cleanup;
             agent.SetDestination(nearestMess.transform.position);
         }
-        else if (trashCounter > 3)
+        else if (trashCounter.Value > 3)
         {
-            currentState = BotState.Emptying;
+            _currentState = BotState.Emptying;
             agent.SetDestination(trashStation.transform.position);
         }
         else
         {
+            if (agent == null) return;
             if (agent.remainingDistance < distToNextNode)
             {
-                pathIndex++;
-                pathIndex %= path.Length;
-                agent.SetDestination(path[pathIndex].transform.position);
+                if (path != null)
+                {
+                    pathIndex++;
+                    pathIndex %= path.Length;
+                    agent.SetDestination(path[pathIndex].transform.position);
+                }
             }
         }
     }
 
-    private void Cleaning(GameObject nearestMess)
+    private void Cleaning()
     {
+        CleaningClientRpc();
+    }
+
+    [ClientRpc]
+    private void CleaningClientRpc()
+    {
+        GameObject[] messes = GameObject.FindGameObjectsWithTag("Mess");
+        GameObject nearestMess = FindNearestMessOnFloor(messes);
+
         if (nearestMess != null)
         {
             agent.SetDestination(nearestMess.transform.position);
         }
         else
         {
-            currentState = BotState.Roaming;
+            _currentState = BotState.Roaming;
         }
     }
 
     private void Emptying()
     {
+        EmptyingClientRpc();
+    }
+
+    [ClientRpc]
+    private void EmptyingClientRpc()
+    {
         agent.SetDestination(trashStation.transform.position);
         while (agent.pathPending && agent.remainingDistance > distToNextNode) return;
 
-        if (agent.remainingDistance < distToNextNode) 
+        if (agent.remainingDistance < distToNextNode)
         {
-            trashCounter = 0;
-            currentState = BotState.Standby;
-        } 
-      
+            trashCounter.Value = 0;
+            _currentState = BotState.Standby;
+        }
     }
-
     private void Standby()
     {
-        //TBD
+
     }
 
     private GameObject FindNearestMessOnFloor(GameObject[] messes)
@@ -163,9 +188,8 @@ public class CleanupBot : MonoBehaviour
 
             if (_CollidingPickup.Getpickup().objectName == "MessCup")
             {
-                GameObject messToDestroy = _CollidingPickup.gameObject;
-                trashCounter++;
-                Destroy(messToDestroy);
+                BaristapocalypseMultiplayer.Instance.DestroyPickup(_CollidingPickup);
+                trashCounter.Value++;
             }
         }
        
@@ -175,4 +199,5 @@ public class CleanupBot : MonoBehaviour
     {
         this.console = console;
     }
+
 }
