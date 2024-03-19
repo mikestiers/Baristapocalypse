@@ -257,7 +257,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
                 }
                 else
                 {
-                    customerFootstepVolume = 0.2f - (distanceFromCustomer / maxSoundDistance); // Linearly decrease volume based on distance
+                    customerFootstepVolume = 0.5f - (distanceFromCustomer / maxSoundDistance); // Linearly decrease volume based on distance
                     if (customers[i].GetComponentInChildren<Footstep>() != null)
                         customers[i].GetComponentInChildren<Footstep>().volume = customerFootstepVolume;
                 }
@@ -521,7 +521,7 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
 
         if (movementToggle)
             StartCoroutine(Dash());
-        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash);
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.dash, 0.5f);
         //Instantiate(spillPrefab.prefab, spillSpawnPoint.position, Quaternion.identity);
 
         // left for testing just incase we need to change something
