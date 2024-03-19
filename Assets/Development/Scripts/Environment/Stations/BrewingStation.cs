@@ -63,7 +63,9 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
     public delegate void OnBrewingEmptyHandler(object sender, EventArgs e);
     public event OnBrewingEmptyHandler OnBrewingEmpty;
 
+    //Audio Stuff
     private AudioSource brewingAudioSource;
+    private bool minigameResultSoundPlayed;
 
     // Animation interaction with brewing machine
     [Header("Animations")]
@@ -246,7 +248,7 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
             if (isMinigameRunning.Value)
             {
                 Debug.LogWarning("Ending Brewing minigame");
-                BrewingSoundStop(brewingAudioSource);
+                //BrewingSoundStop(brewingAudioSource);
                 SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.drinkReady);
                 float timingPressed = Mathf.Abs((minigameTimer.Value / maxMinigameTimer) - sweetSpotPosition.Value);
                 bool minigameResult = false;
@@ -254,16 +256,19 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
                 {
                     minigameResult = true;
                     SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.drinkMinigameHit);
+                    minigameResultSoundPlayed = true;
                 }
                 else if ((minigameTimer.Value / maxMinigameTimer) < sweetSpotPosition.Value)
                 {
                     minigameResult = false;
                     SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.drinkMinigameMiss);
+                    minigameResultSoundPlayed = true;
                 }
                 else if ((minigameTimer.Value / maxMinigameTimer) > sweetSpotPosition.Value)
                 {
                     minigameResult = false;
                     SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.drinkMinigameMiss);
+                    minigameResultSoundPlayed = true;
                 }
                 if (GetIngredient().GetComponent<CoffeeAttributes>() != null)
                 {
@@ -346,7 +351,12 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
     {
         if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstDrinkReady)
             TutorialManager.Instance.FirstDrinkReady();
-
+        BrewingSoundStop(brewingAudioSource);
+        if(!minigameResultSoundPlayed)
+        {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.drinkMinigameMiss);
+        }
+        minigameResultSoundPlayed = false;
         PickCupAnimationServerRpc();// plays animation and sets cup in hand (SetIngredientParent(player))
         MinigameDoneServerRpc();
         PrintHeldIngredientList();
