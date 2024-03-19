@@ -4,9 +4,10 @@ using Unity.Netcode;
 using UnityEngine;
 
 // Turns coffee up into mess cup if it hits the floor
-public class CoffeeToMess : MonoBehaviour
+public class CoffeeToMess : NetworkBehaviour
 {
-    [SerializeField] private GameObject messCup;
+    [SerializeField] private Pickup messCup;
+    [SerializeField] private GameObject messCupPrefab;
     [SerializeField] private LayerMask groundLayer;
 
     private void OnCollisionEnter(Collision collision)
@@ -15,8 +16,7 @@ public class CoffeeToMess : MonoBehaviour
         {
             // Add animation to turn into mess cup
             TurnCoffeeToMess();
-            gameObject.GetComponent<NetworkObject>().Despawn();
-            Destroy(gameObject);
+            BaristapocalypseMultiplayer.Instance.DestroyIngredient(gameObject.GetComponent<Ingredient>());
         }
     }
 
@@ -24,18 +24,17 @@ public class CoffeeToMess : MonoBehaviour
     {
         if (messCup)
         {
-            GameObject newMessCup = Instantiate(messCup, transform.position, transform.rotation);
-            NetworkObject newMessCupNetworkObject = newMessCup.GetComponent<NetworkObject>();
-
-            if (newMessCupNetworkObject)
-            {
-                newMessCupNetworkObject.Spawn();
-            }
-            else
-            {
-                Debug.Log("Mess Cup prefab does not have NetworkObject component.");
-            }
+            SpawnMessCupServerRpc();
         }
+    }
+
+    [ServerRpc]
+    private void SpawnMessCupServerRpc()
+    {
+        Transform messCupObjectTransform = Instantiate(messCupPrefab.transform);
+        NetworkObject messCupObjectNetworkObject = messCupObjectTransform.GetComponent<NetworkObject>();
+        messCupObjectNetworkObject.Spawn(true);
+        messCupObjectNetworkObject.transform.position = gameObject.transform.position;
     }
 }
 
