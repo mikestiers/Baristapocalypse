@@ -369,6 +369,7 @@ GameObject:
   - component: {fileID: 3542246307510153309}
   - component: {fileID: 8212930726616417681}
   - component: {fileID: -1441408844138359093}
+  - component: {fileID: 5985783651277725610}
   m_Layer: 8
   m_Name: Spill
   m_TagString: Mess
@@ -706,6 +707,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7200bd6b059ae9f4493e1c925284f358, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5985783651277725610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1954165853586051675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ee73cf91a770604f8cab9c37fb5777c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  InLocalSpace: 0
+  Interpolate: 1
 --- !u!1 &2601705825429907136
 GameObject:
   m_ObjectHideFlags: 0

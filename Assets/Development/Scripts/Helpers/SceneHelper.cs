@@ -68,6 +68,7 @@ public class SceneHelper : MonoBehaviour
         DestroyIfExists<BaristapocalypseMultiplayer>();
         DestroyIfExists<NetworkManager>();
         DestroyIfExists<OrderManager>();
+        DestroyIfExists<TutorialManager>();
     }
 
     private void ShutdownAndDestroy<T>() where T : MonoBehaviour

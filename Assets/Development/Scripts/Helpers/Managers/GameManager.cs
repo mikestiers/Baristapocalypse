@@ -176,18 +176,6 @@ public class GameManager : NetworkBehaviour
     private void Update()
     {
         if (!IsServer) { return; }
-
-        // Temporary for Testing Random Events
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            TriggerRandomEvent();
-
-            //Debug.Log("randomEventObject " + randomEventList[0].name); 
-            //randomEventList[0].SetEventBool(true);
-            //randomEventList[0].ActivateDeactivateEvent();
-
-        }
-
         switch (gameState.Value) 
         { 
             case GameState.WaitingToStart:
@@ -565,7 +553,7 @@ public class GameManager : NetworkBehaviour
             //randomEvent.GetComponent<GravityStorm>().GravityEventLights.SetActive(true);
             gravityStorm.SetEventBool(true);
             gravityStorm.ActivateDeactivateEvent();
-            randomEventEffects.TurnOnOffEventEffectServerRpc(true);
+            randomEventEffects.TurnOnOffEventEffect(true);
             
         }
         else if (randomEvent.GetComponent<WifiStation>()) 
@@ -577,31 +565,6 @@ public class GameManager : NetworkBehaviour
         {
             randomEvent.gameObject.GetComponent<RadioStation>().EventOn();
         }
-    }
-
-    public void DeactivateEvent(RandomEventBase randomEvent)
-    {
-        if (!IsServer) return;
-        isEventActive.Value = false;
-        if (randomEvent.GetComponent<GravityStorm>()) 
-        {
-            GravityStorm gravityStorm = randomEvent.GetComponent<GravityStorm>();
-            isGravityStorm.Value = false;
-            //gravityStorm.TurnOnOffEventEffectServerRpc(false);
-            gravityStorm.SetEventBool(false);
-            gravityStorm.ActivateDeactivateEvent();
-            randomEventEffects.TurnOnOffEventEffectServerRpc(true);
-        }
-        else if (randomEvent.GetComponent<WifiStation>()) 
-        {
-            randomEvent.gameObject.GetComponent<WifiStation>().WifiEventIsDone();
-            isWifiEvent.Value = false;
-        }
-        else if (randomEvent.GetComponent<RadioStation>()) 
-        {
-            randomEvent.gameObject.GetComponent<RadioStation>().EventOff();
-        }
-
     }
 
     [ClientRpc]

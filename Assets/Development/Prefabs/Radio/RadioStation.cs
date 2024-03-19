@@ -137,7 +137,7 @@ public class RadioStation : BaseStation
     [ClientRpc]
     private void EventOnClientRpc()
     {
-        screenEffect.ToggleRadioEffect(eventIsOn.Value);
+        screenEffect.ToggleRadioEffect(true);
         MainAudio.clip = BrokenSound;
         MainAudio.Play();
         eventLight.SetActive(true);
@@ -165,7 +165,7 @@ public class RadioStation : BaseStation
     {
         textPairs[currentRandomIndex].text1.color = Color.white;
         textPairs[currentRandomIndex].text2.color = Color.white;
-        screenEffect.ToggleRadioEffect(eventIsOn.Value);
+        screenEffect.ToggleRadioEffect(false);
         eventLight.SetActive(false);
         GameManager.Instance.isEventActive.Value = false;
         MainAudio.clip = Stations[AudioIndex];

@@ -35,7 +35,7 @@ public class WifiStation : RandomEventBase
     private void WifiEventIsDoneClientRpc()
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.wifiOn);
-        screenEffect.ToggleWifiEffect(iseventover.Value);
+        screenEffect.ToggleWifiEffect(true);
         eventLight.SetActive(false);
         Debug.Log("Wifi event is done");
         ChangeColorBasedOnEvent(true);
@@ -58,7 +58,7 @@ public class WifiStation : RandomEventBase
     private void WifiEventIsStartingClientRpc()
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.wifiOff);
-        screenEffect.ToggleWifiEffect(iseventover.Value);
+        screenEffect.ToggleWifiEffect(false);
         eventLight.SetActive(true);
         Debug.Log("Wifi event is Starting");
         ChangeColorBasedOnEvent(false);
