@@ -7,6 +7,7 @@ public class Footstep : MonoBehaviour
     public AudioSource customerFootstepAudioSource;
     [HideInInspector]
     public float volume = 1;
+    private bool ignoreOnce = true;
 
     private void Update()
     {
@@ -25,5 +26,19 @@ public class Footstep : MonoBehaviour
         int temp = Random.Range(0, SoundManager.Instance.audioClipRefsSO.customerFootsteps.Length);
         customerFootstepAudioSource.clip = SoundManager.Instance.audioClipRefsSO.customerFootsteps[temp];
         customerFootstepAudioSource.Play();
+    }
+    
+    public void doorOpenSound()
+    {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.doorOpen, 0.4f);
+    }
+
+    public void doorClosedSound()
+    {
+        if (!ignoreOnce)
+        {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.doorClose, 0.4f);
+            ignoreOnce = false;
+        }
     }
 }
