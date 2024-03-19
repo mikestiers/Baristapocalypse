@@ -86,29 +86,6 @@ public class Spill : NetworkBehaviour
     public static void CreateSpill(MessSO Mess, ISpill messObjectParent)
     {
         BaristapocalypseMultiplayer.Instance.PlayerCreateSpill(Mess, messObjectParent);
-    }
-
-    public void SetSpillPosition(ISpill messObjectParent)
-    {
-        SetSpillpositionServerRpc(messObjectParent.GetNetworkObject());
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    void SetSpillpositionServerRpc(NetworkObjectReference messObjectParent)
-    {
-        PlayerCreateSpillClientRpc(messObjectParent);
-    }
-    [ClientRpc]
-    private void PlayerCreateSpillClientRpc(NetworkObjectReference messObjectNetworkReference)
-    {
-        messObjectNetworkReference.TryGet(out NetworkObject messObjectNetworkObject);
-        ISpill messObjectComponet = messObjectNetworkObject.GetComponent<ISpill>();
-
-        messObjectParent = messObjectComponet;
-
-        messObjectComponet.SetSpill(this);
-        _spillSpawnPoint.SetSpawnPointTransform(messObjectComponet.GetSpillTransform());
-
         int randomInt = UnityEngine.Random.Range(0, SoundManager.Instance.audioClipRefsSO.spills.Count);
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.spills[randomInt]);
     }
