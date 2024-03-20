@@ -512,9 +512,9 @@ public class CustomerBase : Base
    
         }
         
-        else if (GetCustomerState()== CustomerState.Leaving && player.GetIngredient().CompareTag("CoffeeCup") && !isGivingOrderToCustomer)
+        else if (player.GetIngredient().CompareTag("CoffeeCup") && !isGivingOrderToCustomer)
         {
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.failedInteration);
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.failedInteration, 0.4f);
         }
     }
 
