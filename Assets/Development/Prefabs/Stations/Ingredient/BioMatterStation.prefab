@@ -4904,6 +4904,8 @@ GameObject:
   - component: {fileID: 436614883}
   - component: {fileID: 1854241403}
   - component: {fileID: 1712175010}
+  - component: {fileID: 4868290801480325732}
+  - component: {fileID: 6461746836928958366}
   m_Layer: 6
   m_Name: BioMatterStation
   m_TagString: Untagged
@@ -5055,7 +5057,7 @@ AudioSource:
   m_GameObject: {fileID: 3383644511522794113}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 4533755897248373498, guid: 706d11347a7f6dd43a4c406c59e7b7e8, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -5142,6 +5144,40 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!95 &4868290801480325732
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3383644511522794113}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+--- !u!114 &6461746836928958366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3383644511522794113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb65e6853c6512c48aa03f7b5b577b51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransitionStateInfoList: []
+  m_Animator: {fileID: 4868290801480325732}
 --- !u!1 &4774982550082583797
 GameObject:
   m_ObjectHideFlags: 0
