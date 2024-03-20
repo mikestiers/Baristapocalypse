@@ -509,6 +509,9 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
 
         yield return new WaitForSeconds(animationWaitTime);
         GetIngredient().SetIngredientParent(currentPlayerController);
+        if (!BaristapocalypseMultiplayer.playMultiplayer)
+            if (currentOrder != null)
+                PingManager.Instance.CreatePing(CustomerManager.Instance.GetCustomerByNumber(currentOrder.number).gameObject);
         animationSwitch?.Invoke();
         currentPlayerController.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None | RigidbodyConstraints.None | RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY;
         currentPlayerController.movementToggle = true;
