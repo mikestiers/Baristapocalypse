@@ -5221,6 +5221,7 @@ GameObject:
   - component: {fileID: 4009726712749095636}
   - component: {fileID: 1553510260}
   - component: {fileID: 543400229}
+  - component: {fileID: 63290881}
   m_Layer: 6
   m_Name: LiquidStation
   m_TagString: Untagged
@@ -5402,8 +5403,128 @@ PlayableDirector:
     value: {fileID: 5720623252523303035}
   - key: {fileID: -2125783449125460889, guid: 73284ad8e274b824ba576087bb040e8d, type: 2}
     value: {fileID: 1856654122}
+  - key: {fileID: 2708984400068695269, guid: 486616119c52c6f468f634e871bf26fa, type: 2}
+    value: {fileID: 63290881}
+  - key: {fileID: 7885979599182136046, guid: 486616119c52c6f468f634e871bf26fa, type: 2}
+    value: {fileID: 63290881}
+  - key: {fileID: -6382907894512054333, guid: 9c8c28c39cc92f34a999af7e48b885ea, type: 2}
+    value: {fileID: 63290881}
+  - key: {fileID: -140694648912616127, guid: 9c8c28c39cc92f34a999af7e48b885ea, type: 2}
+    value: {fileID: 63290881}
+  - key: {fileID: 1927198765948478534, guid: c6ef3a1acd6a820448cb97b5660054ce, type: 2}
+    value: {fileID: 63290881}
+  - key: {fileID: 2751362802071070455, guid: c6ef3a1acd6a820448cb97b5660054ce, type: 2}
+    value: {fileID: 63290881}
+  - key: {fileID: -7846949139877345718, guid: 379950eccd46de549a1750c9a160020e, type: 2}
+    value: {fileID: 63290881}
+  - key: {fileID: -7593187941756336975, guid: 379950eccd46de549a1750c9a160020e, type: 2}
+    value: {fileID: 63290881}
+  - key: {fileID: 5205765680321417490, guid: 5acd18ef1fbb75c44bcc2aec2359bf93, type: 2}
+    value: {fileID: 63290881}
+  - key: {fileID: -698031554481363836, guid: 5acd18ef1fbb75c44bcc2aec2359bf93, type: 2}
+    value: {fileID: 63290881}
+  - key: {fileID: -435146877239581934, guid: 73284ad8e274b824ba576087bb040e8d, type: 2}
+    value: {fileID: 63290881}
+  - key: {fileID: 3010067826856026860, guid: 73284ad8e274b824ba576087bb040e8d, type: 2}
+    value: {fileID: 63290881}
   m_ExposedReferences:
     m_References: []
+--- !u!82 &63290881
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4175465839301593472}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 10
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &4799991229090219304
 GameObject:
   m_ObjectHideFlags: 0
@@ -8402,7 +8523,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7203993366632014359, guid: 81393d6a781120545850ed7b0e4c269a, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7203993366632021480, guid: 81393d6a781120545850ed7b0e4c269a, type: 3}
       propertyPath: m_Name
@@ -8613,7 +8734,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5720623251919458618, guid: 58fe6b2d8b58fa7459c98044d19fe3a9, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7361333166245408313, guid: 58fe6b2d8b58fa7459c98044d19fe3a9, type: 3}
       propertyPath: m_RootOrder
@@ -8936,7 +9057,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7203993366632014359, guid: 81393d6a781120545850ed7b0e4c269a, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7203993366632021480, guid: 81393d6a781120545850ed7b0e4c269a, type: 3}
       propertyPath: m_Name
