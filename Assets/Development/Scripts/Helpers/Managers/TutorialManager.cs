@@ -68,31 +68,29 @@ public class TutorialManager : Singleton<TutorialManager>
 
     public void StartFirstBrew(OrderInfo order)
     {
-        //Debug.Log($"cusorder: {order.coffeeAttributes.GetSweetness()}");
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.tutorialPopOut);
-        AISupervisor.Instance.SupervisorMessageToDisplay($"Look at their drink order");// They want {order.coffeeAttributes.GetSweetness()} sweetness");
-        AISupervisor.Instance.SupervisorMessageToDisplay($"Go over to the sweetener station and pick the right ingredient");
+        AISupervisor.Instance.SupervisorMessageToDisplay($"Pick the right ingredient from the four ingredient stations");
         firstBrewStarted = true;
     }
 
     public void MadeFirstIngredientSelection()
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.tutorialPopOut);
-        AISupervisor.Instance.SupervisorMessageToDisplay("Your ingredient was added to the brewing station. Now add more");
+        AISupervisor.Instance.SupervisorMessageToDisplay("Your ingredient was added to the brewing station. Try adding more");
         firstIngredientSelected = true;
     }
 
     public void MadeSecondIngredientSelection()
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.tutorialPopOut);
-        AISupervisor.Instance.SupervisorMessageToDisplay("Excellent. They need 4 ingredients. Add from another ingredient station");
+        AISupervisor.Instance.SupervisorMessageToDisplay("Excellent. Try adding from another ingredient station");
         secondIngredientSelected = true;
     }
 
     public void MadeThirdIngredientSelection()
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.tutorialPopOut);
-        AISupervisor.Instance.SupervisorMessageToDisplay("One more ingredient type to go");
+        AISupervisor.Instance.SupervisorMessageToDisplay("Almost done!");
         thirdIngredientSelected = true;
     }
 
