@@ -45,7 +45,7 @@ public class VolumeSettings : MonoBehaviour
     {
         float masterLevel = PlayerPrefs.GetFloat(MasterLevelKey, 0.5f);
         mixer.SetFloat(MasterLevelKey, MathF.Log10(masterLevel) * 20);
-        return PlayerPrefs.GetFloat(MasterLevelKey, 1.0f);
+        return PlayerPrefs.GetFloat(MasterLevelKey, 0.5f);
     }
 
     private void SetMusicLevel(float musicLevel)
@@ -58,7 +58,7 @@ public class VolumeSettings : MonoBehaviour
     {
         float musicLevel = PlayerPrefs.GetFloat(MusicLevelKey, 0.5f);
         mixer.SetFloat(MusicLevelKey, MathF.Log10(musicLevel) * 20);
-        return PlayerPrefs.GetFloat(MusicLevelKey, 1.0f);
+        return PlayerPrefs.GetFloat(MusicLevelKey, 0.5f);
     }
 
     private void SetSFXLevel(float sFXLevel)
@@ -70,7 +70,7 @@ public class VolumeSettings : MonoBehaviour
     {
         float sFXLevel = PlayerPrefs.GetFloat(SFXLevelKey, 0.5f);
         mixer.SetFloat(SFXLevelKey, MathF.Log10(sFXLevel) * 20);
-        return PlayerPrefs.GetFloat(SFXLevelKey, 1.0f);
+        return PlayerPrefs.GetFloat(SFXLevelKey, 0.5f);
     }
 
     private void SetVoicesLevel(float voicesLevel)
@@ -83,6 +83,6 @@ public class VolumeSettings : MonoBehaviour
     {
         float voicesLevel = PlayerPrefs.GetFloat(VoicesLevelKey, 0.5f);
         mixer.SetFloat(VoicesLevelKey, MathF.Log10(voicesLevel) * 20);
-        return PlayerPrefs.GetFloat(VoicesLevelKey, 1.0f);
+        return PlayerPrefs.GetFloat(VoicesLevelKey, 0.5f);
     }
 }
