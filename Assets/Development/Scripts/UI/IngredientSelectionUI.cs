@@ -191,11 +191,20 @@ public class IngredientSelectionUI : BaseStation
             else if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.fourthIngredientSelected)
                 TutorialManager.Instance.MadeFourthIngredientSelection();
         }
-        if(currentIngredient.objectTag == "Sweetener")
+        
+
+        PlayIngredientAnimationClientRpc();
+        
+    }
+
+    [ClientRpc]
+    private void PlayIngredientAnimationClientRpc()
+    {
+        if (currentIngredient.objectTag == "Sweetener")
         {
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.sweetnerMachine);
         }
-        else if(currentIngredient.objectTag == "Milk")
+        else if (currentIngredient.objectTag == "Milk")
         {
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.liquidMachine);
         }
