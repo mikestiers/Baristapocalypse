@@ -190,34 +190,39 @@ public class IngredientSelectionUI : BaseStation
 
             else if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.fourthIngredientSelected)
                 TutorialManager.Instance.MadeFourthIngredientSelection();
-        }
-        
 
-        PlayIngredientAnimationClientRpc();
-        
+
+            if (currentIngredient.objectTag == "Sweetener")
+            {
+                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.sweetnerMachine);
+            }
+            else if (currentIngredient.objectTag == "Milk")
+            {
+                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.liquidMachine);
+            }
+            else if (currentIngredient.objectTag == "CoffeeGrind")
+            {
+                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.beanMachine);
+            }
+            else if (currentIngredient.objectTag == "BioMatter")
+            {
+                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.bioMatterMachine);
+            }
+            PlayIngredientAnimationServerRpc();
+        } 
     }
 
-    [ClientRpc]
-    private void PlayIngredientAnimationClientRpc()
+    [ServerRpc (RequireOwnership = false)]
+    private void PlayIngredientAnimationServerRpc()
     {
-        if (currentIngredient.objectTag == "Sweetener")
-        {
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.sweetnerMachine);
-        }
-        else if (currentIngredient.objectTag == "Milk")
-        {
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.liquidMachine);
-        }
-        else if (currentIngredient.objectTag == "CoffeeGrind")
-        {
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.beanMachine);
-        }
-        else if (currentIngredient.objectTag == "BioMatter")
-        {
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.bioMatterMachine);
-        }
+        PlayIngredientAnimationClientRpc(UnityEngine.Random.Range(0, ingredientSelectionAnimations.Count));
+    }
+    
 
-        playableDirector.Play(ingredientSelectionAnimations[UnityEngine.Random.Range(0, ingredientSelectionAnimations.Count)]);
+    [ClientRpc]
+    private void PlayIngredientAnimationClientRpc(int index)
+    {
+        playableDirector.Play(ingredientSelectionAnimations[index]);
     }
 
     private void OnTriggerEnter(Collider other)
