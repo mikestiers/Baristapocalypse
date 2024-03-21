@@ -190,25 +190,39 @@ public class IngredientSelectionUI : BaseStation
 
             else if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.fourthIngredientSelected)
                 TutorialManager.Instance.MadeFourthIngredientSelection();
-        }
-        if(currentIngredient.objectTag == "Sweetener")
-        {
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.sweetnerMachine);
-        }
-        else if(currentIngredient.objectTag == "Milk")
-        {
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.liquidMachine);
-        }
-        else if (currentIngredient.objectTag == "CoffeeGrind")
-        {
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.beanMachine);
-        }
-        else if (currentIngredient.objectTag == "BioMatter")
-        {
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.bioMatterMachine);
-        }
 
-        playableDirector.Play(ingredientSelectionAnimations[UnityEngine.Random.Range(0, ingredientSelectionAnimations.Count)]);
+
+            if (currentIngredient.objectTag == "Sweetener")
+            {
+                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.sweetnerMachine);
+            }
+            else if (currentIngredient.objectTag == "Milk")
+            {
+                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.liquidMachine);
+            }
+            else if (currentIngredient.objectTag == "CoffeeGrind")
+            {
+                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.beanMachine);
+            }
+            else if (currentIngredient.objectTag == "BioMatter")
+            {
+                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.bioMatterMachine);
+            }
+            PlayIngredientAnimationServerRpc();
+        } 
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    private void PlayIngredientAnimationServerRpc()
+    {
+        PlayIngredientAnimationClientRpc(UnityEngine.Random.Range(0, ingredientSelectionAnimations.Count));
+    }
+    
+
+    [ClientRpc]
+    private void PlayIngredientAnimationClientRpc(int index)
+    {
+        playableDirector.Play(ingredientSelectionAnimations[index]);
     }
 
     private void OnTriggerEnter(Collider other)

@@ -86,6 +86,7 @@ public class Spill : NetworkBehaviour
     public static void CreateSpill(MessSO Mess, ISpill messObjectParent)
     {
         BaristapocalypseMultiplayer.Instance.PlayerCreateSpill(Mess, messObjectParent);
+
         int randomInt = UnityEngine.Random.Range(0, SoundManager.Instance.audioClipRefsSO.spills.Count);
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.spills[randomInt]);
     }

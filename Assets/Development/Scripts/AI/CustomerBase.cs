@@ -134,8 +134,8 @@ public class CustomerBase : Base
         {
             SetCustomerState(CustomerState.Init);
         }
-
-        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.customerEnters);
+        PlayCustomerSoundEnterClientRpc();
+        
         customerAnimator = bodiesContainerObject.GetComponentInChildren<Animator>();
 
         SetCustomerVisualIdentifiers();
@@ -152,6 +152,12 @@ public class CustomerBase : Base
         GetIngredientTransform().localEulerAngles = new Vector3(0, 30, 90);
 
         customerReviewPanel = GameObject.FindGameObjectWithTag("CustomerReviewPanel");
+    }
+
+    [ClientRpc]
+    private void PlayCustomerSoundEnterClientRpc()
+    {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.customerEnters);
     }
 
     public virtual void Update()
@@ -500,7 +506,7 @@ public class CustomerBase : Base
             if (TutorialManager.Instance != null && TutorialManager.Instance.tutorialEnabled && !TutorialManager.Instance.firstBrewStarted)
                 TutorialManager.Instance.StartFirstBrew(order);
             LeaveLineServerRpc();
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.takeOrder);
+            PlayTakeOrderSoundClientRpc();
             interactParticle.Play();
         }
 
@@ -514,8 +520,20 @@ public class CustomerBase : Base
         
         else if (player.GetIngredient().CompareTag("CoffeeCup") && !isGivingOrderToCustomer)
         {
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.failedInteration, 0.4f);
+            PlayFailedInteractionClientRpc();
         }
+    }
+
+    [ClientRpc]
+    private void PlayTakeOrderSoundClientRpc()
+    {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.takeOrder);
+    }
+
+    [ClientRpc]
+    private void PlayFailedInteractionClientRpc()
+    {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.failedInteration, 0.4f);
     }
 
     [ServerRpc(RequireOwnership = false)]

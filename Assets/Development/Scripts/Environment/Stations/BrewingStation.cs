@@ -227,6 +227,12 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
         sweetSpotPosition.Value = UnityEngine.Random.Range(minSweetSpotPosition, maxSweetSpotPosition);
     }
 
+    [ClientRpc]
+    private void PlayDrinkReadyClientRpc()
+    {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.drinkReady);
+    }
+
     public override void Interact(PlayerController player)
     {
         if (player.HasIngredient()) return;
@@ -249,7 +255,8 @@ public class BrewingStation : BaseStation, IHasMinigameTiming
             {
                 Debug.LogWarning("Ending Brewing minigame");
                 //BrewingSoundStop(brewingAudioSource);
-                SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.drinkReady);
+                PlayDrinkReadyClientRpc();
+                
                 float timingPressed = Mathf.Abs((minigameTimer.Value / maxMinigameTimer) - sweetSpotPosition.Value);
                 bool minigameResult = false;
                 if (timingPressed <= 0.1f)

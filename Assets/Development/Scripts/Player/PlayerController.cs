@@ -596,9 +596,15 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         }
         if (GetNumberOfIngredients() > 0)
         {
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.throwIngredient);
+            PlayThrowIngredientClientRpc();
             ThrowIngredient();
         }
+    }
+
+    [ClientRpc]
+    private void PlayThrowIngredientClientRpc()
+    {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.throwIngredient);
     }
 
     public void SetSelectedStation(BaseStation baseStation)
@@ -846,13 +852,19 @@ public class PlayerController : NetworkBehaviour, IIngredientParent, IPickupObje
         if(!HasNoIngredients)return;
         anim.CrossFadeInFixedTime(BP_Barista_Cleaning_VacHash, CrossFadeDuration);
         spill.Interact(this);
-        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.mopping);
+        PlayMoppingClientRpc();
 
         if (spill == null)
         {
             Debug.LogWarning("Player lost reference to pickup ");
             OnAnimationSwitch();
         }
+    }
+
+    [ClientRpc]
+    private void PlayMoppingClientRpc()
+    {
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.audioClipRefsSO.mopping);
     }
 
     public void DoPickup(Pickup pickup)
